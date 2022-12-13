@@ -101,12 +101,13 @@ extern void G_MissileImpacted(gentity_t* ent, gentity_t* other, vec3_t impactPos
 extern evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitloc, vec3_t phit_dir,
 	const gentity_t* incoming, float dist = 0.0f);
 extern void jedi_rage_stop(const gentity_t* self);
-extern int PM_PickAnim(const gentity_t* self, int minAnim, int maxAnim);
+extern int PM_PickAnim(const gentity_t* self, int min_anim, int max_anim);
 extern void NPC_SetPainEvent(gentity_t* self);
 extern qboolean PM_SwimmingAnim(int anim);
-extern qboolean PM_InAnimForSaberMove(int anim, int saberMove);
+extern qboolean PM_InAnimForSaberMove(int anim, int saber_move);
 extern qboolean PM_SpinningSaberAnim(int anim);
 extern qboolean PM_SaberInSpecialAttack(int anim);
+extern qboolean PM_SaberInInstankillKillAttack(int anim);
 extern qboolean PM_SaberInKillAttack(int anim);
 extern qboolean PM_SaberInLockWin(int anim);
 extern qboolean PM_SaberInAttack(int move);
@@ -137,15 +138,15 @@ extern qboolean PM_SuperBreakWinAnim(int anim);
 extern qboolean PM_SaberLockBreakAnim(int anim);
 extern qboolean PM_InOnGroundAnim(playerState_t* ps);
 extern qboolean PM_KnockDownAnim(int anim);
-extern qboolean PM_SaberInKata(saberMoveName_t saberMove);
-extern qboolean PM_SaberInBackAttack(saberMoveName_t saberMove);
-extern qboolean PM_SaberInOverHeadSlash(saberMoveName_t saberMove);
-extern qboolean PM_SaberInRollStab(saberMoveName_t saberMove);
-extern qboolean PM_SaberInLungeStab(saberMoveName_t saberMove);
+extern qboolean PM_SaberInKata(saberMoveName_t saber_move);
+extern qboolean PM_SaberInBackAttack(saberMoveName_t saber_move);
+extern qboolean PM_SaberInOverHeadSlash(saberMoveName_t saber_move);
+extern qboolean PM_SaberInRollStab(saberMoveName_t saber_move);
+extern qboolean PM_SaberInLungeStab(saberMoveName_t saber_move);
 extern qboolean PM_StabDownAnim(int anim);
 extern int PM_PowerLevelForSaberAnim(const playerState_t* ps, int saber_num = 0);
-extern void PM_VelocityForSaberMove(const playerState_t* ps, vec3_t throwDir);
-extern qboolean PM_VelocityForBlockedMove(const playerState_t* ps, vec3_t throwDir);
+extern void PM_VelocityForSaberMove(const playerState_t* ps, vec3_t throw_dir);
+extern qboolean PM_VelocityForBlockedMove(const playerState_t* ps, vec3_t throw_dir);
 extern qboolean PM_SaberCanInterruptMove(int move, int anim);
 extern int jedi_re_calc_parry_time(const gentity_t* self, evasionType_t evasion_type);
 extern qboolean jedi_dodge_evasion(gentity_t* self, gentity_t* shooter, trace_t* tr, int hit_loc);
@@ -208,7 +209,7 @@ extern qboolean PM_SaberInDamageMove(int move);
 extern qboolean PM_SaberDoDamageAnim(int anim);
 extern qboolean PM_RestAnim(int anim);
 extern qboolean PM_StabAnim(int anim);
-extern void PM_AddFatigue(playerState_t* ps, int Fatigue);
+extern void PM_AddFatigue(playerState_t* ps, int fatigue);
 void BG_ReduceSaberMishapLevel(playerState_t* ps);
 extern qboolean PM_SaberInSpecial(int move);
 extern void jedi_decloak(gentity_t* self);
@@ -223,9 +224,9 @@ extern void G_StartStasisEffect_FORCE_LEVEL_1(const gentity_t* ent, int meFlags 
 qboolean CheckStagger(gentity_t* defender, const gentity_t* attacker);
 void WP_BlockPointsRegenerate(const gentity_t* self, int override_amt);
 void WP_ForcePowerRegenerate(const gentity_t* self, int override_amt);
-extern void PM_AddBoltBlockFatigue(playerState_t* ps, int Fatigue);
+extern void PM_AddBoltBlockFatigue(playerState_t* ps, int fatigue);
 extern qboolean PM_Saberinstab(int move);
-extern void PM_AddBlockFatigue(playerState_t* ps, int Fatigue);
+extern void PM_AddBlockFatigue(playerState_t* ps, int fatigue);
 extern cvar_t* g_SaberPerfectBlockingTimerEasy;
 extern cvar_t* g_SaberPerfectBlockingTimerNormal;
 extern cvar_t* g_SaberPerfectBlockingTimerHard;
@@ -2550,7 +2551,7 @@ void WP_SaberClearDamageForEntNum(gentity_t* attacker, const int entity_num, con
 	}
 }
 
-extern void PM_SaberStartTransAnim(int saberAnimLevel, int anim, float* animSpeed, const gentity_t* gent, int fatigued);
+extern void PM_SaberStartTransAnim(int saber_anim_level, int anim, float* anim_speed, const gentity_t* gent, int fatigued);
 extern float pm_get_time_scale_mod(const gentity_t* gent);
 
 int G_GetAttackDamageMD(const gentity_t* self, const int min_dmg, const int max_dmg, const float mult_point)
@@ -3079,6 +3080,7 @@ qboolean WP_SaberApplyDamageMD(gentity_t* ent, const float base_damage, const in
 					else
 					{
 						const qboolean saber_in_special = PM_SaberInSpecialAttack(ent->client->ps.torsoAnim);
+						const qboolean saber_in_LeapAttack = PM_SaberInInstankillKillAttack(ent->client->ps.torsoAnim);
 						const qboolean saber_in_stab_down = PM_StabDownAnim(ent->client->ps.torsoAnim);
 						const qboolean saber_in_kata = PM_SaberInKata(static_cast<saberMoveName_t>(ent->client->ps.saberMove));
 						const qboolean saber_in_back_attack = PM_SaberInBackAttack(static_cast<saberMoveName_t>(ent->client->ps.saberMove));
@@ -3293,6 +3295,14 @@ qboolean WP_SaberApplyDamageMD(gentity_t* ent, const float base_damage, const in
 									{
 										totalDmg[i] = 100;
 									}
+								}
+								else if (saber_in_LeapAttack)
+								{
+									if (d_combatinfo->integer || g_DebugSaberCombat->integer)
+									{
+										gi.Printf(S_COLOR_YELLOW"saber_in_LeapAttack\n");
+									}
+									totalDmg[i] = G_GetAttackDamageMD(ent, 500, 1000, 0.5f);
 								}
 								else if (saber_in_kata)
 								{
@@ -35451,7 +35461,7 @@ qboolean PlayerAffectedByStasis()
 	return qfalse;
 }
 
-extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torsoAnimTimer, int time);
+extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torso_anim_timer, int time);
 
 void forcestasis_anim(gentity_t* self)
 {
@@ -38628,27 +38638,37 @@ static void wp_force_power_run(gentity_t* self, forcePowers_t force_power, userc
 				{
 					//level 1 just holds them
 					VectorSubtract(grip_org, grip_ent_org, grip_ent->client->ps.velocity);
+
 					if (self->client->ps.forcePowerLevel[FP_GRIP] > FORCE_LEVEL_2
 						&& (!grip_ent->client || !grip_ent->message && !(grip_ent->flags & FL_NO_KNOCKBACK)))
 					{
-						//level 2 just lifts them
-						float grip_dist = VectorNormalize(grip_ent->client->ps.velocity) / 3.0f;
-						if (grip_dist < 20.0f)
+						if (grip_ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(grip_ent)) // npc,s cant throw the player around with grip any more
 						{
-							if (grip_dist < 2.0f)
+							VectorSubtract(grip_org, grip_ent_org, grip_ent->client->ps.velocity);							
+						}
+						else
+						{
+							//level 2 just lifts them
+							float grip_dist = VectorNormalize(grip_ent->client->ps.velocity) / 3.0f;
+
+							if (grip_dist < 20.0f)
 							{
-								VectorClear(grip_ent->client->ps.velocity);
+								if (grip_dist < 2.0f)
+								{
+									VectorClear(grip_ent->client->ps.velocity);
+								}
+								else
+								{
+									VectorScale(grip_ent->client->ps.velocity, grip_dist * grip_dist,
+										grip_ent->client->ps.velocity);
+								}
 							}
 							else
 							{
 								VectorScale(grip_ent->client->ps.velocity, grip_dist * grip_dist,
 									grip_ent->client->ps.velocity);
 							}
-						}
-						else
-						{
-							VectorScale(grip_ent->client->ps.velocity, grip_dist * grip_dist,
-								grip_ent->client->ps.velocity);
+							
 						}
 					}
 				}

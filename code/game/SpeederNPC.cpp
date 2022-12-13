@@ -96,7 +96,7 @@ extern vec3_t playerMins;
 extern vec3_t playerMaxs;
 extern cvar_t* g_speederControlScheme;
 extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
-extern void PM_SetAnim(const pmove_t* pm, int setAnimParts, int anim, int setAnimFlags, int blendTime);
+extern void PM_SetAnim(const pmove_t* pm, int set_anim_parts, int anim, int set_anim_flags, int blend_time);
 extern int PM_AnimLength(int index, animNumber_t anim);
 #endif
 
@@ -761,7 +761,7 @@ void ProcessOrientCommands(Vehicle_t* pVeh)
 
 #ifdef QAGAME
 
-extern void PM_SetAnim(const pmove_t* pm, int setAnimParts, int anim, int setAnimFlags, int blendTime);
+extern void PM_SetAnim(const pmove_t* pm, int set_anim_parts, int anim, int set_anim_flags, int blend_time);
 extern int PM_AnimLength(int index, animNumber_t anim);
 
 // This function makes sure that the vehicle is properly animated.

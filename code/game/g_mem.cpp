@@ -42,13 +42,13 @@ void* G_Alloc(const int size)
 	return gi.Malloc(size, TAG_G_ALLOC, qfalse);
 }
 
-void G_InitMemory(void)
+void G_InitMemory()
 {
 	allocPoint = 0;
 	g_debugalloc = gi.cvar("g_debugalloc", "0", 0);
 }
 
-void Svcmd_GameMem_f(void)
+void Svcmd_GameMem_f()
 {
 	gi.Printf("Game memory status: %i allocated\n", allocPoint);
 }

@@ -92,11 +92,11 @@ extern qboolean PM_InAirKickingAnim(int anim);
 extern qboolean PM_KickingAnim(int anim);
 extern qboolean PM_StabDownAnim(int anim);
 extern qboolean PM_SuperBreakLoseAnim(int anim);
-extern qboolean PM_SaberInKata(saberMoveName_t saberMove);
+extern qboolean PM_SaberInKata(saberMoveName_t saber_move);
 extern qboolean PM_InRollIgnoreTimer(const playerState_t* ps);
 extern qboolean PM_PainAnim(int anim);
 extern qboolean G_CanKickEntity(const gentity_t* self, const gentity_t* target);
-extern saberMoveName_t G_PickAutoKick(const gentity_t* self, const gentity_t* enemy, qboolean storeMove);
+extern saberMoveName_t G_PickAutoKick(const gentity_t* self, const gentity_t* enemy, qboolean store_move);
 extern saberMoveName_t g_pick_auto_multi_kick(gentity_t* self, qboolean allow_singles, qboolean store_move);
 extern qboolean NAV_DirSafe(const gentity_t* self, vec3_t dir, float dist);
 extern qboolean NAV_MoveDirSafe(const gentity_t* self, const usercmd_t* cmd, float distScale = 1.0f);
@@ -110,14 +110,13 @@ extern qboolean PM_WalkingOrRunningAnim(int anim);
 extern cvar_t* g_SerenityJediEngineMode;
 extern void ForceGrip(gentity_t* self);
 extern qboolean PM_SaberInTransition(int move);
-extern void PM_AddBlockFatigue(playerState_t* ps, int Fatigue);
-extern void PM_AddFatigue(playerState_t* ps, int Fatigue);
+extern void PM_AddBlockFatigue(playerState_t* ps, int fatigue);
+extern void PM_AddFatigue(playerState_t* ps, int fatigue);
 extern qboolean NPC_IsAlive(const gentity_t* self, const gentity_t* npc);
 extern qboolean IsSurrendering(const gentity_t* self);
 extern qboolean IsRespecting(const gentity_t* self);
 extern qboolean IsCowering(const gentity_t* self);
 extern qboolean is_anim_requires_responce(const gentity_t* self);
-extern void ForceDashAnimDash(gentity_t* self);
 extern qboolean WP_AbsorbKick(gentity_t* self, const gentity_t* pusher, const vec3_t push_dir);
 extern qboolean BG_InKnockDown(int anim);
 extern void ForceGrasp(gentity_t* ent);
@@ -2384,6 +2383,9 @@ static void jedi_combat_distance(const int enemy_dist)
 		&& NPC->enemy->client
 		&& NPC->client->ps.weapon == WP_SABER
 		&& NPC->enemy->s.weapon == WP_SABER
+		&& !PM_SaberInMassiveBounce(NPC->client->ps.torsoAnim)
+		&& !PM_SaberInBounce(NPC->client->ps.torsoAnim)
+		&& !PM_SaberInBashedAnim(NPC->client->ps.torsoAnim)
 		&& InFront(NPC->enemy->currentOrigin, NPC->currentOrigin, NPC->client->ps.viewangles, 0.7f)
 		&& PM_SaberInKata(static_cast<saberMoveName_t>(NPC->enemy->client->ps.saberMove))
 		|| NPC->client->ps.weapon == WP_SABER && (NPC->client->ps.saberInFlight || NPC->client->ps.saberEntityState == SES_RETURNING))

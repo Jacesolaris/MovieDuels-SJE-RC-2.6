@@ -35,7 +35,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define ACT_INACTIVE	qfalse
 extern void NPC_UseResponse(gentity_t* self, const gentity_t* user, qboolean useWhenDone);
 extern qboolean PM_CrouchAnim(int anim);
-extern qboolean PM_InDeathAnim(void);
+extern qboolean PM_InDeathAnim();
 extern qboolean rocket_trooper_player(const gentity_t* self);
 /*
 =========================================================================

@@ -49,7 +49,7 @@ Returns qtrue if the velocity was clipped in some way
 ==================
 */
 constexpr auto MAX_CLIP_PLANES = 5;
-extern qboolean PM_GroundSlideOkay(float zNormal);
+extern qboolean PM_GroundSlideOkay(float z_normal);
 extern qboolean PM_InSpecialJump(int anim);
 
 qboolean PM_SlideMove(const float grav_mod)

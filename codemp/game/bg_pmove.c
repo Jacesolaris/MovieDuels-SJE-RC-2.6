@@ -46,7 +46,7 @@ extern qboolean TryGrapple(gentity_t* ent); //g_cmds.c
 
 extern qboolean BG_FullBodyTauntAnim(int anim);
 extern float PM_WalkableGroundDistance(void);
-extern qboolean PM_GroundSlideOkay(float zNormal);
+extern qboolean PM_GroundSlideOkay(float z_normal);
 extern saberInfo_t* BG_MySaber(int client_num, int saber_num);
 
 pmove_t* pm;
@@ -4579,7 +4579,7 @@ void PM_AnglesForSlope(const float yaw, const vec3_t slope, vec3_t angles)
 	angles[ROLL] = ((1 - Q_fabs(dot)) * pitch * mod);
 }
 
-void PM_FootSlopeTrace(float* pDiff, float* pInterval)
+void PM_FootSlopeTrace(float* p_diff, float* p_interval)
 {
 	vec3_t	footLOrg, footROrg, footLBot, footRBot;
 	vec3_t footLPoint, footRPoint;
@@ -4629,13 +4629,13 @@ void PM_FootSlopeTrace(float* pDiff, float* pInterval)
 
 	const float diff = footLBot[2] - footRBot[2];
 
-	if (pDiff != NULL)
+	if (p_diff != NULL)
 	{
-		*pDiff = diff;
+		*p_diff = diff;
 	}
-	if (pInterval != NULL)
+	if (p_interval != NULL)
 	{
-		*pInterval = interval;
+		*p_interval = interval;
 	}
 }
 
@@ -9949,7 +9949,7 @@ PmoveSingle
 
 ================
 */
-extern int BG_EmplacedView(vec3_t baseAngles, vec3_t angles, float* newYaw, float constraint);
+extern int BG_EmplacedView(vec3_t base_angles, vec3_t angles, float* new_yaw, float constraint);
 extern qboolean BG_FighterUpdate(Vehicle_t* pVeh, const usercmd_t* pUcmd, vec3_t trMins, vec3_t trMaxs, float gravity,
 	void (*traceFunc)(trace_t* results, const vec3_t start, const vec3_t lmins, const vec3_t lmaxs, const vec3_t end, int passEntityNum, int contentMask)); //FighterNPC.c
 

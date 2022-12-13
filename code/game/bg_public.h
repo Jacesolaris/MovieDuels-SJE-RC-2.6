@@ -340,9 +340,9 @@ constexpr auto	SETANIM_AFLAG_PACE = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD;
 constexpr auto	AFLAG_LEDGE = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_HOLDLESS | SETANIM_FLAG_PACE;
 constexpr auto SETANIM_BLEND_DEFAULT = 100;
 
-void PM_SetAnim(const pmove_t* pm, int setAnimParts, int anim, int setAnimFlags, int blendTime = SETANIM_BLEND_DEFAULT);
-void PM_SetAnimFinal(int* torsoAnim, int* legsAnim, int type, int anim, int priority, int* torsoAnimTimer,
-	int* legsAnimTimer, gentity_t* gent, int blendTime = SETANIM_BLEND_DEFAULT);
+void PM_SetAnim(const pmove_t* pm, int set_anim_parts, int anim, int set_anim_flags, int blend_time = SETANIM_BLEND_DEFAULT);
+void PM_SetAnimFinal(int* torso_anim, int* legs_anim, int type, int anim, int priority, int* torso_anim_timer,
+	int* legs_anim_timer, gentity_t* gent, int blend_time = SETANIM_BLEND_DEFAULT);
 
 //===================================================================================
 
@@ -1029,15 +1029,15 @@ using entityType_t = enum
 	// this avoids having to set eFlags and eventNum
 };
 
-void EvaluateTrajectory(const trajectory_t* tr, int atTime, vec3_t result);
-void EvaluateTrajectoryDelta(const trajectory_t* tr, int atTime, vec3_t result);
+void EvaluateTrajectory(const trajectory_t* tr, int at_time, vec3_t result);
+void EvaluateTrajectoryDelta(const trajectory_t* tr, int at_time, vec3_t result);
 
-void AddEventToPlayerstate(int newEvent, int eventParm, playerState_t* ps);
+void AddEventToPlayerstate(int new_event, int event_parm, playerState_t* ps);
 int CurrentPlayerstateEvent(const playerState_t* ps);
 
 void PlayerStateToEntityState(playerState_t* ps, entityState_t* s);
 
-qboolean BG_PlayerTouchesItem(const playerState_t* ps, const entityState_t* item, int atTime);
+qboolean BG_PlayerTouchesItem(const playerState_t* ps, const entityState_t* item, int at_time);
 
 constexpr auto HYPERSPACE_TIME = 4000; //For hyperspace triggers;
 constexpr auto HYPERSPACE_TELEPORT_FRAC = 0.75f;

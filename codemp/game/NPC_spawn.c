@@ -40,7 +40,7 @@ extern void Q3_SetParm(int entID, int parmNum, const char* parmValue);
 extern team_t TranslateTeamName(const char* name);
 extern char* TeamNames[TEAM_NUM_TEAMS];
 
-extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torsoAnimTimer, int time);
+extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torso_anim_timer, int time);
 extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legs_anim_timer, int time);
 
 extern void ST_ClearTimers(const gentity_t* ent);

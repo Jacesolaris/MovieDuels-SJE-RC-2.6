@@ -34,7 +34,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 extern vec3_t playerMins;
 extern vec3_t playerMaxs;
-extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torsoAnimTimer, int time);
+extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torso_anim_timer, int time);
 extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legs_anim_timer, int time);
 extern void NPC_BSNoClip(void);
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);

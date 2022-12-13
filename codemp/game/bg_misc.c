@@ -2777,9 +2777,9 @@ BG_EmplacedView
 Shared code for emplaced angle gun constriction
 =================
 */
-int BG_EmplacedView(vec3_t baseAngles, vec3_t angles, float* newYaw, float constraint)
+int BG_EmplacedView(vec3_t base_angles, vec3_t angles, float* new_yaw, float constraint)
 {
-	float dif = AngleSubtract(baseAngles[YAW], angles[YAW]);
+	float dif = AngleSubtract(base_angles[YAW], angles[YAW]);
 
 	if (dif > constraint ||
 		dif < -constraint)
@@ -2801,7 +2801,7 @@ int BG_EmplacedView(vec3_t baseAngles, vec3_t angles, float* newYaw, float const
 			amt = 0.0f;
 		}
 
-		*newYaw = AngleSubtract(angles[YAW], -dif);
+		*new_yaw = AngleSubtract(angles[YAW], -dif);
 
 		if (amt > 1.0f || amt < -1.0f)
 		{ //significant, force the view

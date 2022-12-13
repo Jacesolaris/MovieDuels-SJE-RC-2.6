@@ -93,7 +93,7 @@ extern vec3_t playerMins;
 extern vec3_t playerMaxs;
 extern cvar_t* g_speederControlScheme;
 extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
-extern void PM_SetAnim(const pmove_t* pm, int setAnimParts, int anim, int setAnimFlags, int blendTime);
+extern void PM_SetAnim(const pmove_t* pm, int set_anim_parts, int anim, int set_anim_flags, int blend_time);
 extern int PM_AnimLength(int index, animNumber_t anim);
 extern void G_VehicleTrace(trace_t* results, const vec3_t start, const vec3_t tMins, const vec3_t tMaxs,
 	const vec3_t end, int passEntityNum, int contentmask);
@@ -109,7 +109,6 @@ extern int BG_GetTime(void);
 #endif
 
 #include "b_local.h"
-extern void BG_ExternThisSoICanRecompileInDebug(Vehicle_t* pVeh, playerState_t* riderPS);
 
 //this stuff has got to be predicted, so..
 bool BG_FighterUpdate(Vehicle_t* pVeh, const usercmd_t* pUcmd, vec3_t trMins, vec3_t trMaxs, const float gravity,
@@ -1014,7 +1013,7 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 	/********************************************************************************/
 }
 
-extern void BG_VehicleTurnRateForSpeed(const Vehicle_t* pVeh, float speed, float* mPitchOverride, float* mYawOverride);
+extern void BG_VehicleTurnRateForSpeed(const Vehicle_t* p_veh, float speed, float* m_pitch_override, float* m_yaw_override);
 
 static void FighterWingMalfunctionCheck(Vehicle_t* pVeh, const playerState_t* parentPS)
 {
@@ -1489,9 +1488,6 @@ static void ProcessOrientCommands(Vehicle_t* pVeh)
 		{
 			VectorCopy(riderPS->viewangles, pVeh->m_vOrientation);
 			VectorCopy(riderPS->viewangles, parentPS->viewangles);
-#ifdef _JK2MP
-			//BG_ExternThisSoICanRecompileInDebug( pVeh, riderPS );
-#endif
 
 			cur_roll = pVeh->m_vOrientation[ROLL];
 
@@ -1657,7 +1653,7 @@ static void ProcessOrientCommands(Vehicle_t* pVeh)
 
 #ifdef QAGAME //ONLY in SP or on server, not cgame
 
-extern void PM_SetAnim(const pmove_t* pm, int setAnimParts, int anim, int setAnimFlags, int blendTime);
+extern void PM_SetAnim(const pmove_t* pm, int set_anim_parts, int anim, int set_anim_flags, int blend_time);
 
 // This function makes sure that the vehicle is properly animated.
 static void AnimateVehicle(Vehicle_t* pVeh)

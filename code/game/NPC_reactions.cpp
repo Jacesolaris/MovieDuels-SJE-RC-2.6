@@ -33,7 +33,7 @@ extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceT
 extern int PM_AnimLength(int index, animNumber_t anim);
 extern void cgi_S_StartSound(const vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx);
 extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
-extern int PM_PickAnim(const gentity_t* self, int minAnim, int maxAnim);
+extern int PM_PickAnim(const gentity_t* self, int min_anim, int max_anim);
 extern qboolean NPC_CheckLookTarget(const gentity_t* self);
 extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
 extern qboolean jedi_waiting_ambush(const gentity_t* self);

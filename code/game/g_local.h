@@ -647,8 +647,8 @@ qboolean OnSameTeam(const gentity_t* ent1, const gentity_t* ent2);
 // g_mem.c
 //
 void* G_Alloc(int size);
-void G_InitMemory(void);
-void Svcmd_GameMem_f(void);
+void G_InitMemory();
+void Svcmd_GameMem_f();
 
 //
 // g_session.c

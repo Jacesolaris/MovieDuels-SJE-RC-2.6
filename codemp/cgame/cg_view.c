@@ -2013,7 +2013,7 @@ CG_EmplacedView
 Keep view reasonably constrained in relation to gun -rww
 =================
 */
-int BG_EmplacedView(vec3_t baseAngles, vec3_t angles, float* newYaw, float constraint);
+int BG_EmplacedView(vec3_t base_angles, vec3_t angles, float* new_yaw, float constraint);
 
 void CG_EmplacedView(vec3_t angles)
 {

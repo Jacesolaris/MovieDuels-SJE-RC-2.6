@@ -29,10 +29,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "g_vehicles.h"
 #include "b_local.h"
 
-#ifdef _DEBUG
-#include <float.h>
-#endif //_DEBUG
-
 constexpr auto SLOWDOWN_DIST = 128.0f;
 constexpr auto MIN_NPC_SPEED = 16.0f;
 
@@ -79,7 +75,7 @@ extern int PM_AnimLength(int index, animNumber_t anim);
 extern qboolean PM_InKnockDown(const playerState_t* ps);
 extern qboolean PM_InGetUp(const playerState_t* ps);
 extern qboolean PM_InRoll(const playerState_t* ps);
-extern void PM_CmdForRoll(playerState_t* ps, usercmd_t* pCmd);
+extern void PM_CmdForRoll(playerState_t* ps, usercmd_t* p_cmd);
 extern qboolean PM_InAttackRoll(int anim);
 extern qboolean PM_CrouchAnim(int anim);
 extern qboolean PM_FlippingAnim(int anim);
@@ -87,7 +83,7 @@ extern qboolean PM_InCartwheel(int anim);
 extern qboolean In_LedgeIdle(int anim);
 extern qboolean PM_StandingAnim(int anim);
 extern qboolean PM_InForceGetUp(const playerState_t* ps);
-extern qboolean PM_GetupAnimNoMove(int legsAnim);
+extern qboolean PM_GetupAnimNoMove(int legs_anim);
 extern qboolean PM_SuperBreakLoseAnim(int anim);
 extern qboolean PM_SuperBreakWinAnim(int anim);
 extern qboolean PM_CanRollFromSoulCal(const playerState_t* ps);
@@ -1942,8 +1938,8 @@ Actions that happen once a second
 */
 extern void BG_ReduceBlasterMishapLevel(playerState_t* ps);
 extern void BG_ReduceBlasterMishapLevelAdvanced(playerState_t* ps);
-extern void WP_SaberFatigueRegenerate(int overrideAmt);
-extern void WP_BlasterFatigueRegenerate(int overrideAmt);
+extern void WP_SaberFatigueRegenerate(int override_amt);
+extern void WP_BlasterFatigueRegenerate(int override_amt);
 
 void ClientTimerActions(gentity_t* ent, const int msec)
 {

@@ -81,7 +81,7 @@ extern vec3_t playerMins;
 extern vec3_t playerMaxs;
 extern cvar_t* g_speederControlScheme;
 extern cvar_t* in_joystick;
-extern void PM_SetAnim(const pmove_t* pm, int setAnimParts, int anim, int setAnimFlags, int blendTime);
+extern void PM_SetAnim(const pmove_t* pm, int set_anim_parts, int anim, int set_anim_flags, int blend_time);
 extern int PM_AnimLength(int index, animNumber_t anim);
 extern void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags, int iBlend);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
@@ -99,7 +99,7 @@ void G_VehUpdateShields(gentity_t* targ);
 extern void VEH_TurretThink(Vehicle_t* pVeh, gentity_t* parent, int turretNum);
 #endif
 #else
-extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torsoAnimTimer, int time);
+extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torso_anim_timer, int time);
 extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legs_anim_timer, int time);
 #endif
 

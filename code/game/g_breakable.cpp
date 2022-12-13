@@ -85,7 +85,7 @@ void funcBBrushDieGo(gentity_t* self)
 	vec3_t org, dir, up;
 	gentity_t* attacker = self->enemy;
 	int size = 0;
-	const material_t chunkType = self->material;
+	const material_t chunk_type = self->material;
 
 	// if a missile is stuck to us, blow it up so we don't look dumb
 	// FIXME: flag me so I should know to do this check!
@@ -115,7 +115,7 @@ void funcBBrushDieGo(gentity_t* self)
 
 	VectorSubtract(self->absmax, self->absmin, org); // size
 
-	int numChunks = Q_flrand(0.0f, 1.0f) * 6 + 18;
+	int num_chunks = Q_flrand(0.0f, 1.0f) * 6 + 18;
 
 	// This formula really has no logical basis other than the fact that it seemed to be the closest to yielding the results that I wanted.
 	// Volume is length * width * height...then break that volume down based on how many chunks we have
@@ -130,13 +130,13 @@ void funcBBrushDieGo(gentity_t* self)
 		size = 1;
 	}
 
-	scale = scale / numChunks;
+	scale = scale / num_chunks;
 
 	if (self->radius > 0.0f)
 	{
 		// designer wants to scale number of chunks, helpful because the above scale code is far from perfect
 		//	I do this after the scale calculation because it seems that the chunk size generally seems to be very close, it's just the number of chunks is a bit weak
-		numChunks *= self->radius;
+		num_chunks *= self->radius;
 	}
 
 	VectorMA(self->absmin, 0.5, org, org);
@@ -156,7 +156,7 @@ void funcBBrushDieGo(gentity_t* self)
 	if (!(self->spawnflags & 2048)) // NO_EXPLOSION
 	{
 		// we are allowed to explode
-		CG_MiscModelExplosion(self->absmin, self->absmax, size, chunkType);
+		CG_MiscModelExplosion(self->absmin, self->absmax, size, chunk_type);
 	}
 
 	if (self->splashDamage > 0 && self->splashRadius > 0)
@@ -177,7 +177,7 @@ void funcBBrushDieGo(gentity_t* self)
 	}
 
 	//FIXME: base numChunks off size?
-	CG_Chunks(self->s.number, org, self->absmin, self->absmax, 300, numChunks, chunkType, 0, scale, self->noise_index);
+	CG_Chunks(self->s.number, org, self->absmin, self->absmax, 300, num_chunks, chunk_type, 0, scale, self->noise_index);
 
 	self->e_ThinkFunc = thinkF_G_FreeEntity;
 	self->nextthink = level.time + 50;
@@ -287,9 +287,9 @@ static void InitBBrush(gentity_t* ent)
 	}
 
 	// if the "color" or "light" keys are set, setup constantLight
-	const qboolean lightSet = G_SpawnFloat("light", "100", &light);
-	const qboolean colorSet = G_SpawnVector("color", "1 1 1", color);
-	if (lightSet || colorSet)
+	const qboolean light_set = G_SpawnFloat("light", "100", &light);
+	const qboolean color_set = G_SpawnVector("color", "1 1 1", color);
+	if (light_set || color_set)
 	{
 		int r = color[0] * 255;
 		if (r > 255)
@@ -451,9 +451,9 @@ void SP_func_breakable(gentity_t* self)
 		self->noise_index = G_SoundIndex(buffer);
 	}
 
-	int forceVisible = 0;
-	G_SpawnInt("forcevisible", "0", &forceVisible);
-	if (forceVisible)
+	int force_visible = 0;
+	G_SpawnInt("forcevisible", "0", &force_visible);
+	if (force_visible)
 	{
 		//can see these through walls with force sight, so must be broadcast
 		if (VectorCompare(self->s.origin, vec3_origin))
@@ -464,9 +464,9 @@ void SP_func_breakable(gentity_t* self)
 		self->s.eFlags |= EF_FORCE_VISIBLE;
 	}
 
-	int redCrosshair = 0;
-	G_SpawnInt("redCrosshair", "0", &redCrosshair);
-	if (redCrosshair)
+	int red_crosshair = 0;
+	G_SpawnInt("redCrosshair", "0", &red_crosshair);
+	if (red_crosshair)
 	{
 		//can see these through walls with force sight, so must be broadcast
 		self->flags |= FL_RED_CROSSHAIR;
@@ -512,7 +512,7 @@ void misc_model_breakable_die(gentity_t* self, const gentity_t* inflictor, genti
 	AngleVectors(self->s.apos.trBase, dir, nullptr, nullptr);
 	VectorNormalize(dir);
 
-	int numChunks = Q_flrand(0.0f, 1.0f) * 6 + 20;
+	int num_chunks = Q_flrand(0.0f, 1.0f) * 6 + 20;
 
 	VectorSubtract(self->absmax, self->absmin, dis);
 
@@ -529,19 +529,19 @@ void misc_model_breakable_die(gentity_t* self, const gentity_t* inflictor, genti
 		size = 1;
 	}
 
-	scale = scale / numChunks;
+	scale = scale / num_chunks;
 
 	if (self->radius > 0.0f)
 	{
 		// designer wants to scale number of chunks, helpful because the above scale code is far from perfect
 		//	I do this after the scale calculation because it seems that the chunk size generally seems to be very close, it's just the number of chunks is a bit weak
-		numChunks *= self->radius;
+		num_chunks *= self->radius;
 	}
 
 	VectorAdd(self->absmax, self->absmin, dis);
 	VectorScale(dis, 0.5f, dis);
 
-	CG_Chunks(self->s.number, dis, self->absmin, self->absmax, 300, numChunks, self->material, self->s.modelindex3, scale);
+	CG_Chunks(self->s.number, dis, self->absmin, self->absmax, 300, num_chunks, self->material, self->s.modelindex3, scale);
 
 	self->e_PainFunc = painF_NULL;
 	self->e_DieFunc = dieF_NULL;
@@ -646,7 +646,7 @@ void misc_model_breakable_die(gentity_t* self, const gentity_t* inflictor, genti
 
 void misc_model_throw_at_target4(gentity_t* self, const gentity_t* activator)
 {
-	vec3_t pushDir, kvel;
+	vec3_t push_dir, kvel;
 	float knockback = 200;
 	float mass = self->mass;
 	const gentity_t* target = G_Find(nullptr, FOFS(targetname), self->target4);
@@ -655,8 +655,8 @@ void misc_model_throw_at_target4(gentity_t* self, const gentity_t* activator)
 		//nothing to throw ourselves at...
 		return;
 	}
-	VectorSubtract(target->currentOrigin, self->currentOrigin, pushDir);
-	knockback -= VectorNormalize(pushDir);
+	VectorSubtract(target->currentOrigin, self->currentOrigin, push_dir);
+	knockback -= VectorNormalize(push_dir);
 	if (knockback < 100)
 	{
 		knockback = 100;
@@ -677,12 +677,12 @@ void misc_model_throw_at_target4(gentity_t* self, const gentity_t* activator)
 
 	if (g_gravity->value > 0)
 	{
-		VectorScale(pushDir, g_knockback->value * knockback / mass * 0.8, kvel);
-		kvel[2] = pushDir[2] * g_knockback->value * knockback / mass * 1.5;
+		VectorScale(push_dir, g_knockback->value * knockback / mass * 0.8, kvel);
+		kvel[2] = push_dir[2] * g_knockback->value * knockback / mass * 1.5;
 	}
 	else
 	{
-		VectorScale(pushDir, g_knockback->value * knockback / mass, kvel);
+		VectorScale(push_dir, g_knockback->value * knockback / mass, kvel);
 	}
 
 	VectorAdd(self->s.pos.trDelta, kvel, self->s.pos.trDelta);
@@ -820,37 +820,37 @@ void TieFighterThink(gentity_t* self)
 	self->nextthink = level.time + FRAMETIME;
 	if (player)
 	{
-		vec3_t playerDir, fighterDir, fwd, rt;
+		vec3_t player_dir, fighter_dir, fwd, rt;
 
 		//use player eyepoint
-		VectorSubtract(player->currentOrigin, self->currentOrigin, playerDir);
-		const float playerDist = VectorNormalize(playerDir);
-		VectorSubtract(self->currentOrigin, self->lastOrigin, fighterDir);
+		VectorSubtract(player->currentOrigin, self->currentOrigin, player_dir);
+		const float player_dist = VectorNormalize(player_dir);
+		VectorSubtract(self->currentOrigin, self->lastOrigin, fighter_dir);
 		VectorCopy(self->currentOrigin, self->lastOrigin);
-		float fighterSpeed = VectorNormalize(fighterDir) * 1000;
+		float fighter_speed = VectorNormalize(fighter_dir) * 1000;
 		AngleVectors(self->currentAngles, fwd, rt, nullptr);
 
-		if (fighterSpeed)
+		if (fighter_speed)
 		{
 			// Magic number fun!  Speed is used for banking, so modulate the speed by a sine wave
-			fighterSpeed *= sin(100 * 0.003);
+			fighter_speed *= sin(100 * 0.003);
 
 			// Clamp to prevent harsh rolling
-			if (fighterSpeed > 10)
-				fighterSpeed = 10;
+			if (fighter_speed > 10)
+				fighter_speed = 10;
 
-			const float side = fighterSpeed * DotProduct(fighterDir, rt);
+			const float side = fighter_speed * DotProduct(fighter_dir, rt);
 			self->s.apos.trBase[2] -= side;
 		}
 
 		//FIXME: bob up/down, strafe left/right some
-		const float dot = DotProduct(playerDir, fighterDir);
+		const float dot = DotProduct(player_dir, fighter_dir);
 		if (dot > 0)
 		{
 			//heading toward the player
-			if (playerDist < 1024)
+			if (player_dist < 1024)
 			{
-				if (DotProduct(playerDir, fwd) > 0.7)
+				if (DotProduct(player_dir, fwd) > 0.7)
 				{
 					//facing the player
 					if (self->attackDebounceTime < level.time)
@@ -893,7 +893,7 @@ void TieFighterThink(gentity_t* self)
 			}
 		}
 
-		if (playerDist < 1024) //512 )
+		if (player_dist < 1024) //512 )
 		{
 			//within range to start our sound
 			if (dot > 0)
@@ -1004,14 +1004,14 @@ void TieBomberThink(gentity_t* self)
 	self->nextthink = level.time + FRAMETIME;
 
 	const gentity_t* player = &g_entities[0];
-	vec3_t playerDir;
+	vec3_t player_dir;
 
 	//use player eyepoint
-	VectorSubtract(player->currentOrigin, self->currentOrigin, playerDir);
-	const float playerDist = VectorNormalize(playerDir);
+	VectorSubtract(player->currentOrigin, self->currentOrigin, player_dir);
+	const float player_dist = VectorNormalize(player_dir);
 
 	// Time to attack?
-	if (player->health > 0 && playerDist < MIN_PLAYER_DIST && self->attackDebounceTime < level.time)
+	if (player->health > 0 && player_dist < MIN_PLAYER_DIST && self->attackDebounceTime < level.time)
 	{
 		// Doesn't matter what model gets loaded here, as long as it exists.
 		// It's only used as a point on to which the falling effect for the bomb
@@ -1177,22 +1177,22 @@ Damage: default is none
 */
 void SP_misc_model_breakable(gentity_t* ent)
 {
-	char damageModel[MAX_QPATH];
-	char chunkModel[MAX_QPATH];
-	char useModel[MAX_QPATH];
+	char damage_model[MAX_QPATH];
+	char chunk_model[MAX_QPATH];
+	char use_model[MAX_QPATH];
 
 	// Chris F. requested default for misc_model_breakable to be NONE...so don't arbitrarily change this.
 	G_SpawnInt("material", "8", reinterpret_cast<int*>(&ent->material));
 	G_SpawnFloat("radius", "1", &ent->radius); // used to scale chunk code if desired by a designer
-	qboolean bHasScale = G_SpawnVector("modelscale_vec", "0 0 0", ent->s.modelScale);
-	if (!bHasScale)
+	qboolean b_has_scale = G_SpawnVector("modelscale_vec", "0 0 0", ent->s.modelScale);
+	if (!b_has_scale)
 	{
 		float temp;
 		G_SpawnFloat("modelscale", "0", &temp);
 		if (temp != 0.0f)
 		{
 			ent->s.modelScale[0] = ent->s.modelScale[1] = ent->s.modelScale[2] = temp;
-			bHasScale = qtrue;
+			b_has_scale = qtrue;
 		}
 	}
 
@@ -1201,10 +1201,10 @@ void SP_misc_model_breakable(gentity_t* ent)
 
 	const int len = strlen(ent->model) - 4;
 	assert(ent->model[len] == '.'); //we're expecting ".md3"
-	strncpy(damageModel, ent->model, sizeof damageModel);
-	damageModel[len] = 0; //chop extension
-	strncpy(chunkModel, damageModel, sizeof chunkModel);
-	strncpy(useModel, damageModel, sizeof useModel);
+	strncpy(damage_model, ent->model, sizeof damage_model);
+	damage_model[len] = 0; //chop extension
+	strncpy(chunk_model, damage_model, sizeof chunk_model);
+	strncpy(use_model, damage_model, sizeof use_model);
 
 	if (ent->takedamage)
 	{
@@ -1212,21 +1212,21 @@ void SP_misc_model_breakable(gentity_t* ent)
 		if (!(ent->spawnflags & 8))
 		{
 			//no dmodel
-			strcat(damageModel, "_d1.md3");
-			ent->s.modelindex2 = G_ModelIndex(damageModel);
+			strcat(damage_model, "_d1.md3");
+			ent->s.modelindex2 = G_ModelIndex(damage_model);
 		}
 
 		//Chunk model
-		strcat(chunkModel, "_c1.md3");
-		ent->s.modelindex3 = G_ModelIndex(chunkModel);
+		strcat(chunk_model, "_c1.md3");
+		ent->s.modelindex3 = G_ModelIndex(chunk_model);
 	}
 
 	//Use model
 	if (ent->spawnflags & 32)
 	{
 		//has umodel
-		strcat(useModel, "_u1.md3");
-		ent->sound1to2 = G_ModelIndex(useModel);
+		strcat(use_model, "_u1.md3");
+		ent->sound1to2 = G_ModelIndex(use_model);
 	}
 	if (!ent->mins[0] && !ent->mins[1] && !ent->mins[2])
 	{
@@ -1247,7 +1247,7 @@ void SP_misc_model_breakable(gentity_t* ent)
 		//bHasScale = qtrue;
 	}
 
-	if (bHasScale)
+	if (b_has_scale)
 	{
 		//scale the x axis of the bbox up.
 		ent->maxs[0] *= ent->s.modelScale[0]; //*scaleFactor;

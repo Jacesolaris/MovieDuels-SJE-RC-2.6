@@ -9059,7 +9059,7 @@ static QINLINE void CG_VehicleEffects(centity_t* cent)
 CG_Player
 ===============
 */
-int BG_EmplacedView(vec3_t baseAngles, vec3_t angles, float* newYaw, float constraint);
+int BG_EmplacedView(vec3_t base_angles, vec3_t angles, float* new_yaw, float constraint);
 
 float CG_RadiusForCent(centity_t* cent)
 {

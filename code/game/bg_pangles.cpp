@@ -36,7 +36,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "../ghoul2/ghoul2_gore.h"
 
 extern void CG_SetClientViewAngles(vec3_t angles, qboolean overrideViewEnt);
-extern qboolean PM_InAnimForSaberMove(int anim, int saberMove);
+extern qboolean PM_InAnimForSaberMove(int anim, int saber_move);
 extern qboolean PM_InForceGetUp(const playerState_t* ps);
 extern qboolean PM_InKnockDown(const playerState_t* ps);
 extern qboolean PM_InReboundJump(int anim);
@@ -59,8 +59,8 @@ extern qboolean PM_BlockStaffAnim(int anim);
 extern qboolean PM_BlockHoldStaffAnim(int anim);
 extern qboolean PM_KickMove(int move);
 extern cvar_t* g_SerenityJediEngineMode;
-extern void PM_AddBlockFatigue(playerState_t* ps, int Fatigue);
-extern void PM_AddFatigue(playerState_t* ps, int Fatigue);
+extern void PM_AddBlockFatigue(playerState_t* ps, int fatigue);
+extern void PM_AddFatigue(playerState_t* ps, int fatigue);
 extern qboolean PM_InLedgeMove(int anim);
 extern qboolean PM_SaberInMassiveBounce(int move);
 extern qboolean PM_SaberInBashedAnim(int anim);
@@ -264,9 +264,9 @@ void BG_IK_MoveLimb(CGhoul2Info_v& ghoul2, const int bolt_index, const char* ani
 void PM_IKUpdate(gentity_t* ent)
 {
 	//The bone we're holding them by and the next bone after that
-	const char* anim_bone = "lower_lumbar";
-	const char* first_bone = "lradius";
-	const char* second_bone = "lhumerus";
+	const auto anim_bone = "lower_lumbar";
+	const auto first_bone = "lradius";
+	const auto second_bone = "lhumerus";
 	const auto default_bolt_name = "*r_hand";
 
 	if (!ent->client)
@@ -306,11 +306,11 @@ void PM_IKUpdate(gentity_t* ent)
 				holder->client->ps.origin, level.time, nullptr, holder->s.modelScale);
 			gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, bolt_org);
 
-			const int grabbedByBolt = gi.G2API_AddBolt(&ent->ghoul2[0], first_bone);
-			if (grabbedByBolt)
+			const int grabbed_by_bolt = gi.G2API_AddBolt(&ent->ghoul2[0], first_bone);
+			if (grabbed_by_bolt)
 			{
 				//point the limb
-				BG_IK_MoveLimb(ent->ghoul2, grabbedByBolt, anim_bone, first_bone, second_bone,
+				BG_IK_MoveLimb(ent->ghoul2, grabbed_by_bolt, anim_bone, first_bone, second_bone,
 					level.time, &ent->s, ent->client->clientInfo.animFileIndex,
 					ent->client->ps.torsoAnim/*BOTH_DEAD1*/, bolt_org, &ent->client->ps.ikStatus,
 					ent->client->ps.origin, ent->client->ps.viewangles, ent->s.modelScale,
@@ -322,7 +322,7 @@ void PM_IKUpdate(gentity_t* ent)
 				VectorCopy(ent->client->ps.viewangles, t_angles);
 				t_angles[PITCH] = t_angles[ROLL] = 0;
 
-				gi.G2API_GetBoltMatrix(ent->ghoul2, 0, grabbedByBolt, &bolt_matrix, t_angles, ent->client->ps.origin,
+				gi.G2API_GetBoltMatrix(ent->ghoul2, 0, grabbed_by_bolt, &bolt_matrix, t_angles, ent->client->ps.origin,
 					level.time, nullptr, ent->s.modelScale);
 				gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, grabbed_by_org);
 
@@ -761,16 +761,16 @@ qboolean PM_AdjustAnglesForBackAttack(gentity_t* ent, usercmd_t* ucmd)
 			vec3_t enemy_behind_dir;
 			VectorSubtract(ent->currentOrigin, ent->enemy->currentOrigin, enemy_behind_dir);
 			const float enemy_behind_yaw = AngleNormalize180(vectoyaw(enemy_behind_dir));
-			float yawError = AngleNormalize180(enemy_behind_yaw - AngleNormalize180(ent->client->ps.viewangles[YAW]));
-			if (yawError > 1)
+			float yaw_error = AngleNormalize180(enemy_behind_yaw - AngleNormalize180(ent->client->ps.viewangles[YAW]));
+			if (yaw_error > 1)
 			{
-				yawError = 1;
+				yaw_error = 1;
 			}
-			else if (yawError < -1)
+			else if (yaw_error < -1)
 			{
-				yawError = -1;
+				yaw_error = -1;
 			}
-			ucmd->angles[YAW] = ANGLE2SHORT(AngleNormalize180(ent->client->ps.viewangles[YAW] + yawError)) - ent->client
+			ucmd->angles[YAW] = ANGLE2SHORT(AngleNormalize180(ent->client->ps.viewangles[YAW] + yaw_error)) - ent->client
 				->ps.delta_angles[YAW];
 			ucmd->angles[PITCH] = ANGLE2SHORT(ent->client->ps.viewangles[PITCH]) - ent->client->ps.delta_angles[PITCH];
 		}

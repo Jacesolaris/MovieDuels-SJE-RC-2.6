@@ -40,7 +40,7 @@ extern void Saboteur_Cloak(gentity_t* self);
 extern void G_MatchPlayerWeapon(gentity_t* ent);
 extern void Q3_SetParm(int entID, int parmNum, const char* parmValue);
 
-extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torsoAnimTimer, int time);
+extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torso_anim_timer, int time);
 extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legs_anim_timer, int time);
 
 extern int WP_SaberInitBladeData(gentity_t* ent);

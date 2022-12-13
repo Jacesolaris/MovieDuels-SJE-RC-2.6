@@ -259,9 +259,9 @@ EvaluateTrajectory
 
 ================
 */
-void EvaluateTrajectory(const trajectory_t* tr, int atTime, vec3_t result)
+void EvaluateTrajectory(const trajectory_t* tr, int at_time, vec3_t result)
 {
-	float deltaTime;
+	float delta_time;
 	float phase;
 
 	switch (tr->trType)
@@ -271,50 +271,50 @@ void EvaluateTrajectory(const trajectory_t* tr, int atTime, vec3_t result)
 		VectorCopy(tr->trBase, result);
 		break;
 	case TR_LINEAR:
-		deltaTime = (atTime - tr->trTime) * 0.001F; // milliseconds to seconds
-		VectorMA(tr->trBase, deltaTime, tr->trDelta, result);
+		delta_time = (at_time - tr->trTime) * 0.001F; // milliseconds to seconds
+		VectorMA(tr->trBase, delta_time, tr->trDelta, result);
 		break;
 	case TR_SINE:
-		deltaTime = (atTime - tr->trTime) / static_cast<float>(tr->trDuration);
-		phase = sin(deltaTime * M_PI * 2);
+		delta_time = (at_time - tr->trTime) / static_cast<float>(tr->trDuration);
+		phase = sin(delta_time * M_PI * 2);
 		VectorMA(tr->trBase, phase, tr->trDelta, result);
 		break;
 	case TR_LINEAR_STOP:
-		if (atTime > tr->trTime + tr->trDuration)
+		if (at_time > tr->trTime + tr->trDuration)
 		{
-			atTime = tr->trTime + tr->trDuration;
+			at_time = tr->trTime + tr->trDuration;
 		}
 		//old totally linear
-		deltaTime = (atTime - tr->trTime) * 0.001F; // milliseconds to seconds
-		if (deltaTime < 0)
+		delta_time = (at_time - tr->trTime) * 0.001F; // milliseconds to seconds
+		if (delta_time < 0)
 		{
 			//going past the total duration
-			deltaTime = 0;
+			delta_time = 0;
 		}
-		VectorMA(tr->trBase, deltaTime, tr->trDelta, result);
+		VectorMA(tr->trBase, delta_time, tr->trDelta, result);
 		break;
 	case TR_NONLINEAR_STOP:
-		if (atTime > tr->trTime + tr->trDuration)
+		if (at_time > tr->trTime + tr->trDuration)
 		{
-			atTime = tr->trTime + tr->trDuration;
+			at_time = tr->trTime + tr->trDuration;
 		}
 		//new slow-down at end
-		if (atTime - tr->trTime > tr->trDuration || atTime - tr->trTime <= 0)
+		if (at_time - tr->trTime > tr->trDuration || at_time - tr->trTime <= 0)
 		{
-			deltaTime = 0;
+			delta_time = 0;
 		}
 		else
 		{
 			//FIXME: maybe scale this somehow?  So that it starts out faster and stops faster?
-			deltaTime = tr->trDuration * 0.001f * cos(DEG2RAD(
-				90.0f - 90.0f * (static_cast<float>(atTime) - tr->trTime) / static_cast<float>(tr->trDuration)));
+			delta_time = tr->trDuration * 0.001f * cos(DEG2RAD(
+				90.0f - 90.0f * (static_cast<float>(at_time) - tr->trTime) / static_cast<float>(tr->trDuration)));
 		}
-		VectorMA(tr->trBase, deltaTime, tr->trDelta, result);
+		VectorMA(tr->trBase, delta_time, tr->trDelta, result);
 		break;
 	case TR_GRAVITY:
-		deltaTime = (atTime - tr->trTime) * 0.001F; // milliseconds to seconds
-		VectorMA(tr->trBase, deltaTime, tr->trDelta, result);
-		result[2] -= 0.5F * g_gravity->value * deltaTime * deltaTime; //DEFAULT_GRAVITY
+		delta_time = (at_time - tr->trTime) * 0.001F; // milliseconds to seconds
+		VectorMA(tr->trBase, delta_time, tr->trDelta, result);
+		result[2] -= 0.5F * g_gravity->value * delta_time * delta_time; //DEFAULT_GRAVITY
 		break;
 	default:
 		Com_Error(ERR_DROP, "EvaluateTrajectory: unknown trType: %i", tr->trTime);
@@ -328,9 +328,9 @@ EvaluateTrajectoryDelta
 Returns current speed at given time
 ================
 */
-void EvaluateTrajectoryDelta(const trajectory_t* tr, const int atTime, vec3_t result)
+void EvaluateTrajectoryDelta(const trajectory_t* tr, const int at_time, vec3_t result)
 {
-	float deltaTime;
+	float delta_time;
 	float phase;
 
 	switch (tr->trType)
@@ -343,13 +343,13 @@ void EvaluateTrajectoryDelta(const trajectory_t* tr, const int atTime, vec3_t re
 		VectorCopy(tr->trDelta, result);
 		break;
 	case TR_SINE:
-		deltaTime = (atTime - tr->trTime) / static_cast<float>(tr->trDuration);
-		phase = cos(deltaTime * M_PI * 2); // derivative of sin = cos
+		delta_time = (at_time - tr->trTime) / static_cast<float>(tr->trDuration);
+		phase = cos(delta_time * M_PI * 2); // derivative of sin = cos
 		phase *= 0.5;
 		VectorScale(tr->trDelta, phase, result);
 		break;
 	case TR_LINEAR_STOP:
-		if (atTime > tr->trTime + tr->trDuration)
+		if (at_time > tr->trTime + tr->trDuration)
 		{
 			VectorClear(result);
 			return;
@@ -357,19 +357,19 @@ void EvaluateTrajectoryDelta(const trajectory_t* tr, const int atTime, vec3_t re
 		VectorCopy(tr->trDelta, result);
 		break;
 	case TR_NONLINEAR_STOP:
-		if (atTime - tr->trTime > tr->trDuration || atTime - tr->trTime <= 0)
+		if (at_time - tr->trTime > tr->trDuration || at_time - tr->trTime <= 0)
 		{
 			VectorClear(result);
 			return;
 		}
-		deltaTime = tr->trDuration * 0.001f * cos(DEG2RAD(
-			90.0f - 90.0f * (static_cast<float>(atTime) - tr->trTime) / static_cast<float>(tr->trDuration)));
-		VectorScale(tr->trDelta, deltaTime, result);
+		delta_time = tr->trDuration * 0.001f * cos(DEG2RAD(
+			90.0f - 90.0f * (static_cast<float>(at_time) - tr->trTime) / static_cast<float>(tr->trDuration)));
+		VectorScale(tr->trDelta, delta_time, result);
 		break;
 	case TR_GRAVITY:
-		deltaTime = (atTime - tr->trTime) * 0.001F; // milliseconds to seconds
+		delta_time = (at_time - tr->trTime) * 0.001F; // milliseconds to seconds
 		VectorCopy(tr->trDelta, result);
-		result[2] -= g_gravity->value * deltaTime; // DEFAULT_GRAVITY
+		result[2] -= g_gravity->value * delta_time; // DEFAULT_GRAVITY
 		break;
 	default:
 		Com_Error(ERR_DROP, "EvaluateTrajectoryDelta: unknown trType: %i", tr->trTime);
@@ -383,10 +383,10 @@ AddEventToPlayerstate
 Handles the sequence numbers
 ===============
 */
-void AddEventToPlayerstate(const int newEvent, const int eventParm, playerState_t* ps)
+void AddEventToPlayerstate(const int new_event, const int event_parm, playerState_t* ps)
 {
-	ps->events[ps->eventSequence & MAX_PS_EVENTS - 1] = newEvent;
-	ps->eventParms[ps->eventSequence & MAX_PS_EVENTS - 1] = eventParm;
+	ps->events[ps->eventSequence & MAX_PS_EVENTS - 1] = new_event;
+	ps->eventParms[ps->eventSequence & MAX_PS_EVENTS - 1] = event_parm;
 	ps->eventSequence++;
 }
 
@@ -448,9 +448,9 @@ void PlayerStateToEntityState(playerState_t* ps, entityState_t* s)
 	if (g_entities[ps->client_num].client && g_entities[ps->client_num].client->NPC_class == CLASS_VEHICLE && g_entities[
 		ps->client_num].NPC)
 	{
-		const Vehicle_t* pVeh = g_entities[ps->client_num].m_pVehicle;
-		s->vehicleArmor = pVeh->m_iArmor;
-		VectorCopy(pVeh->m_vOrientation, s->vehicleAngles);
+		const Vehicle_t* p_veh = g_entities[ps->client_num].m_pVehicle;
+		s->vehicleArmor = p_veh->m_iArmor;
+		VectorCopy(p_veh->m_vOrientation, s->vehicleAngles);
 	}
 
 		s->vehicleModel = ps->vehicleModel;
@@ -566,11 +566,11 @@ BG_PlayerTouchesItem
 Items can be picked up without actually touching their physical bounds
 ============
 */
-qboolean BG_PlayerTouchesItem(const playerState_t* ps, const entityState_t* item, const int atTime)
+qboolean BG_PlayerTouchesItem(const playerState_t* ps, const entityState_t* item, const int at_time)
 {
 	vec3_t origin = { 0.0f };
 
-	EvaluateTrajectory(&item->pos, atTime, origin);
+	EvaluateTrajectory(&item->pos, at_time, origin);
 
 	// we are ignoring ducked differences here
 	if (ps->origin[0] - origin[0] > 44
@@ -593,9 +593,9 @@ BG_EmplacedView
 Shared code for emplaced angle gun constriction
 =================
 */
-int BG_EmplacedView(vec3_t baseAngles, vec3_t angles, float* newYaw, const float constraint)
+int BG_EmplacedView(vec3_t base_angles, vec3_t angles, float* new_yaw, const float constraint)
 {
-	float dif = AngleSubtract(baseAngles[YAW], angles[YAW]);
+	float dif = AngleSubtract(base_angles[YAW], angles[YAW]);
 
 	if (dif > constraint ||
 		dif < -constraint)
@@ -617,7 +617,7 @@ int BG_EmplacedView(vec3_t baseAngles, vec3_t angles, float* newYaw, const float
 			amt = 0.0f;
 		}
 
-		*newYaw = AngleSubtract(angles[YAW], -dif);
+		*new_yaw = AngleSubtract(angles[YAW], -dif);
 
 		if (amt > 1.0f || amt < -1.0f)
 		{

@@ -1009,7 +1009,7 @@ constexpr auto NO_MISSILES = 2;
 constexpr auto NO_NPCS = 4;
 constexpr auto TTSF_STASIS = 8;
 constexpr auto TTSF_DEAD_OK = 16;
-void TeleportMover(gentity_t* mover, vec3_t origin, vec3_t diffAngles, qboolean snapAngle);
+void TeleportMover(gentity_t* mover, vec3_t origin, vec3_t diff_angles, qboolean snap_angle);
 
 void trigger_teleporter_touch(const gentity_t* self, gentity_t* other, trace_t* trace)
 {

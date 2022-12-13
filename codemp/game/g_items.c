@@ -1755,7 +1755,7 @@ void EWebUpdateBoneAngles(gentity_t* owner, gentity_t* eweb)
 }
 
 //keep it updated
-extern int BG_EmplacedView(vec3_t baseAngles, vec3_t angles, float* newYaw, float constraint); //bg_misc.c
+extern int BG_EmplacedView(vec3_t base_angles, vec3_t angles, float* new_yaw, float constraint); //bg_misc.c
 
 void EWebThink(gentity_t* self)
 {

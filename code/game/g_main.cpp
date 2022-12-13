@@ -1115,7 +1115,7 @@ Returns a pointer to the structure with all entry points
 and global variables
 =================
 */
-extern int PM_ValidateAnimRange(int start_frame, int endFrame, float animSpeed);
+extern int PM_ValidateAnimRange(int start_frame, int end_frame, float anim_speed);
 
 extern "C" Q_EXPORT game_export_t * QDECL GetGameAPI(const game_import_t * import)
 {
@@ -1623,7 +1623,7 @@ static const char* g_effectorStringTable[] =
 };
 
 extern qboolean g_standard_humanoid(gentity_t* self);
-extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torsoAnimTimer, int time);
+extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torso_anim_timer, int time);
 extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legs_anim_timer, int time);
 extern qboolean G_ReleaseEntity(const gentity_t* grabber);
 

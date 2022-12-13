@@ -568,9 +568,9 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 	}
 }
 
-qboolean PM_GroundSlideOkay(float zNormal)
+qboolean PM_GroundSlideOkay(float z_normal)
 {
-	if (zNormal > 0)
+	if (z_normal > 0)
 	{
 		if (pm->ps->velocity[2] > 0)
 		{

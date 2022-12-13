@@ -534,7 +534,7 @@ using saberMoveName_t = enum
 	LS_MOVE_MAX //
 };
 
-void PM_SetSaberMove(saberMoveName_t newMove);
+void PM_SetSaberMove(saberMoveName_t new_move);
 
 using saberQuadrant_t = enum
 {

@@ -67,8 +67,8 @@ extern int WP_SaberMustBoltBlockJKAMode(gentity_t* self, const gentity_t* atk, q
 extern int WP_SaberMustBoltBlock(gentity_t* self, const gentity_t* atk, qboolean check_b_box_block, vec3_t point, int r_saber_num,
 	int r_blade_num);
 extern float VectorBlockDistance(vec3_t v1, vec3_t v2);
-extern void PM_AddBoltBlockFatigue(playerState_t* ps, int Fatigue);
-extern void PM_VelocityForSaberMove(const playerState_t* ps, vec3_t throwDir);
+extern void PM_AddBoltBlockFatigue(playerState_t* ps, int fatigue);
+extern void PM_VelocityForSaberMove(const playerState_t* ps, vec3_t throw_dir);
 extern qboolean WP_SaberLose(gentity_t* self, vec3_t throw_dir);
 extern qboolean WP_BoltBlockVictimFatigued(gentity_t* victim);
 extern qboolean wp_bolt_block_victim_reflected(gentity_t* victim);
@@ -81,7 +81,7 @@ extern cvar_t* g_SerenityJediEngineMode;
 extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t force_power, int override_amt);
 extern void WP_BlockPointsDrain(const gentity_t* self, int fatigue);
 extern int WP_SaberBoltBlockCost(gentity_t* defender, const gentity_t* attacker);
-extern void PM_AddBlockFatigue(playerState_t* ps, int Fatigue);
+extern void PM_AddBlockFatigue(playerState_t* ps, int fatigue);
 extern void jedi_decloak(gentity_t* self);
 extern void player_decloak(gentity_t* self);
 extern qboolean FighterIsLanded(const Vehicle_t* pVeh, playerState_t* parentPS);

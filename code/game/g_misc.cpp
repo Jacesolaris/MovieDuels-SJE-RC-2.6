@@ -114,51 +114,51 @@ Lights pointed at a target will be spotlights.
 */
 static void misc_lightstyle_set(const gentity_t* ent)
 {
-	const int mLightStyle = ent->count;
-	const int mLightSwitchStyle = ent->bounceCount;
-	const int mLightOffStyle = ent->fly_sound_debounce_time;
+	const int m_light_style = ent->count;
+	const int m_light_switch_style = ent->bounceCount;
+	const int m_light_off_style = ent->fly_sound_debounce_time;
 	if (!ent->misc_dlight_active)
 	{
 		//turn off
-		if (mLightOffStyle) //i have a light style i'd like to use when off
+		if (m_light_off_style) //i have a light style i'd like to use when off
 		{
 			char lightstyle[32];
-			gi.GetConfigstring(CS_LIGHT_STYLES + mLightOffStyle * 3 + 0, lightstyle, 32);
-			gi.SetConfigstring(CS_LIGHT_STYLES + mLightStyle * 3 + 0, lightstyle);
+			gi.GetConfigstring(CS_LIGHT_STYLES + m_light_off_style * 3 + 0, lightstyle, 32);
+			gi.SetConfigstring(CS_LIGHT_STYLES + m_light_style * 3 + 0, lightstyle);
 
-			gi.GetConfigstring(CS_LIGHT_STYLES + mLightOffStyle * 3 + 1, lightstyle, 32);
-			gi.SetConfigstring(CS_LIGHT_STYLES + mLightStyle * 3 + 1, lightstyle);
+			gi.GetConfigstring(CS_LIGHT_STYLES + m_light_off_style * 3 + 1, lightstyle, 32);
+			gi.SetConfigstring(CS_LIGHT_STYLES + m_light_style * 3 + 1, lightstyle);
 
-			gi.GetConfigstring(CS_LIGHT_STYLES + mLightOffStyle * 3 + 2, lightstyle, 32);
-			gi.SetConfigstring(CS_LIGHT_STYLES + mLightStyle * 3 + 2, lightstyle);
+			gi.GetConfigstring(CS_LIGHT_STYLES + m_light_off_style * 3 + 2, lightstyle, 32);
+			gi.SetConfigstring(CS_LIGHT_STYLES + m_light_style * 3 + 2, lightstyle);
 		}
 		else
 		{
-			gi.SetConfigstring(CS_LIGHT_STYLES + mLightStyle * 3 + 0, "a");
-			gi.SetConfigstring(CS_LIGHT_STYLES + mLightStyle * 3 + 1, "a");
-			gi.SetConfigstring(CS_LIGHT_STYLES + mLightStyle * 3 + 2, "a");
+			gi.SetConfigstring(CS_LIGHT_STYLES + m_light_style * 3 + 0, "a");
+			gi.SetConfigstring(CS_LIGHT_STYLES + m_light_style * 3 + 1, "a");
+			gi.SetConfigstring(CS_LIGHT_STYLES + m_light_style * 3 + 2, "a");
 		}
 	}
 	else
 	{
 		//Turn myself on now
-		if (mLightSwitchStyle) //i have a light style i'd like to use when on
+		if (m_light_switch_style) //i have a light style i'd like to use when on
 		{
 			char lightstyle[32];
-			gi.GetConfigstring(CS_LIGHT_STYLES + mLightSwitchStyle * 3 + 0, lightstyle, 32);
-			gi.SetConfigstring(CS_LIGHT_STYLES + mLightStyle * 3 + 0, lightstyle);
+			gi.GetConfigstring(CS_LIGHT_STYLES + m_light_switch_style * 3 + 0, lightstyle, 32);
+			gi.SetConfigstring(CS_LIGHT_STYLES + m_light_style * 3 + 0, lightstyle);
 
-			gi.GetConfigstring(CS_LIGHT_STYLES + mLightSwitchStyle * 3 + 1, lightstyle, 32);
-			gi.SetConfigstring(CS_LIGHT_STYLES + mLightStyle * 3 + 1, lightstyle);
+			gi.GetConfigstring(CS_LIGHT_STYLES + m_light_switch_style * 3 + 1, lightstyle, 32);
+			gi.SetConfigstring(CS_LIGHT_STYLES + m_light_style * 3 + 1, lightstyle);
 
-			gi.GetConfigstring(CS_LIGHT_STYLES + mLightSwitchStyle * 3 + 2, lightstyle, 32);
-			gi.SetConfigstring(CS_LIGHT_STYLES + mLightStyle * 3 + 2, lightstyle);
+			gi.GetConfigstring(CS_LIGHT_STYLES + m_light_switch_style * 3 + 2, lightstyle, 32);
+			gi.SetConfigstring(CS_LIGHT_STYLES + m_light_style * 3 + 2, lightstyle);
 		}
 		else
 		{
-			gi.SetConfigstring(CS_LIGHT_STYLES + mLightStyle * 3 + 0, "z");
-			gi.SetConfigstring(CS_LIGHT_STYLES + mLightStyle * 3 + 1, "z");
-			gi.SetConfigstring(CS_LIGHT_STYLES + mLightStyle * 3 + 2, "z");
+			gi.SetConfigstring(CS_LIGHT_STYLES + m_light_style * 3 + 0, "z");
+			gi.SetConfigstring(CS_LIGHT_STYLES + m_light_style * 3 + 1, "z");
+			gi.SetConfigstring(CS_LIGHT_STYLES + m_light_style * 3 + 2, "z");
 		}
 	}
 }
@@ -243,10 +243,10 @@ void TeleportPlayer(gentity_t* player, vec3_t origin, vec3_t angles)
 	gi.linkentity(player);
 }
 
-void TeleportMover(gentity_t* mover, vec3_t origin, vec3_t diffAngles, const qboolean snapAngle)
+void TeleportMover(gentity_t* mover, vec3_t origin, vec3_t diff_angles, const qboolean snap_angle)
 {
 	//FIXME: need an effect
-	vec3_t newAngle;
+	vec3_t new_angle;
 	float speed;
 
 	// unlink to make sure it can't possibly interfere with G_KillBox
@@ -257,42 +257,42 @@ void TeleportMover(gentity_t* mover, vec3_t origin, vec3_t diffAngles, const qbo
 	VectorCopy(origin, mover->currentOrigin);
 
 	//Maintain their previous speed, but adjusted for new direction
-	if (snapAngle)
+	if (snap_angle)
 	{
 		//not a diffAngle, actually an absolute angle
 		vec3_t dir;
 
-		VectorCopy(diffAngles, newAngle);
-		AngleVectors(newAngle, dir, nullptr, nullptr);
+		VectorCopy(diff_angles, new_angle);
+		AngleVectors(new_angle, dir, nullptr, nullptr);
 		VectorNormalize(dir); //necessary?
 		speed = VectorLength(mover->s.pos.trDelta);
 		VectorScale(dir, speed, mover->s.pos.trDelta);
 		mover->s.pos.trTime = level.time;
 
-		VectorSubtract(newAngle, mover->s.apos.trBase, diffAngles);
-		VectorCopy(newAngle, mover->s.apos.trBase);
+		VectorSubtract(new_angle, mover->s.apos.trBase, diff_angles);
+		VectorCopy(new_angle, mover->s.apos.trBase);
 	}
 	else
 	{
-		vec3_t oldAngle;
+		vec3_t old_angle;
 		speed = VectorNormalize(mover->s.pos.trDelta);
 
-		vectoangles(mover->s.pos.trDelta, oldAngle);
-		VectorAdd(oldAngle, diffAngles, newAngle);
+		vectoangles(mover->s.pos.trDelta, old_angle);
+		VectorAdd(old_angle, diff_angles, new_angle);
 
-		AngleVectors(newAngle, mover->s.pos.trDelta, nullptr, nullptr);
+		AngleVectors(new_angle, mover->s.pos.trDelta, nullptr, nullptr);
 		VectorNormalize(mover->s.pos.trDelta);
 
 		VectorScale(mover->s.pos.trDelta, speed, mover->s.pos.trDelta);
 		mover->s.pos.trTime = level.time;
 
 		//Maintain their previous angles, but adjusted to new orientation
-		VectorAdd(mover->s.apos.trBase, diffAngles, mover->s.apos.trBase);
+		VectorAdd(mover->s.apos.trBase, diff_angles, mover->s.apos.trBase);
 	}
 
 	//Maintain their previous anglespeed, but adjusted to new orientation
 	speed = VectorNormalize(mover->s.apos.trDelta);
-	VectorAdd(mover->s.apos.trDelta, diffAngles, mover->s.apos.trDelta);
+	VectorAdd(mover->s.apos.trDelta, diff_angles, mover->s.apos.trDelta);
 	VectorNormalize(mover->s.apos.trDelta);
 	VectorScale(mover->s.apos.trDelta, speed, mover->s.apos.trDelta);
 
