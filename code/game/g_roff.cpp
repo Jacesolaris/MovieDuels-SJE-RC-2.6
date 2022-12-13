@@ -301,7 +301,7 @@ static qboolean G_ValidRoff(roff_hdr2_t* header)
 	return qfalse;
 }
 
-static void G_FreeRoff(int index)
+static void G_FreeRoff(const int index)
 {
 	if (roffs[index].mNumNoteTracks)
 	{

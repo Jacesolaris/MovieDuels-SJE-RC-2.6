@@ -464,14 +464,14 @@ CG_DrawHead
 Used for both the status bar and the scoreboard
 ================
 */
-void CG_DrawHead(float x, float y, float w, float h, int clientNum, vec3_t headAngles)
+void CG_DrawHead(float x, float y, float w, float h, int client_num, vec3_t headAngles)
 {
-	if (clientNum >= MAX_CLIENTS)
+	if (client_num >= MAX_CLIENTS)
 	{ //npc?
 		return;
 	}
 
-	const clientInfo_t* ci = &cgs.clientinfo[clientNum];
+	const clientInfo_t* ci = &cgs.clientinfo[client_num];
 
 	CG_DrawPic(x, y, w, h, ci->modelIcon);
 
@@ -1360,7 +1360,7 @@ void CG_DrawHUD(centity_t* cent)
 			//trap->Error( ERR_DROP, "CG_ChatBox_ArrayInsert: unable to locate HUD menu file ");
 		}
 
-		//scoreStr = va("Score: %i", cgs.clientinfo[cg.snap->ps.clientNum].score);
+		//scoreStr = va("Score: %i", cgs.clientinfo[cg.snap->ps.client_num].score);
 		if (cgs.gametype == GT_DUEL)
 		{//A duel that requires more than one kill to knock the current enemy back to the queue
 			//show current kills out of how many needed
@@ -1824,9 +1824,9 @@ qboolean CG_CheckTargetVehicle(centity_t** pTargetVeh, float* alpha)
 	{//crosshair was on a vehicle in the last 3 seconds
 		targetNum = cg.crosshairVehNum;
 	}
-	else if (cg.crosshairClientNum < ENTITYNUM_WORLD)
+	else if (cg.crosshairclient_num < ENTITYNUM_WORLD)
 	{
-		targetNum = cg.crosshairClientNum;
+		targetNum = cg.crosshairclient_num;
 	}
 
 	if (targetNum < MAX_CLIENTS)
@@ -2215,7 +2215,7 @@ void CG_DrawVehicleWeaponsLinked(const menuDef_t* menuHUD, const centity_t* veh)
 	if (cg_drawLink != drawLink)
 	{//state changed, play sound
 		cg_drawLink = drawLink;
-		trap->S_StartSound(NULL, cg.predictedPlayerState.clientNum, CHAN_LOCAL, trap->S_RegisterSound("sound/vehicles/common/linkweaps.wav"));
+		trap->S_StartSound(NULL, cg.predictedPlayerState.client_num, CHAN_LOCAL, trap->S_RegisterSound("sound/vehicles/common/linkweaps.wav"));
 	}
 
 	if (drawLink)
@@ -2660,7 +2660,7 @@ static void CG_DrawStats(void)
 			return;
 		}
 	*/
-	centity_t* cent = &cg_entities[cg.snap->ps.clientNum];
+	centity_t* cent = &cg_entities[cg.snap->ps.client_num];
 	/*	ps = &cg.snap->ps;
 
 		VectorClear( angles );
@@ -2810,7 +2810,7 @@ CG_DrawEnemyInfo
 static float CG_DrawEnemyInfo(float y)
 {
 	float		size;
-	int			clientNum;
+	int			client_num;
 	const char* title;
 	const int xOffset = 0;
 
@@ -2838,9 +2838,9 @@ static float CG_DrawEnemyInfo(float y)
 	{
 		//title = "Jedi Master";
 		title = CG_GetStringEdString("MP_INGAME", "MASTERY7");
-		clientNum = cgs.jediMaster;
+		client_num = cgs.jediMaster;
 
-		if (clientNum < 0)
+		if (client_num < 0)
 		{
 			//return y;
 //			title = "Get Saber!";
@@ -2867,22 +2867,22 @@ static float CG_DrawEnemyInfo(float y)
 	{
 		//		title = "Dueling";
 		title = CG_GetStringEdString("MP_INGAME", "DUELING");
-		clientNum = cg.snap->ps.duelIndex;
+		client_num = cg.snap->ps.duelIndex;
 	}
-	else if (cgs.gametype == GT_DUEL && cgs.clientinfo[cg.snap->ps.clientNum].team != TEAM_SPECTATOR)
+	else if (cgs.gametype == GT_DUEL && cgs.clientinfo[cg.snap->ps.client_num].team != TEAM_SPECTATOR)
 	{
 		title = CG_GetStringEdString("MP_INGAME", "DUELING");
-		if (cg.snap->ps.clientNum == cgs.duelist1)
+		if (cg.snap->ps.client_num == cgs.duelist1)
 		{
-			clientNum = cgs.duelist2; //if power duel, should actually draw both duelists 2 and 3 I guess
+			client_num = cgs.duelist2; //if power duel, should actually draw both duelists 2 and 3 I guess
 		}
-		else if (cg.snap->ps.clientNum == cgs.duelist2)
+		else if (cg.snap->ps.client_num == cgs.duelist2)
 		{
-			clientNum = cgs.duelist1;
+			client_num = cgs.duelist1;
 		}
-		else if (cg.snap->ps.clientNum == cgs.duelist3)
+		else if (cg.snap->ps.client_num == cgs.duelist3)
 		{
-			clientNum = cgs.duelist1;
+			client_num = cgs.duelist1;
 		}
 		else
 		{
@@ -2893,9 +2893,9 @@ static float CG_DrawEnemyInfo(float y)
 	{
 		/*
 		title = "Attacker";
-		clientNum = cg.predictedPlayerState.persistant[PERS_ATTACKER];
+		client_num = cg.predictedPlayerState.persistant[PERS_ATTACKER];
 
-		if ( clientNum < 0 || clientNum >= MAX_CLIENTS || clientNum == cg.snap->ps.clientNum )
+		if ( client_num < 0 || client_num >= MAX_CLIENTS || client_num == cg.snap->ps.client_num )
 		{
 			return y;
 		}
@@ -2924,15 +2924,15 @@ static float CG_DrawEnemyInfo(float y)
 			title = va("%i kills", cgs.scores1);
 		}
 		*/
-		clientNum = cgs.duelWinner;
+		client_num = cgs.duelWinner;
 	}
 
-	if (clientNum >= MAX_CLIENTS || !(&cgs.clientinfo[clientNum]))
+	if (client_num >= MAX_CLIENTS || !(&cgs.clientinfo[client_num]))
 	{
 		return y;
 	}
 
-	const clientInfo_t* ci = &cgs.clientinfo[clientNum];
+	const clientInfo_t* ci = &cgs.clientinfo[client_num];
 
 	size = ICON_SIZE * 1.25;
 	y += 5;
@@ -2951,11 +2951,11 @@ static float CG_DrawEnemyInfo(float y)
 	//	CG_Text_Paint( 630 - CG_Text_Width ( title, 0.7f, FONT_MEDIUM ) + xOffset, y, 0.7f, colorWhite, title, 0, 0, 0, FONT_MEDIUM );
 	CG_Text_Paint(630 - CG_Text_Width(title, 1.0f, FONT_SMALL2) + xOffset, y, 1.0f, colorWhite, title, 0, 0, 0, FONT_SMALL2);
 
-	if ((cgs.gametype == GT_DUEL || cgs.gametype == GT_POWERDUEL) && cgs.clientinfo[cg.snap->ps.clientNum].team != TEAM_SPECTATOR)
+	if ((cgs.gametype == GT_DUEL || cgs.gametype == GT_POWERDUEL) && cgs.clientinfo[cg.snap->ps.client_num].team != TEAM_SPECTATOR)
 	{//also print their score
 		char text[1024];
 		y += 15;
-		Com_sprintf(text, sizeof(text), "%i/%i", cgs.clientinfo[clientNum].score, cgs.fraglimit);
+		Com_sprintf(text, sizeof(text), "%i/%i", cgs.clientinfo[client_num].score, cgs.fraglimit);
 		CG_Text_Paint(630 - CG_Text_Width(text, 0.7f, FONT_MEDIUM) + xOffset, y, 0.7f, colorWhite, text, 0, 0, 0, FONT_MEDIUM);
 	}
 
@@ -2963,11 +2963,11 @@ static float CG_DrawEnemyInfo(float y)
 	if (cgs.showDuelHealths >= 2)
 	{
 		y += 15;
-		if (cgs.duelist1 == clientNum)
+		if (cgs.duelist1 == client_num)
 		{
 			CG_DrawDuelistHealth(640 - size - 5 + xOffset, y, 64, 8, 1);
 		}
-		else if (cgs.duelist2 == clientNum)
+		else if (cgs.duelist2 == client_num)
 		{
 			CG_DrawDuelistHealth(640 - size - 5 + xOffset, y, 64, 8, 2);
 		}
@@ -3123,7 +3123,7 @@ float CG_DrawRadar(float y)
 		return y;
 	}
 
-	local = &cgs.clientinfo[cg.snap->ps.clientNum];
+	local = &cgs.clientinfo[cg.snap->ps.client_num];
 	if (!local->infoValid)
 	{
 		return y;
@@ -3482,7 +3482,7 @@ float CG_DrawRadar(float y)
 				if (cg.predictedPlayerState.m_iVehicleNum)
 				{//I'm in a vehicle
 					//if it's targetting me, then play an alarm sound if I'm in a vehicle
-					if (cent->currentState.otherEntityNum == cg.predictedPlayerState.clientNum || cent->currentState.otherEntityNum == cg.predictedPlayerState.m_iVehicleNum)
+					if (cent->currentState.otherEntityNum == cg.predictedPlayerState.client_num || cent->currentState.otherEntityNum == cg.predictedPlayerState.m_iVehicleNum)
 					{
 						if (radarLockSoundDebounceTime < cg.time)
 						{
@@ -4443,7 +4443,7 @@ void CG_DrawSiegeInfo(centity_t* cent, float chX, float chY, float chW, float ch
 		return;
 	}
 
-	const char* configstring = CG_ConfigString(cg.predictedPlayerState.clientNum + CS_PLAYERS);
+	const char* configstring = CG_ConfigString(cg.predictedPlayerState.client_num + CS_PLAYERS);
 	const char* v = Info_ValueForKey(configstring, "siegeclass");
 
 	if (!v || !v[0])
@@ -4760,20 +4760,20 @@ static void CG_DrawCrosshair(vec3_t worldPoint, int chEntValid) {
 	else
 	{
 		//set color based on what kind of ent is under crosshair
-		if (cg.crosshairClientNum >= ENTITYNUM_WORLD)
+		if (cg.crosshairclient_num >= ENTITYNUM_WORLD)
 		{
 			trap->R_SetColor(NULL);
 		}
 		//rwwFIXMEFIXME: Write this a different way, it's getting a bit too sloppy looking
 		else if (chEntValid &&
-			(cg_entities[cg.crosshairClientNum].currentState.number < MAX_CLIENTS ||
-				cg_entities[cg.crosshairClientNum].currentState.eType == ET_NPC ||
-				cg_entities[cg.crosshairClientNum].currentState.shouldtarget ||
-				cg_entities[cg.crosshairClientNum].currentState.health || //always show ents with health data under crosshair
-				(cg_entities[cg.crosshairClientNum].currentState.eType == ET_MOVER && cg_entities[cg.crosshairClientNum].currentState.bolt1 && cg.predictedPlayerState.weapon == WP_SABER) ||
-				(cg_entities[cg.crosshairClientNum].currentState.eType == ET_MOVER && cg_entities[cg.crosshairClientNum].currentState.teamowner)))
+			(cg_entities[cg.crosshairclient_num].currentState.number < MAX_CLIENTS ||
+				cg_entities[cg.crosshairclient_num].currentState.eType == ET_NPC ||
+				cg_entities[cg.crosshairclient_num].currentState.shouldtarget ||
+				cg_entities[cg.crosshairclient_num].currentState.health || //always show ents with health data under crosshair
+				(cg_entities[cg.crosshairclient_num].currentState.eType == ET_MOVER && cg_entities[cg.crosshairclient_num].currentState.bolt1 && cg.predictedPlayerState.weapon == WP_SABER) ||
+				(cg_entities[cg.crosshairclient_num].currentState.eType == ET_MOVER && cg_entities[cg.crosshairclient_num].currentState.teamowner)))
 		{
-			crossEnt = &cg_entities[cg.crosshairClientNum];
+			crossEnt = &cg_entities[cg.crosshairclient_num];
 
 			if (crossEnt->currentState.powerups & (1 << PW_CLOAKED))
 			{ //don't show up for cloaked guys
@@ -4784,7 +4784,7 @@ static void CG_DrawCrosshair(vec3_t worldPoint, int chEntValid) {
 			else if (crossEnt->currentState.number < MAX_CLIENTS)
 			{
 				if (cgs.gametype >= GT_TEAM &&
-					cgs.clientinfo[crossEnt->currentState.number].team == cgs.clientinfo[cg.snap->ps.clientNum].team)
+					cgs.clientinfo[crossEnt->currentState.number].team == cgs.clientinfo[cg.snap->ps.client_num].team)
 				{
 					//Allies are green
 					ecolor[0] = 0.0;//R
@@ -4794,7 +4794,7 @@ static void CG_DrawCrosshair(vec3_t worldPoint, int chEntValid) {
 				else
 				{
 					if (cgs.gametype == GT_POWERDUEL &&
-						cgs.clientinfo[crossEnt->currentState.number].duelTeam == cgs.clientinfo[cg.snap->ps.clientNum].duelTeam)
+						cgs.clientinfo[crossEnt->currentState.number].duelTeam == cgs.clientinfo[cg.snap->ps.client_num].duelTeam)
 					{ //on the same duel team in powerduel, so he's a friend
 						ecolor[0] = 0.0;//R
 						ecolor[1] = 1.0;//G
@@ -4912,7 +4912,7 @@ static void CG_DrawCrosshair(vec3_t worldPoint, int chEntValid) {
 						ecolor[1] = 1.0f;//G
 						ecolor[2] = 0.0f;//B
 					}
-					else if (crossEnt->currentState.teamowner != cgs.clientinfo[cg.snap->ps.clientNum].team)
+					else if (crossEnt->currentState.teamowner != cgs.clientinfo[cg.snap->ps.client_num].team)
 					{ //on the enemy team
 						ecolor[0] = 1.0f;//R
 						ecolor[1] = 0.0f;//G
@@ -4925,15 +4925,15 @@ static void CG_DrawCrosshair(vec3_t worldPoint, int chEntValid) {
 						ecolor[2] = 0.0f;//B
 					}
 				}
-				else if (crossEnt->currentState.owner == cg.snap->ps.clientNum ||
-					(cgs.gametype >= GT_TEAM && crossEnt->currentState.teamowner == cgs.clientinfo[cg.snap->ps.clientNum].team))
+				else if (crossEnt->currentState.owner == cg.snap->ps.client_num ||
+					(cgs.gametype >= GT_TEAM && crossEnt->currentState.teamowner == cgs.clientinfo[cg.snap->ps.client_num].team))
 				{
 					ecolor[0] = 0.0f;//R
 					ecolor[1] = 1.0f;//G
 					ecolor[2] = 0.0f;//B
 				}
 				else if (crossEnt->currentState.teamowner == 16 ||
-					(cgs.gametype >= GT_TEAM && crossEnt->currentState.teamowner && crossEnt->currentState.teamowner != cgs.clientinfo[cg.snap->ps.clientNum].team))
+					(cgs.gametype >= GT_TEAM && crossEnt->currentState.teamowner && crossEnt->currentState.teamowner != cgs.clientinfo[cg.snap->ps.client_num].team))
 				{
 					ecolor[0] = 1.0f;//R
 					ecolor[1] = 0.0f;//G
@@ -5246,8 +5246,8 @@ void CG_BracketEntity(centity_t* cent, float radius)
 	VectorSubtract(cent->lerpOrigin, cg.refdef.vieworg, dif);
 	const float len = VectorNormalize(dif);
 
-	if (cg.crosshairClientNum != cent->currentState.clientNum
-		&& (!cg.snap || cg.snap->ps.rocketLockIndex != cent->currentState.clientNum))
+	if (cg.crosshairclient_num != cent->currentState.client_num
+		&& (!cg.snap || cg.snap->ps.rocketLockIndex != cent->currentState.client_num))
 	{//if they're the entity you're locking onto or under your crosshair, always draw bracket
 		//Hmm... for now, if they're closer than 2000, don't bracket?
 		if (len < 2000.0f)
@@ -5272,7 +5272,7 @@ void CG_BracketEntity(centity_t* cent, float radius)
 	//just to see if it's centered
 	//CG_DrawPic( x-2, y-2, 4, 4, cgs.media.whiteShader );
 
-	const clientInfo_t* local = &cgs.clientinfo[cg.snap->ps.clientNum];
+	const clientInfo_t* local = &cgs.clientinfo[cg.snap->ps.client_num];
 	if (cent->currentState.m_iVehicleNum //vehicle has a driver
 		&& (cent->currentState.m_iVehicleNum - 1) < MAX_CLIENTS
 		&& cgs.clientinfo[cent->currentState.m_iVehicleNum - 1].infoValid)
@@ -5481,7 +5481,7 @@ static void CG_DrawHolocronIcons(void)
 		return;
 	}
 
-	if (cgs.clientinfo[cg.snap->ps.clientNum].team == TEAM_SPECTATOR)
+	if (cgs.clientinfo[cg.snap->ps.client_num].team == TEAM_SPECTATOR)
 	{
 		return;
 	}
@@ -5536,7 +5536,7 @@ static void CG_DrawActivePowers(void)
 		return;
 	}
 
-	if (cgs.clientinfo[cg.snap->ps.clientNum].team == TEAM_SPECTATOR)
+	if (cgs.clientinfo[cg.snap->ps.client_num].team == TEAM_SPECTATOR)
 	{
 		return;
 	}
@@ -5585,7 +5585,7 @@ static void CG_DrawRocketLocking(const int lock_ent_num)
 		return;
 	}
 
-	if (cgs.clientinfo[cg.snap->ps.clientNum].team == TEAM_SPECTATOR)
+	if (cgs.clientinfo[cg.snap->ps.client_num].team == TEAM_SPECTATOR)
 	{
 		return;
 	}
@@ -5644,7 +5644,7 @@ static void CG_DrawRocketLocking(const int lock_ent_num)
 
 		if (ci)
 		{
-			if (ci->team == cgs.clientinfo[cg.snap->ps.clientNum].team)
+			if (ci->team == cgs.clientinfo[cg.snap->ps.client_num].team)
 			{
 				if (cgs.gametype >= GT_TEAM)
 				{
@@ -5666,7 +5666,7 @@ static void CG_DrawRocketLocking(const int lock_ent_num)
 					{
 						ci = cg_entities[hitEnt->currentState.owner].npcClient;
 					}
-					if (ci && ci->team == cgs.clientinfo[cg.snap->ps.clientNum].team)
+					if (ci && ci->team == cgs.clientinfo[cg.snap->ps.client_num].team)
 					{
 						return;
 					}
@@ -5887,7 +5887,7 @@ static void CG_ScanForCrosshairEntity(void) {
 	vec3_t		start, end;
 	qboolean	bVehCheckTraceFromCamPos = qfalse;
 
-	int ignore = cg.predictedPlayerState.clientNum;
+	int ignore = cg.predictedPlayerState.client_num;
 
 	if (cg_dynamicCrosshair.integer)
 	{
@@ -5910,7 +5910,7 @@ static void CG_ScanForCrosshairEntity(void) {
 			const centity_t* veh = &cg_entities[cg.predictedPlayerState.m_iVehicleNum];
 			qboolean gunner = qfalse;
 
-			//if (veh->currentState.owner == cg.predictedPlayerState.clientNum)
+			//if (veh->currentState.owner == cg.predictedPlayerState.client_num)
 			{ //the pilot
 				ignore = cg.predictedPlayerState.m_iVehicleNum;
 				gunner = CG_CalcVehicleMuzzlePoint(cg.predictedPlayerState.m_iVehicleNum, start, d_f, d_rt, d_up);
@@ -5982,7 +5982,7 @@ static void CG_ScanForCrosshairEntity(void) {
 
 				AngleVectors(pitchConstraint, d_f, d_rt, d_up);
 			}
-			CG_CalcMuzzlePoint(cg.snap->ps.clientNum, start);
+			CG_CalcMuzzlePoint(cg.snap->ps.client_num, start);
 		}
 
 		VectorMA(start, cg.distanceCull, d_f, end);
@@ -6038,11 +6038,11 @@ static void CG_ScanForCrosshairEntity(void) {
 			cg_entities[trace.entityNum].currentState.trickedentindex2,
 			cg_entities[trace.entityNum].currentState.trickedentindex3,
 			cg_entities[trace.entityNum].currentState.trickedentindex4,
-			cg.snap->ps.clientNum))
+			cg.snap->ps.client_num))
 		{
-			if (cg.crosshairClientNum == trace.entityNum)
+			if (cg.crosshairclient_num == trace.entityNum)
 			{
-				cg.crosshairClientNum = ENTITYNUM_NONE;
+				cg.crosshairclient_num = ENTITYNUM_NONE;
 				cg.crosshairClientTime = 0;
 			}
 
@@ -6057,14 +6057,14 @@ static void CG_ScanForCrosshairEntity(void) {
 		if (trace.entityNum < /*MAX_CLIENTS*/ENTITYNUM_WORLD)
 		{
 			const centity_t* veh = &cg_entities[trace.entityNum];
-			cg.crosshairClientNum = trace.entityNum;
+			cg.crosshairclient_num = trace.entityNum;
 			cg.crosshairClientTime = cg.time;
 
 			if (veh->currentState.eType == ET_NPC &&
 				veh->currentState.NPC_class == CLASS_VEHICLE &&
 				veh->currentState.owner < MAX_CLIENTS)
 			{ //draw the name of the pilot then
-				cg.crosshairClientNum = veh->currentState.owner;
+				cg.crosshairclient_num = veh->currentState.owner;
 				cg.crosshairVehNum = veh->currentState.number;
 				cg.crosshairVehTime = cg.time;
 			}
@@ -6088,7 +6088,7 @@ static void CG_ScanForCrosshairEntity(void) {
 	}
 
 	// update the fade timer
-	cg.crosshairClientNum = trace.entityNum;
+	cg.crosshairclient_num = trace.entityNum;
 	cg.crosshairClientTime = cg.time;
 }
 
@@ -6114,27 +6114,27 @@ static void CG_DrawCrosshairNames(void) {
 	}
 	//rww - still do the trace, our dynamic crosshair depends on it
 
-	if (cg.crosshairClientNum < ENTITYNUM_WORLD)
+	if (cg.crosshairclient_num < ENTITYNUM_WORLD)
 	{
-		const centity_t* veh = &cg_entities[cg.crosshairClientNum];
+		const centity_t* veh = &cg_entities[cg.crosshairclient_num];
 
 		if (veh->currentState.eType == ET_NPC &&
 			veh->currentState.NPC_class == CLASS_VEHICLE &&
 			veh->currentState.owner < MAX_CLIENTS)
 		{ //draw the name of the pilot then
-			cg.crosshairClientNum = veh->currentState.owner;
+			cg.crosshairclient_num = veh->currentState.owner;
 			cg.crosshairVehNum = veh->currentState.number;
 			cg.crosshairVehTime = cg.time;
 			isVeh = qtrue; //so we know we're drawing the pilot's name
 		}
 	}
 
-	if (cg.crosshairClientNum >= MAX_CLIENTS)
+	if (cg.crosshairclient_num >= MAX_CLIENTS)
 	{
 		return;
 	}
 
-	if (cg_entities[cg.crosshairClientNum].currentState.powerups & (1 << PW_CLOAKED))
+	if (cg_entities[cg.crosshairclient_num].currentState.powerups & (1 << PW_CLOAKED))
 	{
 		return;
 	}
@@ -6146,14 +6146,14 @@ static void CG_DrawCrosshairNames(void) {
 		return;
 	}
 
-	char* name = cgs.clientinfo[cg.crosshairClientNum].cleanname;
+	char* name = cgs.clientinfo[cg.crosshairclient_num].cleanname;
 
 	if (cgs.gametype >= GT_TEAM)
 	{
 		//if (cgs.gametype == GT_SIEGE)
 		if (1)
 		{ //instead of team-based we'll make it oriented based on which team we're on
-			if (cgs.clientinfo[cg.crosshairClientNum].team == cg.predictedPlayerState.persistant[PERS_TEAM])
+			if (cgs.clientinfo[cg.crosshairclient_num].team == cg.predictedPlayerState.persistant[PERS_TEAM])
 			{
 				baseColor = CT_GREEN;
 			}
@@ -6167,8 +6167,8 @@ static void CG_DrawCrosshairNames(void) {
 	{
 		//baseColor = CT_WHITE;
 		if (cgs.gametype == GT_POWERDUEL &&
-			cgs.clientinfo[cg.snap->ps.clientNum].team != TEAM_SPECTATOR &&
-			cgs.clientinfo[cg.crosshairClientNum].duelTeam == cgs.clientinfo[cg.predictedPlayerState.clientNum].duelTeam)
+			cgs.clientinfo[cg.snap->ps.client_num].team != TEAM_SPECTATOR &&
+			cgs.clientinfo[cg.crosshairclient_num].duelTeam == cgs.clientinfo[cg.predictedPlayerState.client_num].duelTeam)
 		{ //on the same duel team in powerduel, so he's a friend
 			baseColor = CT_GREEN;
 		}
@@ -6180,12 +6180,12 @@ static void CG_DrawCrosshairNames(void) {
 
 	if (cg.snap->ps.duelInProgress)
 	{
-		if (cg.crosshairClientNum != cg.snap->ps.duelIndex)
+		if (cg.crosshairclient_num != cg.snap->ps.duelIndex)
 		{ //grey out crosshair for everyone but your foe if you're in a duel
 			baseColor = CT_BLACK;
 		}
 	}
-	else if (cg_entities[cg.crosshairClientNum].currentState.bolt1)
+	else if (cg_entities[cg.crosshairclient_num].currentState.bolt1)
 	{ //this fellow is in a duel. We just checked if we were in a duel above, so
 	  //this means we aren't and he is. Which of course means our crosshair greys out over him.
 		baseColor = CT_BLACK;
@@ -6355,7 +6355,7 @@ static void CG_DrawVote(void) {
 	else
 		s = va("%s(%i):<%s> %s:%i %s:%i", sVote, sec, sCmd, sYes, cgs.voteYes, sNo, cgs.voteNo);
 	CG_DrawSmallString(4, 58, s, 1.0F);
-	if (cgs.clientinfo[cg.clientNum].team != TEAM_SPECTATOR) {
+	if (cgs.clientinfo[cg.client_num].team != TEAM_SPECTATOR) {
 		s = CG_GetStringEdString("MP_INGAME", "OR_PRESS_ESC_THEN_CLICK_VOTE");	//	s = "or press ESC then click Vote";
 		CG_DrawSmallString(4, 58 + SMALLCHAR_HEIGHT + 2, s, 1.0F);
 	}
@@ -6370,9 +6370,9 @@ static void CG_DrawTeamVote(void) {
 	char* s;
 	int cs_offset;
 
-	if (cgs.clientinfo[cg.clientNum].team == TEAM_RED)
+	if (cgs.clientinfo[cg.client_num].team == TEAM_RED)
 		cs_offset = 0;
-	else if (cgs.clientinfo[cg.clientNum].team == TEAM_BLUE)
+	else if (cgs.clientinfo[cg.client_num].team == TEAM_BLUE)
 		cs_offset = 1;
 	else
 		return;
@@ -6470,7 +6470,7 @@ static qboolean CG_DrawFollow(void)
 	//	s = "following";
 	if (cgs.gametype == GT_POWERDUEL)
 	{
-		const clientInfo_t* ci = &cgs.clientinfo[cg.snap->ps.clientNum];
+		const clientInfo_t* ci = &cgs.clientinfo[cg.snap->ps.client_num];
 
 		if (ci->duelTeam == DUELTEAM_LONE)
 		{
@@ -6492,7 +6492,7 @@ static qboolean CG_DrawFollow(void)
 
 	CG_Text_Paint(320 - CG_Text_Width(s, 1.0f, FONT_MEDIUM) / 2, 60, 1.0f, colorWhite, s, 0, 0, 0, FONT_MEDIUM);
 
-	s = cgs.clientinfo[cg.snap->ps.clientNum].name;
+	s = cgs.clientinfo[cg.snap->ps.client_num].name;
 	CG_Text_Paint(320 - CG_Text_Width(s, 2.0f, FONT_MEDIUM) / 2, 80, 2.0f, colorWhite, s, 0, 0, 0, FONT_MEDIUM);
 
 	return qtrue;
@@ -7300,7 +7300,7 @@ static void CG_Draw2DScreenTints(void)
 {
 	float			rageTime, rageRecTime, absorbTime, protectTime, ysalTime;
 	vec4_t			hcolor;
-	if (cgs.clientinfo[cg.snap->ps.clientNum].team != TEAM_SPECTATOR)
+	if (cgs.clientinfo[cg.snap->ps.client_num].team != TEAM_SPECTATOR)
 	{
 		if (cg.snap->ps.fd.forcePowersActive & (1 << FP_RAGE))
 		{
@@ -7724,7 +7724,7 @@ static void CG_Draw2D(void) {
 		return;
 	}
 
-	if (cgs.clientinfo[cg.snap->ps.clientNum].team == TEAM_SPECTATOR)
+	if (cgs.clientinfo[cg.snap->ps.client_num].team == TEAM_SPECTATOR)
 	{
 		cgRageTime = 0;
 		cgRageFadeTime = 0;

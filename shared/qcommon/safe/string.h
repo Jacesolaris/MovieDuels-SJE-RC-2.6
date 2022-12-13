@@ -38,7 +38,7 @@ namespace Q
 // operator<< overloads
 namespace std
 {
-	inline std::ostream& operator<<(std::ostream& stream, Q::Ordering ordering)
+	inline std::ostream& operator<<(std::ostream& stream, const Q::Ordering ordering)
 	{
 		switch (ordering)
 		{

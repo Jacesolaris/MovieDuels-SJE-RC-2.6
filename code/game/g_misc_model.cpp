@@ -30,7 +30,7 @@ extern cvar_t* g_spskill;
 // Helper functions
 //
 //------------------------------------------------------------
-void SetMiscModelModels(const char* modelNameString, gentity_t* ent, qboolean damage_model)
+void SetMiscModelModels(const char* modelNameString, gentity_t* ent, const qboolean damage_model)
 {
 	//Main model
 	ent->s.modelindex = G_ModelIndex(modelNameString);
@@ -57,8 +57,8 @@ void SetMiscModelModels(const char* modelNameString, gentity_t* ent, qboolean da
 }
 
 //------------------------------------------------------------
-void SetMiscModelDefaults(gentity_t* ent, useFunc_t use_func, const char* material, int solid_mask, int animFlag,
-	qboolean take_damage, qboolean damage_model = qfalse)
+void SetMiscModelDefaults(gentity_t* ent, const useFunc_t use_func, const char* material, const int solid_mask, const int animFlag,
+                          const qboolean take_damage, const qboolean damage_model = qfalse)
 {
 	// Apply damage and chunk models if they exist
 	SetMiscModelModels(ent->model, ent, damage_model);
@@ -292,7 +292,7 @@ REPEATER - Puts one or more repeater guns on the rack.
 ROCKET - Puts one or more rocket launchers on the rack.
 */
 
-void GunRackAddItem(gitem_t* gun, vec3_t org, vec3_t angs, float ffwd, float fright, float fup)
+void GunRackAddItem(gitem_t* gun, vec3_t org, vec3_t angs, const float ffwd, const float fright, const float fup)
 {
 	vec3_t fwd, right;
 	gentity_t* it_ent = G_Spawn();
@@ -764,7 +764,7 @@ BATTERIES -
 */
 extern gentity_t* LaunchItem(gitem_t* item, const vec3_t origin, const vec3_t velocity, const char* target);
 
-void misc_model_cargo_die(gentity_t* self, const gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
+void misc_model_cargo_die(gentity_t* self, const gentity_t* inflictor, gentity_t* attacker, const int damage, const int mod, int dFlags,
 	int hitLoc)
 {
 	vec3_t org, temp;

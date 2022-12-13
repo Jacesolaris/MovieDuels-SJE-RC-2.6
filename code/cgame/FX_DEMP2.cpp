@@ -89,7 +89,7 @@ void FX_DEMP2_AltProjectileThink(centity_t* cent, const weaponInfo_s* weapon)
 }
 
 //---------------------------------------------
-void FX_DEMP2_AltDetonate(vec3_t org, float size)
+void FX_DEMP2_AltDetonate(vec3_t org, const float size)
 {
 	localEntity_t* ex = CG_AllocLocalEntity();
 	ex->leType = LE_FADE_SCALE_MODEL;

@@ -398,7 +398,7 @@ constexpr int MAXLOADWEAPONS = WP_NUM_WEAPONS;
 constexpr int maxload_forceiconsize = 40; // Size of force power icons
 constexpr int MAXLOAD_FORCEICONPAD = 12; // Padding space between icons
 
-static int CG_DrawLoadWeaponsPrintRow(const char* itemName, const char* weapons, int rowIconCnt, int startIndex)
+static int CG_DrawLoadWeaponsPrintRow(const char* itemName, const char* weapons, const int rowIconCnt, const int startIndex)
 {
 	int endIndex = 0, printedIconCnt = 0;
 	int x, y;
@@ -503,7 +503,7 @@ static void CG_DrawLoadWeapons(const char* weapons)
 	cgi_R_SetColor(nullptr);
 }
 
-static int CG_DrawLoadForcePrintRow(const char* itemName, int forceBits, int rowIconCnt, int startIndex)
+static int CG_DrawLoadForcePrintRow(const char* itemName, const int forceBits, const int rowIconCnt, const int startIndex)
 {
 	int endIndex = 0, printedIconCnt = 0;
 	int x, y;
@@ -563,7 +563,7 @@ int loadForcePowerLevel[NUM_FORCE_POWERS];
 ForcePowerDataPad_Valid
 ===============
 */
-qboolean CG_ForcePower_Valid(int forceKnownBits, int index)
+qboolean CG_ForcePower_Valid(const int forceKnownBits, const int index)
 {
 	if (forceKnownBits & 1 << showPowers[index] &&
 		loadForcePowerLevel[showPowers[index]]) // Does he have the force power?
@@ -576,7 +576,7 @@ qboolean CG_ForcePower_Valid(int forceKnownBits, int index)
 
 // Print force powers the player is using
 // Two rows print if there are too many
-static void CG_DrawLoadForcePowers(int forceBits)
+static void CG_DrawLoadForcePowers(const int forceBits)
 {
 	int iconCnt = 0;
 

@@ -41,7 +41,7 @@ AI_GetGroupSize
 -------------------------
 */
 
-int AI_GetGroupSize(vec3_t origin, int radius, team_t playerTeam, const gentity_t* avoid)
+int AI_GetGroupSize(vec3_t origin, const int radius, const team_t playerTeam, const gentity_t* avoid)
 {
 	gentity_t* radiusEnts[MAX_RADIUS_ENTS];
 	vec3_t mins, maxs;
@@ -84,7 +84,7 @@ int AI_GetGroupSize(vec3_t origin, int radius, team_t playerTeam, const gentity_
 
 //Overload
 
-int AI_GetGroupSize(gentity_t* ent, int radius)
+int AI_GetGroupSize(gentity_t* ent, const int radius)
 {
 	if (ent == nullptr || ent->client == nullptr)
 		return -1;
@@ -577,7 +577,7 @@ void AI_SetNewGroupCommander(AIGroupInfo_t* group)
 	}
 }
 
-void AI_DeleteGroupMember(AIGroupInfo_t* group, int memberNum)
+void AI_DeleteGroupMember(AIGroupInfo_t* group, const int memberNum)
 {
 	if (group->commander && group->commander->s.number == group->member[memberNum].number)
 	{
@@ -722,7 +722,7 @@ void AI_GroupUpdateClearShotTime(AIGroupInfo_t* group)
 	group->lastClearShotTime = level.time;
 }
 
-void AI_GroupUpdateSquadstates(AIGroupInfo_t* group, const gentity_t* member, int newSquadState)
+void AI_GroupUpdateSquadstates(AIGroupInfo_t* group, const gentity_t* member, const int newSquadState)
 {
 	if (!group)
 	{
@@ -955,7 +955,7 @@ void AI_UpdateGroups(void)
 	}
 }
 
-qboolean AI_GroupContainsEntNum(const AIGroupInfo_t* group, int entNum)
+qboolean AI_GroupContainsEntNum(const AIGroupInfo_t* group, const int entNum)
 {
 	if (!group)
 	{
@@ -1003,7 +1003,7 @@ AI_DistributeAttack
 -------------------------
 */
 
-gentity_t* AI_DistributeAttack(const gentity_t* attacker, gentity_t* enemy, team_t team, int threshold)
+gentity_t* AI_DistributeAttack(const gentity_t* attacker, gentity_t* enemy, const team_t team, const int threshold)
 {
 	//Don't take new targets
 	if (NPC->svFlags & SVF_LOCKEDENEMY)

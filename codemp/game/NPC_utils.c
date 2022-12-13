@@ -841,7 +841,7 @@ void SetTeamNumbers(void)
 		teamStrength[i] = 0;
 	}
 
-	//OJKFIXME: clientnum 0
+	//OJKFIXME: client_num 0
 	for (i = 0; i < 1; i++)
 	{
 		const gentity_t* found = &g_entities[i];
@@ -1325,7 +1325,7 @@ gentity_t* NPC_PickEnemyExt(qboolean checkAlerts)
 			if (event->level >= AEL_DISCOVERED)
 			{
 				//If it's the player, attack him
-				//OJKFIXME: clientnum 0
+				//OJKFIXME: client_num 0
 				if (event->owner == &g_entities[0])
 					return event->owner;
 
@@ -1347,7 +1347,7 @@ NPC_FindPlayer
 
 qboolean NPC_FindPlayer(void)
 {
-	//OJKFIXME: clientnum 0
+	//OJKFIXME: client_num 0
 	return NPC_TargetVisible(&g_entities[0]);
 }
 

@@ -49,8 +49,8 @@ bool HFILEopen_write(int& handle, const char* filepath)
 	return handle != 0;
 }
 
-bool HFILEread(const int& handle, void* data, int size) { return gi.FS_Read(data, size, handle) != 0; }
-bool HFILEwrite(const int& handle, const void* data, int size) { return gi.FS_Write(data, size, handle) != 0; }
+bool HFILEread(const int& handle, void* data, const int size) { return gi.FS_Read(data, size, handle) != 0; }
+bool HFILEwrite(const int& handle, const void* data, const int size) { return gi.FS_Write(data, size, handle) != 0; }
 
 bool HFILEclose(const int& handle)
 {
@@ -207,7 +207,7 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	// Access Operator (For Cells)(For Triangulation)
 	////////////////////////////////////////////////////////////////////////////////////
-	float operator[](int dimension)
+	float operator[](const int dimension)
 	{
 		return mPoint[dimension];
 	}
@@ -301,7 +301,7 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	// Access Operator (For Cells)(For Triangulation)
 	////////////////////////////////////////////////////////////////////////////////////
-	float operator[](int dimension) const
+	float operator[](const int dimension) const
 	{
 		CVec3 Half(GetNode(mNodeA).mPoint + GetNode(mNodeB).mPoint);
 		return Half[dimension] * 0.5f;
@@ -515,7 +515,7 @@ public:
 		return mActor;
 	}
 
-	void SetDangerSpot(const CVec3& Spot, float RadiusSq)
+	void SetDangerSpot(const CVec3& Spot, const float RadiusSq)
 	{
 		mDangerSpot = Spot;
 		mDangerSpotRadiusSq = RadiusSq;
@@ -538,7 +538,7 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	//
 	////////////////////////////////////////////////////////////////////////////////////
-	bool is_valid(CWayEdge& Edge, int EndPoint = 0) const override
+	bool is_valid(CWayEdge& Edge, const int EndPoint = 0) const override
 	{
 		// If The Actor Can't Fly, But This Is A Flying Edge, It's Invalid
 		//-----------------------------------------------------------------
@@ -710,8 +710,8 @@ public:
 	// This function is here because it evaluates the base cost from NodeA to NodeB, which
 	//
 	////////////////////////////////////////////////////////////////////////////////////
-	void setup_edge(CWayEdge& Edge, int A, int B, bool OnHull, const CWayNode& NodeA, const CWayNode& NodeB,
-		bool CanBeInvalid = false) override
+	void setup_edge(CWayEdge& Edge, const int A, const int B, const bool OnHull, const CWayNode& NodeA, const CWayNode& NodeB,
+	                const bool CanBeInvalid = false) override
 	{
 		Edge.mNodeA = A;
 		Edge.mNodeB = B;
@@ -788,7 +788,7 @@ TGraph& GetGraph()
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-const CWayNode& GetNode(int Handle)
+const CWayNode& GetNode(const int Handle)
 {
 	return mGraph.get_node(Handle);
 }
@@ -796,7 +796,7 @@ const CWayNode& GetNode(int Handle)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-const CWayEdge& GetEdge(int Handle)
+const CWayEdge& GetEdge(const int Handle)
 {
 	return mGraph.get_edge(Handle);
 }
@@ -852,11 +852,11 @@ bool ViewNavTrace(const CVec3& a, const CVec3& b)
 // Helper Function : Move Trace
 ////////////////////////////////////////////////////////////////////////////////////////
 bool MoveTrace(const CVec3& Start, const CVec3& Stop, const CVec3& Mins, const CVec3& Maxs,
-	int IgnoreEnt = 0,
-	bool CheckForDoNotEnter = false,
-	bool RetryIfStartInDoNotEnter = true,
-	bool IgnoreAllEnts = false,
-	int OverrideContents = 0)
+               const int IgnoreEnt = 0,
+               const bool CheckForDoNotEnter = false,
+               const bool RetryIfStartInDoNotEnter = true,
+               const bool IgnoreAllEnts = false,
+               const int OverrideContents = 0)
 {
 	int contents = MASK_NPCSOLID;
 	if (OverrideContents)
@@ -909,7 +909,7 @@ bool MoveTrace(const CVec3& Start, const CVec3& Stop, const CVec3& Mins, const C
 ////////////////////////////////////////////////////////////////////////////////////////
 // Helper Function : Move Trace (with actor)
 ////////////////////////////////////////////////////////////////////////////////////////
-bool MoveTrace(gentity_t* actor, const CVec3& goalPosition, bool IgnoreAllEnts = false)
+bool MoveTrace(gentity_t* actor, const CVec3& goalPosition, const bool IgnoreAllEnts = false)
 {
 	assert(actor != nullptr);
 	CVec3 Mins(actor->mins);
@@ -926,7 +926,7 @@ bool MoveTrace(gentity_t* actor, const CVec3& goalPosition, bool IgnoreAllEnts =
 //
 // This Function serves as a master control for finding, updating, and following a path
 ////////////////////////////////////////////////////////////////////////////////////////
-bool NAV::GoTo(gentity_t* actor, TNodeHandle target, float MaxDangerLevel)
+bool NAV::GoTo(gentity_t* actor, const TNodeHandle target, const float MaxDangerLevel)
 {
 	assert(actor != nullptr && actor->client != nullptr);
 
@@ -979,7 +979,7 @@ bool NAV::GoTo(gentity_t* actor, TNodeHandle target, float MaxDangerLevel)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool NAV::GoTo(gentity_t* actor, gentity_t* target, float MaxDangerLevel)
+bool NAV::GoTo(gentity_t* actor, gentity_t* target, const float MaxDangerLevel)
 {
 	assert(actor != nullptr && actor->client != nullptr);
 
@@ -1067,7 +1067,7 @@ bool NAV::GoTo(gentity_t* actor, gentity_t* target, float MaxDangerLevel)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool NAV::GoTo(gentity_t* actor, const vec3_t& position, float MaxDangerLevel)
+bool NAV::GoTo(gentity_t* actor, const vec3_t& position, const float MaxDangerLevel)
 {
 	assert(actor != nullptr && actor->client != nullptr);
 
@@ -1188,7 +1188,7 @@ bool NAV::LoadFromFile(const char* filename, int checksum)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool NAV::TestEdge(TNodeHandle NodeA, TNodeHandle NodeB, qboolean IsDebugEdge)
+bool NAV::TestEdge(const TNodeHandle NodeA, const TNodeHandle NodeB, const qboolean IsDebugEdge)
 {
 	const int atHandle = mGraph.get_edge_across(NodeA, NodeB);
 	CWayEdge& at = mGraph.get_edge(atHandle);
@@ -2101,7 +2101,7 @@ void NAV::DecayDangerSenses()
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void NAV::RegisterDangerSense(const gentity_t* actor, int alertEventIndex)
+void NAV::RegisterDangerSense(const gentity_t* actor, const int alertEventIndex)
 {
 	if (actor == nullptr || alertEventIndex < 0)
 	{
@@ -2211,7 +2211,7 @@ void NAV::WayEdgesNowClear(gentity_t* ent)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void NAV::SpawnedPoint(gentity_t* ent, EPointType type)
+void NAV::SpawnedPoint(gentity_t* ent, const EPointType type)
 {
 	if (mGraph.size_nodes() >= NUM_NODES)
 	{
@@ -2306,7 +2306,7 @@ void NAV::SpawnedPoint(gentity_t* ent, EPointType type)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-NAV::TNodeHandle NAV::GetNearestNode(gentity_t* ent, bool forceRecalcNow, TNodeHandle goal)
+NAV::TNodeHandle NAV::GetNearestNode(gentity_t* ent, const bool forceRecalcNow, const TNodeHandle goal)
 {
 	if (!ent)
 	{
@@ -2335,8 +2335,8 @@ NAV::TNodeHandle NAV::GetNearestNode(gentity_t* ent, bool forceRecalcNow, TNodeH
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-NAV::TNodeHandle NAV::GetNearestNode(const vec3_t& position, TNodeHandle previous, TNodeHandle goal, int ignoreEnt,
-	bool allowZOffset)
+NAV::TNodeHandle NAV::GetNearestNode(const vec3_t& position, const TNodeHandle previous, const TNodeHandle goal, int ignoreEnt,
+                                     const bool allowZOffset)
 {
 	if (mGraph.size_edges() > 0)
 	{
@@ -2514,7 +2514,7 @@ NAV::TNodeHandle NAV::GetNearestNode(const vec3_t& position, TNodeHandle previou
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-NAV::TNodeHandle NAV::ChooseRandomNeighbor(TNodeHandle NodeHandle)
+NAV::TNodeHandle NAV::ChooseRandomNeighbor(const TNodeHandle NodeHandle)
 {
 	if (NodeHandle != WAYPOINT_NONE && NodeHandle > 0)
 	{
@@ -2530,7 +2530,7 @@ NAV::TNodeHandle NAV::ChooseRandomNeighbor(TNodeHandle NodeHandle)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-NAV::TNodeHandle NAV::ChooseRandomNeighbor(TNodeHandle NodeHandle, const vec3_t& position, float maxDistance)
+NAV::TNodeHandle NAV::ChooseRandomNeighbor(const TNodeHandle NodeHandle, const vec3_t& position, const float maxDistance)
 {
 	if (NodeHandle != WAYPOINT_NONE && NodeHandle > 0)
 	{
@@ -2566,7 +2566,7 @@ NAV::TNodeHandle NAV::ChooseRandomNeighbor(TNodeHandle NodeHandle, const vec3_t&
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-NAV::TNodeHandle NAV::ChooseClosestNeighbor(TNodeHandle NodeHandle, const vec3_t& position)
+NAV::TNodeHandle NAV::ChooseClosestNeighbor(const TNodeHandle NodeHandle, const vec3_t& position)
 {
 	if (NodeHandle != WAYPOINT_NONE && NodeHandle > 0)
 	{
@@ -2595,7 +2595,7 @@ NAV::TNodeHandle NAV::ChooseClosestNeighbor(TNodeHandle NodeHandle, const vec3_t
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-NAV::TNodeHandle NAV::ChooseFarthestNeighbor(TNodeHandle NodeHandle, const vec3_t& position)
+NAV::TNodeHandle NAV::ChooseFarthestNeighbor(const TNodeHandle NodeHandle, const vec3_t& position)
 {
 	if (NodeHandle != WAYPOINT_NONE && NodeHandle > 0)
 	{
@@ -2688,7 +2688,7 @@ NAV::TNodeHandle NAV::ChooseFarthestNeighbor(gentity_t* actor, const vec3_t& tar
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool NAV::FindPath(gentity_t* actor, TNodeHandle target, float MaxDangerLevel)
+bool NAV::FindPath(gentity_t* actor, TNodeHandle target, const float MaxDangerLevel)
 {
 	mUser.ClearActor();
 
@@ -2934,7 +2934,7 @@ bool NAV::FindPath(gentity_t* actor, TNodeHandle target, float MaxDangerLevel)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool NAV::SafePathExists(const CVec3& startVec, const CVec3& stopVec, const CVec3& danger, float dangerDistSq)
+bool NAV::SafePathExists(const CVec3& startVec, const CVec3& stopVec, const CVec3& danger, const float dangerDistSq)
 {
 	mUser.ClearActor();
 
@@ -3035,7 +3035,7 @@ bool NAV::SafePathExists(const CVec3& startVec, const CVec3& stopVec, const CVec
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-float NAV::EstimateCostToGoal(const vec3_t& position, TNodeHandle Goal)
+float NAV::EstimateCostToGoal(const vec3_t& position, const TNodeHandle Goal)
 {
 	if (Goal != 0 && Goal != WAYPOINT_NONE)
 	{
@@ -3047,7 +3047,7 @@ float NAV::EstimateCostToGoal(const vec3_t& position, TNodeHandle Goal)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-float NAV::EstimateCostToGoal(TNodeHandle Start, TNodeHandle Goal)
+float NAV::EstimateCostToGoal(const TNodeHandle Start, const TNodeHandle Goal)
 {
 	mUser.ClearActor();
 	if (Goal != 0 && Goal != WAYPOINT_NONE && Start != 0 && Start != WAYPOINT_NONE)
@@ -3139,7 +3139,7 @@ bool NAV::InSameRegion(gentity_t* actor, const vec3_t& position)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool NAV::InSameRegion(TNodeHandle A, TNodeHandle B)
+bool NAV::InSameRegion(const TNodeHandle A, const TNodeHandle B)
 {
 	if (mRegion.size() > 0)
 	{
@@ -3179,7 +3179,7 @@ bool NAV::InSameRegion(TNodeHandle A, TNodeHandle B)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool NAV::OnNeighboringPoints(TNodeHandle A, TNodeHandle B)
+bool NAV::OnNeighboringPoints(const TNodeHandle A, const TNodeHandle B)
 {
 	if (A == B)
 	{
@@ -3241,7 +3241,7 @@ bool NAV::OnNeighboringPoints(gentity_t* actor, const vec3_t& position)
 // Is The Position (at) within the safe radius of the atNode, targetNode, or the edge
 // between?
 ////////////////////////////////////////////////////////////////////////////////////////
-bool NAV::InSafeRadius(CVec3 at, TNodeHandle atNode, TNodeHandle targetNode)
+bool NAV::InSafeRadius(const CVec3 at, const TNodeHandle atNode, const TNodeHandle targetNode)
 {
 	// Uh, No
 	//--------
@@ -3299,7 +3299,7 @@ bool NAV::InSafeRadius(CVec3 at, TNodeHandle atNode, TNodeHandle targetNode)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool NAV::FindPath(gentity_t* actor, gentity_t* target, float MaxDangerLevel)
+bool NAV::FindPath(gentity_t* actor, gentity_t* target, const float MaxDangerLevel)
 {
 	assert(target != nullptr && actor != nullptr);
 	if (target != nullptr && actor != nullptr)
@@ -3323,7 +3323,7 @@ bool NAV::FindPath(gentity_t* actor, gentity_t* target, float MaxDangerLevel)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool NAV::FindPath(gentity_t* actor, const vec3_t& position, float MaxDangerLevel)
+bool NAV::FindPath(gentity_t* actor, const vec3_t& position, const float MaxDangerLevel)
 {
 	return FindPath(actor, GetNearestNode(position), MaxDangerLevel);
 }
@@ -3396,7 +3396,7 @@ void NAV::ClearPath(const gentity_t* actor)
 // Removes points that have been reached, and frees the user if no points remain.
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool NAV::UpdatePath(gentity_t* actor, TNodeHandle target, float MaxDangerLevel)
+bool NAV::UpdatePath(gentity_t* actor, const TNodeHandle target, const float MaxDangerLevel)
 {
 	const int pathUserNum = mPathUserIndex[actor->s.number];
 	if (pathUserNum == NULL_PATH_USER_INDEX)
@@ -3481,7 +3481,7 @@ bool NAV::UpdatePath(gentity_t* actor, TNodeHandle target, float MaxDangerLevel)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool NAV::HasPath(const gentity_t* actor, TNodeHandle target)
+bool NAV::HasPath(const gentity_t* actor, const TNodeHandle target)
 {
 	const int pathUserNum = mPathUserIndex[actor->s.number];
 	if (pathUserNum == NULL_PATH_USER_INDEX)
@@ -3610,7 +3610,7 @@ int NAV::PathNodesRemaining(const gentity_t* actor)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-const vec3_t& NAV::GetNodePosition(TNodeHandle NodeHandle)
+const vec3_t& NAV::GetNodePosition(const TNodeHandle NodeHandle)
 {
 	if (NodeHandle != 0)
 	{
@@ -3626,7 +3626,7 @@ const vec3_t& NAV::GetNodePosition(TNodeHandle NodeHandle)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void NAV::GetNodePosition(TNodeHandle NodeHandle, vec3_t& position)
+void NAV::GetNodePosition(const TNodeHandle NodeHandle, vec3_t& position)
 {
 	if (NodeHandle != 0)
 	{
@@ -3916,7 +3916,7 @@ void NAV::TeleportTo(gentity_t* actor, const char* pointName)
 ////////////////////////////////////////////////////////////////////////////////////
 // TeleportTo
 ////////////////////////////////////////////////////////////////////////////////////
-void NAV::TeleportTo(gentity_t* actor, int pointNum)
+void NAV::TeleportTo(gentity_t* actor, const int pointNum)
 {
 	assert(actor != nullptr);
 	TeleportPlayer(actor, mGraph.get_node(pointNum).mPoint.v, actor->currentAngles);
@@ -4275,7 +4275,7 @@ bool STEER::Active(const gentity_t* actor)
 // SafeToGoTo - returns true if it is safe for the actor to steer toward the target
 // position
 ////////////////////////////////////////////////////////////////////////////////////
-bool STEER::SafeToGoTo(gentity_t* actor, const vec3_t& targetPosition, int targetNode)
+bool STEER::SafeToGoTo(gentity_t* actor, const vec3_t& targetPosition, const int targetNode)
 {
 	const int actorNode = NAV::GetNearestNode(actor, true, targetNode);
 	const float actorToTargetDistance = Distance(actor->currentOrigin, targetPosition);
@@ -4339,7 +4339,7 @@ bool STEER::SafeToGoTo(gentity_t* actor, const vec3_t& targetPosition, int targe
 ////////////////////////////////////////////////////////////////////////////////////
 // Master Functions
 ////////////////////////////////////////////////////////////////////////////////////
-bool STEER::GoTo(gentity_t* actor, gentity_t* target, float reachedRadius, bool avoidCollisions)
+bool STEER::GoTo(gentity_t* actor, gentity_t* target, const float reachedRadius, const bool avoidCollisions)
 {
 	// Can't Steer To A Guy In The Air
 	//---------------------------------
@@ -4391,7 +4391,7 @@ bool STEER::GoTo(gentity_t* actor, gentity_t* target, float reachedRadius, bool 
 ////////////////////////////////////////////////////////////////////////////////////
 // Master Function- GoTo
 ////////////////////////////////////////////////////////////////////////////////////
-bool STEER::GoTo(gentity_t* actor, const vec3_t& position, float reachedRadius, bool avoidCollisions)
+bool STEER::GoTo(gentity_t* actor, const vec3_t& position, const float reachedRadius, const bool avoidCollisions)
 {
 	// If Within Reached Radius, Just Stop Right Here
 	//------------------------------------------------
@@ -4458,7 +4458,7 @@ void STEER::Blocked(const gentity_t* actor, const vec3_t& target)
 ////////////////////////////////////////////////////////////////////////////////////
 // Blocked Recorder
 ////////////////////////////////////////////////////////////////////////////////////
-bool STEER::HasBeenBlockedFor(const gentity_t* actor, int duration)
+bool STEER::HasBeenBlockedFor(const gentity_t* actor, const int duration)
 {
 	return actor->NPC->aiFlags & NPCAI_BLOCKED &&
 		level.time - actor->NPC->blockedDebounceTime > duration;
@@ -4470,7 +4470,7 @@ bool STEER::HasBeenBlockedFor(const gentity_t* actor, int duration)
 // Just Decelerate.
 //
 //////////////////////////////////////////////////////////////////////
-float STEER::Stop(gentity_t* actor, float weight)
+float STEER::Stop(gentity_t* actor, const float weight)
 {
 	assert(Active(actor));
 	SSteerUser& suser = mSteerUsers[mSteerUserIndex[actor->s.number]];
@@ -4499,7 +4499,7 @@ float STEER::Stop(gentity_t* actor, float weight)
 //////////////////////////////////////////////////////////////////////
 //
 //////////////////////////////////////////////////////////////////////
-float STEER::MatchSpeed(const gentity_t* actor, float speed, float weight)
+float STEER::MatchSpeed(const gentity_t* actor, const float speed, const float weight)
 {
 	assert(Active(actor));
 	SSteerUser& suser = mSteerUsers[mSteerUserIndex[actor->s.number]];
@@ -4524,7 +4524,7 @@ float STEER::MatchSpeed(const gentity_t* actor, float speed, float weight)
 // the steering vector
 //
 ////////////////////////////////////////////////////////////////////////////////////
-float STEER::Seek(const gentity_t* actor, const CVec3& pos, float slowingDistance, float weight, float desiredSpeed)
+float STEER::Seek(const gentity_t* actor, const CVec3& pos, const float slowingDistance, const float weight, const float desiredSpeed)
 {
 	assert(Active(actor));
 	SSteerUser& suser = mSteerUsers[mSteerUserIndex[actor->s.number]];
@@ -4572,7 +4572,7 @@ float STEER::Seek(const gentity_t* actor, const CVec3& pos, float slowingDistanc
 // from the target.
 //
 ////////////////////////////////////////////////////////////////////////////////////
-float STEER::Flee(const gentity_t* actor, const CVec3& pos, float weight)
+float STEER::Flee(const gentity_t* actor, const CVec3& pos, const float weight)
 {
 	assert(Active(actor));
 	SSteerUser& suser = mSteerUsers[mSteerUserIndex[actor->s.number]];
@@ -4597,7 +4597,7 @@ float STEER::Flee(const gentity_t* actor, const CVec3& pos, float weight)
 // Predict the target's position and seek that.
 //
 ////////////////////////////////////////////////////////////////////////////////////
-float STEER::Persue(const gentity_t* actor, gentity_t* target, float slowingDistance)
+float STEER::Persue(const gentity_t* actor, gentity_t* target, const float slowingDistance)
 {
 	assert(Active(actor) && target);
 	const SSteerUser& suser = mSteerUsers[mSteerUserIndex[actor->s.number]];
@@ -4626,8 +4626,8 @@ float STEER::Persue(const gentity_t* actor, gentity_t* target, float slowingDist
 // Predict the target's position and seek that.
 //
 ////////////////////////////////////////////////////////////////////////////////////
-float STEER::Persue(const gentity_t* actor, gentity_t* target, float slowingDistance, float offsetForward, float offsetRight,
-	float offsetUp, bool relativeToTargetFacing)
+float STEER::Persue(const gentity_t* actor, gentity_t* target, const float slowingDistance, const float offsetForward, const float offsetRight,
+                    const float offsetUp, const bool relativeToTargetFacing)
 {
 	assert(Active(actor) && target);
 	const SSteerUser& suser = mSteerUsers[mSteerUserIndex[actor->s.number]];
@@ -4712,7 +4712,7 @@ float STEER::Evade(const gentity_t* actor, gentity_t* target)
 ////////////////////////////////////////////////////////////////////////////////////
 // Separation
 ////////////////////////////////////////////////////////////////////////////////////
-float STEER::Separation(const gentity_t* actor, float Scale)
+float STEER::Separation(const gentity_t* actor, const float Scale)
 {
 	assert(Active(actor) && actor);
 	SSteerUser& suser = mSteerUsers[mSteerUserIndex[actor->s.number]];
@@ -4896,7 +4896,7 @@ float STEER::Wander(const gentity_t* actor)
 ////////////////////////////////////////////////////////////////////////////////////
 // Follow A Leader Entity
 ////////////////////////////////////////////////////////////////////////////////////
-float STEER::FollowLeader(const gentity_t* actor, gentity_t* leader, float dist)
+float STEER::FollowLeader(const gentity_t* actor, gentity_t* leader, const float dist)
 {
 	assert(Active(actor) && actor && leader && leader->client);
 	const SSteerUser& suser = mSteerUsers[mSteerUserIndex[actor->s.number]];
@@ -4961,8 +4961,8 @@ float STEER::FollowLeader(const gentity_t* actor, gentity_t* leader, float dist)
 // Returns true when a collision is detected (not safe)
 //
 //////////////////////////////////////////////////////////////////////
-bool TestCollision(gentity_t* actor, SSteerUser& suser, const CVec3& ProjectVelocity, float ProjectSpeed, ESide Side,
-	float weight = 1.0f)
+bool TestCollision(gentity_t* actor, SSteerUser& suser, const CVec3& ProjectVelocity, const float ProjectSpeed, const ESide Side,
+                   const float weight = 1.0f)
 {
 	// Test To See If The Projected Position Is Safe
 	//-----------------------------------------------
@@ -5009,7 +5009,7 @@ bool TestCollision(gentity_t* actor, SSteerUser& suser, const CVec3& ProjectVelo
 		if (ContactNum != ENTITYNUM_WORLD && ContactNum != ENTITYNUM_NONE && g_entities[ContactNum].client != nullptr)
 		{
 			gentity_t* Contact = &g_entities[ContactNum];
-			//bool			ContactIsPlayer = (Contact->client->ps.clientNum==0);
+			//bool			ContactIsPlayer = (Contact->client->ps.client_num==0);
 			const CVec3 ContactVelocity(Contact->client->ps.velocity);
 
 			const float ContactSpeed = ContactVelocity.Len();
@@ -5189,15 +5189,15 @@ float STEER::AvoidCollisions(gentity_t* actor, const gentity_t* leader)
 	{
 		if (actor->NPC->greetEnt && actor->NPC->greetEnt->owner == NPC)
 		{
-			suser.mIgnoreEntity = actor->NPC->greetEnt->s.clientNum;
+			suser.mIgnoreEntity = actor->NPC->greetEnt->s.client_num;
 		}
 		else if (actor->enemy)
 		{
-			suser.mIgnoreEntity = actor->enemy->s.clientNum;
+			suser.mIgnoreEntity = actor->enemy->s.client_num;
 		}
 		else if (leader)
 		{
-			suser.mIgnoreEntity = leader->s.clientNum;
+			suser.mIgnoreEntity = leader->s.client_num;
 		}
 	}
 
@@ -5238,7 +5238,7 @@ float STEER::AvoidCollisions(gentity_t* actor, const gentity_t* leader)
 ////////////////////////////////////////////////////////////////////////////////////
 // Reached
 ////////////////////////////////////////////////////////////////////////////////////
-bool STEER::Reached(gentity_t* actor, gentity_t* target, float targetRadius, bool flying)
+bool STEER::Reached(gentity_t* actor, gentity_t* target, const float targetRadius, bool flying)
 {
 	if (!actor || !target)
 	{
@@ -5261,7 +5261,7 @@ bool STEER::Reached(gentity_t* actor, gentity_t* target, float targetRadius, boo
 ////////////////////////////////////////////////////////////////////////////////////
 // Reached
 ////////////////////////////////////////////////////////////////////////////////////
-bool STEER::Reached(gentity_t* actor, NAV::TNodeHandle target, float targetRadius, bool flying)
+bool STEER::Reached(gentity_t* actor, const NAV::TNodeHandle target, const float targetRadius, bool flying)
 {
 	if (!actor || !target)
 	{
@@ -5284,7 +5284,7 @@ bool STEER::Reached(gentity_t* actor, NAV::TNodeHandle target, float targetRadiu
 ////////////////////////////////////////////////////////////////////////////////////
 // Reached
 ////////////////////////////////////////////////////////////////////////////////////
-bool STEER::Reached(gentity_t* actor, const vec3_t& target, float targetRadius, bool flying)
+bool STEER::Reached(gentity_t* actor, const vec3_t& target, const float targetRadius, bool flying)
 {
 	if (!actor || !target)
 	{

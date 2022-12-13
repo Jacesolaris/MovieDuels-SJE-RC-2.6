@@ -84,7 +84,7 @@ void Howler_ClearTimers(const gentity_t* self)
 	TIMER_Set(self, "speaking", -level.time);
 }
 
-static qboolean NPC_Howler_Move(int randomJumpChance = 0)
+static qboolean NPC_Howler_Move(const int randomJumpChance = 0)
 {
 	if (!TIMER_Done(NPC, "standing"))
 	{
@@ -212,7 +212,7 @@ static qboolean Howler_Move(qboolean visible)
 }
 
 //---------------------------------------------------------
-static void Howler_TryDamage(int damage, qboolean tongue, qboolean knockdown)
+static void Howler_TryDamage(const int damage, const qboolean tongue, const qboolean knockdown)
 {
 	vec3_t start, end, dir;
 	trace_t tr;
@@ -365,7 +365,7 @@ static void Howler_Howl(void)
 }
 
 //------------------------------
-static void Howler_Attack(float enemyDist, qboolean howl)
+static void Howler_Attack(const float enemyDist, const qboolean howl)
 {
 	const int dmg = NPCInfo->localState == LSTATE_BERZERK ? 5 : 2;
 
@@ -556,7 +556,7 @@ static void Howler_Combat(void)
 NPC_Howler_Pain
 -------------------------
 */
-void NPC_Howler_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
+void NPC_Howler_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage, int mod,
 	int hitLoc)
 {
 	if (!self || !self->NPC)

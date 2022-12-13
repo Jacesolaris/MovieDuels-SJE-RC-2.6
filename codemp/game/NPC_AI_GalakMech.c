@@ -731,11 +731,11 @@ void NPC_BSGM_Attack(void)
 				{//clear
 					if (trace.fraction < 1.0f)
 					{//hit something
-						gentity_t* traceEnt = &g_entities[trace.entityNum];
-						if (traceEnt && traceEnt->takedamage)
+						gentity_t* trace_ent = &g_entities[trace.entityNum];
+						if (trace_ent && trace_ent->takedamage)
 						{//damage it
 							G_SoundAtLoc(trace.endpos, CHAN_AUTO, G_SoundIndex("sound/weapons/galak/laserdamage.wav"));
-							G_Damage(traceEnt, NPCS.NPC, NPCS.NPC, NPCS.NPC->client->renderInfo.muzzleDir, trace.endpos, 10, 0, MOD_UNKNOWN);
+							G_Damage(trace_ent, NPCS.NPC, NPCS.NPC, NPCS.NPC->client->renderInfo.muzzleDir, trace.endpos, 10, 0, MOD_UNKNOWN);
 						}
 					}
 					if (NPCS.NPCInfo->coverTarg)

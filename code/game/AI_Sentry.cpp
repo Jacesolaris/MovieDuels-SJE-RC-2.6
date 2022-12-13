@@ -96,7 +96,7 @@ void sentry_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 NPC_Sentry_Pain
 -------------------------
 */
-void NPC_Sentry_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
+void NPC_Sentry_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage, const int mod,
 	int hitLoc)
 {
 	NPC_Pain(self, inflictor, other, point, damage, mod);
@@ -386,7 +386,7 @@ void Sentry_Strafe(void)
 Sentry_Hunt
 -------------------------
 */
-void Sentry_Hunt(qboolean visible, qboolean advance)
+void Sentry_Hunt(const qboolean visible, const qboolean advance)
 {
 	vec3_t forward;
 
@@ -428,7 +428,7 @@ void Sentry_Hunt(qboolean visible, qboolean advance)
 Sentry_RangedAttack
 -------------------------
 */
-void Sentry_RangedAttack(qboolean visible, qboolean advance)
+void Sentry_RangedAttack(const qboolean visible, const qboolean advance)
 {
 	if (TIMER_Done(NPC, "attackDelay") && NPC->attackDebounceTime < level.time && visible) // Attack?
 	{

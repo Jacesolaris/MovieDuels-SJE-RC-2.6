@@ -88,7 +88,7 @@ Init
 Initializes the sequencer
 ========================
 */
-int CSequencer::Init(int ownerID, CTaskManager* taskManager)
+int CSequencer::Init(const int ownerID, CTaskManager* taskManager)
 {
 	m_ownerID = ownerID;
 	m_taskManager = taskManager;
@@ -291,7 +291,7 @@ CSequence* CSequencer::AddSequence(CIcarus* icarus)
 	return sequence;
 }
 
-CSequence* CSequencer::AddSequence(CSequence* parent, CSequence* returnSeq, int flags, CIcarus* icarus)
+CSequence* CSequencer::AddSequence(CSequence* parent, CSequence* returnSeq, const int flags, CIcarus* icarus)
 {
 	const auto sequence = icarus->GetSequence();
 
@@ -321,7 +321,7 @@ Retrieves a sequence by its ID
 ========================
 */
 
-CSequence* CSequencer::GetSequence(int id)
+CSequence* CSequencer::GetSequence(const int id)
 {
 	/*	sequenceID_m::iterator mi;
 
@@ -366,7 +366,7 @@ Run
 Runs a script
 ========================
 */
-int CSequencer::Run(char* buffer, long size, CIcarus* icarus)
+int CSequencer::Run(char* buffer, const long size, CIcarus* icarus)
 {
 	IGameInterface* game = icarus->GetGame();
 
@@ -621,7 +621,7 @@ Adds a sequence that is saved until the affect is called by the parent
 ========================
 */
 
-int CSequencer::AddAffect(const bstream_t* bstream, int retain, int* id, CIcarus* icarus)
+int CSequencer::AddAffect(const bstream_t* bstream, const int retain, int* id, CIcarus* icarus)
 {
 	CSequence* sequence = AddSequence(icarus);
 	bstream_t new_stream;
@@ -2095,7 +2095,7 @@ Handles a completed task and returns a new task to be completed
 ========================
 */
 
-int CSequencer::Callback(CTaskManager* taskManager, CBlock* block, int returnCode, CIcarus* icarus)
+int CSequencer::Callback(CTaskManager* taskManager, CBlock* block, const int returnCode, CIcarus* icarus)
 {
 	IGameInterface* game = icarus->GetGame();
 	CBlock* command;
@@ -2181,7 +2181,7 @@ Affect
 -------------------------
 */
 
-int CSequencer::Affect(int id, int type, CIcarus* icarus)
+int CSequencer::Affect(const int id, const int type, CIcarus* icarus)
 {
 	IGameInterface* game = icarus->GetGame();
 	CSequence* sequence = GetSequence(id);
@@ -2236,7 +2236,7 @@ Pushes a commands onto the current sequence
 ========================
 */
 
-int CSequencer::PushCommand(CBlock* command, int flag)
+int CSequencer::PushCommand(CBlock* command, const int flag)
 {
 	//Make sure everything is ok
 	assert(m_curSequence);
@@ -2258,7 +2258,7 @@ Pops a command off the current sequence
 ========================
 */
 
-CBlock* CSequencer::PopCommand(int flag)
+CBlock* CSequencer::PopCommand(const int flag)
 {
 	//Make sure everything is ok
 	if (m_curSequence == nullptr)

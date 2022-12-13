@@ -99,7 +99,7 @@ extern void G_VehicleTrace(trace_t* results, const vec3_t start, const vec3_t tM
 	const vec3_t end, int passEntityNum, int contentmask);
 #endif
 
-extern qboolean BG_UnrestrainedPitchRoll(const playerState_t* ps, const Vehicle_t* pVeh);
+extern qboolean BG_UnrestrainedPitchRoll(const playerState_t* ps, const Vehicle_t* p_veh);
 
 #ifdef _JK2MP
 
@@ -112,7 +112,7 @@ extern int BG_GetTime(void);
 extern void BG_ExternThisSoICanRecompileInDebug(Vehicle_t* pVeh, playerState_t* riderPS);
 
 //this stuff has got to be predicted, so..
-bool BG_FighterUpdate(Vehicle_t* pVeh, const usercmd_t* pUcmd, vec3_t trMins, vec3_t trMaxs, float gravity,
+bool BG_FighterUpdate(Vehicle_t* pVeh, const usercmd_t* pUcmd, vec3_t trMins, vec3_t trMaxs, const float gravity,
 	void (*traceFunc)(trace_t* results, const vec3_t start, const vec3_t lmins, const vec3_t lmaxs,
 		const vec3_t end, int passEntityNum, int contentMask))
 {
@@ -235,7 +235,7 @@ static bool Board(Vehicle_t* pVeh, bgEntity_t* pEnt)
 }
 
 // Eject an entity from the vehicle.
-static bool Eject(Vehicle_t* pVeh, bgEntity_t* pEnt, qboolean forceEject)
+static bool Eject(Vehicle_t* pVeh, bgEntity_t* pEnt, const qboolean forceEject)
 {
 	if (g_vehicleInfo[VEHICLE_BASE].Eject(pVeh, pEnt, forceEject))
 	{
@@ -252,7 +252,7 @@ static bool Eject(Vehicle_t* pVeh, bgEntity_t* pEnt, qboolean forceEject)
 #endif //end game-side only
 
 //method of decrementing the given angle based on the given taking variable frame times into account
-static float PredictedAngularDecrement(float scale, float timeMod, float originalAngle)
+static float PredictedAngularDecrement(const float scale, const float timeMod, const float originalAngle)
 {
 	float fixedBaseDec = originalAngle * 0.05f;
 	float r = 0.0f;
@@ -1073,7 +1073,7 @@ static void FighterNoseMalfunctionCheck(Vehicle_t* pVeh, const playerState_t* pa
 }
 
 static void FighterDamageRoutine(Vehicle_t* pVeh, bgEntity_t* parent, const playerState_t* parentPS, const playerState_t* riderPS,
-	qboolean isDead)
+                                 const qboolean isDead)
 {
 	if (!pVeh->m_iRemovedSurfaces)
 	{

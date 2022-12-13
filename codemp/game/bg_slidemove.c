@@ -613,7 +613,7 @@ qboolean PM_ClientImpact(trace_t* trace)
 		return qfalse;
 	}
 
-	const gentity_t* traceEnt = &g_entities[otherEntityNum];
+	const gentity_t* trace_ent = &g_entities[otherEntityNum];
 
 	if (VectorLength(pm->ps->velocity) >= 100
 		&& pm_entSelf->s.NPC_class != CLASS_VEHICLE
@@ -623,8 +623,8 @@ qboolean PM_ClientImpact(trace_t* trace)
 		Client_CheckImpactBBrush((gentity_t*)(pm_entSelf), &g_entities[otherEntityNum]);
 	}
 
-	if (!traceEnt
-		|| !(traceEnt->r.contents & pm->tracemask))
+	if (!trace_ent
+		|| !(trace_ent->r.contents & pm->tracemask))
 	{//it's dead or not in my way anymore, don't clip against it
 		return qtrue;
 	}
@@ -698,7 +698,7 @@ qboolean	PM_SlideMove(qboolean gravity) {
 		VectorMA(pm->ps->origin, time_left, pm->ps->velocity, end);
 
 		// see if we can make it there
-		pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, end, pm->ps->clientNum, pm->tracemask);
+		pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, end, pm->ps->client_num, pm->tracemask);
 
 		if (trace.allsolid) {
 			// entity is completely trapped in another solid
@@ -718,7 +718,7 @@ qboolean	PM_SlideMove(qboolean gravity) {
 		// save entity for contact
 		PM_AddTouchEnt(trace.entityNum);
 
-		if (pm->ps->clientNum >= MAX_CLIENTS)
+		if (pm->ps->client_num >= MAX_CLIENTS)
 		{
 			bgEntity_t* pEnt = pm_entSelf;
 
@@ -889,7 +889,7 @@ void PM_StepSlideMove(qboolean gravity) {
 
 	const bgEntity_t* pEnt = pm_entSelf;
 
-	if (pm->ps->clientNum >= MAX_CLIENTS)
+	if (pm->ps->client_num >= MAX_CLIENTS)
 	{
 		if (pEnt && pEnt->s.NPC_class == CLASS_VEHICLE &&
 			pEnt->m_pVehicle && pEnt->m_pVehicle->m_pVehicleInfo->hoverHeight > 0)
@@ -900,7 +900,7 @@ void PM_StepSlideMove(qboolean gravity) {
 
 	VectorCopy(start_o, down);
 	down[2] -= STEPSIZE;
-	pm->trace(&trace, start_o, pm->mins, pm->maxs, down, pm->ps->clientNum, pm->tracemask);
+	pm->trace(&trace, start_o, pm->mins, pm->maxs, down, pm->ps->client_num, pm->tracemask);
 	VectorSet(up, 0, 0, 1);
 	// never step up when you still have up velocity
 	if (pm->ps->velocity[2] > 0 && (trace.fraction == 1.0 ||
@@ -914,7 +914,7 @@ void PM_StepSlideMove(qboolean gravity) {
 
 	VectorCopy(start_o, up);
 
-	if (pm->ps->clientNum >= MAX_CLIENTS)
+	if (pm->ps->client_num >= MAX_CLIENTS)
 	{
 		// apply ground friction, even if on ladder
 		if (pEnt &&
@@ -940,7 +940,7 @@ void PM_StepSlideMove(qboolean gravity) {
 	}
 
 	// test the player position if they were a stepheight higher
-	pm->trace(&trace, start_o, pm->mins, pm->maxs, up, pm->ps->clientNum, pm->tracemask);
+	pm->trace(&trace, start_o, pm->mins, pm->maxs, up, pm->ps->client_num, pm->tracemask);
 	if (trace.allsolid) {
 		if (pm->debugLevel) {
 			Com_Printf("%i:bend can't step\n", c_pmove);
@@ -958,11 +958,11 @@ void PM_StepSlideMove(qboolean gravity) {
 	// push down the final amount
 	VectorCopy(pm->ps->origin, down);
 	down[2] -= stepSize;
-	pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, down, pm->ps->clientNum, pm->tracemask);
+	pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, down, pm->ps->client_num, pm->tracemask);
 
 	if (pm->stepSlideFix)
 	{
-		if (pm->ps->clientNum < MAX_CLIENTS
+		if (pm->ps->client_num < MAX_CLIENTS
 			&& trace.plane.normal[2] < MIN_WALK_NORMAL)
 		{//normal players cannot step up slopes that are too steep to walk on!
 			vec3_t stepVec;
@@ -985,7 +985,7 @@ void PM_StepSlideMove(qboolean gravity) {
 	if (!trace.allsolid
 		&& !skipStep) //normal players cannot step up slopes that are too steep to walk on!
 	{
-		if (pm->ps->clientNum >= MAX_CLIENTS//NPC
+		if (pm->ps->client_num >= MAX_CLIENTS//NPC
 			&& isGiant
 			&& trace.entityNum < MAX_CLIENTS
 			&& pEnt
@@ -1003,12 +1003,12 @@ void PM_StepSlideMove(qboolean gravity) {
 			}
 		}
 		/*
-		else if ( pm->ps->clientNum >= MAX_CLIENTS//NPC
+		else if ( pm->ps->client_num >= MAX_CLIENTS//NPC
 			&& isGiant
 			&& trace.entityNum < MAX_CLIENTS
 			&& pEnt
 			&& pEnt->s.NPC_class == CLASS_ATST
-			&& OnSameTeam( pEnt, traceEnt) )
+			&& OnSameTeam( pEnt, trace_ent) )
 		{//NPC AT-ST's don't step up on allies
 			VectorCopy (start_o, pm->ps->origin);
 			VectorCopy (start_v, pm->ps->velocity);
@@ -1042,7 +1042,7 @@ void PM_StepSlideMove(qboolean gravity) {
 
 #if 0
 	// if the down trace can trace back to the original position directly, don't step
-	pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, start_o, pm->ps->clientNum, pm->tracemask);
+	pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, start_o, pm->ps->client_num, pm->tracemask);
 	if (trace.fraction == 1.0) {
 		// use the original move
 		VectorCopy(down_o, pm->ps->origin);

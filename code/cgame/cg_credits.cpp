@@ -137,7 +137,7 @@ static const char* Capitalize(const char* psTest)
 
 // cope with hyphenated names and initials (awkward gits)...
 //
-static bool CountsAsWhiteSpaceForCaps(unsigned /* avoid euro-char sign-extend assert within isspace()*/char c)
+static bool CountsAsWhiteSpaceForCaps(const unsigned /* avoid euro-char sign-extend assert within isspace()*/char c)
 {
 	return !!(isspace(c) || c == '-' || c == '.' || c == '(' || c == ')' || c == '\'');
 }

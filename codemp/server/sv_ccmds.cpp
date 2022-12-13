@@ -764,7 +764,7 @@ static void SV_AddBanToList(qboolean isexception)
 
 	if (argc < 2 || argc > 3)
 	{
-		Com_Printf("Usage: %s (ip[/subnet] | clientnum [subnet])\n", Cmd_Argv(0));
+		Com_Printf("Usage: %s (ip[/subnet] | client_num [subnet])\n", Cmd_Argv(0));
 		return;
 	}
 
@@ -1171,7 +1171,7 @@ static void SV_Status_f(void)
 			Com_sprintf(state, sizeof(state), "%4i", ping);
 		}
 
-		ps = SV_GameClientNum(i);
+		ps = SV_Gameclient_num(i);
 		s = NET_AdrToString(cl->netchan.remoteAddress);
 
 		if (!avoidTruncation)
@@ -1810,7 +1810,7 @@ static void SV_Record_f(void) {
 	}
 
 	if (Cmd_Argc() > 3) {
-		Com_Printf("record <demoname> <clientnum>\n");
+		Com_Printf("record <demoname> <client_num>\n");
 		return;
 	}
 

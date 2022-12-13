@@ -79,7 +79,7 @@ void FX_TuskenShotWeaponHitWall(vec3_t origin, vec3_t normal)
 FX_TuskenShotWeaponHitPlayer
 -------------------------
 */
-void FX_TuskenShotWeaponHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, qboolean humanoid)
+void FX_TuskenShotWeaponHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, const qboolean humanoid)
 {
 	if (humanoid)
 	{

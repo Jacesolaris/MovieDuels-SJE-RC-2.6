@@ -52,7 +52,7 @@ CTask::CTask(void)
 CTask::~CTask(void)
 = default;
 
-CTask* CTask::Create(int GUID, CBlock* block)
+CTask* CTask::Create(const int GUID, CBlock* block)
 {
 	const auto task = new CTask;
 
@@ -106,7 +106,7 @@ SetGUID
 -------------------------
 */
 
-void CTaskGroup::SetGUID(int GUID)
+void CTaskGroup::SetGUID(const int GUID)
 {
 	m_GUID = GUID;
 }
@@ -143,7 +143,7 @@ MarkTaskComplete
 -------------------------
 */
 
-bool CTaskGroup::MarkTaskComplete(int id)
+bool CTaskGroup::MarkTaskComplete(const int id)
 {
 	if (m_completedTasks.find(id) != m_completedTasks.end())
 	{
@@ -312,7 +312,7 @@ CTaskGroup* CTaskManager::GetTaskGroup(const char* name, const CIcarus* icarus)
 	return (*tgi).second;
 }
 
-CTaskGroup* CTaskManager::GetTaskGroup(int id, const CIcarus* icarus)
+CTaskGroup* CTaskManager::GetTaskGroup(const int id, const CIcarus* icarus)
 {
 	const auto tgi = m_taskGroupIDMap.find(id);
 
@@ -353,7 +353,7 @@ Check
 -------------------------
 */
 
-inline bool CTaskManager::Check(int targetID, const CBlock* block, int memberNum)
+inline bool CTaskManager::Check(const int targetID, const CBlock* block, const int memberNum)
 {
 	if (block->GetMember(memberNum)->GetID() == targetID)
 		return true;
@@ -367,7 +367,7 @@ GetFloat
 -------------------------
 */
 
-int CTaskManager::GetFloat(int entID, const CBlock* block, int& memberNum, float& value, const CIcarus* icarus)
+int CTaskManager::GetFloat(const int entID, const CBlock* block, int& memberNum, float& value, const CIcarus* icarus)
 {
 	//See if this is a get() command replacement
 	if (Check(CIcarus::ID_GET, block, memberNum))
@@ -437,7 +437,7 @@ GetVector
 -------------------------
 */
 
-int CTaskManager::GetVector(int entID, CBlock* block, int& memberNum, vec3_t& value, CIcarus* icarus)
+int CTaskManager::GetVector(const int entID, CBlock* block, int& memberNum, vec3_t& value, CIcarus* icarus)
 {
 	int type, i;
 
@@ -528,7 +528,7 @@ int CTaskManager::GetID() const
 	return m_id;
 }
 
-int CTaskManager::Get(int entID, CBlock* block, int& memberNum, char** value, CIcarus* icarus)
+int CTaskManager::Get(const int entID, CBlock* block, int& memberNum, char** value, CIcarus* icarus)
 {
 	static char tempBuffer[128]; //FIXME: EEEK!
 	char* tagName;
@@ -830,7 +830,7 @@ SetCommand
 -------------------------
 */
 
-int CTaskManager::SetCommand(CBlock* command, int type, const CIcarus* icarus)
+int CTaskManager::SetCommand(CBlock* command, const int type, const CIcarus* icarus)
 {
 	CTask* task = CTask::Create(m_GUID++, command);
 
@@ -859,7 +859,7 @@ MarkTask
 -------------------------
 */
 
-int CTaskManager::MarkTask(int id, int operation, const CIcarus* icarus)
+int CTaskManager::MarkTask(const int id, const int operation, const CIcarus* icarus)
 {
 	CTaskGroup* group = GetTaskGroup(id, icarus);
 
@@ -901,7 +901,7 @@ Completed
 -------------------------
 */
 
-int CTaskManager::Completed(int id)
+int CTaskManager::Completed(const int id)
 {
 	//Mark the task as completed
 	for (auto tgi = m_taskGroups.begin(); tgi != m_taskGroups.end(); ++tgi)
@@ -920,7 +920,7 @@ CallbackCommand
 -------------------------
 */
 
-int CTaskManager::CallbackCommand(const CTask* task, int returnCode, CIcarus* icarus)
+int CTaskManager::CallbackCommand(const CTask* task, const int returnCode, CIcarus* icarus)
 {
 	if (m_owner->Callback(this, task->GetBlock(), returnCode, icarus) == CSequencer::SEQ_OK)
 		return Go(icarus);
@@ -960,7 +960,7 @@ PushTask
 -------------------------
 */
 
-int CTaskManager::PushTask(CTask* task, int flag)
+int CTaskManager::PushTask(CTask* task, const int flag)
 {
 	assert(flag == CSequence::PUSH_FRONT || flag == CSequence::PUSH_BACK);
 
@@ -988,7 +988,7 @@ PopTask
 -------------------------
 */
 
-CTask* CTaskManager::PopTask(int flag)
+CTask* CTaskManager::PopTask(const int flag)
 {
 	CTask* task;
 

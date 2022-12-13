@@ -3318,7 +3318,7 @@ void UI_LoadMenus(const char* menuFile, qboolean reset)
 	Com_Printf("----- Genuine MovieDuels SerenityJediEngine(Solaris Edition)-----\n");
 	Com_Printf("---------------- MovieDuels-SJE-RC-2.6---------------------------\n");
 	Com_Printf("-----------------------------------------------------------------\n");
-	Com_Printf("------------------Build Date 12/12/2022--------------------------\n");
+	Com_Printf("------------------Build Date 13/12/2022--------------------------\n");
 	Com_Printf("-----------------------------------------------------------------\n");
 	Com_Printf("------------------------LightSaber-------------------------------\n");
 	Com_Printf("-----------An elegant weapon for a more civilized age------------\n");
@@ -7174,13 +7174,13 @@ static void UI_UpdateSaberHilt(qboolean secondSaber)
 /*
 static void UI_UpdateSaberColor( qboolean secondSaber )
 {
-	int sabernumber;
+	int saber_number;
 	if (secondSaber)
-		sabernumber = 2;
+		saber_number = 2;
 	else
-		sabernumber = 1;
+		saber_number = 1;
 
-	ui.Cmd_ExecuteText( EXEC_APPEND, va("sabercolor %i %s\n",sabernumber, Cvar_VariableString("g_saber_color")));
+	ui.Cmd_ExecuteText( EXEC_APPEND, va("sabercolor %i %s\n",saber_number, Cvar_VariableString("g_saber_color")));
 }
 */
 char GoToMenu[1024];

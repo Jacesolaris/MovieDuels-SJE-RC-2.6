@@ -137,7 +137,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Constant Accessor
 		////////////////////////////////////////////////////////////////////////////////////
-		const TTValue& operator[](int handle) const
+		const TTValue& operator[](const int handle) const
 		{
 			assert(is_used(handle));		//typically this is a stale handle (already been freed)
 			return pool_root<T>::value_at_index(handle & mMASK_HANDLE_TO_INDEX);
@@ -146,7 +146,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Accessor
 		////////////////////////////////////////////////////////////////////////////////////
-		TTValue& operator[](int i)
+		TTValue& operator[](const int i)
 		{
 			assert(is_used(i));		//typically this is a stale handle (already been freed)
 			return pool_root<T>::value_at_index(i & mMASK_HANDLE_TO_INDEX);
@@ -164,7 +164,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Swap two items based on handle
 		////////////////////////////////////////////////////////////////////////////////////
-		void swap(int i, int j) const
+		void swap(const int i, const int j) const
 		{
 			assert(is_used(i));		//typically this is a stale handle (already been freed)
 			assert(is_used(j));		//typically this is a stale handle (already been freed)
@@ -200,7 +200,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// The Deallocator, by handle
 		////////////////////////////////////////////////////////////////////////////////////
-		void		free(int handle)
+		void		free(const int handle)
 		{
 			assert(is_used(handle));
 			free_index(handle & mMASK_HANDLE_TO_INDEX);
@@ -217,7 +217,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Convert a handle to a raw index, not generally something you should use
 		////////////////////////////////////////////////////////////////////////////////////
-		int			handle_to_index(int handle) const
+		int			handle_to_index(const int handle) const
 		{
 			assert(is_used(handle));
 			return handle & mMASK_HANDLE_TO_INDEX;
@@ -250,7 +250,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Get An Iterator To The Object At handle
 		////////////////////////////////////////////////////////////////////////////////////
-		typename pool_root<T>::iterator	at(int handle)
+		typename pool_root<T>::iterator	at(const int handle)
 		{
 			assert(is_used(handle));
 			return pool_root<T>::at_index(handle & mMASK_HANDLE_TO_INDEX);
@@ -259,7 +259,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Get An Iterator To The Object At handle
 		////////////////////////////////////////////////////////////////////////////////////
-		typename pool_root<T>::const_iterator	at(int handle) const
+		typename pool_root<T>::const_iterator	at(const int handle) const
 		{
 			assert(is_used(handle));
 			return pool_root<T>::at_index(handle & mMASK_HANDLE_TO_INDEX);

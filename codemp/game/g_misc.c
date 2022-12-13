@@ -203,10 +203,10 @@ void TeleportPlayer(gentity_t* player, vec3_t origin, vec3_t angles) {
 	// from getting dropped by a second player event
 	if (player->client->sess.sessionTeam != TEAM_SPECTATOR) {
 		gentity_t* tent = G_TempEntity(player->client->ps.origin, EV_PLAYER_TELEPORT_OUT);
-		tent->s.clientNum = player->s.clientNum;
+		tent->s.client_num = player->s.client_num;
 
 		tent = G_TempEntity(origin, EV_PLAYER_TELEPORT_IN);
-		tent->s.clientNum = player->s.clientNum;
+		tent->s.client_num = player->s.client_num;
 	}
 
 	// unlink to make sure it can't possibly interfere with G_KillBox
@@ -515,8 +515,8 @@ void locateCamera(gentity_t* ent) {
 		ent->s.powerups = 1;
 	}
 
-	// clientNum holds the rotate offset
-	ent->s.clientNum = owner->s.clientNum;
+	// client_num holds the rotate offset
+	ent->s.client_num = owner->s.client_num;
 
 	VectorCopy(owner->s.origin, ent->s.origin2);
 
@@ -567,7 +567,7 @@ void SP_misc_portal_camera(gentity_t* ent) {
 
 	G_SpawnFloat("roll", "0", &roll);
 
-	ent->s.clientNum = roll / 360.0 * 256;
+	ent->s.client_num = roll / 360.0 * 256;
 }
 
 /*QUAKED misc_bsp (1 0 0) (-16 -16 -16) (16 16 16)
@@ -2605,7 +2605,7 @@ This world effect will spawn snow globally into the level.
 "count" the number of snow particles (default of 1000)
 */
 //----------------------------------------------------------
-void SP_CreateSnow(const gentity_t* ent)
+void SP_CreateSnow(gentity_t* ent)
 {
 	G_EffectIndex("*snow");
 	G_EffectIndex("*fog");
@@ -2810,8 +2810,8 @@ void maglock_link(gentity_t* self)
 		*/
 		return;
 	}
-	gentity_t* traceEnt = &g_entities[trace.entityNum];
-	if (trace.entityNum >= ENTITYNUM_WORLD || !traceEnt || Q_stricmp("func_door", traceEnt->classname))
+	gentity_t* trace_ent = &g_entities[trace.entityNum];
+	if (trace.entityNum >= ENTITYNUM_WORLD || !trace_ent || Q_stricmp("func_door", trace_ent->classname))
 	{
 		self->think = maglock_link;
 		self->nextthink = level.time + 100;
@@ -2820,12 +2820,12 @@ void maglock_link(gentity_t* self)
 		return;
 	}
 
-	//check the traceEnt, make sure it's a door and give it a lockCount and deactivate it
+	//check the trace_ent, make sure it's a door and give it a lockCount and deactivate it
 	//find the trigger for the door
-	self->activator = G_FindDoorTrigger(traceEnt);
+	self->activator = G_FindDoorTrigger(trace_ent);
 	if (!self->activator)
 	{
-		self->activator = traceEnt;
+		self->activator = trace_ent;
 	}
 	self->activator->lockCount++;
 	self->activator->flags |= FL_INACTIVE;

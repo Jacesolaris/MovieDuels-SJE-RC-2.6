@@ -230,7 +230,7 @@ static void WP_BowcasterAltFire(gentity_t* ent)
 }
 
 //---------------------------------------------------------
-void WP_FireBowcaster(gentity_t* ent, qboolean alt_fire)
+void WP_FireBowcaster(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	if (alt_fire)

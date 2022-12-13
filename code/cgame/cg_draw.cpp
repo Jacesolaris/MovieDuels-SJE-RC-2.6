@@ -6617,7 +6617,7 @@ static void CG_DrawStats()
 		return;
 	}
 
-	const centity_t* cent = &cg_entities[cg.snap->ps.clientNum];
+	const centity_t* cent = &cg_entities[cg.snap->ps.client_num];
 
 	if (cg.snap->ps.viewEntity > 0 && cg.snap->ps.viewEntity < ENTITYNUM_WORLD)
 	{
@@ -7716,7 +7716,7 @@ static void CG_ScanForCrosshairEntity(const qboolean scan_all)
 	trace_t trace;
 	const gentity_t* trace_ent = nullptr;
 	vec3_t start, end;
-	int ignoreEnt = cg.snap->ps.clientNum;
+	int ignoreEnt = cg.snap->ps.client_num;
 	const Vehicle_t* p_veh;
 
 	//FIXME: debounce this to about 10fps?
@@ -7914,7 +7914,7 @@ static void CG_ScanForCrosshairEntity(const qboolean scan_all)
 
 		/*
 		CG_Trace( &trace, start, vec3_origin, vec3_origin, end,
-			cg.snap->ps.clientNum, MASK_PLAYERSOLID|CONTENTS_CORPSE|CONTENTS_ITEM );
+			cg.snap->ps.client_num, MASK_PLAYERSOLID|CONTENTS_CORPSE|CONTENTS_ITEM );
 		*/
 		//FIXME: pick up corpses
 		if (trace.startsolid || trace.allsolid)
@@ -7929,9 +7929,9 @@ static void CG_ScanForCrosshairEntity(const qboolean scan_all)
 	}
 
 	// if the object is "dead", don't show it
-	/*	if ( cg.crosshairClientNum && g_entities[cg.crosshairClientNum].health <= 0 )
+	/*	if ( cg.crosshairclient_num && g_entities[cg.crosshairclient_num].health <= 0 )
 		{
-			cg.crosshairClientNum = 0;
+			cg.crosshairclient_num = 0;
 			return;
 		}
 	*/
@@ -7990,12 +7990,12 @@ static void CG_ScanForCrosshairEntity(const qboolean scan_all)
 	}
 
 	// update the fade timer
-	if (cg.crosshairClientNum != trace.entityNum)
+	if (cg.crosshairclient_num != trace.entityNum)
 	{
 		infoStringCount = 0;
 	}
 
-	cg.crosshairClientNum = trace.entityNum;
+	cg.crosshairclient_num = trace.entityNum;
 	cg.crosshairClientTime = cg.time;
 }
 
@@ -8047,7 +8047,7 @@ static void CG_DrawCrosshairItem()
 
 	CG_ScanForCrosshairEntity(scan_all);
 
-	if (cg_entities[cg.crosshairClientNum].currentState.eType == ET_ITEM)
+	if (cg_entities[cg.crosshairclient_num].currentState.eType == ET_ITEM)
 	{
 		if (cg_SerenityJediEngineHudMode.integer == 4)
 		{
@@ -8611,8 +8611,8 @@ float cg_draw_radar(const float y)
 
 		case ET_MISSILE:
 
-			if (cent->currentState.clientNum > MAX_CLIENTS //belongs to an NPC
-				&& cg_entities[cent->currentState.clientNum].currentState.NPC_class == CLASS_VEHICLE)
+			if (cent->currentState.client_num > MAX_CLIENTS //belongs to an NPC
+				&& cg_entities[cent->currentState.client_num].currentState.NPC_class == CLASS_VEHICLE)
 			{
 				//a rocket belonging to an NPC, FIXME: only tracking rockets!
 
@@ -8625,7 +8625,7 @@ float cg_draw_radar(const float y)
 				{
 					//I'm in a vehicle
 					//if it's targeting me, then play an alarm sound if I'm in a vehicle
-					if (cent->currentState.otherEntityNum == cg.predicted_player_state.clientNum || cent->
+					if (cent->currentState.otherEntityNum == cg.predicted_player_state.client_num || cent->
 						currentState.otherEntityNum == cg.predicted_player_state.m_iVehicleNum)
 					{
 						if (radarLockSoundDebounceTime < cg.time)
@@ -8692,12 +8692,12 @@ float cg_draw_radar(const float y)
 
 				arrow_base_scale *= z_scale;
 
-				if (cent->currentState.clientNum >= MAX_CLIENTS //missile owned by an NPC
-					&& cg_entities[cent->currentState.clientNum].currentState.NPC_class == CLASS_VEHICLE
+				if (cent->currentState.client_num >= MAX_CLIENTS //missile owned by an NPC
+					&& cg_entities[cent->currentState.client_num].currentState.NPC_class == CLASS_VEHICLE
 					//NPC is a vehicle
-					&& cg_entities[cent->currentState.clientNum].currentState.m_iVehicleNum <= MAX_CLIENTS
+					&& cg_entities[cent->currentState.client_num].currentState.m_iVehicleNum <= MAX_CLIENTS
 					//Vehicle has a player driver
-					&& cgs.clientinfo[cg_entities[cent->currentState.clientNum].currentState.m_iVehicleNum - 1].
+					&& cgs.clientinfo[cg_entities[cent->currentState.client_num].currentState.m_iVehicleNum - 1].
 					infoValid) //player driver is valid
 				{
 					cgi_R_SetColor(colorTable[CT_RED]);
@@ -8809,7 +8809,7 @@ qboolean CanUseInfrontOf(const gentity_t*);
 
 static void CG_UseIcon()
 {
-	cg_usingInFrontOf = CanUseInfrontOf(cg_entities[cg.snap->ps.clientNum].gent);
+	cg_usingInFrontOf = CanUseInfrontOf(cg_entities[cg.snap->ps.client_num].gent);
 	if (cg_usingInFrontOf)
 	{
 		cgi_R_SetColor(nullptr);
@@ -9253,7 +9253,7 @@ static void CG_Draw2D()
 {
 	char text[1024] = { 0 };
 	int w, y_pos;
-	const centity_t* cent = &cg_entities[cg.snap->ps.clientNum];
+	const centity_t* cent = &cg_entities[cg.snap->ps.client_num];
 
 	// if we are taking a levelshot for the menu, don't draw anything
 	if (cg.levelShot)
@@ -9337,7 +9337,7 @@ static void CG_Draw2D()
 	//if (cg.predicted_player_state.communicatingflags & (1 << PROJECTING))
 	//if (cg.predicted_player_state.pm_flags & PMF_BLOCK_HELD)
 	//if (cg.predicted_player_state.ManualBlockingFlags & (1 << MBF_PROJBLOCKING))
-	//if (cg_entities[cg.snap->ps.clientNum].currentState.userInt3 & (1 << FLAG_ATTACKFAKE))
+	//if (cg_entities[cg.snap->ps.client_num].currentState.userInt3 & (1 << FLAG_ATTACKFAKE))
 	//if (cent->currentState.eFlags & EF2_DUAL_WEAPONS)
 	//if (cent->currentState.eFlags & EF2_DUAL_PISTOLS)
 	//if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_ACCURATEMISSILEBLOCKING)

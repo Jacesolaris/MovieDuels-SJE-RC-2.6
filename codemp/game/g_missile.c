@@ -333,8 +333,8 @@ void G_MissileBounceEffect(gentity_t* ent, vec3_t org, vec3_t dir)
 		VectorCopy(org, te->s.origin);
 		VectorCopy(dir, te->s.angles);
 		te->s.eventParm = 0;
-		te->s.weapon = 0;//saberNum
-		te->s.legsAnim = 0;//bladeNum
+		te->s.weapon = 0;//saber_num
+		te->s.legsAnim = 0;//blade_num
 	}
 	break;
 	}
@@ -503,8 +503,8 @@ void G_MissileImpact(gentity_t* ent, trace_t* trace) {
 		VectorCopy(ent->r.currentOrigin, te->s.origin);
 		VectorCopy(trace->plane.normal, te->s.angles);
 		te->s.eventParm = 0;
-		te->s.weapon = 0;//saberNum
-		te->s.legsAnim = 0;//bladeNum
+		te->s.weapon = 0;//saber_num
+		te->s.legsAnim = 0;//blade_num
 
 		/*if (other->client->ps.velocity[2] > 0 ||
 			other->client->pers.cmd.forwardmove ||
@@ -579,8 +579,8 @@ void G_MissileImpact(gentity_t* ent, trace_t* trace) {
 			VectorCopy(ent->r.currentOrigin, te->s.origin);
 			VectorCopy(trace->plane.normal, te->s.angles);
 			te->s.eventParm = 0;
-			te->s.weapon = 0;//saberNum
-			te->s.legsAnim = 0;//bladeNum
+			te->s.weapon = 0;//saber_num
+			te->s.legsAnim = 0;//blade_num
 
 			/*if (otherOwner->client->ps.velocity[2] > 0 ||
 				otherOwner->client->pers.cmd.forwardmove ||

@@ -108,7 +108,7 @@ void MineMonster_Move(qboolean visible)
 }
 
 //---------------------------------------------------------
-void MineMonster_TryDamage(const gentity_t* enemy, int damage)
+void MineMonster_TryDamage(const gentity_t* enemy, const int damage)
 {
 	vec3_t end, dir;
 	trace_t tr;
@@ -240,7 +240,7 @@ void MineMonster_Combat(void)
 NPC_MineMonster_Pain
 -------------------------
 */
-void NPC_MineMonster_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage,
+void NPC_MineMonster_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage,
 	int mod, int hitLoc)
 {
 	G_AddEvent(self, EV_PAIN, floor(static_cast<float>(self->health) / self->max_health * 100.0f));

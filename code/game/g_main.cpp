@@ -94,7 +94,7 @@ void ClearInUse(const gentity_t* ent)
 	g_entityInUseBits[entNum / 32] &= ~(static_cast<unsigned>(1) << (entNum & 0x1f));
 }
 
-qboolean PInUse(unsigned int entNum)
+qboolean PInUse(const unsigned int entNum)
 {
 	assert(entNum >= 0);
 	assert(entNum < MAX_GENTITIES);
@@ -411,8 +411,8 @@ static void G_DynamicMusicUpdate(void)
 		maxs[i] = center[i] + radius;
 	}
 
-	const int numListedEntities = gi.EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
-	for (int e = 0; e < numListedEntities; e++)
+	const int num_listed_entities = gi.EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+	for (int e = 0; e < num_listed_entities; e++)
 	{
 		gentity_t* ent = entityList[e];
 		if (!ent || !ent->inuse)
@@ -651,7 +651,7 @@ static void G_DynamicMusicUpdate(void)
 	}
 }
 
-void G_ConnectNavs(const char* mapname, int checkSum)
+void G_ConnectNavs(const char* mapname, const int checkSum)
 {
 	NAV::LoadFromEntitiesAndSaveToFile(mapname, checkSum);
 	CP_FindCombatPointWaypoints();
@@ -959,8 +959,8 @@ SavedGameJustLoaded_e g_eSavedGameJustLoaded;
 qboolean g_qbLoadTransition = qfalse;
 extern void R_LoadWeatherParms(void);
 
-void InitGame(const char* mapname, const char* spawntarget, int checkSum, const char* entities, int levelTime,
-	int randomSeed, int globalTime, SavedGameJustLoaded_e eSavedGameJustLoaded, qboolean qbLoadTransition)
+void InitGame(const char* mapname, const char* spawntarget, const int checkSum, const char* entities, const int levelTime,
+              const int randomSeed, const int globalTime, const SavedGameJustLoaded_e eSavedGameJustLoaded, const qboolean qbLoadTransition)
 {
 	//rww - default this to 0, we will auto-set it to 1 if we run into a terrain ent
 	gi.cvar_set("RMG", "0");
@@ -1088,7 +1088,7 @@ Ghoul2 Insert End
 
 //===================================================================
 
-static void G_Cvar_Create(const char* var_name, const char* var_value, int flags)
+static void G_Cvar_Create(const char* var_name, const char* var_value, const int flags)
 {
 	gi.cvar(var_name, var_value, flags);
 }
@@ -1177,7 +1177,7 @@ Com_Error
 -------------------------
 */
 
-void Com_Error(int level, const char* error, ...)
+void Com_Error(const int level, const char* error, ...)
 {
 	va_list argptr;
 	char text[1024];
@@ -1590,7 +1590,7 @@ class CGameRagDollUpdateParams : public CRagDollUpdateParams
 	}
 
 #ifdef _DEBUG
-	void DebugLine(vec3_t p1, vec3_t p2, int color, bool bbox) override
+	void DebugLine(vec3_t p1, vec3_t p2, const int color, const bool bbox) override
 	{
 		if (!bbox)
 		{
@@ -2324,7 +2324,7 @@ constexpr auto CLOAK_REFUEL_RATE = 100; //seems fair;
 constexpr auto BARRIER_DEFUEL_RATE = 100; //approx. 50 seconds of idle use from a fully charged fuel amt;
 constexpr auto BARRIER_REFUEL_RATE = 200; //seems fair;
 
-void G_RunFrame(int levelTime)
+void G_RunFrame(const int levelTime)
 {
 	gentity_t* ent;
 	int ents_inuse = 0; // someone's gonna be pissed I put this here...

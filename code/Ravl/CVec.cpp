@@ -465,7 +465,7 @@ bool	CVec4::PtInCircle(const CVec4& A, const CVec4& B, const CVec4& C) const
 //       \_______/
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool	CVec4::PtInCircle(const CVec4& Circle, float Radius) const
+bool	CVec4::PtInCircle(const CVec4& Circle, const float Radius) const
 {
 	return Dist2(Circle) < Radius * Radius;
 }
@@ -490,7 +490,7 @@ bool	CVec4::PtInCircle(const CVec4& Circle, float Radius) const
 // A
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool	CVec4::LineInCircle(const CVec4& A, const CVec4& B, float r, CVec4& P) const
+bool	CVec4::LineInCircle(const CVec4& A, const CVec4& B, const float r, CVec4& P) const
 {
 	P = *this;
 	const float	Scale = P.ProjectToLine(A, B);
@@ -511,7 +511,7 @@ bool	CVec4::LineInCircle(const CVec4& A, const CVec4& B, float r, CVec4& P) cons
 ////////////////////////////////////////////////////////////////////////////////////////
 // Same As Test Above, Just Don't Bother Returning P
 ////////////////////////////////////////////////////////////////////////////////////////
-bool	CVec4::LineInCircle(const CVec4& A, const CVec4& B, float r) const
+bool	CVec4::LineInCircle(const CVec4& A, const CVec4& B, const float r) const
 {
 	CVec4	P(*this);
 	const float	Scale = P.ProjectToLine(A, B);
@@ -540,7 +540,7 @@ void	CVec4::RotatePoint(const CVec4&, const CVec4&)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Reposition
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec4::Reposition(const CVec4& Translation, float RotationDegrees)
+void	CVec4::Reposition(const CVec4& Translation, const float RotationDegrees)
 {
 	// Apply Any Rotation First
 	//--------------------------
@@ -633,7 +633,7 @@ void	CVec3::AngleNorm()
 // Angular Normalize
 //  All floats Exist(-180, +180)
 ////////////////////////////////////////////////////////////////////////////////////////
-float	CVec3::Truncate(float maxlen)
+float	CVec3::Truncate(const float maxlen)
 {
 	float len = this->Len();
 	if (len > maxlen && len > 1E-10)
@@ -991,7 +991,7 @@ bool	CVec3::PtInCircle(const CVec3& A, const CVec3& B, const CVec3& C) const
 //       \_______/
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool	CVec3::PtInCircle(const CVec3& Circle, float Radius) const
+bool	CVec3::PtInCircle(const CVec3& Circle, const float Radius) const
 {
 	return Dist2(Circle) < Radius * Radius;
 }
@@ -1016,7 +1016,7 @@ bool	CVec3::PtInCircle(const CVec3& Circle, float Radius) const
 // A
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool	CVec3::LineInCircle(const CVec3& A, const CVec3& B, float r, CVec3& P) const
+bool	CVec3::LineInCircle(const CVec3& A, const CVec3& B, const float r, CVec3& P) const
 {
 	P = *this;
 	const float	Scale = P.ProjectToLine(A, B);
@@ -1037,7 +1037,7 @@ bool	CVec3::LineInCircle(const CVec3& A, const CVec3& B, float r, CVec3& P) cons
 ////////////////////////////////////////////////////////////////////////////////////////
 // Same As Test Above, Just Don't Bother Returning P
 ////////////////////////////////////////////////////////////////////////////////////////
-bool	CVec3::LineInCircle(const CVec3& A, const CVec3& B, float r) const
+bool	CVec3::LineInCircle(const CVec3& A, const CVec3& B, const float r) const
 {
 	CVec3	P(*this);
 	const float	Scale = P.ProjectToLine(A, B);
@@ -1066,7 +1066,7 @@ void	CVec3::RotatePoint(const CVec3&, const CVec3&)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Reposition
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec3::Reposition(const CVec3& Translation, float RotationDegrees)
+void	CVec3::Reposition(const CVec3& Translation, const float RotationDegrees)
 {
 	// Apply Any Rotation First
 	//--------------------------

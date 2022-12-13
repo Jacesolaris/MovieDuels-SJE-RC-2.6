@@ -66,9 +66,9 @@ extern void G_PlayDoorLoopSound(gentity_t* ent);
 extern void G_PlayDoorSound(gentity_t* ent, int type);
 extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
 extern void NPC_ClearLookTarget(const gentity_t* self);
-extern void WP_SaberSetColor(const gentity_t* ent, int saberNum, int bladeNum, const char* colorName);
+extern void WP_SaberSetColor(const gentity_t* ent, int saber_num, int blade_num, const char* colorName);
 extern void WP_SetSaber(gentity_t* ent, int saber_num, const char* saber_name);
-extern void WP_SetNPCSaber(gentity_t* ent, int saberNum, const char* saberName);
+extern void WP_SetNPCSaber(gentity_t* ent, int saber_num, const char* saberName);
 extern qboolean PM_HasAnimation(const gentity_t* ent, int animation);
 extern void G_ChangePlayerModel(gentity_t* ent, const char* newModel);
 extern void G_ChangeModel(gentity_t* ent, const char* newModel);
@@ -704,7 +704,7 @@ void Q3_SetTaskID( gentity_t *ent, taskID_t taskType, int taskID )
 -------------------------
 */
 
-static void Q3_TaskIDSet(gentity_t* ent, taskID_t taskType, int taskID)
+static void Q3_TaskIDSet(gentity_t* ent, const taskID_t taskType, const int taskID)
 {
 	if (taskType < TID_CHAN_VOICE || taskType >= NUM_TIDS)
 	{
@@ -781,7 +781,7 @@ void Q3_TaskIDClear(int* taskID)
 qboolean Q3_TaskIDPending( gentity_t *ent, taskID_t taskType )
 -------------------------
 */
-qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType)
+qboolean Q3_TaskIDPending(const gentity_t* ent, const taskID_t taskType)
 {
 	if (ent->m_iIcarusID == IIcarusInterface::ICARUS_INVALID /*!ent->sequencer || !ent->taskManager*/)
 	{
@@ -806,7 +806,7 @@ qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType)
 void Q3_TaskIDComplete( gentity_t *ent, taskID_t taskType )
 -------------------------
 */
-void Q3_TaskIDComplete(gentity_t* ent, taskID_t taskType)
+void Q3_TaskIDComplete(gentity_t* ent, const taskID_t taskType)
 {
 	if (taskType < TID_CHAN_VOICE || taskType >= NUM_TIDS)
 	{
@@ -1180,7 +1180,7 @@ And: Take any string, look for "/mr_" replace with "/ms_" based on "sex"
 returns qtrue if changed to ms
 =============
 */
-static qboolean G_AddSexToPlayerString(char* string, qboolean qDoBoth)
+static qboolean G_AddSexToPlayerString(char* string, const qboolean qDoBoth)
 {
 	if VALIDSTRING(string)
 	{
@@ -1234,7 +1234,7 @@ Sets the angles of an entity directly
 */
 static void Q3_SetDYaw(int entID, float data);
 
-static void Q3_SetAngles(int entID, vec3_t angles)
+static void Q3_SetAngles(const int entID, vec3_t angles)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -1268,7 +1268,7 @@ Q3_SetOrigin
 Sets the origin of an entity directly
 =============
 */
-static void Q3_SetOrigin(int entID, vec3_t origin)
+static void Q3_SetOrigin(const int entID, vec3_t origin)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -1339,7 +1339,7 @@ Q3_SetTeleportDest
 Copies passed origin to ent running script once there is nothing there blocking the spot
 =============
 */
-static qboolean Q3_SetTeleportDest(int entID, vec3_t org)
+static qboolean Q3_SetTeleportDest(const int entID, vec3_t org)
 {
 	gentity_t* teleEnt = &g_entities[entID];
 
@@ -1372,7 +1372,7 @@ Q3_SetCopyOrigin
 Copies origin of found ent into ent running script
 =============`
 */
-static void Q3_SetCopyOrigin(int entID, const char* name)
+static void Q3_SetCopyOrigin(const int entID, const char* name)
 {
 	gentity_t* found = G_Find(nullptr, FOFS(targetname), name);
 
@@ -1394,7 +1394,7 @@ Q3_SetVelocity
 Set the velocity of an entity directly
 =============
 */
-static void Q3_SetVelocity(int entID, int axis, float speed)
+static void Q3_SetVelocity(const int entID, const int axis, const float speed)
 {
 	const gentity_t* found = &g_entities[entID];
 	//FIXME: Not supported
@@ -1426,7 +1426,7 @@ Q3_SetAdjustAreaPortals
   Argument		: qboolean shields
 ============
 */
-static void Q3_SetAdjustAreaPortals(int entID, qboolean adjust)
+static void Q3_SetAdjustAreaPortals(const int entID, const qboolean adjust)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -1450,7 +1450,7 @@ Q3_SetDmgByHeavyWeapOnly
   Argument		: qboolean dmg
 ============
 */
-static void Q3_SetDmgByHeavyWeapOnly(int entID, qboolean dmg)
+static void Q3_SetDmgByHeavyWeapOnly(const int entID, const qboolean dmg)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -1472,7 +1472,7 @@ Q3_SetShielded
   Argument		: qboolean dmg
 ============
 */
-static void Q3_SetShielded(int entID, qboolean dmg)
+static void Q3_SetShielded(const int entID, const qboolean dmg)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -1494,7 +1494,7 @@ Q3_SetNoGroups
   Argument		: qboolean dmg
 ============
 */
-static void Q3_SetNoGroups(int entID, qboolean noGroups)
+static void Q3_SetNoGroups(const int entID, const qboolean noGroups)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -1875,7 +1875,7 @@ Lerps the origin and angles of an entity to the destination values
 	Lerps the origin to the destination value
 	=============
 	*/
-void Q3_Lerp2Origin(int taskID, int entID, vec3_t origin, float duration)
+void Q3_Lerp2Origin(const int taskID, const int entID, vec3_t origin, const float duration)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -1946,7 +1946,7 @@ void Q3_Lerp2Origin(int taskID, int entID, vec3_t origin, float duration)
 	gi.linkentity(ent);
 }
 
-static void Q3_SetOriginOffset(int entID, int axis, float offset)
+static void Q3_SetOriginOffset(const int entID, const int axis, const float offset)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -2065,7 +2065,7 @@ Q3_SetNavGoal
 Sets the navigational goal of an entity
 =============
 */
-static qboolean Q3_SetNavGoal(int entID, const char* name)
+static qboolean Q3_SetNavGoal(const int entID, const char* name)
 {
 	gentity_t* ent = &g_entities[entID];
 	vec3_t goalPos;
@@ -2144,7 +2144,7 @@ SetLowerAnim
   Argument		: int animID
 ============
 */
-static void SetLowerAnim(int entID, int animID)
+static void SetLowerAnim(const int entID, const int animID)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -2172,7 +2172,7 @@ SetUpperAnim
   Argument		: int animID
 ============
 */
-static void SetUpperAnim(int entID, int animID)
+static void SetUpperAnim(const int entID, const int animID)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -2200,7 +2200,7 @@ Q3_SetAnimUpper
 Sets the upper animation of an entity
 =============
 */
-qboolean Q3_SetAnimUpper(int entID, const char* anim_name)
+qboolean Q3_SetAnimUpper(const int entID, const char* anim_name)
 {
 	const int animID = GetIDForString(animTable, anim_name);
 
@@ -2227,7 +2227,7 @@ Q3_SetAnimLower
 Sets the lower animation of an entity
 =============
 */
-qboolean Q3_SetAnimLower(int entID, const char* anim_name)
+qboolean Q3_SetAnimLower(const int entID, const char* anim_name)
 {
 	//FIXME: Setting duck anim does not actually duck!
 
@@ -2262,7 +2262,7 @@ Q3_SetAnimHoldTime
 extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torsoAnimTimer, int time);
 extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legs_anim_timer, int time);
 
-void Q3_SetAnimHoldTime(int entID, int int_data, qboolean lower)
+void Q3_SetAnimHoldTime(const int entID, const int int_data, const qboolean lower)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -2296,7 +2296,7 @@ Q3_SetEnemy
 Sets the enemy of an entity
 =============
 */
-static void Q3_SetEnemy(int entID, const char* name)
+static void Q3_SetEnemy(const int entID, const char* name)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -2350,7 +2350,7 @@ Q3_SetLeader
 Sets the leader of an NPC
 =============
 */
-static void Q3_SetLeader(int entID, const char* name)
+static void Q3_SetLeader(const int entID, const char* name)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -2408,7 +2408,7 @@ Q3_SetPlayerTeam
   Argument		: const char *teamName
 ============
 */
-static void Q3_SetPlayerTeam(int entID, const char* teamName)
+static void Q3_SetPlayerTeam(const int entID, const char* teamName)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -2437,7 +2437,7 @@ Q3_SetEnemyTeam
   Argument		: const char *teamName
 ============
 */
-static void Q3_SetEnemyTeam(int entID, const char* teamName)
+static void Q3_SetEnemyTeam(const int entID, const char* teamName)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -2465,7 +2465,7 @@ Q3_SetHealth
   Argument		: int data
 ============
 */
-void Q3_SetHealth(int entID, int data)
+void Q3_SetHealth(const int entID, int data)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -2532,7 +2532,7 @@ Q3_SetArmor
   Argument		: int data
 ============
 */
-void Q3_SetArmor(int entID, int data)
+void Q3_SetArmor(const int entID, const int data)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -2569,7 +2569,7 @@ FIXME: this should be a general NPC wrapper function
 	that is called ANY time	a bState is changed...
 ============
 */
-static qboolean Q3_SetBState(int entID, const char* bs_name)
+static qboolean Q3_SetBState(const int entID, const char* bs_name)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -2662,7 +2662,7 @@ Q3_SetTempBState
   Argument		: const char *bs_name
 ============
 */
-static qboolean Q3_SetTempBState(int entID, const char* bs_name)
+static qboolean Q3_SetTempBState(const int entID, const char* bs_name)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -2710,7 +2710,7 @@ Q3_SetDefaultBState
   Argument		: const char *bs_name
 ============
 */
-static void Q3_SetDefaultBState(int entID, const char* bs_name)
+static void Q3_SetDefaultBState(const int entID, const char* bs_name)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -2743,7 +2743,7 @@ Q3_SetDPitch
   Argument		: float data
 ============
 */
-static void Q3_SetDPitch(int entID, float data)
+static void Q3_SetDPitch(const int entID, float data)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -2793,7 +2793,7 @@ Q3_SetDYaw
   Argument		: float data
 ============
 */
-static void Q3_SetDYaw(int entID, float data)
+static void Q3_SetDYaw(const int entID, const float data)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -2830,7 +2830,7 @@ Q3_SetShootDist
   Argument		: float data
 ============
 */
-static void Q3_SetShootDist(int entID, float data)
+static void Q3_SetShootDist(const int entID, const float data)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -2858,7 +2858,7 @@ Q3_SetVisrange
   Argument		: float data
 ============
 */
-static void Q3_SetVisrange(int entID, float data)
+static void Q3_SetVisrange(const int entID, const float data)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -2886,7 +2886,7 @@ Q3_SetEarshot
   Argument		: float data
 ============
 */
-static void Q3_SetEarshot(int entID, float data)
+static void Q3_SetEarshot(const int entID, const float data)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -2914,7 +2914,7 @@ Q3_SetVigilance
   Argument		: float data
 ============
 */
-static void Q3_SetVigilance(int entID, float data)
+static void Q3_SetVigilance(const int entID, const float data)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -2942,7 +2942,7 @@ Q3_SetVFOV
   Argument		: int data
 ============
 */
-static void Q3_SetVFOV(int entID, int data)
+static void Q3_SetVFOV(const int entID, const int data)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -2970,7 +2970,7 @@ Q3_SetHFOV
   Argument		: int data
 ============
 */
-static void Q3_SetHFOV(int entID, int data)
+static void Q3_SetHFOV(const int entID, const int data)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -2998,7 +2998,7 @@ Q3_SetWidth
   Argument		: float data
 ============
 */
-static void Q3_SetWidth(int entID, int data)
+static void Q3_SetWidth(const int entID, const int data)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -3062,7 +3062,7 @@ Q3_SetInvisible
   Argument		: qboolean invisible
 ============
 */
-static void Q3_SetInvisible(int entID, qboolean invisible)
+static void Q3_SetInvisible(const int entID, const qboolean invisible)
 {
 	gentity_t* self = &g_entities[entID];
 
@@ -3100,7 +3100,7 @@ Q3_SetVampire
   Argument		: qboolean vampire
 ============
 */
-static void Q3_SetVampire(int entID, qboolean vampire)
+static void Q3_SetVampire(const int entID, const qboolean vampire)
 {
 	const gentity_t* self = &g_entities[entID];
 
@@ -3129,7 +3129,7 @@ Q3_SetGreetAllies
   Argument		: qboolean greet
 ============
 */
-static void Q3_SetGreetAllies(int entID, qboolean greet)
+static void Q3_SetGreetAllies(const int entID, const qboolean greet)
 {
 	const gentity_t* self = &g_entities[entID];
 
@@ -3165,7 +3165,7 @@ Q3_SetViewTarget
   Argument		: const char *name
 ============
 */
-static void Q3_SetViewTarget(int entID, const char* name)
+static void Q3_SetViewTarget(const int entID, const char* name)
 {
 	const gentity_t* self = &g_entities[entID];
 	const gentity_t* viewtarget = G_Find(nullptr, FOFS(targetname), name);
@@ -3225,7 +3225,7 @@ Q3_SetWatchTarget
   Argument		: const char *name
 ============
 */
-static void Q3_SetWatchTarget(int entID, const char* name)
+static void Q3_SetWatchTarget(const int entID, const char* name)
 {
 	const gentity_t* self = &g_entities[entID];
 
@@ -3259,7 +3259,7 @@ static void Q3_SetWatchTarget(int entID, const char* name)
 	self->NPC->watchTarget = watchTarget;
 }
 
-void Q3_SetLoopSound(int entID, const char* name)
+void Q3_SetLoopSound(const int entID, const char* name)
 {
 	sfxHandle_t index;
 	gentity_t* self = &g_entities[entID];
@@ -3289,7 +3289,7 @@ void Q3_SetLoopSound(int entID, const char* name)
 	}
 }
 
-void Q3_SetICARUSFreeze(int entID, const char* name, qboolean freeze)
+void Q3_SetICARUSFreeze(int entID, const char* name, const qboolean freeze)
 {
 	gentity_t* self = G_Find(nullptr, FOFS(targetname), name);
 	if (!self)
@@ -3324,9 +3324,9 @@ Q3_SetViewEntity
 ============
 */
 extern qboolean G_ClearViewEntity(gentity_t* ent);
-extern void G_SetViewEntity(gentity_t* self, gentity_t* viewEntity);
+extern void G_SetViewEntity(gentity_t* self, gentity_t* view_entity);
 
-void Q3_SetViewEntity(int entID, const char* name)
+void Q3_SetViewEntity(const int entID, const char* name)
 {
 	gentity_t* self = &g_entities[entID];
 	gentity_t* viewtarget = G_Find(nullptr, FOFS(targetname), name);
@@ -3457,7 +3457,7 @@ void G_SetWeapon(gentity_t* self, int wp)
 	}
 }
 
-static void Q3_SetWeapon(int entID, const char* wp_name)
+static void Q3_SetWeapon(const int entID, const char* wp_name)
 {
 	gentity_t* self = &g_entities[entID];
 	const int wp = GetIDForString(WPTable, wp_name);
@@ -3502,7 +3502,7 @@ Q3_SetItem
   Argument		: const char *wp_name
 ============
 */
-static void Q3_SetItem(int entID, const char* item_name)
+static void Q3_SetItem(const int entID, const char* item_name)
 {
 	const gentity_t* self = &g_entities[entID];
 
@@ -3550,7 +3550,7 @@ Q3_SetWalkSpeed
   Argument		: int int_data
 ============
 */
-static void Q3_SetWalkSpeed(int entID, int int_data)
+static void Q3_SetWalkSpeed(const int entID, const int int_data)
 {
 	const gentity_t* self = &g_entities[entID];
 
@@ -3583,7 +3583,7 @@ Q3_SetRunSpeed
   Argument		: int int_data
 ============
 */
-static void Q3_SetRunSpeed(int entID, int int_data)
+static void Q3_SetRunSpeed(const int entID, const int int_data)
 {
 	const gentity_t* self = &g_entities[entID];
 
@@ -3616,7 +3616,7 @@ Q3_SetYawSpeed
   Argument		: float float_data
 ============
 */
-static void Q3_SetYawSpeed(int entID, float float_data)
+static void Q3_SetYawSpeed(const int entID, const float float_data)
 {
 	const gentity_t* self = &g_entities[entID];
 
@@ -3644,7 +3644,7 @@ Q3_SetAggression
   Argument		: int int_data
 ============
 */
-static void Q3_SetAggression(int entID, int int_data)
+static void Q3_SetAggression(const int entID, const int int_data)
 {
 	const gentity_t* self = &g_entities[entID];
 
@@ -3675,7 +3675,7 @@ Q3_SetAim
   Argument		: int int_data
 ============
 */
-static void Q3_SetAim(int entID, int int_data)
+static void Q3_SetAim(const int entID, const int int_data)
 {
 	const gentity_t* self = &g_entities[entID];
 
@@ -3706,7 +3706,7 @@ Q3_SetFriction
   Argument		: int int_data
 ============
 */
-static void Q3_SetFriction(int entID, int int_data)
+static void Q3_SetFriction(const int entID, const int int_data)
 {
 	const gentity_t* self = &g_entities[entID];
 
@@ -3735,7 +3735,7 @@ Q3_SetGravity
   Argument		: float float_data
 ============
 */
-void Q3_SetGravity(int entID, float float_data)
+void Q3_SetGravity(const int entID, const float float_data)
 {
 	gentity_t* self = &g_entities[entID];
 
@@ -3766,7 +3766,7 @@ Q3_SetWait
   Argument		: float float_data
 ============
 */
-static void Q3_SetWait(int entID, float float_data)
+static void Q3_SetWait(const int entID, const float float_data)
 {
 	gentity_t* self = &g_entities[entID];
 
@@ -3779,7 +3779,7 @@ static void Q3_SetWait(int entID, float float_data)
 	self->wait = float_data;
 }
 
-static void Q3_SetShotSpacing(int entID, int int_data)
+static void Q3_SetShotSpacing(const int entID, const int int_data)
 {
 	const gentity_t* self = &g_entities[entID];
 
@@ -3809,7 +3809,7 @@ Q3_SetFollowDist
   Argument		: float float_data
 ============
 */
-static void Q3_SetFollowDist(int entID, float float_data)
+static void Q3_SetFollowDist(const int entID, const float float_data)
 {
 	const gentity_t* self = &g_entities[entID];
 
@@ -3837,7 +3837,7 @@ Q3_SetScale
   Argument		: float float_data
 ============
 */
-void Q3_SetScale(int entID, float float_data)
+void Q3_SetScale(const int entID, const float float_data)
 {
 	gentity_t* self = &g_entities[entID];
 
@@ -3859,7 +3859,7 @@ Q3_SetRenderCullRadius
   Argument		: float float_data (the new radius for render culling)
 ============
 */
-static void Q3_SetRenderCullRadius(int entID, float float_data)
+static void Q3_SetRenderCullRadius(const int entID, const float float_data)
 {
 	gentity_t* self = &g_entities[entID];
 
@@ -3881,7 +3881,7 @@ Q3_SetCount
   Argument		: const char *data
 ============
 */
-static void Q3_SetCount(int entID, const char* data)
+static void Q3_SetCount(const int entID, const char* data)
 {
 	gentity_t* self = &g_entities[entID];
 	float val;
@@ -3949,7 +3949,7 @@ Q3_SetTargetName
   Argument		: const char *targetname
 ============
 */
-static void Q3_SetTargetName(int entID, const char* targetname)
+static void Q3_SetTargetName(const int entID, const char* targetname)
 {
 	const gentity_t* self = &g_entities[entID];
 
@@ -3978,7 +3978,7 @@ Q3_SetTarget
   Argument		: const char *target
 ============
 */
-static void Q3_SetTarget(int entID, const char* target)
+static void Q3_SetTarget(const int entID, const char* target)
 {
 	gentity_t* self = &g_entities[entID];
 
@@ -4007,7 +4007,7 @@ Q3_SetTarget2
   Argument		: const char *target
 ============
 */
-static void Q3_SetTarget2(int entID, const char* target2)
+static void Q3_SetTarget2(const int entID, const char* target2)
 {
 	gentity_t* self = &g_entities[entID];
 
@@ -4036,7 +4036,7 @@ Q3_SetRemoveTarget
   Argument		: const char *target
 ============
 */
-static void Q3_SetRemoveTarget(int entID, const char* target)
+static void Q3_SetRemoveTarget(const int entID, const char* target)
 {
 	gentity_t* self = &g_entities[entID];
 
@@ -4072,7 +4072,7 @@ Q3_SetPainTarget
   Argument		: const char *targetname
 ============
 */
-static void Q3_SetPainTarget(int entID, const char* targetname)
+static void Q3_SetPainTarget(const int entID, const char* targetname)
 {
 	gentity_t* self = &g_entities[entID];
 
@@ -4101,7 +4101,7 @@ static void Q3_SetMusicState(const char* dms)
 	}
 }
 
-static void Q3_SetForcePowerLevel(int entID, int forcePower, int forceLevel)
+static void Q3_SetForcePowerLevel(const int entID, const int forcePower, const int forceLevel)
 {
 	if (forcePower < FP_FIRST || forceLevel >= NUM_FORCE_POWERS)
 	{
@@ -4153,7 +4153,7 @@ static void Q3_SetForcePowerLevel(int entID, int forcePower, int forceLevel)
 
 extern qboolean G_InventorySelectable(int index, const gentity_t* other);
 
-static void Q3_GiveSecurityKey(int entID, const char* keyname)
+static void Q3_GiveSecurityKey(const int entID, const char* keyname)
 {
 	const gentity_t* other = &g_entities[entID];
 
@@ -4217,7 +4217,7 @@ Q3_SetParm
   Argument		: const char *parmValue
 ============
 */
-void Q3_SetParm(int entID, int parmNum, const char* parmValue)
+void Q3_SetParm(const int entID, const int parmNum, const char* parmValue)
 {
 	gentity_t* ent = &g_entities[entID];
 	float val;
@@ -4269,7 +4269,7 @@ Q3_SetCaptureGoal
 Sets the capture spot goal of an entity
 =============
 */
-static void Q3_SetCaptureGoal(int entID, const char* name)
+static void Q3_SetCaptureGoal(const int entID, const char* name)
 {
 	const gentity_t* ent = &g_entities[entID];
 	gentity_t* goal = G_Find(nullptr, FOFS(targetname), name);
@@ -4309,7 +4309,7 @@ Q3_SetEvent
 ?
 =============
 */
-static void Q3_SetEvent(int entID, const char* event_name)
+static void Q3_SetEvent(const int entID, const char* event_name)
 {
 	const gentity_t* ent = &g_entities[entID];
 	//	vec3_t		spot;
@@ -4381,7 +4381,7 @@ Q3_SetBehaviorSet
 ?
 ============
 */
-static qboolean Q3_SetBehaviorSet(int entID, int toSet, const char* scriptname)
+static qboolean Q3_SetBehaviorSet(const int entID, const int toSet, const char* scriptname)
 {
 	gentity_t* ent = &g_entities[entID];
 	bSet_t bSet = BSET_INVALID;
@@ -4482,7 +4482,7 @@ Q3_SetDelayScriptTime
 ?
 ============
 */
-static void Q3_SetDelayScriptTime(int entID, int delayTime)
+static void Q3_SetDelayScriptTime(const int entID, const int delayTime)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -4502,7 +4502,7 @@ Q3_SetIgnorePain
 ?
 ============
 */
-static void Q3_SetIgnorePain(int entID, qboolean data)
+static void Q3_SetIgnorePain(const int entID, const qboolean data)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -4529,7 +4529,7 @@ Q3_SetIgnoreEnemies
 ?
 ============
 */
-static void Q3_SetIgnoreEnemies(int entID, qboolean data)
+static void Q3_SetIgnoreEnemies(const int entID, const qboolean data)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -4563,7 +4563,7 @@ Q3_SetIgnoreAlerts
 ?
 ============
 */
-static void Q3_SetIgnoreAlerts(int entID, qboolean data)
+static void Q3_SetIgnoreAlerts(const int entID, const qboolean data)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -4597,7 +4597,7 @@ Q3_SetNoTarget
 ?
 ============
 */
-static void Q3_SetNoTarget(int entID, qboolean data)
+static void Q3_SetNoTarget(const int entID, const qboolean data)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -4620,7 +4620,7 @@ Q3_SetDontShoot
 ?
 ============
 */
-static void Q3_SetDontShoot(int entID, qboolean add)
+static void Q3_SetDontShoot(const int entID, const qboolean add)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -4647,7 +4647,7 @@ Q3_SetDontFire
 ?
 ============
 */
-static void Q3_SetDontFire(int entID, qboolean add)
+static void Q3_SetDontFire(const int entID, const qboolean add)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -4681,7 +4681,7 @@ Q3_SetFireWeapon
 ?
 ============
 */
-static void Q3_SetFireWeapon(int entID, qboolean add)
+static void Q3_SetFireWeapon(const int entID, const qboolean add)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -4715,7 +4715,7 @@ Q3_SetFireWeaponNoAnim
 ?
 ============
 */
-static void Q3_SetFireWeaponNoAnim(int entID, qboolean add)
+static void Q3_SetFireWeaponNoAnim(const int entID, const qboolean add)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -4749,7 +4749,7 @@ Q3_SetSafeRemove
 If true, NPC will remove itself once player is not in PVS
 ============
 */
-static void Q3_SetSafeRemove(int entID, qboolean add)
+static void Q3_SetSafeRemove(const int entID, const qboolean add)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -4783,7 +4783,7 @@ Q3_SetBobaJetPack
 Turn on/off Boba's jet pack
 ============
 */
-static void Q3_SetBobaJetPack(int entID, qboolean add)
+static void Q3_SetBobaJetPack(const int entID, const qboolean add)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -4879,7 +4879,7 @@ Q3_SetInactive
 ?
 ============
 */
-static void Q3_SetInactive(int entID, qboolean add)
+static void Q3_SetInactive(const int entID, const qboolean add)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -4906,7 +4906,7 @@ Q3_SetFuncUsableVisible
 ?
 ============
 */
-static void Q3_SetFuncUsableVisible(int entID, qboolean visible)
+static void Q3_SetFuncUsableVisible(const int entID, const qboolean visible)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -4938,7 +4938,7 @@ Q3_SetLockedEnemy
 ?
 ============
 */
-static void Q3_SetLockedEnemy(int entID, qboolean locked)
+static void Q3_SetLockedEnemy(const int entID, const qboolean locked)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -4993,7 +4993,7 @@ Q3_SetNoMindTrick
 ?
 ============
 */
-static void Q3_SetNoMindTrick(int entID, qboolean add)
+static void Q3_SetNoMindTrick(const int entID, const qboolean add)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -5032,7 +5032,7 @@ Q3_SetCrouched
 ?
 ============
 */
-static void Q3_SetCrouched(int entID, qboolean add)
+static void Q3_SetCrouched(const int entID, const qboolean add)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -5066,7 +5066,7 @@ Q3_SetWalking
 ?
 ============
 */
-static void Q3_SetWalking(int entID, qboolean add)
+static void Q3_SetWalking(const int entID, const qboolean add)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -5099,7 +5099,7 @@ Q3_SetRunning
 ?
 ============
 */
-static void Q3_SetRunning(int entID, qboolean add)
+static void Q3_SetRunning(const int entID, const qboolean add)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -5132,7 +5132,7 @@ Q3_SetForcedMarch
 ?
 ============
 */
-static void Q3_SetForcedMarch(int entID, qboolean add)
+static void Q3_SetForcedMarch(const int entID, const qboolean add)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -5166,7 +5166,7 @@ Q3_SetChaseEnemies
 indicates whether the npc should chase after an enemy
 ============
 */
-static void Q3_SetChaseEnemies(int entID, qboolean add)
+static void Q3_SetChaseEnemies(const int entID, const qboolean add)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -5201,7 +5201,7 @@ if set npc will be on the look out for potential enemies
 if not set, npc will ignore enemies
 ============
 */
-static void Q3_SetLookForEnemies(int entID, qboolean add)
+static void Q3_SetLookForEnemies(const int entID, const qboolean add)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -5234,7 +5234,7 @@ Q3_SetFaceMoveDir
 
 ============
 */
-static void Q3_SetFaceMoveDir(int entID, qboolean add)
+static void Q3_SetFaceMoveDir(const int entID, const qboolean add)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -5268,7 +5268,7 @@ Q3_SetAltFire
 ?
 ============
 */
-static void Q3_SetAltFire(int entID, qboolean add)
+static void Q3_SetAltFire(const int entID, const qboolean add)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -5303,7 +5303,7 @@ Q3_SetDontFlee
 ?
 ============
 */
-static void Q3_SetDontFlee(int entID, qboolean add)
+static void Q3_SetDontFlee(const int entID, const qboolean add)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -5337,7 +5337,7 @@ Q3_SetNoResponse
 ?
 ============
 */
-static void Q3_SetNoResponse(int entID, qboolean add)
+static void Q3_SetNoResponse(const int entID, const qboolean add)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -5371,7 +5371,7 @@ Q3_SetCombatTalk
 ?
 ============
 */
-static void Q3_SetCombatTalk(int entID, qboolean add)
+static void Q3_SetCombatTalk(const int entID, const qboolean add)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -5405,7 +5405,7 @@ Q3_SetAlertTalk
 ?
 ============
 */
-static void Q3_SetAlertTalk(int entID, qboolean add)
+static void Q3_SetAlertTalk(const int entID, const qboolean add)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -5439,7 +5439,7 @@ Q3_SetUseCpNearest
 ?
 ============
 */
-static void Q3_SetUseCpNearest(int entID, qboolean add)
+static void Q3_SetUseCpNearest(const int entID, const qboolean add)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -5473,7 +5473,7 @@ Q3_SetNoForce
 ?
 ============
 */
-static void Q3_SetNoForce(int entID, qboolean add)
+static void Q3_SetNoForce(const int entID, const qboolean add)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -5506,7 +5506,7 @@ Q3_SetNoAcrobatics
 ?
 ============
 */
-static void Q3_SetNoAcrobatics(int entID, qboolean add)
+static void Q3_SetNoAcrobatics(const int entID, const qboolean add)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -5540,7 +5540,7 @@ Q3_SetUseSubtitles
 ?
 ============
 */
-static void Q3_SetUseSubtitles(int entID, qboolean add)
+static void Q3_SetUseSubtitles(const int entID, const qboolean add)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -5574,7 +5574,7 @@ Q3_SetNoFallToDeath
 ?
 ============
 */
-static void Q3_SetNoFallToDeath(int entID, qboolean add)
+static void Q3_SetNoFallToDeath(const int entID, const qboolean add)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -5608,7 +5608,7 @@ Q3_SetDismemberable
 ?
 ============
 */
-static void Q3_SetDismemberable(int entID, qboolean dismemberable)
+static void Q3_SetDismemberable(const int entID, const qboolean dismemberable)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -5635,7 +5635,7 @@ Q3_SetMoreLight
 ?
 ============
 */
-static void Q3_SetMoreLight(int entID, qboolean add)
+static void Q3_SetMoreLight(const int entID, const qboolean add)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -5662,7 +5662,7 @@ static void Q3_SetMoreLight(int entID, qboolean add)
 	}
 }
 
-static void Q3_SetMoreLightnpc(int entID, qboolean add)
+static void Q3_SetMoreLightnpc(const int entID, const qboolean add)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -5689,7 +5689,7 @@ Q3_SetUndying
 ?
 ============
 */
-static void Q3_SetUndying(int entID, qboolean undying)
+static void Q3_SetUndying(const int entID, const qboolean undying)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -5716,7 +5716,7 @@ Q3_SetInvincible
 ?
 ============
 */
-static void Q3_SetInvincible(int entID, qboolean invincible)
+static void Q3_SetInvincible(const int entID, const qboolean invincible)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -5756,7 +5756,7 @@ Q3_SetEnlessBP
 ?
 ============
 */
-static void Q3_SetEnlessBP(int entID, qboolean endlessbp)
+static void Q3_SetEnlessBP(const int entID, const qboolean endlessbp)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -5785,7 +5785,7 @@ Q3_SetForceInvincible
   Argument		: qboolean forceInv
 ============
 */
-static void Q3_SetForceInvincible(int entID, qboolean forceInv)
+static void Q3_SetForceInvincible(const int entID, const qboolean forceInv)
 {
 	const gentity_t* self = &g_entities[entID];
 
@@ -5814,7 +5814,7 @@ Q3_SetNoAvoid
 ?
 ============
 */
-static void Q3_SetNoAvoid(int entID, qboolean noAvoid)
+static void Q3_SetNoAvoid(const int entID, const qboolean noAvoid)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -5882,7 +5882,7 @@ Q3_SetSolid
 ?
 ============
 */
-static qboolean Q3_SetSolid(int entID, qboolean solid)
+static qboolean Q3_SetSolid(const int entID, const qboolean solid)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -5945,7 +5945,7 @@ Q3_SetLean
 #define LEAN_RIGHT	1
 #define LEAN_LEFT	2
 
-static void Q3_SetLean(int entID, int lean)
+static void Q3_SetLean(const int entID, const int lean)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -5985,7 +5985,7 @@ Q3_SetForwardMove
 ?
 ============
 */
-static void Q3_SetForwardMove(int entID, int fmoveVal)
+static void Q3_SetForwardMove(const int entID, const int fmoveVal)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -6012,7 +6012,7 @@ Q3_SetRightMove
 ?
 ============
 */
-static void Q3_SetRightMove(int entID, const int rmoveVal)
+static void Q3_SetRightMove(const int entID, const int rmoveVal)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -6039,7 +6039,7 @@ Q3_SetLockAngle
 ?
 ============
 */
-static void Q3_SetLockAngle(int entID, const char* lockAngle)
+static void Q3_SetLockAngle(const int entID, const char* lockAngle)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -6101,7 +6101,7 @@ Q3_CameraGroup
 ?
 ============
 */
-static void Q3_CameraGroup(int entID, const char* camG)
+static void Q3_CameraGroup(const int entID, const char* camG)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -6122,7 +6122,7 @@ Q3_CameraGroupZOfs
 ?
 ============
 */
-static void Q3_CameraGroupZOfs(float camGZOfs)
+static void Q3_CameraGroupZOfs(const float camGZOfs)
 {
 	client_camera.cameraGroupZOfs = camGZOfs;
 }
@@ -6144,7 +6144,7 @@ static void Q3_CameraGroupTag(const char* camGTag)
 Q3_RemoveRHandModel
 ============
 */
-static void Q3_RemoveRHandModel(int entID, char* addModel)
+static void Q3_RemoveRHandModel(const int entID, char* addModel)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -6159,7 +6159,7 @@ static void Q3_RemoveRHandModel(int entID, char* addModel)
 Q3_AddRHandModel
 ============
 */
-static void Q3_AddRHandModel(int entID, const char* addModel)
+static void Q3_AddRHandModel(const int entID, const char* addModel)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -6177,7 +6177,7 @@ static void Q3_AddRHandModel(int entID, const char* addModel)
 Q3_AddLHandModel
 ============
 */
-static void Q3_AddLHandModel(int entID, const char* addModel)
+static void Q3_AddLHandModel(const int entID, const char* addModel)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -6195,7 +6195,7 @@ static void Q3_AddLHandModel(int entID, const char* addModel)
 Q3_RemoveLHandModel
 ============
 */
-static void Q3_RemoveLHandModel(int entID, char* addModel)
+static void Q3_RemoveLHandModel(const int entID, char* addModel)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -6212,7 +6212,7 @@ Q3_LookTarget
 ?
 ============
 */
-static void Q3_LookTarget(int entID, char* targetName)
+static void Q3_LookTarget(const int entID, char* targetName)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -6262,7 +6262,7 @@ Q3_Face
 ?
 ============
 */
-static void Q3_Face(int entID, int expression, float holdtime)
+static void Q3_Face(const int entID, const int expression, float holdtime)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -6344,7 +6344,7 @@ Q3_SetPlayerUsable
   Argument		: qboolean usable
 ============
 */
-static void Q3_SetPlayerUsable(int entID, qboolean usable)
+static void Q3_SetPlayerUsable(const int entID, const qboolean usable)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -6373,7 +6373,7 @@ Q3_SetDisableShaderAnims
   Argument		: int disabled
 ============
 */
-static void Q3_SetDisableShaderAnims(int entID, int disabled)
+static void Q3_SetDisableShaderAnims(const int entID, const int disabled)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -6402,7 +6402,7 @@ Q3_SetShaderAnim
   Argument		: int disabled
 ============
 */
-static void Q3_SetShaderAnim(int entID, int disabled)
+static void Q3_SetShaderAnim(const int entID, const int disabled)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -6422,7 +6422,7 @@ static void Q3_SetShaderAnim(int entID, int disabled)
 	}
 }
 
-void Q3_SetBroadcast(int entID, qboolean broadcast)
+void Q3_SetBroadcast(const int entID, const qboolean broadcast)
 {
 	gentity_t* ent = &g_entities[entID];
 	if (broadcast)
@@ -6435,7 +6435,7 @@ void Q3_SetBroadcast(int entID, qboolean broadcast)
 	}
 }
 
-void Q3_SetForcePower(int entID, int forcePower, qboolean powerOn)
+void Q3_SetForcePower(const int entID, const int forcePower, const qboolean powerOn)
 {
 	const gentity_t* ent = &g_entities[entID];
 	if (!ent)
@@ -6467,7 +6467,7 @@ Q3_SetStartFrame
   Argument		: int startFrame
 ============
 */
-static void Q3_SetStartFrame(int entID, int startFrame)
+static void Q3_SetStartFrame(const int entID, const int startFrame)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -6500,7 +6500,7 @@ Q3_SetEndFrame
   Argument		: int endFrame
 ============
 */
-static void Q3_SetEndFrame(int entID, int endFrame)
+static void Q3_SetEndFrame(const int entID, const int endFrame)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -6532,7 +6532,7 @@ Q3_SetAnimFrame
   Argument		: int startFrame
 ============
 */
-static void Q3_SetAnimFrame(int entID, int animFrame)
+static void Q3_SetAnimFrame(const int entID, const int animFrame)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -6604,7 +6604,7 @@ Q3_SetLoopAnim
   Argument		: qboolean loopAnim
 ============
 */
-static void Q3_SetLoopAnim(int entID, qboolean loopAnim)
+static void Q3_SetLoopAnim(const int entID, const qboolean loopAnim)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -6633,7 +6633,7 @@ Q3_SetShields
   Argument		: qboolean shields
 ============
 */
-static void Q3_SetShields(int entID, qboolean shields)
+static void Q3_SetShields(const int entID, const qboolean shields)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -6668,7 +6668,7 @@ Q3_SetSaberActive
   Argument		: qboolean shields
 ============
 */
-static void Q3_SetSaberActive(int entID, qboolean active)
+static void Q3_SetSaberActive(const int entID, const qboolean active)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -6735,7 +6735,7 @@ static void Q3_SetSaberActive(int entID, qboolean active)
 	[return]	void
 ============
 */
-static void Q3_SetSaberBladeActive(int entID, int iSaber, int iBlade, qboolean bActive = qtrue)
+static void Q3_SetSaberBladeActive(const int entID, const int iSaber, const int iBlade, const qboolean bActive = qtrue)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -6793,7 +6793,7 @@ Q3_SetNoKnockback
   Argument		: qboolean noKnockback
 ============
 */
-static void Q3_SetNoKnockback(int entID, qboolean noKnockback)
+static void Q3_SetNoKnockback(const int entID, const qboolean noKnockback)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -6813,7 +6813,7 @@ static void Q3_SetNoKnockback(int entID, qboolean noKnockback)
 	}
 }
 
-static void Q3_SetNoSaberReturn(int entID, qboolean NoSaberReturn)
+static void Q3_SetNoSaberReturn(const int entID, const qboolean NoSaberReturn)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -6897,7 +6897,7 @@ Q3_SetLocation
   Argument		: const char *location
 ============
 */
-static qboolean Q3_SetLocation(int entID, const char* location)
+static qboolean Q3_SetLocation(const int entID, const char* location)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -6927,7 +6927,7 @@ Q3_SetPlayerLocked
 */
 qboolean player_locked = qfalse;
 
-static void Q3_SetPlayerLocked(int entID, qboolean locked)
+static void Q3_SetPlayerLocked(int entID, const qboolean locked)
 {
 	const gentity_t* ent = &g_entities[0];
 
@@ -6948,7 +6948,7 @@ Q3_SetLockPlayerWeapons
   Argument		: qboolean locked
 ============
 */
-static void Q3_SetLockPlayerWeapons(int entID, qboolean locked)
+static void Q3_SetLockPlayerWeapons(int entID, const qboolean locked)
 {
 	gentity_t* ent = &g_entities[0];
 
@@ -6969,7 +6969,7 @@ Q3_SetNoImpactDamage
   Argument		: qboolean locked
 ============
 */
-static void Q3_SetNoImpactDamage(int entID, qboolean noImp)
+static void Q3_SetNoImpactDamage(const int entID, const qboolean noImp)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -7093,7 +7093,7 @@ Q3_Remove
   Argument		: const char *name
 ============
 */
-static void Q3_Remove(int entID, const char* name)
+static void Q3_Remove(const int entID, const char* name)
 {
 	gentity_t* ent = &g_entities[entID];
 	gentity_t* victim;
@@ -7135,7 +7135,7 @@ static void Q3_Remove(int entID, const char* name)
 	}
 }
 
-static void Q3_setVaderBreath(int entID, qboolean usable)
+static void Q3_setVaderBreath(const int entID, const qboolean usable)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -7155,7 +7155,7 @@ static void Q3_setVaderBreath(int entID, qboolean usable)
 	}
 }
 
-static void Q3_setVaderBreathdamaged(int entID, qboolean usable)
+static void Q3_setVaderBreathdamaged(const int entID, const qboolean usable)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -7194,7 +7194,7 @@ void RemoveOwner(gentity_t* self)
 	G_FreeEntity(self);
 }
 
-void Q3_DismemberLimb(int entID, char* hitLocName)
+void Q3_DismemberLimb(const int entID, char* hitLocName)
 {
 	gentity_t* self = &g_entities[entID];
 	const int hitLoc = GetIDForString(HLTable, hitLocName);
@@ -7438,7 +7438,7 @@ SetVariable_Float
 -------------------------
 */
 
-int CQuake3GameInterface::SetFloatVariable(const char* name, float value)
+int CQuake3GameInterface::SetFloatVariable(const char* name, const float value)
 {
 	//Check the floats
 	const auto vfi = m_varFloats.find(name);
@@ -7646,7 +7646,7 @@ VariableLoadStrings
 -------------------------
 */
 
-void CQuake3GameInterface::VariableLoadStrings(int type, varString_m& fmap)
+void CQuake3GameInterface::VariableLoadStrings(const int type, varString_m& fmap)
 {
 	int numFloats = 0;
 	char tempBuffer[1024];
@@ -8119,7 +8119,7 @@ void CQuake3GameInterface::CenterPrint(const char* format, ...)
 }
 
 // Print a debug message.
-void CQuake3GameInterface::DebugPrint(e_DebugPrintLevel level, const char* format, ...)
+void CQuake3GameInterface::DebugPrint(const e_DebugPrintLevel level, const char* format, ...)
 {
 	//Don't print messages they don't want to see
 	if (g_ICARUSDebug->integer < level)
@@ -8179,7 +8179,7 @@ unsigned int CQuake3GameInterface::GetTime(void)
 // NOTE: This extern does not really fit here, fix later please...
 extern void G_SoundBroadcast(const gentity_t* ent, int soundIndex);
 // Plays a sound from an entity.
-int CQuake3GameInterface::PlayIcarusSound(int taskID, int entID, const char* name, const char* channel)
+int CQuake3GameInterface::PlayIcarusSound(const int taskID, const int entID, const char* name, const char* channel)
 {
 	gentity_t* ent = &g_entities[entID];
 	char finalName[MAX_QPATH];
@@ -8291,7 +8291,7 @@ int CQuake3GameInterface::PlayIcarusSound(int taskID, int entID, const char* nam
 }
 
 // Lerps the origin and angles of an entity to the destination values.
-void CQuake3GameInterface::Lerp2Pos(int taskID, int entID, vec3_t origin, vec3_t angles, float duration)
+void CQuake3GameInterface::Lerp2Pos(const int taskID, const int entID, vec3_t origin, vec3_t angles, float duration)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -8405,7 +8405,7 @@ void CQuake3GameInterface::Lerp2Pos(int taskID, int entID, vec3_t origin, vec3_t
 //	 void	CQuake3GameInterface::Lerp2Origin( int taskID, int entID, vec3_t origin, float duration ) {}
 
 // Lerps the angles to the destination value.
-void CQuake3GameInterface::Lerp2Angles(int taskID, int entID, vec3_t angles, float duration)
+void CQuake3GameInterface::Lerp2Angles(const int taskID, const int entID, vec3_t angles, const float duration)
 {
 	gentity_t* ent = &g_entities[entID];
 	vec3_t ang;
@@ -8458,7 +8458,7 @@ void CQuake3GameInterface::Lerp2Angles(int taskID, int entID, vec3_t angles, flo
 }
 
 // Gets the value of a tag by the give name.
-int CQuake3GameInterface::GetTag(int entID, const char* name, int lookup, vec3_t info)
+int CQuake3GameInterface::GetTag(const int entID, const char* name, const int lookup, vec3_t info)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -10106,7 +10106,7 @@ void CQuake3GameInterface::Set(int taskID, int entID, const char* type_name, con
 	IIcarusInterface::GetIcarus()->Completed(ent->m_iIcarusID, taskID);
 }
 
-const char* GetSaberColor(int color)
+const char* GetSaberColor(const int color)
 {
 	switch (color)
 	{
@@ -10151,7 +10151,7 @@ void CQuake3GameInterface::PrisonerObjCheck(const char* name, const char* data)
 }
 
 // Uses an entity.
-void CQuake3GameInterface::Use(int entID, const char* name)
+void CQuake3GameInterface::Use(const int entID, const char* name)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -10182,18 +10182,18 @@ void CQuake3GameInterface::Use(int entID, const char* name)
 	G_UseTargets2(ent, ent, name);
 }
 
-void CQuake3GameInterface::Activate(int entID, const char* name)
+void CQuake3GameInterface::Activate(const int entID, const char* name)
 {
 	Q3_SetInactive(entID, qtrue);
 }
 
-void CQuake3GameInterface::Deactivate(int entID, const char* name)
+void CQuake3GameInterface::Deactivate(const int entID, const char* name)
 {
 	Q3_SetInactive(entID, qfalse);
 }
 
 // Kill an entity.
-void CQuake3GameInterface::Kill(int entID, const char* name)
+void CQuake3GameInterface::Kill(const int entID, const char* name)
 {
 	gentity_t* ent = &g_entities[entID];
 	gentity_t* victim;
@@ -10244,7 +10244,7 @@ void CQuake3GameInterface::Kill(int entID, const char* name)
 }
 
 // Remove an entity.
-void CQuake3GameInterface::Remove(int entID, const char* name)
+void CQuake3GameInterface::Remove(const int entID, const char* name)
 {
 	gentity_t* ent = &g_entities[entID];
 	gentity_t* victim;
@@ -10287,12 +10287,12 @@ void CQuake3GameInterface::Remove(int entID, const char* name)
 }
 
 // Get a random (float) number.
-float CQuake3GameInterface::Random(float min, float max)
+float CQuake3GameInterface::Random(const float min, const float max)
 {
 	return rand() * (max - min) / static_cast<float>(RAND_MAX) + min;
 }
 
-void CQuake3GameInterface::Play(int taskID, int entID, const char* type, const char* name)
+void CQuake3GameInterface::Play(const int taskID, const int entID, const char* type, const char* name)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -10321,43 +10321,43 @@ void CQuake3GameInterface::Play(int taskID, int entID, const char* type, const c
 }
 
 //Camera functions
-void CQuake3GameInterface::CameraPan(vec3_t angles, vec3_t dir, float duration)
+void CQuake3GameInterface::CameraPan(vec3_t angles, vec3_t dir, const float duration)
 {
 	CGCam_Pan(angles, dir, duration);
 }
 
-void CQuake3GameInterface::CameraMove(vec3_t origin, float duration)
+void CQuake3GameInterface::CameraMove(vec3_t origin, const float duration)
 {
 	CGCam_Move(origin, duration);
 }
 
-void CQuake3GameInterface::CameraZoom(float fov, float duration)
+void CQuake3GameInterface::CameraZoom(const float fov, const float duration)
 {
 	CGCam_Zoom(fov, duration);
 }
 
-void CQuake3GameInterface::CameraRoll(float angle, float duration)
+void CQuake3GameInterface::CameraRoll(const float angle, const float duration)
 {
 	CGCam_Roll(angle, duration);
 }
 
-void CQuake3GameInterface::CameraFollow(const char* name, float speed, float initLerp)
+void CQuake3GameInterface::CameraFollow(const char* name, const float speed, const float initLerp)
 {
 	CGCam_Follow(name, speed, initLerp);
 }
 
-void CQuake3GameInterface::CameraTrack(const char* name, float speed, float initLerp)
+void CQuake3GameInterface::CameraTrack(const char* name, const float speed, const float initLerp)
 {
 	CGCam_Track(name, speed, initLerp);
 }
 
-void CQuake3GameInterface::CameraDistance(float dist, float initLerp)
+void CQuake3GameInterface::CameraDistance(const float dist, const float initLerp)
 {
 	CGCam_Distance(dist, initLerp);
 }
 
-void CQuake3GameInterface::CameraFade(float sr, float sg, float sb, float sa, float dr, float dg, float db,
-	float da, float duration)
+void CQuake3GameInterface::CameraFade(const float sr, const float sg, const float sb, const float sa, const float dr, const float dg, const float db,
+                                      const float da, const float duration)
 {
 	vec4_t src, dst;
 
@@ -10389,12 +10389,12 @@ void CQuake3GameInterface::CameraDisable(void)
 	CGCam_Disable();
 }
 
-void CQuake3GameInterface::CameraShake(float intensity, int duration)
+void CQuake3GameInterface::CameraShake(const float intensity, const int duration)
 {
 	CGCam_Shake(intensity, duration);
 }
 
-int CQuake3GameInterface::GetFloat(int entID, const char* name, float* value)
+int CQuake3GameInterface::GetFloat(const int entID, const char* name, float* value)
 {
 	const gentity_t* ent = &g_entities[entID];
 	//	gclient_t	*client;
@@ -11051,7 +11051,7 @@ int CQuake3GameInterface::GetFloat(int entID, const char* name, float* value)
 	return true;
 }
 
-int CQuake3GameInterface::GetVector(int entID, const char* name, vec3_t value)
+int CQuake3GameInterface::GetVector(const int entID, const char* name, vec3_t value)
 {
 	const gentity_t* ent = &g_entities[entID];
 	if (!ent)
@@ -11107,7 +11107,7 @@ int CQuake3GameInterface::GetVector(int entID, const char* name, vec3_t value)
 	return true;
 }
 
-int CQuake3GameInterface::GetString(int entID, const char* name, char** value)
+int CQuake3GameInterface::GetString(const int entID, const char* name, char** value)
 {
 	const gentity_t* ent = &g_entities[entID];
 	if (!ent)
@@ -11387,7 +11387,7 @@ int CQuake3GameInterface::GetString(int entID, const char* name, char** value)
 	return true;
 }
 
-int CQuake3GameInterface::Evaluate(int p1Type, const char* p1, int p2Type, const char* p2, int operatorType)
+int CQuake3GameInterface::Evaluate(int p1Type, const char* p1, int p2Type, const char* p2, const int operatorType)
 {
 	float f1 = 0, f2 = 0;
 	vec3_t v1, v2;
@@ -11617,7 +11617,7 @@ int CQuake3GameInterface::Evaluate(int p1Type, const char* p1, int p2Type, const
 	return false;
 }
 
-void CQuake3GameInterface::DeclareVariable(int type, const char* name)
+void CQuake3GameInterface::DeclareVariable(const int type, const char* name)
 {
 	//Cannot declare the same variable twice
 	if (VariableDeclared(name) != VTYPE_NONE)
@@ -11689,7 +11689,7 @@ ojk::ISavedGame* CQuake3GameInterface::get_saved_game_file()
 	return gi.saved_game;
 }
 
-int CQuake3GameInterface::LinkGame(int entID, int icarusID)
+int CQuake3GameInterface::LinkGame(const int entID, const int icarusID)
 {
 	gentity_t* pEntity = &g_entities[entID];
 
@@ -11706,7 +11706,7 @@ int CQuake3GameInterface::LinkGame(int entID, int icarusID)
 }
 
 // Access functions
-int CQuake3GameInterface::CreateIcarus(int entID)
+int CQuake3GameInterface::CreateIcarus(const int entID)
 {
 	gentity_t* pEntity = &g_entities[entID];
 
@@ -11745,7 +11745,7 @@ int CQuake3GameInterface::GetByName(const char* name)
 
 // (g_entities[m_ownerID].svFlags&SVF_ICARUS_FREEZE)
 // return -1 indicates invalid
-int CQuake3GameInterface::IsFrozen(int entID)
+int CQuake3GameInterface::IsFrozen(const int entID)
 {
 	return g_entities[entID].svFlags & SVF_ICARUS_FREEZE;
 }
@@ -11755,7 +11755,7 @@ void CQuake3GameInterface::Free(void* data)
 	gi.Free(data);
 }
 
-void* CQuake3GameInterface::Malloc(int size)
+void* CQuake3GameInterface::Malloc(const int size)
 {
 	return gi.Malloc(size, TAG_ICARUS, qtrue);
 }

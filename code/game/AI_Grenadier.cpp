@@ -105,7 +105,7 @@ NPC_ST_Pain
 -------------------------
 */
 
-void NPC_Grenadier_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, vec3_t point, int damage, int mod)
+void NPC_Grenadier_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, vec3_t point, const int damage, const int mod)
 {
 	self->NPC->localState = LSTATE_UNDERFIRE;
 
@@ -466,7 +466,7 @@ static void Grenadier_CheckFireState(void)
 	*/
 }
 
-qboolean Grenadier_EvaluateShot(int hit)
+qboolean Grenadier_EvaluateShot(const int hit)
 {
 	if (!NPC->enemy)
 	{

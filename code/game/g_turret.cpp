@@ -44,7 +44,7 @@ constexpr auto SPF_TURRETG2_LEAD_ENEMY = 8;
 #define name3 "models/map_objects/wedge/laser_cannon_model.glm"
 
 //------------------------------------------------------------------------------------------------------------
-void TurretPain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage, int mod,
+void TurretPain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage, const int mod,
 	int hitLoc)
 	//------------------------------------------------------------------------------------------------------------
 {
@@ -70,7 +70,7 @@ void TurretPain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, cons
 }
 
 //------------------------------------------------------------------------------------------------------------
-void turret_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath, int dFlags,
+void turret_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const int damage, const int meansOfDeath, int dFlags,
 	int hitLoc)
 	//------------------------------------------------------------------------------------------------------------
 {
@@ -140,7 +140,7 @@ void turret_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int 
 }
 
 //start an animation on model_root both server side and client side
-void TurboLaser_SetBoneAnim(gentity_t* eweb, int startFrame, int endFrame)
+void TurboLaser_SetBoneAnim(gentity_t* eweb, const int startFrame, const int endFrame)
 {
 	//set info on the entity so it knows to start the anim on the client next snapshot.
 	//eweb->s.eFlags |= EF_G2ANIMATING;
@@ -767,7 +767,7 @@ void turret_SetBoneAngles(gentity_t* ent, const char* bone, const vec3_t angles)
 		right, forward, nullptr, 100, level.time);
 }
 
-void turret_set_models(gentity_t* self, qboolean dying)
+void turret_set_models(gentity_t* self, const qboolean dying)
 {
 	if (dying)
 	{
@@ -2356,7 +2356,7 @@ Creates a turret that, when the player uses a panel, takes control of this turre
 
 extern gentity_t* player;
 extern qboolean G_ClearViewEntity(gentity_t* ent);
-extern void G_SetViewEntity(gentity_t* self, gentity_t* viewEntity);
+extern void G_SetViewEntity(gentity_t* self, gentity_t* view_entity);
 extern gentity_t* CreateMissile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner,
 	qboolean altFire = qfalse);
 

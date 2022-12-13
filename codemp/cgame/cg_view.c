@@ -398,14 +398,14 @@ static void CG_ResetThirdPersonViewDamp(void)
 	VectorCopy(cameraIdealTarget, cameraCurTarget);
 
 	// First thing we do is trace from the first person viewpoint out to the new target location.
-	CG_Trace(&trace, cameraFocusLoc, cameramins, cameramaxs, cameraCurTarget, cg.snap->ps.clientNum, MASK_CAMERACLIP);
+	CG_Trace(&trace, cameraFocusLoc, cameramins, cameramaxs, cameraCurTarget, cg.snap->ps.client_num, MASK_CAMERACLIP);
 	if (trace.fraction <= 1.0)
 	{
 		VectorCopy(trace.endpos, cameraCurTarget);
 	}
 
 	// Now we trace from the new target location to the new view location, to make sure there is nothing in the way.
-	CG_Trace(&trace, cameraCurTarget, cameramins, cameramaxs, cameraCurLoc, cg.snap->ps.clientNum, MASK_CAMERACLIP);
+	CG_Trace(&trace, cameraCurTarget, cameramins, cameramaxs, cameraCurLoc, cg.snap->ps.client_num, MASK_CAMERACLIP);
 	if (trace.fraction <= 1.0)
 	{
 		VectorCopy(trace.endpos, cameraCurLoc);
@@ -461,7 +461,7 @@ static void CG_UpdateThirdPersonTargetDamp(void)
 	// Now we trace to see if the new location is cool or not.
 
 	// First thing we do is trace from the first person viewpoint out to the new target location.
-	CG_Trace(&trace, cameraFocusLoc, cameramins, cameramaxs, cameraCurTarget, cg.snap->ps.clientNum, MASK_CAMERACLIP);
+	CG_Trace(&trace, cameraFocusLoc, cameramins, cameramaxs, cameraCurTarget, cg.snap->ps.client_num, MASK_CAMERACLIP);
 	if (trace.fraction < 1.0)
 	{
 		VectorCopy(trace.endpos, cameraCurTarget);
@@ -547,7 +547,7 @@ static void CG_UpdateThirdPersonCameraDamp(void)
 	}
 
 	// Now we trace from the new target location to the new view location, to make sure there is nothing in the way.
-	CG_Trace(&trace, cameraCurTarget, cameramins, cameramaxs, cameraCurLoc, cg.snap->ps.clientNum, MASK_CAMERACLIP);
+	CG_Trace(&trace, cameraCurTarget, cameramins, cameramaxs, cameraCurLoc, cg.snap->ps.client_num, MASK_CAMERACLIP);
 
 	if (trace.fraction < 1.0)
 	{
@@ -577,7 +577,7 @@ static void CG_UpdateThirdPersonCameraDamp(void)
 				VectorCopy(mover->lerpOrigin, mover->currentState.pos.trBase);
 
 				//retrace
-				CG_Trace(&trace, cameraCurTarget, cameramins, cameramaxs, cameraCurLoc, cg.snap->ps.clientNum, MASK_CAMERACLIP);
+				CG_Trace(&trace, cameraCurTarget, cameramins, cameramaxs, cameraCurLoc, cg.snap->ps.client_num, MASK_CAMERACLIP);
 
 				//copy old data back in
 				mover->currentState.pos.trType = (trType_t)curTr;
@@ -858,7 +858,7 @@ static void CG_OffsetThirdPersonView( void ) {
 	// in a solid block.  Use an 8 by 8 block to prevent the view from near clipping anything
 
 	if (!cg_cameraMode.integer) {
-		CG_Trace( &trace, cg.refdef.vieworg, mins, maxs, view, cg.predictedPlayerState.clientNum, MASK_CAMERACLIP);
+		CG_Trace( &trace, cg.refdef.vieworg, mins, maxs, view, cg.predictedPlayerState.client_num, MASK_CAMERACLIP);
 
 		if ( trace.fraction != 1.0 ) {
 			VectorCopy( trace.endpos, view );
@@ -866,7 +866,7 @@ static void CG_OffsetThirdPersonView( void ) {
 			// try another trace to this position, because a tunnel may have the ceiling
 			// close enogh that this is poking out
 
-			CG_Trace( &trace, cg.refdef.vieworg, mins, maxs, view, cg.predictedPlayerState.clientNum, MASK_CAMERACLIP);
+			CG_Trace( &trace, cg.refdef.vieworg, mins, maxs, view, cg.predictedPlayerState.client_num, MASK_CAMERACLIP);
 			VectorCopy( trace.endpos, view );
 		}
 	}
@@ -1078,7 +1078,7 @@ static void CG_OffsetFighterView(void)
 	VectorMA(camOrg, vertOffset, vehUp, camOrg);
 
 	//trace to that pos
-	CG_Trace(&trace, cg.refdef.vieworg, cameramins, cameramaxs, camOrg, cg.snap->ps.clientNum, MASK_CAMERACLIP);
+	CG_Trace(&trace, cg.refdef.vieworg, cameramins, cameramaxs, camOrg, cg.snap->ps.client_num, MASK_CAMERACLIP);
 	if (trace.fraction < 1.0)
 	{
 		VectorCopy(trace.endpos, camOrg);
@@ -1095,7 +1095,7 @@ static void CG_OffsetFighterView(void)
 	VectorMA(camOrg, range, backDir, camBackOrg);
 
 	//trace to that pos
-	CG_Trace(&trace, camOrg, cameramins, cameramaxs, camBackOrg, cg.snap->ps.clientNum, MASK_CAMERACLIP);
+	CG_Trace(&trace, camOrg, cameramins, cameramaxs, camBackOrg, cg.snap->ps.client_num, MASK_CAMERACLIP);
 	VectorCopy(trace.endpos, camOrg);
 
 	//FIXME: do we need to smooth the org?
@@ -1323,8 +1323,8 @@ vec3_t cg_actionCamLastPos;
 //action cam routine -rww
 static qboolean CG_ThirdPersonActionCam(void)
 {
-	const centity_t* cent = &cg_entities[cg.snap->ps.clientNum];
-	const clientInfo_t* ci = &cgs.clientinfo[cg.snap->ps.clientNum];
+	const centity_t* cent = &cg_entities[cg.snap->ps.client_num];
+	const clientInfo_t* ci = &cgs.clientinfo[cg.snap->ps.client_num];
 	trace_t tr;
 	vec3_t positionDir;
 	vec3_t desiredAngles;
@@ -1637,7 +1637,7 @@ static void CG_PowerupTimerSounds(void) {
 			continue;
 		}
 		if ((t - cg.time) / POWERUP_BLINK_TIME != (t - cg.oldTime) / POWERUP_BLINK_TIME) {
-			//trap->S_StartSound( NULL, cg.snap->ps.clientNum, CHAN_ITEM, cgs.media.wearOffSound );
+			//trap->S_StartSound( NULL, cg.snap->ps.client_num, CHAN_ITEM, cgs.media.wearOffSound );
 		}
 	}
 }
@@ -1822,7 +1822,7 @@ void CG_UpdateSoundTrackers()
 		if (cent && (cent->currentState.eFlags & EF_SOUNDTRACKER) && cent->currentState.number == num)
 			//make sure the thing is valid at least.
 		{ //keep sound for this entity updated in accordance with its attached entity at all times
-			if (cg.snap && cent->currentState.trickedentindex == cg.snap->ps.clientNum)
+			if (cg.snap && cent->currentState.trickedentindex == cg.snap->ps.client_num)
 			{ //this is actually the player, so center the sound origin right on top of us
 				VectorCopy(cg.refdef.vieworg, cent->lerpOrigin);
 				trap->S_UpdateEntityPosition(cent->currentState.number, cent->lerpOrigin);
@@ -2090,7 +2090,7 @@ void CG_AddRadarAutomapEnts(void)
 	int i = 0;
 
 	//first add yourself
-	CG_AddRefentForAutoMap(&cg_entities[cg.predictedPlayerState.clientNum]);
+	CG_AddRefentForAutoMap(&cg_entities[cg.predictedPlayerState.client_num]);
 
 	while (i < cg.radarEntityCount)
 	{
@@ -2136,7 +2136,7 @@ void CG_DrawAutoMap(void)
 		return;
 	}
 
-	const clientInfo_t* local = &cgs.clientinfo[cg.predictedPlayerState.clientNum];
+	const clientInfo_t* local = &cgs.clientinfo[cg.predictedPlayerState.client_num];
 	if (!local->infoValid)
 	{ //don't show if bad ci
 		return;
@@ -2243,7 +2243,7 @@ void CG_DrawAutoMap(void)
 
 		VectorCopy(cg.predictedPlayerState.origin, fwd);
 		fwd[2] -= 4096.0f;
-		CG_Trace(&tr, cg.predictedPlayerState.origin, playerMins, playerMaxs, fwd, cg.predictedPlayerState.clientNum, MASK_SOLID);
+		CG_Trace(&tr, cg.predictedPlayerState.origin, playerMins, playerMaxs, fwd, cg.predictedPlayerState.client_num, MASK_SOLID);
 
 		if (!tr.startsolid && !tr.allsolid)
 		{
@@ -2373,9 +2373,9 @@ void CG_DrawActiveFrame(int serverTime, stereoFrame_t stereoView, qboolean demoP
 	}
 	if (cgs.gametype == GT_SIEGE &&
 		cg.snap &&
-		cg_siegeClassIndex != cgs.clientinfo[cg.snap->ps.clientNum].siegeIndex)
+		cg_siegeClassIndex != cgs.clientinfo[cg.snap->ps.client_num].siegeIndex)
 	{
-		cg_siegeClassIndex = cgs.clientinfo[cg.snap->ps.clientNum].siegeIndex;
+		cg_siegeClassIndex = cgs.clientinfo[cg.snap->ps.client_num].siegeIndex;
 		if (cg_siegeClassIndex == -1)
 		{
 			trap->Cvar_Set("ui_mySiegeClass", "<none>");
@@ -2625,7 +2625,7 @@ void CG_DrawActiveFrame(int serverTime, stereoFrame_t stereoView, qboolean demoP
 	}
 
 	// update audio positions
-	trap->S_Respatialize(cg.snap->ps.clientNum, cg.refdef.vieworg, cg.refdef.viewaxis, inwater);
+	trap->S_Respatialize(cg.snap->ps.client_num, cg.refdef.vieworg, cg.refdef.viewaxis, inwater);
 
 	// make sure the lagometerSample and frame timing isn't done twice when in stereo
 	if (stereoView != STEREO_RIGHT) {

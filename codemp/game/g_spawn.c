@@ -406,7 +406,7 @@ void SP_waypoint_navgoal_1(gentity_t* ent);
 
 void SP_CreateWind(gentity_t* ent);
 void SP_CreateSpaceDust(gentity_t* ent);
-void SP_CreateSnow(const gentity_t* ent);
+void SP_CreateSnow(gentity_t* ent);
 void SP_CreateRain(gentity_t* ent);
 
 void SP_point_combat(gentity_t* self);

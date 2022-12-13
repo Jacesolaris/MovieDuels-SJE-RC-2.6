@@ -197,7 +197,7 @@ void BotReportStatus(bot_state_t* bs)
 }
 
 //accept a team order from a player
-void BotOrder(gentity_t* ent, int clientnum, int ordernum)
+void BotOrder(gentity_t* ent, int client_num, int ordernum)
 {
 	int stateMin = 0;
 	int stateMax = 0;
@@ -208,12 +208,12 @@ void BotOrder(gentity_t* ent, int clientnum, int ordernum)
 		return;
 	}
 
-	if (clientnum != -1 && !botstates[clientnum])
+	if (client_num != -1 && !botstates[client_num])
 	{
 		return;
 	}
 
-	if (clientnum != -1 && !OnSameTeam(ent, &g_entities[clientnum]))
+	if (client_num != -1 && !OnSameTeam(ent, &g_entities[client_num]))
 	{
 		return;
 	}
@@ -244,21 +244,21 @@ void BotOrder(gentity_t* ent, int clientnum, int ordernum)
 		return;
 	}
 
-	if (clientnum != -1)
+	if (client_num != -1)
 	{
 		if (ordernum == -1)
 		{
-			BotReportStatus(botstates[clientnum]);
+			BotReportStatus(botstates[client_num]);
 		}
 		else
 		{
-			BotStraightTPOrderCheck(ent, ordernum, botstates[clientnum]);
-			botstates[clientnum]->state_Forced = ordernum;
-			botstates[clientnum]->chatObject = ent;
-			botstates[clientnum]->chatAltObject = NULL;
-			if (BotDoChat(botstates[clientnum], "OrderAccepted", 1))
+			BotStraightTPOrderCheck(ent, ordernum, botstates[client_num]);
+			botstates[client_num]->state_Forced = ordernum;
+			botstates[client_num]->chatObject = ent;
+			botstates[client_num]->chatAltObject = NULL;
+			if (BotDoChat(botstates[client_num], "OrderAccepted", 1))
 			{
-				botstates[clientnum]->chatTeam = 1;
+				botstates[client_num]->chatTeam = 1;
 			}
 		}
 	}
@@ -362,8 +362,8 @@ int IsTeamplay(void)
 BotAI_GetClientState
 ==================
 */
-int BotAI_GetClientState(int clientNum, playerState_t* state) {
-	const gentity_t* ent = &g_entities[clientNum];
+int BotAI_GetClientState(int client_num, playerState_t* state) {
+	const gentity_t* ent = &g_entities[client_num];
 	if (!ent->inuse) {
 		return qfalse;
 	}
@@ -395,8 +395,8 @@ int BotAI_GetEntityState(int entityNum, entityState_t* state) {
 BotAI_GetSnapshotEntity
 ==================
 */
-int BotAI_GetSnapshotEntity(int clientNum, int sequence, entityState_t* state) {
-	const int entNum = trap->BotGetSnapshotEntity(clientNum, sequence);
+int BotAI_GetSnapshotEntity(int client_num, int sequence, entityState_t* state) {
+	const int entNum = trap->BotGetSnapshotEntity(client_num, sequence);
 	if (entNum == -1) {
 		memset(state, 0, sizeof(entityState_t));
 		return -1;
@@ -1850,7 +1850,7 @@ void BotDamageNotification(gclient_t* bot, gentity_t* attacker)
 		return;
 	}
 
-	if (bot->ps.clientNum >= MAX_CLIENTS)
+	if (bot->ps.client_num >= MAX_CLIENTS)
 	{ //an NPC.. do nothing for them.
 		return;
 	}
@@ -1864,14 +1864,14 @@ void BotDamageNotification(gclient_t* bot, gentity_t* attacker)
 
 	if (bs_a)
 	{ //if the client attacking us is a bot as well
-		bs_a->lastAttacked = &g_entities[bot->ps.clientNum];
+		bs_a->lastAttacked = &g_entities[bot->ps.client_num];
 		i = 0;
 
 		while (i < MAX_CLIENTS)
 		{
 			if (botstates[i] &&
 				i != bs_a->client &&
-				botstates[i]->lastAttacked == &g_entities[bot->ps.clientNum])
+				botstates[i]->lastAttacked == &g_entities[bot->ps.client_num])
 			{
 				botstates[i]->lastAttacked = NULL;
 			}
@@ -1886,7 +1886,7 @@ void BotDamageNotification(gclient_t* bot, gentity_t* attacker)
 		while (i < MAX_CLIENTS)
 		{
 			if (botstates[i] &&
-				botstates[i]->lastAttacked == &g_entities[bot->ps.clientNum])
+				botstates[i]->lastAttacked == &g_entities[bot->ps.client_num])
 			{
 				botstates[i]->lastAttacked = NULL;
 			}
@@ -1895,7 +1895,7 @@ void BotDamageNotification(gclient_t* bot, gentity_t* attacker)
 		}
 	}
 
-	bot_state_t* bs = botstates[bot->ps.clientNum];
+	bot_state_t* bs = botstates[bot->ps.client_num];
 
 	if (!bs)
 	{

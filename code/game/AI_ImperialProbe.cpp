@@ -237,7 +237,7 @@ ImperialProbe_Hunt
 constexpr auto HUNTER_FORWARD_BASE_SPEED = 10;
 constexpr auto HUNTER_FORWARD_MULTIPLIER = 5;
 
-void ImperialProbe_Hunt(qboolean visible, qboolean advance)
+void ImperialProbe_Hunt(const qboolean visible, const qboolean advance)
 {
 	vec3_t forward;
 
@@ -340,7 +340,7 @@ void ImperialProbe_FireBlaster(void)
 ImperialProbe_Ranged
 -------------------------
 */
-void ImperialProbe_Ranged(qboolean visible, qboolean advance)
+void ImperialProbe_Ranged(const qboolean visible, const qboolean advance)
 {
 	if (TIMER_Done(NPC, "attackDelay")) // Attack?
 	{
@@ -438,7 +438,7 @@ void ImperialProbe_AttackDecision(void)
 NPC_BSDroid_Pain
 -------------------------
 */
-void NPC_Probe_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
+void NPC_Probe_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage, const int mod,
 	int hitLoc)
 {
 	VectorCopy(self->NPC->lastPathAngles, self->s.angles);

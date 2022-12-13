@@ -112,7 +112,7 @@ extern void WP_ForcePowerStop(gentity_t* self, forcePowers_t forcePower);
 extern qboolean WP_ForcePowerAvailable(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
 extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
 extern float G_ForceWallJumpStrength();
-extern qboolean G_CheckRollSafety(const gentity_t* self, int anim, float testDist);
+extern qboolean G_CheckRollSafety(const gentity_t* self, int anim, float test_dist);
 extern saberMoveName_t PM_CheckPullAttack(void);
 extern qboolean JET_Flying(const gentity_t* self);
 extern void JET_FlyStart(gentity_t* self);
@@ -228,25 +228,25 @@ extern saberMoveName_t transitionMove[Q_NUM_QUADS][Q_NUM_QUADS];
 
 extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 
-Vehicle_t* PM_RidingVehicle(void)
+Vehicle_t* PM_RidingVehicle()
 {
 	return G_IsRidingVehicle(pm->gent);
 }
 
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
 
-qboolean PM_ControlledByPlayer(void)
+qboolean PM_ControlledByPlayer()
 {
 	return G_ControlledByPlayer(pm->gent);
 }
 
-qboolean BG_UnrestrainedPitchRoll(const playerState_t* ps, const Vehicle_t* pVeh)
+qboolean BG_UnrestrainedPitchRoll(const playerState_t* ps, const Vehicle_t* p_veh)
 {
-	if (ps->clientNum < MAX_CLIENTS //real client
+	if (ps->client_num < MAX_CLIENTS //real client
 		&& ps->m_iVehicleNum //in a vehicle
-		&& pVeh //valid vehicle data pointer
-		&& pVeh->m_pVehicleInfo //valid vehicle info
-		&& pVeh->m_pVehicleInfo->type == VH_FIGHTER) //fighter
+		&& p_veh //valid vehicle data pointer
+		&& p_veh->m_pVehicleInfo //valid vehicle info
+		&& p_veh->m_pVehicleInfo->type == VH_FIGHTER) //fighter
 	{
 		//can roll and pitch without limitation!
 		return qtrue;
@@ -267,17 +267,17 @@ PM_AddEvent
 
 ===============
 */
-void PM_AddEvent(int newEvent)
+void PM_AddEvent(const int new_event)
 {
-	AddEventToPlayerstate(newEvent, 0, pm->ps);
+	AddEventToPlayerstate(new_event, 0, pm->ps);
 }
 
-qboolean PM_PredictJumpSafe(vec3_t jumpHorizDir, float jumpHorizSpeed, float jumpVertSpeed, int predictTimeLength)
+qboolean PM_PredictJumpSafe()
 {
 	return qtrue;
 }
 
-void PM_GrabWallForJump(int anim)
+void PM_GrabWallForJump(const int anim)
 {
 	//NOTE!!! assumes an appropriate anim is being passed in!!!
 	PM_SetAnim(pm, SETANIM_BOTH, anim, SETANIM_FLAG_RESTART | SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD, 0);
@@ -362,13 +362,13 @@ qboolean PM_InForceFall()
 		// is it time to reduce the players force power
 		if (pm->ps->forcePowerDebounce[FP_LEVITATION] < pm->cmd.serverTime)
 		{
-			int ForceManaModifier = 0;
+			int force_mana_modifier = 0;
 			// reduced the use of force power for duel and power duel matches
 			if (g_SerenityJediEngineMode->integer == 2 && pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_2)
 			{
-				ForceManaModifier = -4;
+				force_mana_modifier = -4;
 			}
-			WP_ForcePowerDrain(pm->gent, FP_HEAL, FM_FORCEFALL + ForceManaModifier);
+			WP_ForcePowerDrain(pm->gent, FP_HEAL, FM_FORCEFALL + force_mana_modifier);
 
 			// removes force power at a rate of 0.1 secs * force jump level
 			pm->ps->forcePowerDebounce[FP_LEVITATION] = pm->cmd.serverTime + pm->ps->forcePowerLevel[FP_LEVITATION] *
@@ -383,7 +383,7 @@ qboolean PM_InForceFall()
 	return qfalse;
 }
 
-qboolean PM_CheckGrabWall(trace_t* trace)
+qboolean PM_CheckGrabWall(const trace_t* trace)
 {
 	if (!pm->gent || !pm->gent->client)
 	{
@@ -419,7 +419,7 @@ qboolean PM_CheckGrabWall(trace_t* trace)
 		//must have at least FJ 1
 		return qfalse;
 	}
-	if ((pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+	if ((pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 		&& pm->gent->client->ps.forcePowerLevel[FP_LEVITATION] < FORCE_LEVEL_1)
 	{
 		//player must have force jump 3
@@ -434,7 +434,7 @@ qboolean PM_CheckGrabWall(trace_t* trace)
 	{
 		return qfalse;
 	}
-	if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+	if (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 	{
 		//player
 		//only if we were in a longjump
@@ -524,7 +524,7 @@ qboolean PM_CheckGrabWall(trace_t* trace)
 	}
 
 	//Okay, now see if jumping off this thing would send us into a do not enter brush
-	if (!PM_PredictJumpSafe(trace->plane.normal, JUMP_OFF_WALL_SPEED, G_ForceWallJumpStrength(), 1500))
+	if (!PM_PredictJumpSafe())
 	{
 		//we would hit a do not enter brush, so don't grab the wall
 		return qfalse;
@@ -533,17 +533,17 @@ qboolean PM_CheckGrabWall(trace_t* trace)
 	//grab it!
 	//Pick the proper anim
 	int anim;
-	vec3_t facingAngles, wallDir, fwdDir, rtDir;
-	VectorSubtract(trace->endpos, pm->gent->lastOrigin, wallDir);
-	wallDir[2] = 0;
-	VectorNormalize(wallDir);
-	VectorSet(facingAngles, 0, pm->ps->viewangles[YAW], 0);
-	AngleVectors(facingAngles, fwdDir, rtDir, nullptr);
-	const float fDot = DotProduct(fwdDir, wallDir);
-	if (fabs(fDot) >= 0.5f)
+	vec3_t facing_angles, wall_dir, fwd_dir, rt_dir;
+	VectorSubtract(trace->endpos, pm->gent->lastOrigin, wall_dir);
+	wall_dir[2] = 0;
+	VectorNormalize(wall_dir);
+	VectorSet(facing_angles, 0, pm->ps->viewangles[YAW], 0);
+	AngleVectors(facing_angles, fwd_dir, rt_dir, nullptr);
+	const float f_dot = DotProduct(fwd_dir, wall_dir);
+	if (fabs(f_dot) >= 0.5f)
 	{
 		//hit a wall in front/behind
-		if (fDot > 0.0f)
+		if (f_dot > 0.0f)
 		{
 			//in front
 			anim = BOTH_FORCEWALLREBOUND_FORWARD;
@@ -554,7 +554,7 @@ qboolean PM_CheckGrabWall(trace_t* trace)
 			anim = BOTH_FORCEWALLREBOUND_BACK;
 		}
 	}
-	else if (DotProduct(rtDir, wallDir) > 0)
+	else if (DotProduct(rt_dir, wall_dir) > 0)
 	{
 		//hit a wall on the right
 		anim = BOTH_FORCEWALLREBOUND_RIGHT;
@@ -577,18 +577,18 @@ qboolean PM_ClientImpact( trace_t *trace, qboolean damageSelf )
 
 ===============
 */
-qboolean PM_ClientImpact(trace_t* trace, const qboolean damageSelf)
+qboolean PM_ClientImpact(const trace_t* trace, const qboolean damage_self)
 {
-	const int otherEntityNum = trace->entityNum;
+	const int other_entity_num = trace->entityNum;
 
 	if (!pm->gent)
 	{
 		return qfalse;
 	}
 
-	const gentity_t* traceEnt = &g_entities[otherEntityNum];
+	const gentity_t* trace_ent = &g_entities[other_entity_num];
 
-	if (otherEntityNum == ENTITYNUM_WORLD || traceEnt->bmodel && traceEnt->s.pos.trType == TR_STATIONARY)
+	if (other_entity_num == ENTITYNUM_WORLD || trace_ent->bmodel && trace_ent->s.pos.trType == TR_STATIONARY)
 	{
 		//hit world or a non-moving brush
 		if (PM_CheckGrabWall(trace))
@@ -602,15 +602,15 @@ qboolean PM_ClientImpact(trace_t* trace, const qboolean damageSelf)
 		|| pm->ps->lastOnGround + 100 < level.time))
 		//was 300 ||(other->material>=MAT_GLASS&&pm->gent->lastImpact+100<=level.time))
 	{
-		DoImpact(pm->gent, &g_entities[otherEntityNum], damageSelf, trace);
+		DoImpact(pm->gent, &g_entities[other_entity_num], damage_self, trace);
 	}
 
-	if (otherEntityNum >= ENTITYNUM_WORLD)
+	if (other_entity_num >= ENTITYNUM_WORLD)
 	{
 		return qfalse;
 	}
 
-	if (!traceEnt || !(traceEnt->contents & pm->tracemask))
+	if (!trace_ent || !(trace_ent->contents & pm->tracemask))
 	{
 		//it's dead or not in my way anymore
 		return qtrue;
@@ -624,9 +624,9 @@ qboolean PM_ClientImpact(trace_t* trace, const qboolean damageSelf)
 PM_AddTouchEnt
 ===============
 */
-void PM_AddTouchEnt(const int entityNum)
+void PM_AddTouchEnt(const int entity_num)
 {
-	if (entityNum == ENTITYNUM_WORLD)
+	if (entity_num == ENTITYNUM_WORLD)
 	{
 		return;
 	}
@@ -638,14 +638,14 @@ void PM_AddTouchEnt(const int entityNum)
 	// see if it is already added
 	for (int i = 0; i < pm->numtouch; i++)
 	{
-		if (pm->touchents[i] == entityNum)
+		if (pm->touchents[i] == entity_num)
 		{
 			return;
 		}
 	}
 
 	// add it
-	pm->touchents[pm->numtouch] = entityNum;
+	pm->touchents[pm->numtouch] = entity_num;
 	pm->numtouch++;
 }
 
@@ -669,7 +669,7 @@ void PM_ClipVelocity(vec3_t in, vec3_t normal, vec3_t out, const float overbounc
 		VectorCopy(in, out);
 		return;
 	}
-	const float oldInZ = in[2];
+	const float old_in_z = in[2];
 
 	float backoff = DotProduct(in, normal);
 
@@ -698,13 +698,13 @@ void PM_ClipVelocity(vec3_t in, vec3_t normal, vec3_t out, const float overbounc
 	}
 	if (g_stepSlideFix->integer)
 	{
-		if (pm->ps->clientNum < MAX_CLIENTS //normal player
+		if (pm->ps->client_num < MAX_CLIENTS //normal player
 			&& normal[2] < MIN_WALK_NORMAL) //sliding against a steep slope
 		{
 			if (pm->ps->groundEntityNum != ENTITYNUM_NONE) //on the ground
 			{
 				//if walking on the ground, don't slide up slopes that are too steep to walk on
-				out[2] = oldInZ;
+				out[2] = old_in_z;
 			}
 		}
 	}
@@ -829,7 +829,7 @@ static void PM_Friction(void)
 			}
 		}
 	}
-	else if ((pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+	else if ((pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 		&& pm->gent
 		&& pm->gent->client
 		&& (pm->gent->client->NPC_class == CLASS_BOBAFETT || pm->gent->client->NPC_class == CLASS_MANDALORIAN || pm->
@@ -1338,7 +1338,7 @@ static qboolean PM_CheckJump(void)
 		pm->ps->forcePowersActive &= ~(1 << FP_LEVITATION);
 		pm->ps->forceJumpZStart = 0;
 	}
-	if ((pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+	if ((pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 		&& pm->gent && pm->gent->client && pm->ps->jetpackFuel > 15
 		&& (pm->gent->client->NPC_class == CLASS_BOBAFETT ||
 			pm->gent->client->NPC_class == CLASS_MANDALORIAN ||
@@ -1353,7 +1353,7 @@ static qboolean PM_CheckJump(void)
 			if (pm->ps->groundEntityNum == ENTITYNUM_NONE && !(pm->ps->pm_flags & PMF_JUMP_HELD))
 			{
 				//double-tap - must activate while in air
-				ItemUse_Jetpack(&g_entities[pm->ps->clientNum]);
+				ItemUse_Jetpack(&g_entities[pm->ps->client_num]);
 				if (!JET_Flying(pm->gent))
 				{
 					JET_FlyStart(pm->gent);
@@ -1428,7 +1428,7 @@ static qboolean PM_CheckJump(void)
 				}
 				return qfalse;
 			}
-			if ((pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer()) //player-only for now
+			if ((pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer()) //player-only for now
 				&& pm->cmd.upmove > 0 //trying to jump
 				&& pm->ps->forcePowerLevel[FP_LEVITATION] >= FORCE_LEVEL_3 //force jump 3 or better
 				&& pm->ps->forcePower >= FORCE_LONGJUMP_POWER //this costs 20 force to do
@@ -1460,7 +1460,7 @@ static qboolean PM_CheckJump(void)
 				pm->ps->forcePowersActive |= 1 << FP_LEVITATION;
 				pm->cmd.upmove = 0;
 				// keep track of force jump stat
-				if (pm->ps->clientNum == 0)
+				if (pm->ps->client_num == 0)
 				{
 					if (pm->gent && pm->gent->client)
 					{
@@ -1532,7 +1532,7 @@ static qboolean PM_CheckJump(void)
 									G_SoundOnEnt(pm->gent, CHAN_BODY, "sound/weapons/force/jump.mp3");
 								}
 								// keep track of force jump stat
-								if (pm->ps->clientNum == 0 && pm->gent->client)
+								if (pm->ps->client_num == 0 && pm->gent->client)
 								{
 									pm->gent->client->sess.missionStats.forceUsed[static_cast<int>(FP_LEVITATION)]++;
 								}
@@ -1703,7 +1703,7 @@ static qboolean PM_CheckJump(void)
 			else if (pm->cmd.upmove > 0 && pm->ps->velocity[2] < -10)
 			{
 				//can't keep jumping, turn on jetpack?
-				if ((pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+				if ((pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 					&& pm->gent && pm->gent->client && pm->ps->jetpackFuel > 15
 					&& (pm->gent->client->NPC_class == CLASS_BOBAFETT ||
 						pm->gent->client->NPC_class == CLASS_MANDALORIAN ||
@@ -1711,9 +1711,9 @@ static qboolean PM_CheckJump(void)
 						pm->gent->client->NPC_class == CLASS_JANGODUAL ||
 						pm->gent->client->NPC_class == CLASS_ROCKETTROOPER || rocket_trooper_player(pm->gent)))
 				{
-					if (!g_entities[pm->ps->clientNum].client->jetPackOn)
+					if (!g_entities[pm->ps->client_num].client->jetPackOn)
 					{
-						ItemUse_Jetpack(&g_entities[pm->ps->clientNum]);
+						ItemUse_Jetpack(&g_entities[pm->ps->client_num]);
 					}
 				}
 			}
@@ -1744,7 +1744,7 @@ static qboolean PM_CheckJump(void)
 
 		AngleVectors(pm->ps->viewangles, forward, nullptr, nullptr);
 		VectorMA(pm->ps->origin, -8, forward, back);
-		pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, back, pm->ps->clientNum,
+		pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, back, pm->ps->client_num,
 			pm->tracemask & ~(CONTENTS_PLAYERCLIP | CONTENTS_MONSTERCLIP), static_cast<EG2_Collision>(0), 0);
 
 		pm->cmd.upmove = 0;
@@ -1794,7 +1794,7 @@ static qboolean PM_CheckJump(void)
 		&& !(pm->ps->pm_flags & PMF_JUMP_HELD) //not holding jump from a previous jump
 		&& pm->ps->forceRageRecoveryTime < pm->cmd.serverTime //not in a force Rage recovery period
 		&& pm->gent && WP_ForcePowerAvailable(pm->gent, FP_LEVITATION, 0) //have enough force power to jump
-		&& (pm->ps->clientNum && !PM_ControlledByPlayer() || (pm->ps->clientNum < MAX_CLIENTS ||
+		&& (pm->ps->client_num && !PM_ControlledByPlayer() || (pm->ps->client_num < MAX_CLIENTS ||
 			PM_ControlledByPlayer()) && BG_AllowThirdPersonSpecialMove(pm->ps) && !cg.zoomMode && !(pm->gent->flags &
 				FL_LOCK_PLAYER_WEAPONS)))
 		// yes this locked weapons check also includes force powers, if we need a separate check later I'll make one
@@ -1817,9 +1817,9 @@ static qboolean PM_CheckJump(void)
 				/*(pm->cmd.buttons&BUTTON_FORCE_FOCUS)*/ && pm->cmd.buttons & BUTTON_ATTACK
 				//using saber and holding focus + attack
 				//					  ||(pm->ps->weapon!=WP_SABER&&((pm->cmd.buttons&BUTTON_ATTACK)||(pm->cmd.buttons&BUTTON_ALT_ATTACK)) ) )//using any other weapon and hitting either attack button
-				&& (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer() && pm->cmd.upmove > 0 && pm->ps->
+				&& (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer() && pm->cmd.upmove > 0 && pm->ps->
 					velocity[2] >= 0 //jumping NPC, going up already
-					|| (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer()) &&
+					|| (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer()) &&
 					G_TryingCartwheel(pm->gent, &pm->cmd)/*(pm->cmd.buttons&BUTTON_FORCE_FOCUS)*/)
 				//focus-holding player
 				&& G_EnoughPowerForSpecialMove(pm->ps->forcePower, SABER_ALT_ATTACK_POWER_LR)
@@ -1832,21 +1832,21 @@ static qboolean PM_CheckJump(void)
 					if (pm->ps->saberAnimLevel == SS_STAFF
 						&& pm->ps->weapon == WP_SABER)
 					{
-						if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer()
+						if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer()
 							|| pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_2)
 						{
 							anim = BOTH_BUTTERFLY_RIGHT;
 							forcePowerCostOverride = G_CostForSpecialMove(SABER_ALT_ATTACK_POWER_LR);
 						}
 					}
-					else if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer()
+					else if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer()
 						|| pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_1)
 					{
 						if (!(pm->ps->saber[0].saberFlags & SFL_NO_CARTWHEELS)
 							&& (!pm->ps->dualSabers || !(pm->ps->saber[1].saberFlags & SFL_NO_CARTWHEELS)))
 						{
 							//okay to do cartwheels with this saber
-							if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+							if (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 							{
 								//player: since we're on the ground, always do a cartwheel
 								/*
@@ -1877,21 +1877,21 @@ static qboolean PM_CheckJump(void)
 					if (pm->ps->saberAnimLevel == SS_STAFF
 						&& pm->ps->weapon == WP_SABER)
 					{
-						if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer()
+						if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer()
 							|| pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_2)
 						{
 							anim = BOTH_BUTTERFLY_LEFT;
 							forcePowerCostOverride = G_CostForSpecialMove(SABER_ALT_ATTACK_POWER_LR);
 						}
 					}
-					else if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer()
+					else if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer()
 						|| pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_1)
 					{
 						if (!(pm->ps->saber[0].saberFlags & SFL_NO_CARTWHEELS)
 							&& (!pm->ps->dualSabers || !(pm->ps->saber[1].saberFlags & SFL_NO_CARTWHEELS)))
 						{
 							//okay to do cartwheels with this saber
-							if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+							if (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 							{
 								//player: since we're on the ground, always do a cartwheel
 								/*
@@ -1969,7 +1969,7 @@ static qboolean PM_CheckJump(void)
 					}
 				}
 			}
-			else if (/*pm->ps->clientNum >= MAX_CLIENTS//not the player
+			else if (/*pm->ps->client_num >= MAX_CLIENTS//not the player
 				&& !PM_ControlledByPlayer() //not controlled by player
 				&&*/ pm->cmd.forwardmove > 0 //pushing forward
 				&& pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_1) //have jump 2 or higher
@@ -2003,7 +2003,7 @@ static qboolean PM_CheckJump(void)
 				}
 			}
 			else if (pm->cmd.forwardmove < 0 //pushing back
-				//&& pm->ps->clientNum//not the player
+				//&& pm->ps->client_num//not the player
 				&& !(pm->cmd.buttons & BUTTON_ATTACK)) //not attacking
 			{
 				//back-jump does backflip... FIXME: always?!  What about just doing a normal jump backwards?
@@ -2069,7 +2069,7 @@ static qboolean PM_CheckJump(void)
 					{
 						/*
 						//Only tavion does these now
-						if ( pm->ps->clientNum && Q_irand( 0, 1 ) )
+						if ( pm->ps->client_num && Q_irand( 0, 1 ) )
 						{//butterfly... FIXME: does direction matter?
 							vertPush = JUMP_VELOCITY;
 							if ( Q_irand( 0, 1 ) )
@@ -2083,7 +2083,7 @@ static qboolean PM_CheckJump(void)
 						}
 						else
 						*/
-						if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer())
+						if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer())
 							//NOTE: pretty much useless, so player never does these
 						{
 							//jump-spin FIXME: does direction matter?
@@ -2148,7 +2148,7 @@ static qboolean PM_CheckJump(void)
 				if (doTrace)
 				{
 					//FIXME: all these jump ones should check for head clearance
-					pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->clientNum, contents,
+					pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->client_num, contents,
 						static_cast<EG2_Collision>(0), 0);
 					VectorCopy(trace.plane.normal, wallNormal);
 					VectorNormalize(wallNormal);
@@ -2159,7 +2159,7 @@ static qboolean PM_CheckJump(void)
 						//sigh.. check for bottomless pit to the right
 						trace_t trace2;
 						VectorMA(pm->ps->origin, 128, right, traceto);
-						pm->trace(&trace2, pm->ps->origin, mins, maxs, traceto, pm->ps->clientNum, contents,
+						pm->trace(&trace2, pm->ps->origin, mins, maxs, traceto, pm->ps->client_num, contents,
 							static_cast<EG2_Collision>(0), 0);
 						if (!trace2.allsolid && !trace2.startsolid)
 						{
@@ -2167,7 +2167,7 @@ static qboolean PM_CheckJump(void)
 							VectorCopy(trace2.endpos, traceto);
 							VectorCopy(traceto, start);
 							traceto[2] -= 384;
-							pm->trace(&trace2, start, mins, maxs, traceto, pm->ps->clientNum, contents,
+							pm->trace(&trace2, start, mins, maxs, traceto, pm->ps->client_num, contents,
 								static_cast<EG2_Collision>(0), 0);
 							if (!trace2.allsolid && !trace2.startsolid && trace2.fraction >= 1.0f)
 							{
@@ -2181,7 +2181,7 @@ static qboolean PM_CheckJump(void)
 						//sigh.. check for bottomless pit to the left
 						trace_t trace2;
 						VectorMA(pm->ps->origin, -128, right, traceto);
-						pm->trace(&trace2, pm->ps->origin, mins, maxs, traceto, pm->ps->clientNum, contents,
+						pm->trace(&trace2, pm->ps->origin, mins, maxs, traceto, pm->ps->client_num, contents,
 							static_cast<EG2_Collision>(0), 0);
 						if (!trace2.allsolid && !trace2.startsolid)
 						{
@@ -2189,7 +2189,7 @@ static qboolean PM_CheckJump(void)
 							VectorCopy(trace2.endpos, traceto);
 							VectorCopy(traceto, start);
 							traceto[2] -= 384;
-							pm->trace(&trace2, start, mins, maxs, traceto, pm->ps->clientNum, contents,
+							pm->trace(&trace2, start, mins, maxs, traceto, pm->ps->client_num, contents,
 								static_cast<EG2_Collision>(0), 0);
 							if (!trace2.allsolid && !trace2.startsolid && trace2.fraction >= 1.0f)
 							{
@@ -2228,7 +2228,7 @@ static qboolean PM_CheckJump(void)
 								VectorCopy(pm->ps->origin, start);
 								start[2] += 64;
 								VectorMA(start, 32, fwd, traceto);
-								pm->trace(&trace2, start, mins, maxs, traceto, pm->ps->clientNum, contents,
+								pm->trace(&trace2, start, mins, maxs, traceto, pm->ps->client_num, contents,
 									static_cast<EG2_Collision>(0), 0);
 								if (trace2.allsolid
 									|| trace2.startsolid
@@ -2247,7 +2247,7 @@ static qboolean PM_CheckJump(void)
 								//sigh.. check for bottomless pit to the rear
 								trace_t trace2;
 								VectorMA(pm->ps->origin, -128, fwd, traceto);
-								pm->trace(&trace2, pm->ps->origin, mins, maxs, traceto, pm->ps->clientNum, contents,
+								pm->trace(&trace2, pm->ps->origin, mins, maxs, traceto, pm->ps->client_num, contents,
 									static_cast<EG2_Collision>(0), 0);
 								if (!trace2.allsolid && !trace2.startsolid)
 								{
@@ -2255,7 +2255,7 @@ static qboolean PM_CheckJump(void)
 									VectorCopy(trace2.endpos, traceto);
 									VectorCopy(traceto, start);
 									traceto[2] -= 384;
-									pm->trace(&trace2, start, mins, maxs, traceto, pm->ps->clientNum, contents,
+									pm->trace(&trace2, start, mins, maxs, traceto, pm->ps->client_num, contents,
 										static_cast<EG2_Collision>(0), 0);
 									if (!trace2.allsolid && !trace2.startsolid && trace2.fraction >= 1.0f)
 									{
@@ -2267,9 +2267,9 @@ static qboolean PM_CheckJump(void)
 						}
 					}
 				}
-				gentity_t* traceEnt = &g_entities[trace.entityNum];
+				gentity_t* trace_ent = &g_entities[trace.entityNum];
 
-				if (!doTrace || trace.fraction < 1.0f && (trace.entityNum < ENTITYNUM_WORLD && traceEnt && traceEnt->s
+				if (!doTrace || trace.fraction < 1.0f && (trace.entityNum < ENTITYNUM_WORLD && trace_ent && trace_ent->s
 					.solid != SOLID_BMODEL || DotProduct(wallNormal, idealNormal) > 0.7))
 				{
 					//there is a wall there
@@ -2327,37 +2327,37 @@ static qboolean PM_CheckJump(void)
 						{
 							if (pm->gent && trace.entityNum < ENTITYNUM_WORLD)
 							{
-								if (traceEnt
-									&& traceEnt->client
-									&& traceEnt->health > 0
-									&& traceEnt->takedamage
-									&& traceEnt->client->NPC_class != CLASS_GALAKMECH
-									&& traceEnt->client->NPC_class != CLASS_DESANN
-									&& traceEnt->client->NPC_class != CLASS_SITHLORD
-									&& traceEnt->client->NPC_class != CLASS_VADER
-									&& !(traceEnt->flags & FL_NO_KNOCKBACK))
+								if (trace_ent
+									&& trace_ent->client
+									&& trace_ent->health > 0
+									&& trace_ent->takedamage
+									&& trace_ent->client->NPC_class != CLASS_GALAKMECH
+									&& trace_ent->client->NPC_class != CLASS_DESANN
+									&& trace_ent->client->NPC_class != CLASS_SITHLORD
+									&& trace_ent->client->NPC_class != CLASS_VADER
+									&& !(trace_ent->flags & FL_NO_KNOCKBACK))
 								{
 									//push them away and do pain
 									vec3_t oppDir, fxDir;
 									float strength = VectorNormalize2(pm->ps->velocity, oppDir);
 									VectorScale(oppDir, -1, oppDir);
 									//FIXME: need knockdown anim
-									G_Damage(traceEnt, pm->gent, pm->gent, oppDir, traceEnt->currentOrigin, 10,
+									G_Damage(trace_ent, pm->gent, pm->gent, oppDir, trace_ent->currentOrigin, 10,
 										DAMAGE_NO_ARMOR | DAMAGE_NO_HIT_LOC | DAMAGE_NO_KNOCKBACK, MOD_MELEE);
 									VectorCopy(fwd, fxDir);
 									VectorScale(fxDir, -1, fxDir);
 									G_PlayEffect(G_EffectIndex("melee/kick_impact"), trace.endpos, fxDir);
-									//G_Sound( traceEnt, G_SoundIndex( va("sound/weapons/melee/punch%d", Q_irand(1, 4)) ) );
-									if (traceEnt->health > 0)
+									//G_Sound( trace_ent, G_SoundIndex( va("sound/weapons/melee/punch%d", Q_irand(1, 4)) ) );
+									if (trace_ent->health > 0)
 									{
 										//didn't kill him
-										if (traceEnt->s.number == 0 && !Q_irand(0, g_spskill->integer)
-											|| traceEnt->NPC != nullptr && Q_irand(RANK_CIVILIAN, traceEnt->NPC->rank)
+										if (trace_ent->s.number == 0 && !Q_irand(0, g_spskill->integer)
+											|| trace_ent->NPC != nullptr && Q_irand(RANK_CIVILIAN, trace_ent->NPC->rank)
 											+ Q_irand(-2, 2) < RANK_ENSIGN)
 										{
-											NPC_SetAnim(traceEnt, SETANIM_BOTH, BOTH_KNOCKDOWN2,
+											NPC_SetAnim(trace_ent, SETANIM_BOTH, BOTH_KNOCKDOWN2,
 												SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
-											G_Throw(traceEnt, oppDir, strength);
+											G_Throw(trace_ent, oppDir, strength);
 										}
 									}
 								}
@@ -2475,7 +2475,7 @@ static qboolean PM_CheckJump(void)
 				}
 				if (anim != -1)
 				{
-					pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->clientNum,
+					pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->client_num,
 						CONTENTS_SOLID | CONTENTS_BODY, static_cast<EG2_Collision>(0), 0);
 					if (trace.fraction < 1.0f)
 					{
@@ -2522,7 +2522,7 @@ static qboolean PM_CheckJump(void)
 				}
 				if (anim != -1)
 				{
-					pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->clientNum,
+					pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->client_num,
 						CONTENTS_SOLID | CONTENTS_BODY, static_cast<EG2_Collision>(0), 0);
 					if (trace.fraction < 1.0f)
 					{
@@ -2538,7 +2538,7 @@ static qboolean PM_CheckJump(void)
 							parts = SETANIM_BOTH;
 						}
 						PM_SetAnim(pm, parts, anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD, 0);
-						//FIXME: do damage to traceEnt, like above?
+						//FIXME: do damage to trace_ent, like above?
 						pm->ps->pm_flags |= PMF_JUMPING | PMF_SLOW_MO_FALL;
 						pm->cmd.upmove = 0;
 						PM_AddEvent(EV_JUMP);
@@ -2618,14 +2618,14 @@ static qboolean PM_CheckJump(void)
 						vec3_t idealNormal;
 						//trace in the dir we're pushing in and see if there's a vertical wall there
 						VectorMA(pm->ps->origin, 16, checkDir, traceto); //was 8
-						pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->clientNum, CONTENTS_SOLID,
+						pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->client_num, CONTENTS_SOLID,
 							static_cast<EG2_Collision>(0), 0); //FIXME: clip brushes too?
 						VectorSubtract(pm->ps->origin, traceto, idealNormal);
 						VectorNormalize(idealNormal);
-						gentity_t* traceEnt = &g_entities[trace.entityNum];
+						gentity_t* trace_ent = &g_entities[trace.entityNum];
 						if (trace.fraction < 1.0f
 							&& fabs(trace.plane.normal[2]) <= MAX_WALL_GRAB_SLOPE
-							&& (trace.entityNum < ENTITYNUM_WORLD && traceEnt && traceEnt->s.solid != SOLID_BMODEL ||
+							&& (trace.entityNum < ENTITYNUM_WORLD && trace_ent && trace_ent->s.solid != SOLID_BMODEL ||
 								DotProduct(trace.plane.normal, idealNormal) > 0.7))
 						{
 							//there is a wall there
@@ -2651,7 +2651,7 @@ static qboolean PM_CheckJump(void)
 		&& pm->ps->forceRageRecoveryTime < pm->cmd.serverTime //not in a force Rage recovery period
 		&& pm->ps->weapon == WP_SABER
 		&& (pm->ps->weaponTime > 0 || pm->cmd.buttons & BUTTON_ATTACK)
-		&& (pm->ps->clientNum && !PM_ControlledByPlayer() || (pm->ps->clientNum < MAX_CLIENTS ||
+		&& (pm->ps->client_num && !PM_ControlledByPlayer() || (pm->ps->client_num < MAX_CLIENTS ||
 			PM_ControlledByPlayer()) && BG_AllowThirdPersonSpecialMove(pm->ps) && !cg.zoomMode))
 	{
 		//okay, we just jumped and we're in an attack
@@ -2686,7 +2686,7 @@ static qboolean PM_CheckJump(void)
 				&& PM_InAnimForSaberMove( pm->ps->torsoAnim, pm->ps->saberMove ) )
 			{//not in an anim we shouldn't interrupt
 				//see if it's not too late to start a special jump-attack
-				float animLength = PM_AnimLength( g_entities[pm->ps->clientNum].client->clientInfo.animFileIndex, (animNumber_t)pm->ps->torsoAnim );
+				float animLength = PM_AnimLength( g_entities[pm->ps->client_num].client->clientInfo.animFileIndex, (animNumber_t)pm->ps->torsoAnim );
 				if ( animLength - pm->ps->torsoAnimTimer < 500 )
 				{//just started the saberMove
 					//check for special-case jump attacks
@@ -2717,7 +2717,7 @@ static qboolean PM_CheckJump(void)
 
 	if (d_JediAI->integer || d_combatinfo->integer || g_DebugSaberCombat->integer)
 	{
-		if (pm->ps->clientNum && pm->ps->weapon == WP_SABER)
+		if (pm->ps->client_num && pm->ps->weapon == WP_SABER)
 		{
 			Com_Printf("jumping\n");
 		}
@@ -2789,14 +2789,14 @@ static qboolean PM_CheckWaterJump(void)
 
 	VectorMA(pm->ps->origin, 30, flatforward, spot);
 	spot[2] += 24;
-	int cont = pm->pointcontents(spot, pm->ps->clientNum);
+	int cont = pm->pointcontents(spot, pm->ps->client_num);
 	if (!(cont & CONTENTS_SOLID))
 	{
 		return qfalse;
 	}
 
 	spot[2] += 16;
-	cont = pm->pointcontents(spot, pm->ps->clientNum);
+	cont = pm->pointcontents(spot, pm->ps->client_num);
 	if (cont & (CONTENTS_SOLID | CONTENTS_PLAYERCLIP | CONTENTS_WATER | CONTENTS_SLIME | CONTENTS_LAVA | CONTENTS_BODY))
 	{
 		return qfalse;
@@ -3075,7 +3075,7 @@ static void PM_FlyVehicleMove(void)
 
 	// Get The WishVel And WishSpeed
 	//-------------------------------
-	if (pm->ps->clientNum)
+	if (pm->ps->client_num)
 	{
 		//NPC
 		// If The UCmds Were Set, But Never Converted Into A MoveDir, Then Make The WishDir From UCmds
@@ -3136,7 +3136,7 @@ static void PM_FlyMove(void)
 	// normal slowdown
 	PM_Friction();
 
-	if ((pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+	if ((pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 		&& pm->gent
 		&& pm->gent->client
 		&& (pm->gent->client->NPC_class == CLASS_BOBAFETT || pm->gent->client->NPC_class == CLASS_MANDALORIAN || pm->
@@ -3148,7 +3148,7 @@ static void PM_FlyMove(void)
 		jetPackMove = qtrue;
 	}
 	else if (pm->ps->gravity <= 0
-		&& (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer() || pm->gent && pm->gent->client && pm->gent->
+		&& (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer() || pm->gent && pm->gent->client && pm->gent->
 			client->moveType == MT_RUNJUMP))
 	{
 		PM_CheckJump();
@@ -3197,7 +3197,7 @@ static void PM_FlyMove(void)
 	PM_StepSlideMove(1);
 }
 
-qboolean PM_GroundSlideOkay(float zNormal)
+qboolean PM_GroundSlideOkay(const float zNormal)
 {
 	if (zNormal > 0)
 	{
@@ -3369,7 +3369,7 @@ static void PM_AirMove(void)
 		}
 	}
 
-	if ((pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+	if ((pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 		&& pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0
 		&& pm->ps->forceJumpZStart
 		&& pm->ps->velocity[2] > 0)
@@ -3509,7 +3509,7 @@ static void PM_WalkMove(void)
 
 	// Get The WishVel And WishSpeed
 	//-------------------------------
-	if (pm->ps->clientNum)
+	if (pm->ps->client_num)
 	{//NPC
 		// If The UCmds Were Set, But Never Converted Into A MoveDir, Then Make The WishDir From UCmds
 		//--------------------------------------------------------------------------------------------
@@ -3993,7 +3993,7 @@ static void PM_NoclipMove(void)
 
 //============================================================================
 
-static float PM_DamageForDelta(int delta)
+static float PM_DamageForDelta(const int delta)
 {
 	float damage = delta;
 	if (pm->gent->NPC)
@@ -4005,7 +4005,7 @@ static float PM_DamageForDelta(int delta)
 			damage = 0;
 		}
 	}
-	else if (pm->ps->clientNum < MAX_CLIENTS)
+	else if (pm->ps->client_num < MAX_CLIENTS)
 	{
 		if (damage < 50)
 		{
@@ -4359,7 +4359,7 @@ qboolean PM_TryRoll()
 		}
 	}
 
-	if ((pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer()) && !BG_AllowThirdPersonSpecialMove(pm->ps))
+	if ((pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer()) && !BG_AllowThirdPersonSpecialMove(pm->ps))
 	{
 		//player can't do this in 1st person
 		return qfalse;
@@ -4425,7 +4425,7 @@ qboolean PM_TryRoll()
 	{
 		qboolean roll = qfalse;
 		int clipmask = CONTENTS_SOLID;
-		if (pm->ps->clientNum)
+		if (pm->ps->client_num)
 		{
 			clipmask |= CONTENTS_MONSTERCLIP | CONTENTS_BOTCLIP;
 		}
@@ -4443,7 +4443,7 @@ qboolean PM_TryRoll()
 		}
 		if (!roll)
 		{
-			pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->clientNum, clipmask,
+			pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->client_num, clipmask,
 				static_cast<EG2_Collision>(0), 0);
 			if (trace.fraction >= 1.0f)
 			{
@@ -4451,7 +4451,7 @@ qboolean PM_TryRoll()
 				vec3_t top;
 				VectorCopy(traceto, top);
 				traceto[2] -= 256;
-				pm->trace(&trace, top, mins, maxs, traceto, pm->ps->clientNum, CONTENTS_SOLID,
+				pm->trace(&trace, top, mins, maxs, traceto, pm->ps->client_num, CONTENTS_SOLID,
 					static_cast<EG2_Collision>(0), 0);
 				if (trace.fraction < 1.0f)
 				{
@@ -4462,7 +4462,7 @@ qboolean PM_TryRoll()
 			else
 			{
 				//hit an architectural obstruction
-				if (pm->ps->clientNum)
+				if (pm->ps->client_num)
 				{
 					//NPCs don't care about rolling into walls, just off ledges
 					if (!(trace.contents & CONTENTS_BOTCLIP))
@@ -4482,8 +4482,8 @@ qboolean PM_TryRoll()
 				else
 				{
 					//check other conditions
-					const gentity_t* traceEnt = &g_entities[trace.entityNum];
-					if (traceEnt && traceEnt->svFlags & SVF_GLASS_BRUSH)
+					const gentity_t* trace_ent = &g_entities[trace.entityNum];
+					if (trace_ent && trace_ent->svFlags & SVF_GLASS_BRUSH)
 					{
 						//okay to roll through glass
 						roll = qtrue;
@@ -4530,7 +4530,7 @@ qboolean pm_try_roll_md()
 		PM_SaberLungeAttackMove(qtrue);
 	}
 
-	if ((pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer()) && !BG_AllowThirdPersonSpecialMove(pm->ps))
+	if ((pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer()) && !BG_AllowThirdPersonSpecialMove(pm->ps))
 	{
 		//player can't do this in 1st person
 		return qfalse;
@@ -4557,7 +4557,7 @@ qboolean pm_try_roll_md()
 	int anim = -1;
 	AngleVectors(fwdAngles, fwd, right, nullptr);
 
-	gentity_t* npc = &g_entities[pm->ps->clientNum];
+	gentity_t* npc = &g_entities[pm->ps->client_num];
 
 	if (npc->npc_roll_start)
 	{
@@ -4614,7 +4614,7 @@ qboolean pm_try_roll_md()
 	{
 		qboolean roll = qfalse;
 		int clipmask = CONTENTS_SOLID;
-		if (pm->ps->clientNum)
+		if (pm->ps->client_num)
 		{
 			clipmask |= CONTENTS_MONSTERCLIP | CONTENTS_BOTCLIP;
 		}
@@ -4632,7 +4632,7 @@ qboolean pm_try_roll_md()
 		}
 		if (!roll)
 		{
-			pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->clientNum, clipmask,
+			pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->client_num, clipmask,
 				static_cast<EG2_Collision>(0), 0);
 			if (trace.fraction >= 1.0f)
 			{
@@ -4640,7 +4640,7 @@ qboolean pm_try_roll_md()
 				vec3_t top;
 				VectorCopy(traceto, top);
 				traceto[2] -= 256;
-				pm->trace(&trace, top, mins, maxs, traceto, pm->ps->clientNum, CONTENTS_SOLID,
+				pm->trace(&trace, top, mins, maxs, traceto, pm->ps->client_num, CONTENTS_SOLID,
 					static_cast<EG2_Collision>(0), 0);
 				if (trace.fraction < 1.0f)
 				{
@@ -4651,7 +4651,7 @@ qboolean pm_try_roll_md()
 			else
 			{
 				//hit an architectural obstruction
-				if (pm->ps->clientNum)
+				if (pm->ps->client_num)
 				{
 					//NPCs don't care about rolling into walls, just off ledges
 					if (!(trace.contents & CONTENTS_BOTCLIP))
@@ -4671,8 +4671,8 @@ qboolean pm_try_roll_md()
 				else
 				{
 					//check other conditions
-					const gentity_t* traceEnt = &g_entities[trace.entityNum];
-					if (traceEnt && traceEnt->svFlags & SVF_GLASS_BRUSH)
+					const gentity_t* trace_ent = &g_entities[trace.entityNum];
+					if (trace_ent && trace_ent->svFlags & SVF_GLASS_BRUSH)
 					{
 						//okay to roll through glass
 						roll = qtrue;
@@ -4797,7 +4797,7 @@ static void PM_CrashLand(void)
 			}
 			delta = 1;
 		}
-		else if (pm->ps->jumpZStart && (pm->ps->forcePowerLevel[FP_LEVITATION] >= FORCE_LEVEL_1 || (pm->ps->clientNum <
+		else if (pm->ps->jumpZStart && (pm->ps->forcePowerLevel[FP_LEVITATION] >= FORCE_LEVEL_1 || (pm->ps->client_num <
 			MAX_CLIENTS || PM_ControlledByPlayer())))
 		{
 			//we were force-jumping
@@ -4987,7 +4987,7 @@ static void PM_CrashLand(void)
 		{
 			if (!(pml.groundTrace.surfaceFlags & SURF_NODAMAGE) &&
 				//				(!(pml.groundTrace.contents & CONTENTS_NODROP)) &&
-				!(pm->pointcontents(pm->ps->origin, pm->ps->clientNum) & CONTENTS_NODROP))
+				!(pm->pointcontents(pm->ps->origin, pm->ps->client_num) & CONTENTS_NODROP))
 			{
 				if (pm->waterlevel < 2)
 				{
@@ -5010,7 +5010,7 @@ static void PM_CrashLand(void)
 				{
 					G_SoundOnEnt(pm->gent, CHAN_BODY, va("sound/player/bodyfall_water%d.wav", Q_irand(1, 3)));
 				}
-				if (gi.VoiceVolume[pm->ps->clientNum]
+				if (gi.VoiceVolume[pm->ps->client_num]
 					&& pm->gent->NPC && pm->gent->NPC->aiFlags & NPCAI_DIE_ON_IMPACT)
 				{
 					//I was talking, so cut it off... with a jump sound?
@@ -5661,7 +5661,7 @@ static void PM_GroundTraceMissed(void)
 		{
 			vec3_t point;
 			//FIXME: if in a contents_falldeath brush, play the falling death anim and sound?
-			if (pm->ps->clientNum != 0 && pm->gent && pm->gent->NPC && pm->gent->client && pm->gent->client->NPC_class
+			if (pm->ps->client_num != 0 && pm->gent && pm->gent->NPC && pm->gent->client && pm->gent->client->NPC_class
 				!= CLASS_SITHLORD
 				&& pm->gent->client->NPC_class != CLASS_DESANN && pm->gent->client->NPC_class != CLASS_VADER)
 				//desann never falls to his death
@@ -5717,7 +5717,7 @@ static void PM_GroundTraceMissed(void)
 											VectorAdd(pm->ps->origin, vel, point);
 
 											pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, point,
-												pm->ps->clientNum, pm->tracemask, static_cast<EG2_Collision>(0),
+												pm->ps->client_num, pm->tracemask, static_cast<EG2_Collision>(0),
 												0);
 
 											if (trace.contents & CONTENTS_LAVA
@@ -5748,8 +5748,8 @@ static void PM_GroundTraceMissed(void)
 														!= CLASS_ROCKETTROOPER))
 												{
 													//Jedi don't scream and die if they're heading for a hard impact
-													const gentity_t* traceEnt = &g_entities[trace.entityNum];
-													if (trace.entityNum == ENTITYNUM_WORLD || traceEnt && traceEnt->
+													const gentity_t* trace_ent = &g_entities[trace.entityNum];
+													if (trace.entityNum == ENTITYNUM_WORLD || trace_ent && trace_ent->
 														bmodel)
 													{
 														//hit architecture, find impact force
@@ -5798,7 +5798,7 @@ static void PM_GroundTraceMissed(void)
 																}
 															}
 															dmg = 10 * VectorLength(pm->ps->velocity);
-															if (pm->ps->clientNum < MAX_CLIENTS)
+															if (pm->ps->client_num < MAX_CLIENTS)
 															{
 																dmg /= 2;
 															}
@@ -5914,7 +5914,7 @@ static void PM_GroundTraceMissed(void)
 						VectorCopy(pm->ps->origin, point);
 						point[2] -= 64;
 
-						pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, point, pm->ps->clientNum, pm->tracemask,
+						pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, point, pm->ps->client_num, pm->tracemask,
 							static_cast<EG2_Collision>(0), 0);
 						if (trace.fraction == 1.0)
 						{
@@ -6076,7 +6076,7 @@ static void PM_GroundTrace(void)
 	point[1] = pm->ps->origin[1];
 	point[2] = pm->ps->origin[2] - 0.25f;
 
-	pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, point, pm->ps->clientNum, pm->tracemask,
+	pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, point, pm->ps->client_num, pm->tracemask,
 		static_cast<EG2_Collision>(0), 0);
 	pml.groundTrace = trace;
 
@@ -6168,7 +6168,7 @@ static void PM_GroundTrace(void)
 	pml.groundPlane = qtrue;
 	pml.walking = qtrue;
 
-	Jetpack_Off(&g_entities[pm->ps->clientNum]);
+	Jetpack_Off(&g_entities[pm->ps->client_num]);
 
 	// hitting solid ground will end a waterjump
 	if (pm->ps->pm_flags & PMF_TIME_WATERJUMP)
@@ -6209,7 +6209,7 @@ static void PM_GroundTrace(void)
 
 	pm->ps->groundEntityNum = trace.entityNum;
 	pm->ps->lastOnGround = level.time;
-	if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+	if (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 	{
 		//if a player, clear the jumping "flag" so can't double-jump
 		pm->ps->forceJumpCharge = 0;
@@ -6301,7 +6301,7 @@ void PM_HoverTrace(void)
 			//sit on water
 			traceContents |= CONTENTS_WATER | CONTENTS_SLIME | CONTENTS_LAVA;
 		}
-		pm->trace(trace, pm->ps->origin, pm->mins, pm->maxs, point, pm->ps->clientNum, traceContents,
+		pm->trace(trace, pm->ps->origin, pm->mins, pm->maxs, point, pm->ps->client_num, traceContents,
 			static_cast<EG2_Collision>(0), 0);
 		if (trace->plane.normal[2] >= minNormal)
 		{
@@ -6405,7 +6405,7 @@ void PM_HoverTrace(void)
 				VectorMA(predictedApx, 0.25f, predictedFallVelocity, predictedLandPosition);
 
 				trace_t trace2;
-				gi.trace(&trace2, predictedApx, pm->mins, pm->maxs, predictedLandPosition, pm->ps->clientNum,
+				gi.trace(&trace2, predictedApx, pm->mins, pm->maxs, predictedLandPosition, pm->ps->client_num,
 					traceContents, static_cast<EG2_Collision>(0), 0);
 				if (!trace2.startsolid && !trace2.allsolid && trace2.fraction > 0.75 && Q_irand(0, 3) == 0)
 				{
@@ -6440,7 +6440,7 @@ static void PM_SetWaterLevelAtPoint(vec3_t org, int* waterlevel, int* watertype)
 	point[2] = org[2] + DEFAULT_MINS_2 + 1;
 	if (gi.totalMapContents() & (MASK_WATER | CONTENTS_LADDER))
 	{
-		int cont = pm->pointcontents(point, pm->ps->clientNum);
+		int cont = pm->pointcontents(point, pm->ps->client_num);
 
 		if (cont & (MASK_WATER | CONTENTS_LADDER))
 		{
@@ -6450,12 +6450,12 @@ static void PM_SetWaterLevelAtPoint(vec3_t org, int* waterlevel, int* watertype)
 			*watertype = cont;
 			*waterlevel = 1;
 			point[2] = org[2] + DEFAULT_MINS_2 + sample1;
-			cont = pm->pointcontents(point, pm->ps->clientNum);
+			cont = pm->pointcontents(point, pm->ps->client_num);
 			if (cont & (MASK_WATER | CONTENTS_LADDER))
 			{
 				*waterlevel = 2;
 				point[2] = org[2] + DEFAULT_MINS_2 + sample2;
-				cont = pm->pointcontents(point, pm->ps->clientNum);
+				cont = pm->pointcontents(point, pm->ps->client_num);
 				if (cont & (MASK_WATER | CONTENTS_LADDER))
 				{
 					*waterlevel = 3;
@@ -6481,7 +6481,7 @@ void PM_SetWaterHeight(void)
 	top[2] += pm->gent->client->standheight;
 	bottom[2] += DEFAULT_MINS_2;
 
-	gi.trace(&trace, top, pm->mins, pm->maxs, bottom, pm->ps->clientNum, MASK_WATER, static_cast<EG2_Collision>(0), 0);
+	gi.trace(&trace, top, pm->mins, pm->maxs, bottom, pm->ps->client_num, MASK_WATER, static_cast<EG2_Collision>(0), 0);
 
 	if (trace.startsolid)
 	{
@@ -6603,7 +6603,7 @@ static void PM_CheckDuck(void)
 			//assert(0);
 		}
 
-		if (pm->ps->clientNum < MAX_CLIENTS
+		if (pm->ps->client_num < MAX_CLIENTS
 			&& (pm->gent->client->NPC_class == CLASS_ATST || pm->gent->client->NPC_class == CLASS_RANCOR)
 			&& !BG_AllowThirdPersonSpecialMove(pm->ps))
 		{
@@ -6660,7 +6660,7 @@ static void PM_CheckDuck(void)
 	if (PM_InRoll(pm->ps))
 	{
 		/*
-		if ( pm->ps->clientNum && pm->gent && pm->gent->client )
+		if ( pm->ps->client_num && pm->gent && pm->gent->client )
 		{
 			pm->maxs[2] = pm->gent->client->renderInfo.eyePoint[2]-pm->ps->origin[2] + 4;
 			if ( crouchheight > pm->maxs[2] )
@@ -6717,7 +6717,7 @@ static void PM_CheckDuck(void)
 		pm->ps->pm_flags |= PMF_DUCKED;
 		if (d_JediAI->integer || d_combatinfo->integer || g_DebugSaberCombat->integer)
 		{
-			if (pm->ps->clientNum && pm->ps->weapon == WP_SABER)
+			if (pm->ps->client_num && pm->ps->weapon == WP_SABER)
 			{
 				Com_Printf("ducking\n");
 			}
@@ -6734,7 +6734,7 @@ static void PM_CheckDuck(void)
 				//unducking whilst in air will try to drop feet
 				pm->maxs[2] = standheight;
 				pm->ps->origin[2] += oldHeight - pm->maxs[2];
-				pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, pm->ps->origin, pm->ps->clientNum, pm->tracemask,
+				pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, pm->ps->origin, pm->ps->client_num, pm->tracemask,
 					static_cast<EG2_Collision>(0), 0);
 				if (!trace.allsolid)
 				{
@@ -6754,7 +6754,7 @@ static void PM_CheckDuck(void)
 			{
 				// try to stand up
 				pm->maxs[2] = standheight;
-				pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, pm->ps->origin, pm->ps->clientNum, pm->tracemask,
+				pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, pm->ps->origin, pm->ps->client_num, pm->tracemask,
 					static_cast<EG2_Collision>(0), 0);
 				if (!trace.allsolid)
 				{
@@ -7359,7 +7359,7 @@ qboolean PM_InKnockDownNoGetup(const playerState_t* ps)
 			return qtrue;
 		}
 		/*
-		else if ( ps->clientNum < MAX_CLIENTS
+		else if ( ps->client_num < MAX_CLIENTS
 			&& ps->legsAnimTimer < 300 + PLAYER_KNOCKDOWN_HOLD_EXTRA_TIME )
 		{
 			return qtrue;
@@ -7476,7 +7476,7 @@ qboolean PM_InKnockDownOnGround(playerState_t* ps)
 	case BOTH_SLAPDOWNRIGHT:
 	case BOTH_SLAPDOWNLEFT:
 	case BOTH_RELEASED:
-		//if ( PM_AnimLength( g_entities[ps->clientNum].client->clientInfo.animFileIndex, (animNumber_t)ps->legsAnim ) - ps->legsAnimTimer > 300 )
+		//if ( PM_AnimLength( g_entities[ps->client_num].client->clientInfo.animFileIndex, (animNumber_t)ps->legsAnim ) - ps->legsAnimTimer > 300 )
 	{
 		//at end of fall down anim
 		return qtrue;
@@ -7496,7 +7496,7 @@ qboolean PM_InKnockDownOnGround(playerState_t* ps)
 	case BOTH_FORCE_GETUP_B4:
 	case BOTH_FORCE_GETUP_B5:
 	case BOTH_FORCE_GETUP_B6:
-		if (PM_AnimLength(g_entities[ps->clientNum].client->clientInfo.animFileIndex,
+		if (PM_AnimLength(g_entities[ps->client_num].client->clientInfo.animFileIndex,
 			static_cast<animNumber_t>(ps->legsAnim)) - ps->legsAnimTimer < 500)
 		{
 			//at beginning of getup anim
@@ -7511,7 +7511,7 @@ qboolean PM_InKnockDownOnGround(playerState_t* ps)
 	case BOTH_GETUP_FROLL_F:
 	case BOTH_GETUP_FROLL_L:
 	case BOTH_GETUP_FROLL_R:
-		if (PM_AnimLength(g_entities[ps->clientNum].client->clientInfo.animFileIndex,
+		if (PM_AnimLength(g_entities[ps->client_num].client->clientInfo.animFileIndex,
 			static_cast<animNumber_t>(ps->legsAnim)) - ps->legsAnimTimer < 500)
 		{
 			//at beginning of getup anim
@@ -7530,7 +7530,7 @@ qboolean PM_InKnockDownOnGround(playerState_t* ps)
 			return qtrue;
 		}
 		/*
-		else if ( ps->clientNum < MAX_CLIENTS
+		else if ( ps->client_num < MAX_CLIENTS
 			&& ps->legsAnimTimer < 300 + PLAYER_KNOCKDOWN_HOLD_EXTRA_TIME )
 		{
 			return qtrue;
@@ -7604,9 +7604,9 @@ qboolean PM_CheckRollGetup(void)
 		|| pm->ps->legsAnim == BOTH_RELEASED)
 	{
 		//lying on back or front
-		if ((pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+		if ((pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 			&& (pm->cmd.rightmove || pm->cmd.forwardmove && pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0) //player pressing left or right
-			|| pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer() && pm->gent->NPC //an NPC
+			|| pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer() && pm->gent->NPC //an NPC
 			&& pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0 //have at least force jump 1
 			&& !(pm->ps->userInt3 & 1 << FLAG_FATIGUED) //can't do roll getups while fatigued.
 			&& pm->gent->enemy //I have an enemy
@@ -7698,7 +7698,7 @@ qboolean PM_CheckRollGetup(void)
 					anim = Q_irand(BOTH_GETUP_BROLL_B, BOTH_GETUP_BROLL_R);
 				}
 			}
-			if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer())
+			if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer())
 			{
 				if (!G_CheckRollSafety(pm->gent, anim, 64))
 				{
@@ -7856,7 +7856,7 @@ qboolean PM_GettingUpFromKnockDown(const float standheight, const float crouchhe
 			trace_t trace;
 			// try to stand up
 			pm->maxs[2] = standheight;
-			pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, pm->ps->origin, pm->ps->clientNum, pm->tracemask,
+			pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, pm->ps->origin, pm->ps->client_num, pm->tracemask,
 				static_cast<EG2_Collision>(0), 0);
 
 			if (!trace.allsolid)
@@ -7870,8 +7870,8 @@ qboolean PM_GettingUpFromKnockDown(const float standheight, const float crouchhe
 				switch (pm->ps->legsAnim)
 				{
 				case BOTH_KNOCKDOWN1:
-					if (pm->ps->clientNum && pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0
-						|| (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer() && !(pm->ps->userInt3 & 1 << FLAG_FATIGUED))
+					if (pm->ps->client_num && pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0
+						|| (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer() && !(pm->ps->userInt3 & 1 << FLAG_FATIGUED))
 						&& pm->cmd.upmove > 0
 						&& pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0)
 					{
@@ -7885,8 +7885,8 @@ qboolean PM_GettingUpFromKnockDown(const float standheight, const float crouchhe
 					break;
 				case BOTH_KNOCKDOWN2:
 				case BOTH_PLAYER_PA_3_FLY:
-					if (pm->ps->clientNum && pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0
-						|| (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer() && !(pm->ps->userInt3 & 1 << FLAG_FATIGUED))
+					if (pm->ps->client_num && pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0
+						|| (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer() && !(pm->ps->userInt3 & 1 << FLAG_FATIGUED))
 						&& pm->cmd.upmove > 0
 						&& pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0)
 					{
@@ -7899,8 +7899,8 @@ qboolean PM_GettingUpFromKnockDown(const float standheight, const float crouchhe
 					}
 					break;
 				case BOTH_KNOCKDOWN3:
-					if (pm->ps->clientNum && pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0
-						|| (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer() && !(pm->ps->userInt3 & 1 << FLAG_FATIGUED))
+					if (pm->ps->client_num && pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0
+						|| (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer() && !(pm->ps->userInt3 & 1 << FLAG_FATIGUED))
 						&& pm->cmd.upmove > 0
 						&& pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0)
 					{
@@ -7914,8 +7914,8 @@ qboolean PM_GettingUpFromKnockDown(const float standheight, const float crouchhe
 					break;
 				case BOTH_KNOCKDOWN4:
 				case BOTH_RELEASED:
-					if (pm->ps->clientNum && pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0
-						|| (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer() && !(pm->ps->userInt3 & 1 << FLAG_FATIGUED))
+					if (pm->ps->client_num && pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0
+						|| (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer() && !(pm->ps->userInt3 & 1 << FLAG_FATIGUED))
 						&& pm->cmd.upmove > 0
 						&& pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0)
 					{
@@ -7931,8 +7931,8 @@ qboolean PM_GettingUpFromKnockDown(const float standheight, const float crouchhe
 				case BOTH_SLAPDOWNRIGHT:
 				case BOTH_SLAPDOWNLEFT:
 				case BOTH_LK_DL_ST_T_SB_1_L:
-					if (pm->ps->clientNum && pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0
-						|| (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer() && !(pm->ps->userInt3 & 1 << FLAG_FATIGUED))
+					if (pm->ps->client_num && pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0
+						|| (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer() && !(pm->ps->userInt3 & 1 << FLAG_FATIGUED))
 						&& pm->cmd.upmove > 0
 						&& pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0)
 					{
@@ -8068,7 +8068,7 @@ void PM_CmdForRoll(playerState_t* ps, usercmd_t* pCmd)
 			//end of anim
 			pCmd->forwardmove = pCmd->rightmove = 0;
 		}
-		else if (PM_AnimLength(g_entities[ps->clientNum].client->clientInfo.animFileIndex,
+		else if (PM_AnimLength(g_entities[ps->client_num].client->clientInfo.animFileIndex,
 			static_cast<animNumber_t>(ps->legsAnim)) - ps->torsoAnimTimer < 350)
 		{
 			//beginning of anim
@@ -8089,7 +8089,7 @@ void PM_CmdForRoll(playerState_t* ps, usercmd_t* pCmd)
 			//end of anim
 			pCmd->forwardmove = pCmd->rightmove = 0;
 		}
-		else if (PM_AnimLength(g_entities[ps->clientNum].client->clientInfo.animFileIndex,
+		else if (PM_AnimLength(g_entities[ps->client_num].client->clientInfo.animFileIndex,
 			static_cast<animNumber_t>(ps->legsAnim)) - ps->torsoAnimTimer < 200)
 		{
 			//beginning of anim
@@ -8110,7 +8110,7 @@ void PM_CmdForRoll(playerState_t* ps, usercmd_t* pCmd)
 			//end of anim
 			pCmd->forwardmove = pCmd->rightmove = 0;
 		}
-		else if (PM_AnimLength(g_entities[ps->clientNum].client->clientInfo.animFileIndex,
+		else if (PM_AnimLength(g_entities[ps->client_num].client->clientInfo.animFileIndex,
 			static_cast<animNumber_t>(ps->legsAnim)) - ps->torsoAnimTimer < 150)
 		{
 			//beginning of anim
@@ -9250,12 +9250,12 @@ void PM_FootSlopeTrace(float* pDiff, float* pInterval)
 		VectorSet(footMaxs, 3, 3, 1);
 	}
 
-	pm->trace(&trace, footLOrg, footMins, footMaxs, footLBot, pm->ps->clientNum, pm->tracemask,
+	pm->trace(&trace, footLOrg, footMins, footMaxs, footLBot, pm->ps->client_num, pm->tracemask,
 		static_cast<EG2_Collision>(0), 0);
 	VectorCopy(trace.endpos, footLBot);
 	VectorCopy(trace.plane.normal, footLSlope);
 
-	pm->trace(&trace, footROrg, footMins, footMaxs, footRBot, pm->ps->clientNum, pm->tracemask,
+	pm->trace(&trace, footROrg, footMins, footMaxs, footRBot, pm->ps->client_num, pm->tracemask,
 		static_cast<EG2_Collision>(0), 0);
 	VectorCopy(trace.endpos, footRBot);
 	VectorCopy(trace.plane.normal, footRSlope);
@@ -9458,7 +9458,7 @@ qboolean PM_AdjustStandAnimForSlope(void)
 		//only ATST and player does this
 		return qfalse;
 	}
-	if ((pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+	if ((pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 		&& !BG_AllowThirdPersonSpecialMove(pm->ps))
 	{
 		//first person doesn't do this
@@ -10219,7 +10219,7 @@ static void PM_Footsteps(void)
 				return;
 			}
 			if (pm->ps->waterHeightLevel >= WHL_TORSO
-				&& (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer()
+				&& (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer()
 					|| pm->ps->weapon == WP_SABER || pm->ps->weapon == WP_NONE || pm->ps->weapon == WP_MELEE))
 			{
 				if (!PM_ForceJumpingUp(pm->gent))
@@ -10605,7 +10605,7 @@ static void PM_Footsteps(void)
 		if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
 		{
 			pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
-			g_entities[pm->ps->clientNum].client->IsSprinting = qfalse;
+			g_entities[pm->ps->client_num].client->IsSprinting = qfalse;
 		}
 		return;
 	}
@@ -10653,7 +10653,7 @@ static void PM_Footsteps(void)
 		}
 	}
 
-#define OVERRIDE_ROLL_CHECK g_entities[pm->ps->clientNum].npc_roll_start
+#define OVERRIDE_ROLL_CHECK g_entities[pm->ps->client_num].npc_roll_start
 
 	if (pm->ps->pm_flags & PMF_DUCKED || OVERRIDE_ROLL_CHECK)
 	{
@@ -10672,7 +10672,7 @@ static void PM_Footsteps(void)
 				rolled = PM_TryRoll();
 			}
 
-			if (PM_CrouchAnim(pm->gent->client->ps.legsAnim) && (pm->ps->clientNum < MAX_CLIENTS ||
+			if (PM_CrouchAnim(pm->gent->client->ps.legsAnim) && (pm->ps->client_num < MAX_CLIENTS ||
 				PM_ControlledByPlayer()) &&
 				(g_SerenityJediEngineMode->integer &&
 					(pm->cmd.buttons & BUTTON_USE && pm->ps->pm_flags & PMF_USE_HELD)))
@@ -10721,7 +10721,7 @@ static void PM_Footsteps(void)
 		if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
 		{
 			pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
-			g_entities[pm->ps->clientNum].client->IsSprinting = qfalse;
+			g_entities[pm->ps->client_num].client->IsSprinting = qfalse;
 		}
 	}
 	else if (pm->ps->pm_flags & PMF_BACKWARDS_RUN)
@@ -10734,7 +10734,7 @@ static void PM_Footsteps(void)
 
 			if (pm->ps->weapon == WP_SABER && pm->ps->SaberActive())
 			{
-				if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+				if (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 				{
 					PM_SetAnim(pm, SETANIM_LEGS, BOTH_RUNBACK2, setAnimFlags);
 				}
@@ -10837,7 +10837,7 @@ static void PM_Footsteps(void)
 							}
 							else
 							{
-								if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer()) //npc
+								if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer()) //npc
 								{
 									PM_SetAnim(pm, SETANIM_LEGS, BOTH_WALKBACK1, setAnimFlags);
 								}
@@ -10936,7 +10936,7 @@ static void PM_Footsteps(void)
 		if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
 		{
 			pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
-			g_entities[pm->ps->clientNum].client->IsSprinting = qfalse;
+			g_entities[pm->ps->client_num].client->IsSprinting = qfalse;
 		}
 	}
 	else
@@ -10984,7 +10984,7 @@ static void PM_Footsteps(void)
 						{
 							pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
 							pm->ps->sprintFuel -= 15;
-							g_entities[pm->ps->clientNum].client->IsSprinting = qtrue;
+							g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
 						}
 					}
 					else
@@ -11026,7 +11026,7 @@ static void PM_Footsteps(void)
 						if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
 						{
 							pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
-							g_entities[pm->ps->clientNum].client->IsSprinting = qfalse;
+							g_entities[pm->ps->client_num].client->IsSprinting = qfalse;
 						}
 					}
 				} // NON SABER WEAPONS RUNNING
@@ -11041,7 +11041,7 @@ static void PM_Footsteps(void)
 						{
 							pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
 							pm->ps->sprintFuel -= 15;
-							g_entities[pm->ps->clientNum].client->IsSprinting = qtrue;
+							g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
 						}
 					}
 					else
@@ -11051,7 +11051,7 @@ static void PM_Footsteps(void)
 						if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
 						{
 							pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
-							g_entities[pm->ps->clientNum].client->IsSprinting = qfalse;
+							g_entities[pm->ps->client_num].client->IsSprinting = qfalse;
 						}
 					}
 				}
@@ -11082,7 +11082,7 @@ static void PM_Footsteps(void)
 								{
 									pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
 									pm->ps->sprintFuel -= 15;
-									g_entities[pm->ps->clientNum].client->IsSprinting = qtrue;
+									g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
 								}
 							}
 							else
@@ -11092,7 +11092,7 @@ static void PM_Footsteps(void)
 								if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
 								{
 									pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
-									g_entities[pm->ps->clientNum].client->IsSprinting = qfalse;
+									g_entities[pm->ps->client_num].client->IsSprinting = qfalse;
 								}
 							}
 						}
@@ -11106,7 +11106,7 @@ static void PM_Footsteps(void)
 								{
 									pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
 									pm->ps->sprintFuel -= 15;
-									g_entities[pm->ps->clientNum].client->IsSprinting = qtrue;
+									g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
 								}
 							}
 							else
@@ -11116,7 +11116,7 @@ static void PM_Footsteps(void)
 								if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
 								{
 									pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
-									g_entities[pm->ps->clientNum].client->IsSprinting = qfalse;
+									g_entities[pm->ps->client_num].client->IsSprinting = qfalse;
 								}
 							}
 						}
@@ -11140,7 +11140,7 @@ static void PM_Footsteps(void)
 							{
 								pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
 								pm->ps->sprintFuel -= 15;
-								g_entities[pm->ps->clientNum].client->IsSprinting = qtrue;
+								g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
 							}
 						}
 						else
@@ -11157,7 +11157,7 @@ static void PM_Footsteps(void)
 							if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
 							{
 								pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
-								g_entities[pm->ps->clientNum].client->IsSprinting = qfalse;
+								g_entities[pm->ps->client_num].client->IsSprinting = qfalse;
 							}
 						}
 					}
@@ -11170,13 +11170,13 @@ static void PM_Footsteps(void)
 						if (is_holding_block_button(pm->gent) && pm->ps->sprintFuel > 15)
 						{
 							PM_SetAnim(pm, SETANIM_LEGS, BOTH_SPRINT_HEAVY, setAnimFlags);
-							g_entities[pm->ps->clientNum].client->IsSprinting = qtrue;
+							g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
 
 							if (!(pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING))
 							{
 								pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
 								pm->ps->sprintFuel -= 15;
-								g_entities[pm->ps->clientNum].client->IsSprinting = qtrue;
+								g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
 							}
 						}
 						else
@@ -11193,7 +11193,7 @@ static void PM_Footsteps(void)
 							if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
 							{
 								pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
-								g_entities[pm->ps->clientNum].client->IsSprinting = qfalse;
+								g_entities[pm->ps->client_num].client->IsSprinting = qfalse;
 							}
 						}
 					}
@@ -11209,7 +11209,7 @@ static void PM_Footsteps(void)
 							{
 								pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
 								pm->ps->sprintFuel -= 15;
-								g_entities[pm->ps->clientNum].client->IsSprinting = qtrue;
+								g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
 							}
 						}
 						else
@@ -11219,7 +11219,7 @@ static void PM_Footsteps(void)
 							if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
 							{
 								pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
-								g_entities[pm->ps->clientNum].client->IsSprinting = qfalse;
+								g_entities[pm->ps->client_num].client->IsSprinting = qfalse;
 							}
 						}
 					}
@@ -11275,7 +11275,7 @@ static void PM_Footsteps(void)
 						if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
 						{
 							pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
-							g_entities[pm->ps->clientNum].client->IsSprinting = qfalse;
+							g_entities[pm->ps->client_num].client->IsSprinting = qfalse;
 						}
 					}
 				}
@@ -11304,7 +11304,7 @@ static void PM_Footsteps(void)
 								}
 								else
 								{
-									if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer()) //npc
+									if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer()) //npc
 									{
 										if (in_camera) //cosmetics off
 										{
@@ -11357,7 +11357,7 @@ static void PM_Footsteps(void)
 									}
 									else
 									{
-										if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer()) //npc
+										if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer()) //npc
 										{
 											if (in_camera) //cosmetics off
 											{
@@ -11397,7 +11397,7 @@ static void PM_Footsteps(void)
 								}
 								else
 								{
-									if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer()) //npc
+									if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer()) //npc
 									{
 										if (g_RealisticBlockingMode->integer) //cosmetics off
 										{
@@ -11540,7 +11540,7 @@ static void PM_Footsteps(void)
 				if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
 				{
 					pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
-					g_entities[pm->ps->clientNum].client->IsSprinting = qfalse;
+					g_entities[pm->ps->client_num].client->IsSprinting = qfalse;
 				}
 			}
 		}
@@ -11669,7 +11669,7 @@ static void PM_WaterEvents(void)
 				impact_splash = qtrue;
 			}
 
-			if (pm->ps->clientNum < MAX_CLIENTS)
+			if (pm->ps->client_num < MAX_CLIENTS)
 			{
 				AddSoundEvent(pm->gent, pm->ps->origin, 384, AEL_SUSPICIOUS);
 				AddSightEvent(pm->gent, pm->ps->origin, 512, AEL_SUSPICIOUS);
@@ -11694,7 +11694,7 @@ static void PM_WaterEvents(void)
 		{
 			impact_splash = qtrue;
 		}
-		if (pm->gent && pm->ps->clientNum < MAX_CLIENTS)
+		if (pm->gent && pm->ps->client_num < MAX_CLIENTS)
 		{
 			AddSoundEvent(pm->gent, pm->ps->origin, 384, AEL_SUSPICIOUS);
 			AddSightEvent(pm->gent, pm->ps->origin, 512, AEL_SUSPICIOUS);
@@ -11751,7 +11751,7 @@ static void PM_WaterEvents(void)
 			PM_AddEvent(EV_WATER_UNDER);
 		}
 
-		if (pm->gent && pm->ps->clientNum < MAX_CLIENTS)
+		if (pm->gent && pm->ps->client_num < MAX_CLIENTS)
 		{
 			AddSoundEvent(pm->gent, pm->ps->origin, 256, AEL_MINOR);
 			AddSightEvent(pm->gent, pm->ps->origin, 384, AEL_MINOR);
@@ -11779,7 +11779,7 @@ static void PM_WaterEvents(void)
 				PM_AddEvent(EV_WATER_LEAVE);
 			}
 		}
-		if (pm->gent && pm->ps->clientNum < MAX_CLIENTS)
+		if (pm->gent && pm->ps->client_num < MAX_CLIENTS)
 		{
 			AddSoundEvent(pm->gent, pm->ps->origin, 256, AEL_MINOR);
 			AddSightEvent(pm->gent, pm->ps->origin, 384, AEL_SUSPICIOUS);
@@ -11870,7 +11870,7 @@ static void PM_BeginWeaponChange(const int weapon)
 
 	// turn of any kind of zooming when weapon switching....except the LA Goggles
 	// also ignore if we change to WP_NONE..sorta hacky fix for binoculars using WP_SABER
-	if (pm->ps->clientNum == 0 && cg.weaponSelect != WP_NONE)
+	if (pm->ps->client_num == 0 && cg.weaponSelect != WP_NONE)
 	{
 		if (cg.zoomMode > 0 && cg.zoomMode < 3)
 		{
@@ -11883,7 +11883,7 @@ static void PM_BeginWeaponChange(const int weapon)
 		&& pm->gent->client
 		&& (pm->gent->client->NPC_class == CLASS_ATST || pm->gent->client->NPC_class == CLASS_RANCOR))
 	{
-		if (pm->ps->clientNum < MAX_CLIENTS)
+		if (pm->ps->client_num < MAX_CLIENTS)
 		{
 			gi.cvar_set("cg_thirdperson", "1");
 		}
@@ -12000,7 +12000,7 @@ static void PM_FinishWeaponChange(void)
 			}
 		}
 
-		if (pm->ps->clientNum < MAX_CLIENTS
+		if (pm->ps->client_num < MAX_CLIENTS
 			&& cg_gunAutoFirst.integer
 			&& !PM_RidingVehicle()
 			&& weapon != WP_NONE)
@@ -12059,7 +12059,7 @@ static void PM_FinishWeaponChange(void)
 		if (pm->gent)
 		{
 			WP_SaberInitBladeData(pm->gent);
-			if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+			if (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 			{
 				gi.cvar_set("cg_thirdperson", "1");
 			}
@@ -12140,7 +12140,7 @@ static void PM_FinishWeaponChange(void)
 			}
 		}
 
-		if (pm->ps->clientNum < MAX_CLIENTS
+		if (pm->ps->client_num < MAX_CLIENTS
 			&& cg_gunAutoFirst.integer
 			&& !PM_RidingVehicle()
 			&& weapon != WP_NONE)
@@ -12452,7 +12452,7 @@ int PM_ReadyPoseForSaberAnimLevel()
 		return -1;
 	}
 
-	if (pm->ps->clientNum && !PM_ControlledByPlayer())
+	if (pm->ps->client_num && !PM_ControlledByPlayer())
 	{
 		anim = PM_ReadyPoseForSaberAnimLevelNPC();
 	}
@@ -12887,7 +12887,7 @@ int PM_BlockingPoseForSaberAnimLevelSingleAMD()
 			{   //STANDING STILL NOT MOVING LEFT OR RIGHT
 				if (active_blocking)  // pressing block + attack
 				{
-					if (g_entities[pm->ps->clientNum].client->IsBlockingLightning) // this is for lightning needs to be here as an override (TOP BLOCK)
+					if (g_entities[pm->ps->client_num].client->IsBlockingLightning) // this is for lightning needs to be here as an override (TOP BLOCK)
 					{
 						anim = BOTH_P1_S1_T__MD; // this is for lightning needs to be here as an override (TOP BLOCK)
 					}
@@ -13105,7 +13105,7 @@ int PM_BlockingPoseForSaberAnimLevelDualAMD()
 			{//STANDING STLL NOT MOVING LEFT OR RIGHT
 				if (ActiveBlocking)  // pressing block + attack
 				{
-					if (g_entities[pm->ps->clientNum].client->IsBlockingLightning) // this is for lightning needs to be here as an override (TOP BLOCK)
+					if (g_entities[pm->ps->client_num].client->IsBlockingLightning) // this is for lightning needs to be here as an override (TOP BLOCK)
 					{
 						anim = BOTH_P6_S6_T__MD; // this is for lightning needs to be here as an override (TOP BLOCK)
 					}
@@ -13323,7 +13323,7 @@ int PM_BlockingPoseForSaberAnimLevelStaffAMD()
 			{//STANDING STLL NOT MOVING LEFT OR RIGHT
 				if (active_blocking)  // pressing block + attack
 				{
-					if (g_entities[pm->ps->clientNum].client->IsBlockingLightning) // this is for lightning needs to be here as an override (TOP BLOCK)
+					if (g_entities[pm->ps->client_num].client->IsBlockingLightning) // this is for lightning needs to be here as an override (TOP BLOCK)
 					{
 						anim = BOTH_P7_S7_T__MD; // this is for lightning needs to be here as an override (TOP BLOCK)
 					}
@@ -13609,7 +13609,7 @@ qboolean PM_CanDoDualDoubleAttacks(void)
 		return qfalse;
 	}
 	//NOTE: assumes you're using SS_DUAL style and have both sabers on...
-	if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+	if (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 	{
 		//player
 		return qtrue;
@@ -13879,7 +13879,7 @@ void PM_SetSaberMove(saberMoveName_t newMove)
 	int	anim = saberMoveData[newMove].animToUse;
 	int parts = SETANIM_TORSO;
 	qboolean manualBlocking = qfalse;
-	const gentity_t* ent = &g_entities[pm->ps->clientNum];
+	const gentity_t* ent = &g_entities[pm->ps->client_num];
 
 	const qboolean holding_block = pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;//Holding Block Button
 
@@ -13896,7 +13896,7 @@ void PM_SetSaberMove(saberMoveName_t newMove)
 
 	if (cg_debugSaber.integer || cg_saberinfo.integer & 0x01 && newMove != LS_READY)
 	{
-		if (pm->ps->clientNum && !PM_ControlledByPlayer()) //npc only
+		if (pm->ps->client_num && !PM_ControlledByPlayer()) //npc only
 		{
 			Com_Printf("SetSaberMove:  From '%s' to '%s'\n", saberMoveData[pm->ps->saberMove].name, saberMoveData[newMove].name);
 		}
@@ -14622,7 +14622,7 @@ void PM_SetSaberMove(saberMoveName_t newMove)
 		{
 			if (g_SerenityJediEngineMode->integer)
 			{
-				if (pm->ps->clientNum && !PM_ControlledByPlayer())
+				if (pm->ps->client_num && !PM_ControlledByPlayer())
 				{
 					PM_NPCFatigue(pm->ps, newMove, anim); //drain blockpoints low cost
 				}
@@ -14693,7 +14693,7 @@ void PM_SetSaberMove(saberMoveName_t newMove)
 			}
 			else if (PM_SaberInStart(newMove))
 			{//don't damage on the first few frames of a start anim because it may pop from one position to some drastically different one, killing the enemy without hitting them.
-				if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer())
+				if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer())
 				{
 					int damageDelay = 150;
 					if (pm->ps->torsoAnimTimer < damageDelay)
@@ -14770,7 +14770,7 @@ void PM_SetSaberMove(saberMoveName_t newMove)
 		pm->ps->saberMove = newMove;
 		pm->ps->saberBlocking = saberMoveData[newMove].blocking;
 
-		if (pm->ps->clientNum == 0 || PM_ControlledByPlayer())
+		if (pm->ps->client_num == 0 || PM_ControlledByPlayer())
 		{
 			if (pm->ps->saberBlocked >= BLOCKED_UPPER_RIGHT_PROJ && pm->ps->saberBlocked <= BLOCKED_TOP_PROJ
 				&& newMove >= LS_REFLECT_UP && newMove <= LS_REFLECT_LL)
@@ -15438,7 +15438,7 @@ void PM_SaberLockBreak(gentity_t* gent, gentity_t* genemy, const saberLockResult
 	}
 	else
 	{
-		if (pm->ps->clientNum)
+		if (pm->ps->client_num)
 		{
 			//an NPC
 			pm->ps->saberEventFlags |= SEF_LOCK_WON; //tell the winner to press the advantage
@@ -15904,7 +15904,7 @@ qboolean PM_SaberLocked(void)
 					}
 					if (!Q_irand(0, 2))
 					{
-						if (pm->ps->clientNum < MAX_CLIENTS)
+						if (pm->ps->client_num < MAX_CLIENTS)
 						{
 							if (!Q_irand(0, 3))
 							{
@@ -16074,7 +16074,7 @@ float PM_GroundDistance(void)
 
 	down[2] -= 4096;
 
-	pm->trace(&tr, pm->ps->origin, pm->mins, pm->maxs, down, pm->ps->clientNum, pm->tracemask,
+	pm->trace(&tr, pm->ps->origin, pm->mins, pm->maxs, down, pm->ps->client_num, pm->tracemask,
 		static_cast<EG2_Collision>(0), 0);
 
 	VectorSubtract(pm->ps->origin, tr.endpos, down);
@@ -16539,7 +16539,7 @@ qboolean PM_CheckUpsideDownAttack(void)
 	{
 		return qfalse;
 	}
-	if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer())
+	if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer())
 	{
 		//FIXME: check ranks?
 		return qfalse;
@@ -16613,7 +16613,7 @@ qboolean PM_CanDoKata()
 
 	if (g_SerenityJediEngineMode->integer)
 	{
-		if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer() //npc kata restrictions
+		if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer() //npc kata restrictions
 			&& (g_SerenityJediEngineMode->integer == 2 && pm->ps->blockPoints <= BLOCKPOINTS_FOURTY
 				|| g_SerenityJediEngineMode->integer == 1 && pm->ps->forcePower <= BLOCKPOINTS_FOURTY))
 		{
@@ -17513,7 +17513,7 @@ void pm_melee_move_for_conditions()
 
 void PM_CheckClearSaberBlock(void)
 {
-	if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+	if (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 	{
 		//player
 		if (pm->ps->saberBlocked >= BLOCKED_UPPER_RIGHT_PROJ && pm->ps->saberBlocked <= BLOCKED_TOP_PROJ)
@@ -17567,7 +17567,7 @@ qboolean PM_SaberBlocking(void)
 					//we parried another lightsaber while attacking, so treat it as a bounce
 					pm->ps->saberBlocked = BLOCKED_ATK_BOUNCE;
 				}
-				else if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer()) //player
+				else if (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer()) //player
 				{
 					if (pm->ps->saberBlocked >= BLOCKED_UPPER_RIGHT_PROJ && pm->ps->saberBlocked <= BLOCKED_TOP_PROJ)
 					{
@@ -17650,7 +17650,7 @@ qboolean PM_SaberBlocking(void)
 						if (pm->cmd.buttons & BUTTON_ATTACK)
 						{
 							//transition to a new attack
-							if (pm->ps->clientNum && !PM_ControlledByPlayer())
+							if (pm->ps->client_num && !PM_ControlledByPlayer())
 							{
 								//NPC
 								nextMove = saberMoveData[pm->ps->saberMove].chain_attack;
@@ -17670,7 +17670,7 @@ qboolean PM_SaberBlocking(void)
 						else
 						{
 							//return to ready
-							if (pm->ps->clientNum && !PM_ControlledByPlayer())
+							if (pm->ps->client_num && !PM_ControlledByPlayer())
 							{
 								//NPC
 								nextMove = saberMoveData[pm->ps->saberMove].chain_idle;
@@ -17913,7 +17913,7 @@ qboolean PM_SaberBlocking(void)
 					//we parried another lightsaber while attacking, so treat it as a bounce
 					pm->ps->saberBlocked = BLOCKED_ATK_BOUNCE;
 				}
-				else if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer()) //player
+				else if (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer()) //player
 				{
 					if (pm->ps->saberBlocked >= BLOCKED_UPPER_RIGHT_PROJ
 						&& pm->ps->saberBlocked <= BLOCKED_TOP_PROJ)
@@ -17941,7 +17941,7 @@ qboolean PM_SaberBlocking(void)
 					}
 				}
 
-				if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer())
+				if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer())
 				{
 					if (pm->ps->saberBlocked != BLOCKED_ATK_BOUNCE)
 					{
@@ -18006,7 +18006,7 @@ qboolean PM_SaberBlocking(void)
 						if (pm->cmd.buttons & BUTTON_ATTACK)
 						{
 							//transition to a new attack
-							if (pm->ps->clientNum && !PM_ControlledByPlayer())
+							if (pm->ps->client_num && !PM_ControlledByPlayer())
 							{
 								//NPC
 								nextMove = saberMoveData[pm->ps->saberMove].chain_attack;
@@ -18025,7 +18025,7 @@ qboolean PM_SaberBlocking(void)
 						else
 						{
 							//return to ready
-							if (pm->ps->clientNum && !PM_ControlledByPlayer())
+							if (pm->ps->client_num && !PM_ControlledByPlayer())
 							{
 								//NPC
 								nextMove = saberMoveData[pm->ps->saberMove].chain_idle;
@@ -18236,7 +18236,7 @@ qboolean PM_SaberBlocking(void)
 				//we parried another lightsaber while attacking, so treat it as a bounce
 				pm->ps->saberBlocked = BLOCKED_ATK_BOUNCE;
 			}
-			else if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer()) //player
+			else if (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer()) //player
 			{
 				if (pm->ps->saberBlocked >= BLOCKED_UPPER_RIGHT_PROJ
 					&& pm->ps->saberBlocked <= BLOCKED_TOP_PROJ)
@@ -18264,7 +18264,7 @@ qboolean PM_SaberBlocking(void)
 				}
 			}
 
-			if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer())
+			if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer())
 			{
 				if (pm->ps->saberBlocked != BLOCKED_ATK_BOUNCE)
 				{
@@ -18329,7 +18329,7 @@ qboolean PM_SaberBlocking(void)
 					if (pm->cmd.buttons & BUTTON_ATTACK)
 					{
 						//transition to a new attack
-						if (pm->ps->clientNum && !PM_ControlledByPlayer())
+						if (pm->ps->client_num && !PM_ControlledByPlayer())
 						{
 							//NPC
 							nextMove = saberMoveData[pm->ps->saberMove].chain_attack;
@@ -18349,7 +18349,7 @@ qboolean PM_SaberBlocking(void)
 					else
 					{
 						//return to ready
-						if (pm->ps->clientNum && !PM_ControlledByPlayer())
+						if (pm->ps->client_num && !PM_ControlledByPlayer())
 						{
 							//NPC
 							nextMove = saberMoveData[pm->ps->saberMove].chain_idle;
@@ -18551,7 +18551,7 @@ qboolean PM_SaberBlocking(void)
 
 qboolean PM_NPCCheckAttackRoll(void)
 {
-	if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer() //NPC
+	if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer() //NPC
 		&& pm->gent
 		&& pm->gent->NPC
 		&& (pm->gent->NPC->rank > RANK_CREWMAN && !Q_irand(0, 3 - g_spskill->integer))
@@ -18696,7 +18696,7 @@ int PM_DoFake(const int curmove)
 		return LS_NONE;
 	}
 
-	if (pm->ps->clientNum && !PM_ControlledByPlayer())
+	if (pm->ps->client_num && !PM_ControlledByPlayer())
 	{
 		//NPCs never do attack fakes, just follow thru with attack.
 		return LS_NONE;
@@ -18821,7 +18821,7 @@ void PM_WeaponLightsaber()
 
 	if (g_SerenityJediEngineMode->integer >= 0)
 	{
-		if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+		if (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 		{
 			//preblocks can be interrupted
 			if (PM_SaberInParry(pm->ps->saberMove) && pm->ps->userInt3 & 1 << FLAG_PREBLOCK // in a pre-block
@@ -18834,7 +18834,7 @@ void PM_WeaponLightsaber()
 			}
 		}
 
-		if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer())
+		if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer())
 		{
 			if (!(pm->cmd.buttons & BUTTON_ATTACK)
 				&& !PM_SaberInSpecial(pm->ps->saberMove)
@@ -18947,7 +18947,7 @@ void PM_WeaponLightsaber()
 	}
 	if (!animLevelOverridden)
 	{
-		if ((pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+		if ((pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 			&& cg.saberAnimLevelPending > SS_NONE
 			&& cg.saberAnimLevelPending != pm->ps->saberAnimLevel)
 		{
@@ -18960,7 +18960,7 @@ void PM_WeaponLightsaber()
 			}
 		}
 	}
-	else if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+	else if (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 	{
 		//if override the player's saberAnimLevel, let the cgame know
 		cg.saberAnimLevelPending = pm->ps->saberAnimLevel;
@@ -19124,7 +19124,7 @@ void PM_WeaponLightsaber()
 
 	if (pm->ps->weaponTime > 0)
 	{
-		if ((pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer()) //player
+		if ((pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer()) //player
 			&& PM_SaberInReturn(pm->ps->saberMove) //in a saber return move - FIXME: what about transitions?
 			&& pm->ps->saberBlocked == BLOCKED_NONE //not interacting with any other saber
 			&& !(pm->cmd.buttons & BUTTON_ATTACK) //not trying to swing the saber
@@ -19408,7 +19408,7 @@ void PM_WeaponLightsaber()
 		}
 	}
 
-	if ((pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer()) //player
+	if ((pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer()) //player
 		&& PM_CheckAltKickAttack() &&
 		pm->ps->communicatingflags & 1 << KICKING)
 	{
@@ -19466,7 +19466,7 @@ void PM_WeaponLightsaber()
 				//started a swing, must continue from here
 				if (g_SerenityJediEngineMode->integer == 2)
 				{
-					if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer())
+					if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer())
 					{//NPCs never do attack fakes, just follow thru with attack.
 						newmove = LS_A_TL2BR + (curmove - LS_S_TL2BR);
 					}
@@ -19488,7 +19488,7 @@ void PM_WeaponLightsaber()
 			{//in a transition, must play sequential attack
 				if (g_SerenityJediEngineMode->integer == 2)
 				{
-					if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer())
+					if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer())
 					{//NPCs never stop attacking mid-attack, just follow thru with attack.
 						newmove = saberMoveData[curmove].chain_attack;
 					}
@@ -19504,7 +19504,7 @@ void PM_WeaponLightsaber()
 			}
 			else if (PM_SaberInBounce(curmove))
 			{//in a bounce
-				if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer())
+				if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer())
 				{//NPCs must play sequential attack
 					if (PM_SaberKataDone(LS_NONE, LS_NONE))
 					{//done with this kata, must return to ready before attack again
@@ -19537,7 +19537,7 @@ void PM_WeaponLightsaber()
 			}
 		}
 		else if (pm->cmd.buttons & BUTTON_ATTACK && pm->cmd.buttons & BUTTON_USE && g_SerenityJediEngineMode->integer
-			&& (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer()))
+			&& (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer()))
 		{
 			//do some fancy faking stuff.
 			if (pm->ps->weaponstate != WEAPON_READY)
@@ -19653,7 +19653,7 @@ void PM_WeaponLightsaber()
 			}
 			if (curmove >= LS_PARRY_UP && curmove <= LS_REFLECT_LL)
 			{//from a parry or reflection, can go directly into an attack
-				if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer())
+				if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer())
 				{//NPCs
 					newmove = PM_NPCSaberAttackFromQuad(saberMoveData[curmove].endQuad);
 				}
@@ -19691,7 +19691,7 @@ void PM_WeaponLightsaber()
 				}
 				else
 				{//get attack move from movement command
-					if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer()
+					if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer()
 						&& (Q_irand(0, pm->ps->forcePowerLevel[FP_SABER_OFFENSE] - 1)
 							|| pm->gent && pm->gent->enemy && pm->gent->enemy->client
 							&& PM_InKnockDownOnGround(&pm->gent->enemy->client->ps)//enemy knocked down, use some logic
@@ -19943,13 +19943,13 @@ void PM_WeaponLightsaber()
 					if (!MatrixMode)
 					{
 						//Special test for Matrix Mode (tm)
-						if (pm->ps->clientNum == 0 && !player_locked && !PlayerAffectedByStasis() && pm->ps->
+						if (pm->ps->client_num == 0 && !player_locked && !PlayerAffectedByStasis() && pm->ps->
 							forcePowersActive & 1 << FP_SPEED)
 						{
 							//player always fires at normal speed
 							addTime *= g_timescale->value;
 						}
-						else if (g_entities[pm->ps->clientNum].client
+						else if (g_entities[pm->ps->client_num].client
 							&& pm->ps->forcePowersActive & 1 << FP_SPEED)
 						{
 							addTime *= g_timescale->value;
@@ -19974,13 +19974,13 @@ void PM_WeaponLightsaber()
 					if (!MatrixMode)
 					{
 						//Special test for Matrix Mode (tm)
-						if (pm->ps->clientNum == 0 && !player_locked && !PlayerAffectedByStasis() && pm->ps->
+						if (pm->ps->client_num == 0 && !player_locked && !PlayerAffectedByStasis() && pm->ps->
 							forcePowersActive & 1 << FP_SPEED)
 						{
 							//player always fires at normal speed
 							addTime *= g_timescale->value;
 						}
-						else if (g_entities[pm->ps->clientNum].client
+						else if (g_entities[pm->ps->client_num].client
 							&& pm->ps->forcePowersActive & 1 << FP_SPEED)
 						{
 							addTime *= g_timescale->value;
@@ -20065,7 +20065,7 @@ static bool PM_DoChargedWeapons(void)
 
 		// alt-fire charges the weapon...but due to zooming being controlled by the alt-button, the main button actually charges...but only when zoomed.
 		//	lovely, eh?
-		if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+		if (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 		{
 			if (cg.zoomMode == 2)
 			{
@@ -20580,7 +20580,7 @@ static void PM_Weapon(void)
 		//draining
 		return;
 	}
-	if (pm->ps->weapon == WP_SABER && (cg.zoomMode == 3 || !cg.zoomMode || pm->ps->clientNum)) // WP_LIGHTSABER
+	if (pm->ps->weapon == WP_SABER && (cg.zoomMode == 3 || !cg.zoomMode || pm->ps->client_num)) // WP_LIGHTSABER
 	{
 		// Separate logic for lightsaber, but not for player when zoomed
 		PM_WeaponLightsaber();
@@ -20624,14 +20624,14 @@ static void PM_Weapon(void)
 			if (pm->gent->client->fireDelay <= 0)
 			{
 				//just finished delay timer
-				if (pm->ps->clientNum && pm->ps->weapon == WP_ROCKET_LAUNCHER)
+				if (pm->ps->client_num && pm->ps->weapon == WP_ROCKET_LAUNCHER)
 				{
 					G_SoundOnEnt(pm->gent, CHAN_WEAPON, "sound/weapons/rocket/lock.wav");
 					pm->cmd.buttons |= BUTTON_ALT_ATTACK;
 				}
 				pm->gent->client->fireDelay = 0;
 				delayed_fire = qtrue;
-				if ((pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+				if ((pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 					&& pm->ps->weapon == WP_THERMAL
 					&& pm->gent->alt_fire)
 				{
@@ -20640,7 +20640,7 @@ static void PM_Weapon(void)
 			}
 			else
 			{
-				if (pm->ps->clientNum && pm->ps->weapon == WP_ROCKET_LAUNCHER && Q_irand(0, 1))
+				if (pm->ps->client_num && pm->ps->weapon == WP_ROCKET_LAUNCHER && Q_irand(0, 1))
 				{
 					G_SoundOnEnt(pm->gent, CHAN_WEAPON, "sound/weapons/rocket/tick.wav");
 				}
@@ -20813,7 +20813,7 @@ static void PM_Weapon(void)
 			return;
 		}
 		if (!pm->gent->client->fireDelay //not already waiting to fire
-			&& (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer()) //player
+			&& (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer()) //player
 			&& pm->ps->weapon == WP_THERMAL //holding thermal
 			&& pm->gent //gent
 			&& pm->gent->client //client
@@ -20833,7 +20833,7 @@ static void PM_Weapon(void)
 		}
 
 		if (!pm->gent->client->fireDelay //not already waiting to fire
-			&& (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer()) //player
+			&& (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer()) //player
 			&& PM_WeponFatiguedAnim(pm->gent->client->ps.torsoAnim)
 			&& PM_IsFatiguedGunner()
 			&& pm->gent //gent
@@ -20850,7 +20850,7 @@ static void PM_Weapon(void)
 
 	if (!delayed_fire)
 	{
-		if (pm->ps->weapon == WP_MELEE && (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer()))
+		if (pm->ps->weapon == WP_MELEE && (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer()))
 		{
 			//melee
 			if ((pm->cmd.buttons & (BUTTON_ATTACK | BUTTON_ALT_ATTACK)) != (BUTTON_ATTACK | BUTTON_ALT_ATTACK))
@@ -20889,7 +20889,7 @@ static void PM_Weapon(void)
 			}
 
 			if (pm->ps->weapon == WP_MELEE
-				&& (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+				&& (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 				&& PM_KickMove(pm->ps->saberMove))
 			{
 				//melee, not attacking, clear move
@@ -20995,7 +20995,7 @@ static void PM_Weapon(void)
 					else
 					{
 						int anim = -1;
-						if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+						if (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 						{
 							if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 							{
@@ -21068,7 +21068,7 @@ static void PM_Weapon(void)
 				{
 					int anim;
 					int flags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART;
-					if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+					if (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 					{
 						//player
 						if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
@@ -21229,9 +21229,9 @@ static void PM_Weapon(void)
 				break;
 
 			case WP_DISRUPTOR:
-				if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer() && pm->gent && pm->gent->NPC &&
+				if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer() && pm->gent && pm->gent->NPC &&
 					pm->gent->NPC->scriptFlags & SCF_ALT_FIRE ||
-					(pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer()) && cg.zoomMode == 2)
+					(pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer()) && cg.zoomMode == 2)
 				{
 					//NPC or player in alt-fire, sniper mode
 					if (cg.renderingThirdPerson)
@@ -21265,7 +21265,7 @@ static void PM_Weapon(void)
 				break;
 
 			case WP_THERMAL:
-				if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer())
+				if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer())
 				{
 					if (PM_StandingAnim(pm->ps->legsAnim))
 					{
@@ -21397,7 +21397,7 @@ static void PM_Weapon(void)
 			addTime = weaponData[pm->ps->weapon].fireTime;
 		}
 	}
-	else if (pm->ps->weapon == WP_MELEE && pm->ps->clientNum >= MAX_CLIENTS
+	else if (pm->ps->weapon == WP_MELEE && pm->ps->client_num >= MAX_CLIENTS
 		|| pm->ps->weapon == WP_TUSKEN_STAFF
 		|| pm->ps->weapon == WP_TUSKEN_RIFLE && !(pm->cmd.buttons & BUTTON_ALT_ATTACK))
 	{
@@ -21415,7 +21415,7 @@ static void PM_Weapon(void)
 			{
 				// remove the thermal model if we had it.
 				G_RemoveWeaponModels(pm->gent);
-				if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer())
+				if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer())
 				{
 					//NPCs need to know when to put the thermal back in their hand
 					pm->ps->weaponTime = pm->ps->torsoAnimTimer - 500;
@@ -21425,7 +21425,7 @@ static void PM_Weapon(void)
 	}
 	else
 	{
-		if (pm->ps->clientNum //NPC
+		if (pm->ps->client_num //NPC
 			&& !PM_ControlledByPlayer() //not under player control
 			&& pm->ps->weapon == WP_THERMAL //using thermals
 			&& pm->ps->torsoAnim != BOTH_ATTACK10) //not in the throw anim
@@ -21451,7 +21451,7 @@ static void PM_Weapon(void)
 			{
 				// remove the thermal model if we had it.
 				G_RemoveWeaponModels(pm->gent);
-				if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer())
+				if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer())
 				{
 					//NPCs need to know when to put the thermal back in their hand
 					pm->ps->weaponTime = pm->ps->torsoAnimTimer - 500;
@@ -21478,13 +21478,13 @@ static void PM_Weapon(void)
 			if (!MatrixMode)
 			{
 				//Special test for Matrix Mode (tm)
-				if (pm->ps->clientNum == 0 && !player_locked && !PlayerAffectedByStasis() && (pm->ps->
+				if (pm->ps->client_num == 0 && !player_locked && !PlayerAffectedByStasis() && (pm->ps->
 					forcePowersActive & 1 << FP_SPEED || pm->ps->forcePowersActive & 1 << FP_RAGE))
 				{
 					//player always fires at normal speed
 					addTime *= g_timescale->value;
 				}
-				else if (g_entities[pm->ps->clientNum].client
+				else if (g_entities[pm->ps->client_num].client
 					&& (pm->ps->forcePowersActive & 1 << FP_SPEED || pm->ps->forcePowersActive & 1 << FP_RAGE))
 				{
 					addTime *= g_timescale->value;
@@ -21535,7 +21535,7 @@ static void PM_VehicleWeapon(void)
 		if (pm->gent->client->fireDelay <= 0)
 		{
 			//just finished delay timer
-			if (pm->ps->clientNum && pm->ps->weapon == WP_ROCKET_LAUNCHER)
+			if (pm->ps->client_num && pm->ps->weapon == WP_ROCKET_LAUNCHER)
 			{
 				G_SoundOnEnt(pm->gent, CHAN_WEAPON, "sound/weapons/rocket/lock.wav");
 				pm->cmd.buttons |= BUTTON_ALT_ATTACK;
@@ -21545,7 +21545,7 @@ static void PM_VehicleWeapon(void)
 		}
 		else
 		{
-			if (pm->ps->clientNum && pm->ps->weapon == WP_ROCKET_LAUNCHER && Q_irand(0, 1))
+			if (pm->ps->client_num && pm->ps->weapon == WP_ROCKET_LAUNCHER && Q_irand(0, 1))
 			{
 				G_SoundOnEnt(pm->gent, CHAN_WEAPON, "sound/weapons/rocket/tick.wav");
 			}
@@ -21647,13 +21647,13 @@ static void PM_VehicleWeapon(void)
 			if (!MatrixMode)
 			{
 				//Special test for Matrix Mode (tm)
-				if (pm->ps->clientNum == 0 && !player_locked && !PlayerAffectedByStasis() && (pm->ps->
+				if (pm->ps->client_num == 0 && !player_locked && !PlayerAffectedByStasis() && (pm->ps->
 					forcePowersActive & 1 << FP_SPEED || pm->ps->forcePowersActive & 1 << FP_RAGE))
 				{
 					//player always fires at normal speed
 					addTime *= g_timescale->value;
 				}
-				else if (g_entities[pm->ps->clientNum].client
+				else if (g_entities[pm->ps->client_num].client
 					&& (pm->ps->forcePowersActive & 1 << FP_SPEED || pm->ps->forcePowersActive & 1 << FP_RAGE))
 				{
 					addTime *= g_timescale->value;
@@ -21939,12 +21939,12 @@ void PM_SetSpecialMoveValues(void)
 		{
 			if (!MatrixMode)
 			{
-				if (pm->ps->clientNum == 0 && !player_locked && !PlayerAffectedByStasis() && (pm->ps->
+				if (pm->ps->client_num == 0 && !player_locked && !PlayerAffectedByStasis() && (pm->ps->
 					forcePowersActive & 1 << FP_SPEED || pm->ps->forcePowersActive & 1 << FP_RAGE))
 				{
 					pml.frametime *= 1.0f / g_timescale->value;
 				}
-				else if (g_entities[pm->ps->clientNum].client
+				else if (g_entities[pm->ps->client_num].client
 					&& (pm->ps->forcePowersActive & 1 << FP_SPEED || pm->ps->forcePowersActive & 1 << FP_RAGE))
 				{
 					pml.frametime *= 1.0f / g_timescale->value;
@@ -21980,7 +21980,7 @@ void PM_AdjustAttackStates(pmove_t* pm)
 		amount = pm->ps->ammo[weaponData[pm->ps->weapon].ammoIndex] - weaponData[pm->ps->weapon].energyPerShot;
 	}
 
-	if (pm->ps->weapon == WP_SABER && (!cg.zoomMode || pm->ps->clientNum))
+	if (pm->ps->weapon == WP_SABER && (!cg.zoomMode || pm->ps->client_num))
 	{
 		//don't let the alt-attack be interpreted as an actual attack command
 		if (pm->ps->saberInFlight)
@@ -22097,7 +22097,7 @@ void PM_AdjustAttackStates(pmove_t* pm)
 		if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 		{
 			pm->ps->eFlags |= EF_ALT_FIRING;
-			if (pm->ps->clientNum < MAX_CLIENTS && pm->gent && pm->ps->eFlags & EF_IN_ATST)
+			if (pm->ps->client_num < MAX_CLIENTS && pm->gent && pm->ps->eFlags & EF_IN_ATST)
 			{
 				//switch ATST barrels
 				pm->gent->alt_fire = qtrue;
@@ -22106,7 +22106,7 @@ void PM_AdjustAttackStates(pmove_t* pm)
 		else
 		{
 			pm->ps->eFlags &= ~EF_ALT_FIRING;
-			if (pm->ps->clientNum < MAX_CLIENTS && pm->gent && pm->ps->eFlags & EF_IN_ATST)
+			if (pm->ps->client_num < MAX_CLIENTS && pm->gent && pm->ps->eFlags & EF_IN_ATST)
 			{
 				//switch ATST barrels
 				pm->gent->alt_fire = qfalse;
@@ -22432,7 +22432,7 @@ void Pmove(pmove_t* pmove)
 
 	pml.frametime = pml.msec * 0.001;
 
-	if (pm->ps->clientNum >= MAX_CLIENTS &&
+	if (pm->ps->client_num >= MAX_CLIENTS &&
 		pm->gent &&
 		pm->gent->client &&
 		pm->gent->client->NPC_class == CLASS_VEHICLE)
@@ -22554,7 +22554,7 @@ void Pmove(pmove_t* pmove)
 	}
 
 	waterForceJump = qfalse;
-	if (pmove->waterlevel && pm->ps->clientNum)
+	if (pmove->waterlevel && pm->ps->client_num)
 	{
 		if (pm->ps->forceJumpZStart //force jumping
 			|| pm->gent && pm->gent->NPC && level.time < pm->gent->NPC->jumpTime)
@@ -22616,7 +22616,7 @@ void Pmove(pmove_t* pmove)
 		PM_WaterJumpMove();
 	}
 	else if (pm->waterlevel > 1 //in water
-		&& (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer() || !waterForceJump))
+		&& (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer() || !waterForceJump))
 		//player or NPC not force jumping
 	{
 		//force-jumping NPCs should
@@ -22647,7 +22647,7 @@ void Pmove(pmove_t* pmove)
 
 		if (pm->gent->client->NPC_class == CLASS_BOC)
 		{
-			if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer())
+			if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer())
 			{
 				if (!PM_SaberInAttack(pm->ps->saberMove)
 					&& !PM_SaberInDamageMove(pm->ps->saberMove)
@@ -23260,7 +23260,7 @@ void PM_AdjustAngleForWallGrab(playerState_t* ps, usercmd_t* ucmd)
 
 			VectorMA(traceFrom, LEDGEGRABDISTANCE, fwd, traceTo);
 
-			gi.trace(&trace, traceFrom, nullptr, nullptr, traceTo, ps->clientNum, pm->tracemask,
+			gi.trace(&trace, traceFrom, nullptr, nullptr, traceTo, ps->client_num, pm->tracemask,
 				static_cast<EG2_Collision>(0), 0);
 
 			if (trace.fraction == 1 || !LedgeGrabableEntity(trace.entityNum)
@@ -23274,7 +23274,7 @@ void PM_AdjustAngleForWallGrab(playerState_t* ps, usercmd_t* ucmd)
 				|| pm->cmd.buttons & BUTTON_KICK
 				|| pm->cmd.buttons & BUTTON_DASH
 				|| pm->gent->painDebounceTime > level.time
-				|| pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer())
+				|| pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer())
 			{
 				//that's not good, we lost the ledge so let go.
 				BG_LetGoofLedge(ps);
@@ -23341,7 +23341,7 @@ void PM_AdjustAngleForWallGrab(playerState_t* ps, usercmd_t* ucmd)
 					ps->weaponTime = ps->legsAnimTimer;
 				}
 			}
-			else if (ucmd->forwardmove < 0 || pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer()
+			else if (ucmd->forwardmove < 0 || pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer()
 				|| pm->cmd.buttons & BUTTON_USE_FORCE
 				|| pm->cmd.buttons & BUTTON_FORCE_LIGHTNING
 				|| pm->cmd.buttons & BUTTON_LIGHTNING_STRIKE
@@ -23403,7 +23403,7 @@ qboolean LedgeTrace(trace_t* trace, vec3_t dir, float* lerpup, float* lerpfwd, f
 	traceFrom[2] += LEDGEGRABMINHEIGHT;
 	traceTo[2] += LEDGEGRABMINHEIGHT;
 
-	gi.trace(trace, traceFrom, nullptr, nullptr, traceTo, pm->ps->clientNum, pm->tracemask,
+	gi.trace(trace, traceFrom, nullptr, nullptr, traceTo, pm->ps->client_num, pm->tracemask,
 		static_cast<EG2_Collision>(0), 0);
 
 	if (trace->fraction < 1 && LedgeGrabableEntity(trace->entityNum))
@@ -23415,7 +23415,7 @@ qboolean LedgeTrace(trace_t* trace, vec3_t dir, float* lerpup, float* lerpfwd, f
 
 		traceFrom[2] += LEDGEGRABMAXHEIGHT - LEDGEGRABMINHEIGHT;
 
-		gi.trace(trace, traceFrom, nullptr, nullptr, traceTo, pm->ps->clientNum, pm->tracemask,
+		gi.trace(trace, traceFrom, nullptr, nullptr, traceTo, pm->ps->client_num, pm->tracemask,
 			static_cast<EG2_Collision>(0), 0);
 
 		if (trace->fraction == 1.0 || trace->startsolid || !LedgeGrabableEntity(trace->entityNum))
@@ -23440,7 +23440,7 @@ qboolean LedgeTrace(trace_t* trace, vec3_t dir, float* lerpup, float* lerpfwd, f
 
 	traceFrom[2] = traceTo[2];
 
-	gi.trace(trace, traceFrom, nullptr, nullptr, traceTo, pm->ps->clientNum, pm->tracemask,
+	gi.trace(trace, traceFrom, nullptr, nullptr, traceTo, pm->ps->client_num, pm->tracemask,
 		static_cast<EG2_Collision>(0), 0);
 
 	vectoangles(trace->plane.normal, wallangles);
@@ -23474,7 +23474,7 @@ void PM_CheckGrab(void)
 		return;
 	}
 
-	if (g_entities[pm->ps->clientNum].client->jetPackOn)
+	if (g_entities[pm->ps->client_num].client->jetPackOn)
 	{
 		//don't do ledgegrab checks while using the jetpack
 		return;
@@ -23506,7 +23506,7 @@ void PM_CheckGrab(void)
 		return;
 	}
 
-	if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer())
+	if (pm->ps->client_num >= MAX_CLIENTS && !PM_ControlledByPlayer())
 	{
 		return;
 	}
@@ -23571,7 +23571,7 @@ void PM_CheckGrab(void)
 	traceTo[2] += lerpup;
 
 	//check to see if we can actually latch to that position.
-	gi.trace(&trace, pm->ps->origin, pm->mins, pm->maxs, traceTo, pm->ps->clientNum, MASK_PLAYERSOLID,
+	gi.trace(&trace, pm->ps->origin, pm->mins, pm->maxs, traceTo, pm->ps->client_num, MASK_PLAYERSOLID,
 		static_cast<EG2_Collision>(0), 0);
 
 	if (trace.fraction != 1 || trace.startsolid)

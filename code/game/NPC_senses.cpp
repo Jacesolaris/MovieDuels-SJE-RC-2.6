@@ -35,7 +35,7 @@ qboolean G_ClearLineOfSight(const vec3_t point1, const vec3_t point2, int ignore
 
 returns true if can see from point 1 to 2, even through glass (1 pane)- doesn't work with portals
 */
-qboolean G_ClearLineOfSight(const vec3_t point1, const vec3_t point2, int ignore, int clipmask)
+qboolean G_ClearLineOfSight(const vec3_t point1, const vec3_t point2, const int ignore, const int clipmask)
 {
 	trace_t tr;
 
@@ -105,7 +105,7 @@ qboolean CanSee(const gentity_t* ent)
 	return qfalse;
 }
 
-qboolean InFront(vec3_t spot, vec3_t from, vec3_t fromAngles, float threshHold = 0.0f)
+qboolean InFront(vec3_t spot, vec3_t from, vec3_t fromAngles, const float threshHold = 0.0f)
 {
 	vec3_t dir, forward, angles;
 
@@ -148,7 +148,7 @@ IDEA: further off to side of FOV range, higher chance of failing even if technic
 
 //Position compares
 
-qboolean InFOV(const vec3_t spot, vec3_t from, vec3_t fromAngles, int hFOV, int vFOV)
+qboolean InFOV(const vec3_t spot, vec3_t from, vec3_t fromAngles, const int hFOV, const int vFOV)
 {
 	vec3_t deltaVector, angles, deltaAngles;
 
@@ -168,7 +168,7 @@ qboolean InFOV(const vec3_t spot, vec3_t from, vec3_t fromAngles, int hFOV, int 
 
 //NPC to position
 
-qboolean InFOV(const vec3_t origin, const gentity_t* from, int hFOV, int vFOV)
+qboolean InFOV(const vec3_t origin, const gentity_t* from, const int hFOV, const int vFOV)
 {
 	vec3_t fromAngles, eyes;
 
@@ -187,7 +187,7 @@ qboolean InFOV(const vec3_t origin, const gentity_t* from, int hFOV, int vFOV)
 }
 
 //Entity to entity
-qboolean InFOVFromPlayerView(const gentity_t* ent, int hFOV, int vFOV)
+qboolean InFOVFromPlayerView(const gentity_t* ent, const int hFOV, const int vFOV)
 {
 	vec3_t eyes;
 	vec3_t spot;
@@ -251,7 +251,7 @@ qboolean InFOVFromPlayerView(const gentity_t* ent, int hFOV, int vFOV)
 	return qfalse;
 }
 
-qboolean InFOV(const gentity_t* ent, const gentity_t* from, int hFOV, int vFOV)
+qboolean InFOV(const gentity_t* ent, const gentity_t* from, const int hFOV, const int vFOV)
 {
 	vec3_t eyes;
 	vec3_t spot;
@@ -363,7 +363,7 @@ qboolean InVisrange(const gentity_t* ent)
 NPC_CheckVisibility
 */
 
-visibility_t NPC_CheckVisibility(const gentity_t* ent, int flags)
+visibility_t NPC_CheckVisibility(const gentity_t* ent, const int flags)
 {
 	// flags should never be 0
 	if (!flags)
@@ -438,8 +438,8 @@ visibility_t NPC_CheckVisibility(const gentity_t* ent, int flags)
 NPC_CheckSoundEvents
 -------------------------
 */
-static int G_CheckSoundEvents(gentity_t* self, float maxHearDist, int ignoreAlert, qboolean mustHaveOwner,
-	int minAlertLevel, qboolean onGroundOnly)
+static int G_CheckSoundEvents(gentity_t* self, float maxHearDist, const int ignoreAlert, const qboolean mustHaveOwner,
+                              const int minAlertLevel, const qboolean onGroundOnly)
 {
 	int bestEvent = -1;
 	int bestAlert = -1;
@@ -521,8 +521,8 @@ float G_GetLightLevel(vec3_t pos, vec3_t fromDir)
 NPC_CheckSightEvents
 -------------------------
 */
-static int G_CheckSightEvents(gentity_t* self, int hFOV, int vFOV, float maxSeeDist, int ignoreAlert,
-	qboolean mustHaveOwner, int minAlertLevel)
+static int G_CheckSightEvents(gentity_t* self, const int hFOV, const int vFOV, float maxSeeDist, const int ignoreAlert,
+                              const qboolean mustHaveOwner, const int minAlertLevel)
 {
 	int bestEvent = -1;
 	int bestAlert = -1;
@@ -584,7 +584,7 @@ static int G_CheckSightEvents(gentity_t* self, int hFOV, int vFOV, float maxSeeD
 	return bestEvent;
 }
 
-qboolean G_RememberAlertEvent(const gentity_t* self, int alertIndex)
+qboolean G_RememberAlertEvent(const gentity_t* self, const int alertIndex)
 {
 	if (!self || !self->NPC)
 	{
@@ -638,8 +638,8 @@ NPC_CheckAlertEvents
 -------------------------
 */
 
-int G_CheckAlertEvents(gentity_t* self, qboolean checkSight, qboolean checkSound, float maxSeeDist, float maxHearDist,
-	int ignoreAlert, qboolean mustHaveOwner, int minAlertLevel, qboolean onGroundOnly)
+int G_CheckAlertEvents(gentity_t* self, const qboolean checkSight, const qboolean checkSound, const float maxSeeDist, const float maxHearDist,
+                       const int ignoreAlert, const qboolean mustHaveOwner, const int minAlertLevel, const qboolean onGroundOnly)
 {
 	if (&g_entities[0] == nullptr || g_entities[0].health <= 0)
 	{
@@ -711,8 +711,8 @@ int G_CheckAlertEvents(gentity_t* self, qboolean checkSight, qboolean checkSound
 	return -1;
 }
 
-int NPC_CheckAlertEvents(qboolean checkSight, qboolean checkSound, int ignoreAlert, qboolean mustHaveOwner,
-	int minAlertLevel, qboolean onGroundOnly)
+int NPC_CheckAlertEvents(const qboolean checkSight, const qboolean checkSound, const int ignoreAlert, const qboolean mustHaveOwner,
+                         const int minAlertLevel, const qboolean onGroundOnly)
 {
 	return G_CheckAlertEvents(NPC, checkSight, checkSound, NPCInfo->stats.visrange, NPCInfo->stats.earshot, ignoreAlert,
 		mustHaveOwner, minAlertLevel, onGroundOnly);
@@ -720,7 +720,7 @@ int NPC_CheckAlertEvents(qboolean checkSight, qboolean checkSound, int ignoreAle
 
 extern void WP_ForcePowerStop(gentity_t* self, forcePowers_t force_power);
 
-qboolean G_CheckForDanger(const gentity_t* self, int alertEvent)
+qboolean G_CheckForDanger(const gentity_t* self, const int alertEvent)
 {
 	//FIXME: more bStates need to call this?
 	if (alertEvent == -1)
@@ -770,7 +770,7 @@ qboolean G_CheckForDanger(const gentity_t* self, int alertEvent)
 	return qfalse;
 }
 
-qboolean NPC_CheckForDanger(int alertEvent)
+qboolean NPC_CheckForDanger(const int alertEvent)
 {
 	//FIXME: more bStates need to call this?
 	return G_CheckForDanger(NPC, alertEvent);
@@ -783,8 +783,8 @@ AddSoundEvent
 */
 qboolean RemoveOldestAlert();
 
-void AddSoundEvent(gentity_t* owner, vec3_t position, float radius, alertEventLevel_e alertLevel, qboolean needLOS,
-	qboolean onGround)
+void AddSoundEvent(gentity_t* owner, vec3_t position, const float radius, const alertEventLevel_e alertLevel, const qboolean needLOS,
+                   const qboolean onGround)
 {
 	//FIXME: Handle this in another manner?
 	if (level.numAlertEvents >= MAX_ALERT_EVENTS)
@@ -840,7 +840,7 @@ AddSightEvent
 -------------------------
 */
 
-void AddSightEvent(gentity_t* owner, vec3_t position, float radius, alertEventLevel_e alertLevel, float addLight)
+void AddSightEvent(gentity_t* owner, vec3_t position, const float radius, const alertEventLevel_e alertLevel, const float addLight)
 {
 	//FIXME: Handle this in another manner?
 	if (level.numAlertEvents >= MAX_ALERT_EVENTS)
@@ -1057,7 +1057,7 @@ NPC_GetFOVPercentage
 -------------------------
 */
 
-float NPC_GetHFOVPercentage(vec3_t spot, vec3_t from, vec3_t facing, float hFOV)
+float NPC_GetHFOVPercentage(vec3_t spot, vec3_t from, vec3_t facing, const float hFOV)
 {
 	vec3_t deltaVector, angles;
 
@@ -1079,7 +1079,7 @@ NPC_GetVFOVPercentage
 -------------------------
 */
 
-float NPC_GetVFOVPercentage(vec3_t spot, vec3_t from, vec3_t facing, float vFOV)
+float NPC_GetVFOVPercentage(vec3_t spot, vec3_t from, vec3_t facing, const float vFOV)
 {
 	vec3_t deltaVector, angles;
 

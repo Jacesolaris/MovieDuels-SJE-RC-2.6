@@ -206,7 +206,7 @@ CG_PointContents
 #define USE_SV_PNT_CONTENTS (1)
 
 #if USE_SV_PNT_CONTENTS
-int CG_PointContents(const vec3_t point, int passEntityNum)
+int CG_PointContents(const vec3_t point, const int passEntityNum)
 {
 	return gi.pointcontents(point, passEntityNum);
 }
@@ -245,7 +245,7 @@ int		CG_PointContents(const vec3_t point, int passEntityNum) {
 }
 #endif
 
-void CG_SetClientViewAngles(vec3_t angles, qboolean overrideViewEnt)
+void CG_SetClientViewAngles(vec3_t angles, const qboolean overrideViewEnt)
 {
 	if (cg.snap->ps.viewEntity <= 0 || cg.snap->ps.viewEntity >= ENTITYNUM_WORLD || overrideViewEnt)
 	{
@@ -360,7 +360,7 @@ Generates cg.predicted_player_state by interpolating between
 cg.snap->player_state and cg.nextFrame->player_state
 ========================
 */
-void CG_InterpolatePlayerState(qboolean grabAngles)
+void CG_InterpolatePlayerState(const qboolean grabAngles)
 {
 	int i;
 	vec3_t oldOrg;

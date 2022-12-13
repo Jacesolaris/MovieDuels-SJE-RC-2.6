@@ -423,10 +423,10 @@ void Boba_FireFlameThrower(gentity_t* self)
 
 	trap->Trace(&tr, start, traceMins, traceMaxs, end, self->s.number, MASK_SHOT, qfalse, 0, 0);
 
-	gentity_t* traceEnt = &g_entities[tr.entityNum];
-	if (tr.entityNum < ENTITYNUM_WORLD && traceEnt->takedamage)
+	gentity_t* trace_ent = &g_entities[tr.entityNum];
+	if (tr.entityNum < ENTITYNUM_WORLD && trace_ent->takedamage)
 	{
-		G_Damage(traceEnt, self, self, dir, tr.endpos, damage, DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK |/*DAMAGE_NO_HIT_LOC|*/DAMAGE_IGNORE_TEAM, MOD_LAVA);
+		G_Damage(trace_ent, self, self, dir, tr.endpos, damage, DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK |/*DAMAGE_NO_HIT_LOC|*/DAMAGE_IGNORE_TEAM, MOD_LAVA);
 		//rwwFIXMEFIXME: add DAMAGE_NO_HIT_LOC?
 	}
 }
@@ -2105,8 +2105,8 @@ evasionType_t Jedi_CheckFlipEvasions(gentity_t* self, float rightdot, float zdif
 
 			VectorSubtract(self->r.currentOrigin, traceto, idealNormal);
 			VectorNormalize(idealNormal);
-			const gentity_t* traceEnt = &g_entities[trace.entityNum];
-			if ((trace.entityNum < ENTITYNUM_WORLD && traceEnt && traceEnt->s.solid != SOLID_BMODEL) || DotProduct(trace.plane.normal, idealNormal) > 0.7f)
+			const gentity_t* trace_ent = &g_entities[trace.entityNum];
+			if ((trace.entityNum < ENTITYNUM_WORLD && trace_ent && trace_ent->s.solid != SOLID_BMODEL) || DotProduct(trace.plane.normal, idealNormal) > 0.7f)
 			{//it's a ent of some sort or it's a wall roughly facing us
 				float bestCheckDist = 0;
 				//hmm, see if we're moving forward
@@ -3044,7 +3044,7 @@ evasionType_t Jedi_SaberBlockGo(gentity_t* self, usercmd_t* cmd, vec3_t pHitloc,
 
 extern float ShortestLineSegBewteen2LineSegs(vec3_t start1, vec3_t end1, vec3_t start2, vec3_t end2, vec3_t close_pnt1, vec3_t close_pnt2);
 extern int WPDEBUG_SaberColor(saber_colors_t saberColor);
-static qboolean Jedi_SaberBlock(int saberNum, int bladeNum) //saberNum = 0, bladeNum = 0
+static qboolean Jedi_SaberBlock(int saber_num, int blade_num) //saber_num = 0, blade_num = 0
 {
 	vec3_t hitloc, saberTipOld, saberTip, top, bottom, axisPoint, saberPoint, dir;//saberBase,
 	vec3_t pointDir, baseDir, tipDir, saberHitPoint, saberMins, saberMaxs;
@@ -3128,8 +3128,8 @@ static qboolean Jedi_SaberBlock(int saberNum, int bladeNum) //saberNum = 0, blad
 	VectorSet(saberMins, -4, -4, -4);
 	VectorSet(saberMaxs, 4, 4, 4);
 
-	VectorMA(NPCS.NPC->enemy->client->saber[saberNum].blade[bladeNum].muzzlePointOld, NPCS.NPC->enemy->client->saber[saberNum].blade[bladeNum].length, NPCS.NPC->enemy->client->saber[saberNum].blade[bladeNum].muzzleDirOld, saberTipOld);
-	VectorMA(NPCS.NPC->enemy->client->saber[saberNum].blade[bladeNum].muzzlePoint, NPCS.NPC->enemy->client->saber[saberNum].blade[bladeNum].length, NPCS.NPC->enemy->client->saber[saberNum].blade[bladeNum].muzzleDir, saberTip);
+	VectorMA(NPCS.NPC->enemy->client->saber[saber_num].blade[blade_num].muzzlePointOld, NPCS.NPC->enemy->client->saber[saber_num].blade[blade_num].length, NPCS.NPC->enemy->client->saber[saber_num].blade[blade_num].muzzleDirOld, saberTipOld);
+	VectorMA(NPCS.NPC->enemy->client->saber[saber_num].blade[blade_num].muzzlePoint, NPCS.NPC->enemy->client->saber[saber_num].blade[blade_num].length, NPCS.NPC->enemy->client->saber[saber_num].blade[blade_num].muzzleDir, saberTip);
 	//	VectorCopy(NPC->enemy->client->lastSaberBase_Always, muzzlePoint);
 	//	VectorMA(muzzlePoint, GAME_SABER_LENGTH, NPC->enemy->client->lastSaberDir_Always, saberTip);
 	//	VectorCopy(saberTip, saberTipOld);
@@ -3169,7 +3169,7 @@ static qboolean Jedi_SaberBlock(int saberNum, int bladeNum) //saberNum = 0, blad
 	VectorSubtract(saberPoint, NPCS.NPC->enemy->client->renderInfo.muzzlePoint, pointDir);
 	const float pointDist = VectorLength(pointDir);
 
-	const float bladeLen = NPCS.NPC->enemy->client->saber[saberNum].blade[bladeNum].length;
+	const float bladeLen = NPCS.NPC->enemy->client->saber[saber_num].blade[blade_num].length;
 
 	if (bladeLen <= 0)
 	{
@@ -3222,7 +3222,7 @@ static qboolean Jedi_SaberBlock(int saberNum, int bladeNum) //saberNum = 0, blad
 
 	if (d_JediAI.integer)
 	{
-		//G_DebugLine( saberPoint, hitloc, FRAMETIME, WPDEBUG_SaberColor( NPC->enemy->client->ps.saber[saberNum].blade[bladeNum].color ), qtrue );
+		//G_DebugLine( saberPoint, hitloc, FRAMETIME, WPDEBUG_SaberColor( NPC->enemy->client->ps.saber[saber_num].blade[blade_num].color ), qtrue );
 		G_TestLine(saberPoint, hitloc, 0x0000ff, FRAMETIME);
 	}
 
@@ -3604,9 +3604,9 @@ gentity_t* Jedi_FindEnemyInCone(gentity_t* self, gentity_t* fallback, float minD
 		mins[e] = self->r.currentOrigin[e] - 1024;
 		maxs[e] = self->r.currentOrigin[e] + 1024;
 	}
-	const int numListedEntities = trap->EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+	const int num_listed_entities = trap->EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
 
-	for (e = 0; e < numListedEntities; e++)
+	for (e = 0; e < num_listed_entities; e++)
 	{
 		gentity_t* check = &g_entities[entityList[e]];
 		if (check == self)

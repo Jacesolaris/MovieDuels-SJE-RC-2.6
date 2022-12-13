@@ -226,7 +226,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Resizes The Array.  If New Elements Are Needed, It Uses The (value) Param
 		////////////////////////////////////////////////////////////////////////////////////
-		void			resize(int nSize, const TTValue& value)
+		void			resize(const int nSize, const TTValue& value)
 		{
 			int i;
 			for (i = mSize - 1; i >= nSize; i--)
@@ -244,7 +244,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Resizes The Array.  If New Elements Are Needed, It Uses The (value) Param
 		////////////////////////////////////////////////////////////////////////////////////
-		void			resize(int nSize)
+		void			resize(const int nSize)
 		{
 			int i;
 			for (i = mSize - 1; i >= nSize; i--)
@@ -400,7 +400,7 @@ namespace ratl
 		// For Heap Sort
 		// Returns The Location Of Node (i)'s Parent Node (The Parent Node Of Zero Is Zero)
 		////////////////////////////////////////////////////////////////////////////////////
-		static int			parent(int i)
+		static int			parent(const int i)
 		{
 			return (i - 1) / 2;
 		}
@@ -409,7 +409,7 @@ namespace ratl
 		// For Heap Sort
 		// Returns The Location Of Node (i)'s Left Child (The Child Of A Leaf Is The Leaf)
 		////////////////////////////////////////////////////////////////////////////////////
-		static int			left(int i)
+		static int			left(const int i)
 		{
 			return 2 * i + 1;
 		}
@@ -418,7 +418,7 @@ namespace ratl
 		// For Heap Sort
 		// Returns The Location Of Node (i)'s Right Child (The Child Of A Leaf Is The Leaf)
 		////////////////////////////////////////////////////////////////////////////////////
-		static int			right(int i)
+		static int			right(const int i)
 		{
 			return 2 * i + 2;
 		}
@@ -427,7 +427,7 @@ namespace ratl
 		// For Heap Sort
 		// Returns The Location Of Largest Child Of Node (i)
 		////////////////////////////////////////////////////////////////////////////////////
-		int			largest_child(int i, int Size) const
+		int			largest_child(const int i, const int Size) const
 		{
 			if (left(i) < Size)
 			{
@@ -459,7 +459,7 @@ namespace ratl
 			//--------------
 			iterator() : mLoc(0), mOwner(nullptr)
 			{}
-			iterator(vector_base<T>* p, int t) : mLoc(t), mOwner(p)
+			iterator(vector_base<T>* p, const int t) : mLoc(t), mOwner(p)
 			{}
 
 			iterator(const iterator& t) : mLoc(t.mLoc), mOwner(t.mOwner)
@@ -542,7 +542,7 @@ namespace ratl
 			//--------------
 			const_iterator() : mLoc(0), mOwner(nullptr)
 			{}
-			const_iterator(const vector_base<T>* p, int t) : mLoc(t), mOwner(p)
+			const_iterator(const vector_base<T>* p, const int t) : mLoc(t), mOwner(p)
 			{}
 			const_iterator(const const_iterator& t) : mLoc(t.mLoc), mOwner(t.mOwner)
 			{}

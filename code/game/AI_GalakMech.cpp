@@ -117,7 +117,7 @@ void NPC_GalakMech_Init(gentity_t* ent)
 }
 
 //-----------------------------------------------------------------
-static void GM_CreateExplosion(gentity_t* self, const int boltID, qboolean doSmall = qfalse)
+static void GM_CreateExplosion(gentity_t* self, const int boltID, const qboolean doSmall = qfalse)
 {
 	if (boltID >= 0)
 	{
@@ -260,8 +260,8 @@ NPC_GM_Pain
 
 extern void NPC_SetPainEvent(gentity_t* self);
 
-void NPC_GM_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage, int mod,
-	int hitLoc)
+void NPC_GM_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, const int damage, const int mod,
+                 const int hitLoc)
 {
 	if (self->client->ps.powerups[PW_GALAK_SHIELD] == 0)
 	{
@@ -830,12 +830,12 @@ void NPC_BSGM_Attack()
 					if (trace.fraction < 1.0f)
 					{
 						//hit something
-						gentity_t* traceEnt = &g_entities[trace.entityNum];
-						if (traceEnt && traceEnt->takedamage)
+						gentity_t* trace_ent = &g_entities[trace.entityNum];
+						if (trace_ent && trace_ent->takedamage)
 						{
 							//damage it
 							G_SoundAtSpot(trace.endpos, G_SoundIndex("sound/weapons/galak/laserdamage.wav"), qfalse);
-							G_Damage(traceEnt, NPC, NPC, NPC->client->renderInfo.muzzleDir, trace.endpos, 10, 0,
+							G_Damage(trace_ent, NPC, NPC, NPC->client->renderInfo.muzzleDir, trace.endpos, 10, 0,
 								MOD_ENERGY);
 						}
 					}

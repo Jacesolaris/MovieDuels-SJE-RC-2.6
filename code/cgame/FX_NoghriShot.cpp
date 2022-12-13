@@ -79,7 +79,7 @@ void FX_NoghriShotWeaponHitWall(vec3_t origin, vec3_t normal)
 FX_NoghriShotWeaponHitPlayer
 -------------------------
 */
-void FX_NoghriShotWeaponHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, qboolean humanoid)
+void FX_NoghriShotWeaponHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, const qboolean humanoid)
 {
 	if (humanoid)
 	{

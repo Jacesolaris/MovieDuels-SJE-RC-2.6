@@ -28,8 +28,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "bg_local.h"
 #include "g_vehicles.h"
 
-extern qboolean PM_ClientImpact(trace_t* trace, qboolean damageSelf);
-extern qboolean PM_ControlledByPlayer(void);
+extern qboolean PM_ClientImpact(const trace_t* trace, qboolean damage_self);
+extern qboolean PM_ControlledByPlayer();
 extern qboolean PM_InReboundHold(int anim);
 extern cvar_t* g_stepSlideFix;
 
@@ -52,7 +52,7 @@ constexpr auto MAX_CLIP_PLANES = 5;
 extern qboolean PM_GroundSlideOkay(float zNormal);
 extern qboolean PM_InSpecialJump(int anim);
 
-qboolean PM_SlideMove(float gravMod)
+qboolean PM_SlideMove(const float grav_mod)
 {
 	int bumpcount;
 	int numplanes;
@@ -60,11 +60,11 @@ qboolean PM_SlideMove(float gravMod)
 	vec3_t primal_velocity;
 	int i;
 	trace_t trace;
-	vec3_t endVelocity;
-	qboolean damageSelf;
-	int slideMoveContents = pm->tracemask;
+	vec3_t end_velocity;
+	qboolean damage_self;
+	int slide_move_contents = pm->tracemask;
 
-	if (pm->ps->clientNum >= MAX_CLIENTS
+	if (pm->ps->client_num >= MAX_CLIENTS
 		&& !PM_ControlledByPlayer())
 	{
 		//a non-player client, not an NPC under player control
@@ -87,7 +87,7 @@ qboolean PM_SlideMove(float gravMod)
 				|| pm->gent->m_pVehicle->m_pPilot->s.number >= MAX_CLIENTS) //pilot is not the player
 			{
 				//then treat do not enter brushes as SOLID
-				slideMoveContents |= CONTENTS_BOTCLIP;
+				slide_move_contents |= CONTENTS_BOTCLIP;
 			}
 		}
 	}
@@ -95,17 +95,17 @@ qboolean PM_SlideMove(float gravMod)
 	constexpr int numbumps = 4;
 
 	VectorCopy(pm->ps->velocity, primal_velocity);
-	VectorCopy(pm->ps->velocity, endVelocity);
+	VectorCopy(pm->ps->velocity, end_velocity);
 
-	if (gravMod)
+	if (grav_mod)
 	{
 		if (!(pm->ps->eFlags & EF_FORCE_GRIPPED) && !(pm->ps->eFlags & EF_FORCE_DRAINED) && !(pm->ps->eFlags &
 			EF_FORCE_GRASPED))
 		{
-			endVelocity[2] -= pm->ps->gravity * pml.frametime * gravMod;
+			end_velocity[2] -= pm->ps->gravity * pml.frametime * grav_mod;
 		}
-		pm->ps->velocity[2] = (pm->ps->velocity[2] + endVelocity[2]) * 0.5;
-		primal_velocity[2] = endVelocity[2];
+		pm->ps->velocity[2] = (pm->ps->velocity[2] + end_velocity[2]) * 0.5;
+		primal_velocity[2] = end_velocity[2];
 		if (pml.groundPlane)
 		{
 			if (PM_GroundSlideOkay(pml.groundTrace.plane.normal[2]))
@@ -146,24 +146,24 @@ qboolean PM_SlideMove(float gravMod)
 		VectorMA(pm->ps->origin, time_left, pm->ps->velocity, end);
 
 		// see if we can make it there
-		pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, end, pm->ps->clientNum, slideMoveContents,
+		pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, end, pm->ps->client_num, slide_move_contents,
 			static_cast<EG2_Collision>(0), 0);
 		if (trace.contents & CONTENTS_BOTCLIP
-			&& slideMoveContents & CONTENTS_BOTCLIP)
+			&& slide_move_contents & CONTENTS_BOTCLIP)
 		{
 			//hit a do not enter brush
 			if (trace.allsolid || trace.startsolid) //inside the botclip
 			{
 				//crap, we're in a do not enter brush, take it out for the remainder of the traces and re-trace this one right now without it
-				slideMoveContents &= ~CONTENTS_BOTCLIP;
-				pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, end, pm->ps->clientNum, slideMoveContents,
+				slide_move_contents &= ~CONTENTS_BOTCLIP;
+				pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, end, pm->ps->client_num, slide_move_contents,
 					static_cast<EG2_Collision>(0), 0);
 			}
 			else if (trace.plane.normal[2] > 0.0f)
 			{
 				//on top of a do not enter brush, it, just redo this one trace without it
-				pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, end, pm->ps->clientNum,
-					slideMoveContents & ~CONTENTS_BOTCLIP, static_cast<EG2_Collision>(0), 0);
+				pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, end, pm->ps->client_num,
+					slide_move_contents & ~CONTENTS_BOTCLIP, static_cast<EG2_Collision>(0), 0);
 			}
 		}
 
@@ -191,19 +191,19 @@ qboolean PM_SlideMove(float gravMod)
 		//Hit it
 		if (trace.surfaceFlags & SURF_NODAMAGE)
 		{
-			damageSelf = qfalse;
+			damage_self = qfalse;
 		}
 		else if (trace.entityNum == ENTITYNUM_WORLD && trace.plane.normal[2] > 0.5f)
 		{
 			//if we land on the ground, let falling damage do it's thing itself, otherwise do impact damage
-			damageSelf = qfalse;
+			damage_self = qfalse;
 		}
 		else
 		{
-			damageSelf = qtrue;
+			damage_self = qtrue;
 		}
 
-		if (PM_ClientImpact(&trace, damageSelf))
+		if (PM_ClientImpact(&trace, damage_self))
 		{
 			continue;
 		}
@@ -266,8 +266,8 @@ qboolean PM_SlideMove(float gravMod)
 		// find a plane that it enters
 		for (i = 0; i < numplanes; i++)
 		{
-			vec3_t endClipVelocity;
-			vec3_t clipVelocity;
+			vec3_t end_clip_velocity;
+			vec3_t clip_velocity;
 			const float into = DotProduct(pm->ps->velocity, planes[i]);
 			if (into >= 0.1)
 			{
@@ -281,10 +281,10 @@ qboolean PM_SlideMove(float gravMod)
 			}
 
 			// slide along the plane
-			PM_ClipVelocity(pm->ps->velocity, planes[i], clipVelocity, OVERCLIP);
+			PM_ClipVelocity(pm->ps->velocity, planes[i], clip_velocity, OVERCLIP);
 
 			// slide along the plane
-			PM_ClipVelocity(endVelocity, planes[i], endClipVelocity, OVERCLIP);
+			PM_ClipVelocity(end_velocity, planes[i], end_clip_velocity, OVERCLIP);
 
 			// see if there is a second plane that the new move enters
 			for (int j = 0; j < numplanes; j++)
@@ -294,17 +294,17 @@ qboolean PM_SlideMove(float gravMod)
 				{
 					continue;
 				}
-				if (DotProduct(clipVelocity, planes[j]) >= 0.1)
+				if (DotProduct(clip_velocity, planes[j]) >= 0.1)
 				{
 					continue; // move doesn't interact with the plane
 				}
 
 				// try clipping the move to the plane
-				PM_ClipVelocity(clipVelocity, planes[j], clipVelocity, OVERCLIP);
-				PM_ClipVelocity(endClipVelocity, planes[j], endClipVelocity, OVERCLIP);
+				PM_ClipVelocity(clip_velocity, planes[j], clip_velocity, OVERCLIP);
+				PM_ClipVelocity(end_clip_velocity, planes[j], end_clip_velocity, OVERCLIP);
 
 				// see if it goes back into the first clip plane
-				if (DotProduct(clipVelocity, planes[i]) >= 0)
+				if (DotProduct(clip_velocity, planes[i]) >= 0)
 				{
 					continue;
 				}
@@ -313,12 +313,12 @@ qboolean PM_SlideMove(float gravMod)
 				CrossProduct(planes[i], planes[j], dir);
 				VectorNormalize(dir);
 				float d = DotProduct(dir, pm->ps->velocity);
-				VectorScale(dir, d, clipVelocity);
+				VectorScale(dir, d, clip_velocity);
 
 				CrossProduct(planes[i], planes[j], dir);
 				VectorNormalize(dir);
-				d = DotProduct(dir, endVelocity);
-				VectorScale(dir, d, endClipVelocity);
+				d = DotProduct(dir, end_velocity);
+				VectorScale(dir, d, end_clip_velocity);
 
 				// see if there is a third plane the the new move enters
 				for (int k = 0; k < numplanes; k++)
@@ -327,7 +327,7 @@ qboolean PM_SlideMove(float gravMod)
 					{
 						continue;
 					}
-					if (DotProduct(clipVelocity, planes[k]) >= 0.1)
+					if (DotProduct(clip_velocity, planes[k]) >= 0.1)
 					{
 						continue; // move doesn't interact with the plane
 					}
@@ -339,15 +339,15 @@ qboolean PM_SlideMove(float gravMod)
 			}
 
 			// if we have fixed all interactions, try another move
-			VectorCopy(clipVelocity, pm->ps->velocity);
-			VectorCopy(endClipVelocity, endVelocity);
+			VectorCopy(clip_velocity, pm->ps->velocity);
+			VectorCopy(end_clip_velocity, end_velocity);
 			break;
 		}
 	}
 
-	if (gravMod)
+	if (grav_mod)
 	{
-		VectorCopy(endVelocity, pm->ps->velocity);
+		VectorCopy(end_velocity, pm->ps->velocity);
 	}
 
 	// don't change velocity if in a timer (FIXME: is this correct?)
@@ -365,25 +365,25 @@ PM_StepSlideMove
 
 ==================
 */
-void PM_StepSlideMove(float gravMod)
+void PM_StepSlideMove(float grav_mod)
 {
 	vec3_t start_o, start_v;
 	vec3_t down_o, down_v;
-	vec3_t slideMove, stepUpMove;
+	vec3_t slide_move, step_up_move;
 	trace_t trace;
 	vec3_t up, down;
-	qboolean isGiant = qfalse;
-	int stepSize = STEPSIZE;
+	qboolean is_giant = qfalse;
+	int step_size = STEPSIZE;
 
 	VectorCopy(pm->ps->origin, start_o);
 	VectorCopy(pm->ps->velocity, start_v);
 
 	if (PM_InReboundHold(pm->ps->legsAnim))
 	{
-		gravMod = 0.0f;
+		grav_mod = 0.0f;
 	}
 
-	if (PM_SlideMove(gravMod) == 0)
+	if (PM_SlideMove(grav_mod) == 0)
 	{
 		return; // we got exactly where we wanted to go first try
 	} //else Bumped into something, see if we can step over it
@@ -400,33 +400,33 @@ void PM_StepSlideMove(float gravMod)
 		&& pm->gent->client
 		&& (pm->gent->client->NPC_class == CLASS_ATST || pm->gent->client->NPC_class == CLASS_RANCOR))
 	{
-		isGiant = qtrue;
+		is_giant = qtrue;
 		if (pm->gent->client->NPC_class == CLASS_RANCOR)
 		{
 			if (pm->gent->spawnflags & 1)
 			{
-				stepSize = 64; //hack for Mutant Rancor stepping
+				step_size = 64; //hack for Mutant Rancor stepping
 			}
 			else
 			{
-				stepSize = 48; //hack for Rancor stepping
+				step_size = 48; //hack for Rancor stepping
 			}
 		}
 		else
 		{
-			stepSize = 70; //hack for AT-ST stepping, slightly taller than a standing stormtrooper
+			step_size = 70; //hack for AT-ST stepping, slightly taller than a standing stormtrooper
 		}
 	}
 	else if (pm->maxs[2] <= 0)
 	{
 		//short little guys can't go up steps... FIXME: just make this a flag for certain NPCs- especially ones that roll?
-		stepSize = 4;
+		step_size = 4;
 	}
 
 	//Q3Final addition...
 	VectorCopy(start_o, down);
-	down[2] -= stepSize;
-	pm->trace(&trace, start_o, pm->mins, pm->maxs, down, pm->ps->clientNum, pm->tracemask,
+	down[2] -= step_size;
+	pm->trace(&trace, start_o, pm->mins, pm->maxs, down, pm->ps->client_num, pm->tracemask,
 		static_cast<EG2_Collision>(0), 0);
 	VectorSet(up, 0, 0, 1);
 	// never step up when you still have up velocity
@@ -446,11 +446,11 @@ void PM_StepSlideMove(float gravMod)
 	VectorCopy(pm->ps->velocity, down_v);
 
 	VectorCopy(start_o, up);
-	up[2] += stepSize;
+	up[2] += step_size;
 
 	// test the player position if they were a stepheight higher
 
-	pm->trace(&trace, start_o, pm->mins, pm->maxs, up, pm->ps->clientNum, pm->tracemask, static_cast<EG2_Collision>(0),
+	pm->trace(&trace, start_o, pm->mins, pm->maxs, up, pm->ps->client_num, pm->tracemask, static_cast<EG2_Collision>(0),
 		0);
 	if (trace.allsolid || trace.startsolid || trace.fraction == 0)
 	{
@@ -471,7 +471,7 @@ void PM_StepSlideMove(float gravMod)
 	VectorCopy(trace.endpos, pm->ps->origin);
 	VectorCopy(start_v, pm->ps->velocity);
 	/*cantStepUpFwd = */
-	PM_SlideMove(gravMod);
+	PM_SlideMove(grav_mod);
 	//===Another slidemove forward================================================================================
 
 	if (pm->debugLevel)
@@ -479,11 +479,11 @@ void PM_StepSlideMove(float gravMod)
 		G_DebugLine(trace.endpos, pm->ps->origin, 2000, 0xffffff, qtrue);
 	}
 	//compare the initial slidemove and this slidemove from a step up position
-	VectorSubtract(down_o, start_o, slideMove);
-	VectorSubtract(trace.endpos, pm->ps->origin, stepUpMove);
+	VectorSubtract(down_o, start_o, slide_move);
+	VectorSubtract(trace.endpos, pm->ps->origin, step_up_move);
 
-	if (fabs(stepUpMove[0]) < 0.1 && fabs(stepUpMove[1]) < 0.1 && VectorLengthSquared(slideMove) >
-		VectorLengthSquared(stepUpMove))
+	if (fabs(step_up_move[0]) < 0.1 && fabs(step_up_move[1]) < 0.1 && VectorLengthSquared(slide_move) >
+		VectorLengthSquared(step_up_move))
 	{
 		//slideMove was better, use it
 		VectorCopy(down_o, pm->ps->origin);
@@ -491,11 +491,11 @@ void PM_StepSlideMove(float gravMod)
 	}
 	else
 	{
-		qboolean skipStep = qfalse;
+		qboolean skip_step = qfalse;
 		// push down the final amount
 		VectorCopy(pm->ps->origin, down);
-		down[2] -= stepSize;
-		pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, down, pm->ps->clientNum, pm->tracemask,
+		down[2] -= step_size;
+		pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, down, pm->ps->client_num, pm->tracemask,
 			static_cast<EG2_Collision>(0), 0);
 		if (pm->debugLevel)
 		{
@@ -503,7 +503,7 @@ void PM_StepSlideMove(float gravMod)
 		}
 		if (g_stepSlideFix->integer)
 		{
-			if (pm->ps->clientNum < MAX_CLIENTS
+			if (pm->ps->client_num < MAX_CLIENTS
 				&& trace.plane.normal[2] < MIN_WALK_NORMAL)
 			{
 				//normal players cannot step up slopes that are too steep to walk on!
@@ -523,16 +523,16 @@ void PM_StepSlideMove(float gravMod)
 					{
 						G_DebugLine(down_o, trace.endpos, 2000, 0x0000ff, qtrue);
 					}
-					skipStep = qtrue;
+					skip_step = qtrue;
 				}
 			}
 		}
 
 		if (!trace.allsolid
-			&& !skipStep) //normal players cannot step up slopes that are too steep to walk on!
+			&& !skip_step) //normal players cannot step up slopes that are too steep to walk on!
 		{
-			if (pm->ps->clientNum
-				&& isGiant
+			if (pm->ps->client_num
+				&& is_giant
 				&& g_entities[trace.entityNum].client
 				&& pm->gent
 				&& pm->gent->client
@@ -550,8 +550,8 @@ void PM_StepSlideMove(float gravMod)
 					VectorCopy(start_v, pm->ps->velocity);
 				}
 			}
-			else if (pm->ps->clientNum
-				&& isGiant
+			else if (pm->ps->client_num
+				&& is_giant
 				&& g_entities[trace.entityNum].client
 				&& g_entities[trace.entityNum].client->playerTeam == pm->gent->client->playerTeam)
 			{
@@ -607,7 +607,7 @@ void PM_StepSlideMove(float gravMod)
 	*/
 #if 0
 	// if the down trace can trace back to the original position directly, don't step
-	pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, start_o, pm->ps->clientNum, pm->tracemask);
+	pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, start_o, pm->ps->client_num, pm->tracemask);
 	if (trace.fraction == 1.0) {
 		// use the original move
 		VectorCopy(down_o, pm->ps->origin);

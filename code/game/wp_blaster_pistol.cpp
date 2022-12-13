@@ -33,7 +33,7 @@ extern qboolean WalkCheck(const gentity_t* self);
 extern qboolean PM_CrouchAnim(int anim);
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
 //---------------------------------------------------------
-void WP_FireBryarPistol(gentity_t* ent, qboolean alt_fire)
+void WP_FireBryarPistol(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	vec3_t start;
@@ -196,7 +196,7 @@ void WP_FireBryarPistol(gentity_t* ent, qboolean alt_fire)
 }
 
 //---------------------------------------------------------
-void WP_FireBryarPistolDuals(gentity_t* ent, qboolean alt_fire, qboolean secondPistol)
+void WP_FireBryarPistolDuals(gentity_t* ent, const qboolean alt_fire, const qboolean secondPistol)
 //---------------------------------------------------------
 {
 	vec3_t start;
@@ -371,7 +371,7 @@ void WP_FireBryarPistolDuals(gentity_t* ent, qboolean alt_fire, qboolean secondP
 //---------------
 
 //---------------------------------------------------------
-void WP_FireReyPistol(gentity_t* ent, qboolean alt_fire)
+void WP_FireReyPistol(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	vec3_t start;
@@ -533,7 +533,7 @@ void WP_FireReyPistol(gentity_t* ent, qboolean alt_fire)
 }
 
 //---------------------------------------------------------
-void WP_FireReyPistolDuals(gentity_t* ent, qboolean alt_fire, qboolean secondPistol)
+void WP_FireReyPistolDuals(gentity_t* ent, const qboolean alt_fire, const qboolean secondPistol)
 //---------------------------------------------------------
 {
 	vec3_t start;
@@ -707,7 +707,7 @@ void WP_FireReyPistolDuals(gentity_t* ent, qboolean alt_fire, qboolean secondPis
 //---------------
 
 //---------------------------------------------------------
-void WP_FireClonePistol(gentity_t* ent, qboolean alt_fire)
+void WP_FireClonePistol(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	vec3_t start;
@@ -869,7 +869,7 @@ void WP_FireClonePistol(gentity_t* ent, qboolean alt_fire)
 }
 
 //---------------------------------------------------------
-void WP_FireClonePistolDuals(gentity_t* ent, qboolean alt_fire, qboolean secondPistol)
+void WP_FireClonePistolDuals(gentity_t* ent, const qboolean alt_fire, const qboolean secondPistol)
 //---------------------------------------------------------
 {
 	vec3_t start;
@@ -1039,7 +1039,7 @@ void WP_FireClonePistolDuals(gentity_t* ent, qboolean alt_fire, qboolean secondP
 }
 
 //---------------------------------------------------------
-void WP_FireSBDPistol(gentity_t* ent, qboolean alt_fire)
+void WP_FireSBDPistol(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	vec3_t start;
@@ -1187,7 +1187,7 @@ void WP_FireSBDPistol(gentity_t* ent, qboolean alt_fire)
 }
 
 //---------------------------------------------------------
-void WP_FireJawaPistol(gentity_t* ent, qboolean alt_fire)
+void WP_FireJawaPistol(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	vec3_t start;

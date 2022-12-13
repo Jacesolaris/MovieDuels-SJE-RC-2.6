@@ -144,7 +144,7 @@ void FX_BryarAltProjectileThink(centity_t* cent, const weaponInfo_s* weapon)
 FX_BryarAltHitWall
 -------------------------
 */
-void FX_BryarAltHitWall(vec3_t origin, vec3_t normal, int power)
+void FX_BryarAltHitWall(vec3_t origin, vec3_t normal, const int power)
 {
 	switch (power)
 	{

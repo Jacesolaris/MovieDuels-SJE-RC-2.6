@@ -37,7 +37,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "ui/ui_local.h"
 #endif
 
-extern saberInfo_t* BG_MySaber(int clientNum, int saberNum);
+extern saberInfo_t* BG_MySaber(int client_num, int saber_num);
 /*
 ==============================================================================
 BEGIN: Animation utility functions (sequence checking)
@@ -996,7 +996,7 @@ qboolean BG_InKnockDownOnGround(playerState_t* ps)
 	case BOTH_KNOCKDOWN4:
 	case BOTH_KNOCKDOWN5:
 	case BOTH_RELEASED:
-		//if ( PM_AnimLength( g_entities[ps->clientNum].client->clientInfo.animFileIndex, (animNumber_t)ps->legsAnim ) - ps->legsAnimTimer > 300 )
+		//if ( PM_AnimLength( g_entities[ps->client_num].client->clientInfo.animFileIndex, (animNumber_t)ps->legsAnim ) - ps->legsAnimTimer > 300 )
 	{//at end of fall down anim
 		return qtrue;
 	}
@@ -1901,7 +1901,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, a
 			if (!Q_stricmpn("sound/weapons/saber/saberhup", stringData, 28))
 			{//a saber swing
 				animEvents[curAnimEvent].eventType = AEV_SABER_SWING;
-				animEvents[curAnimEvent].eventData[AED_SABER_SWING_SABERNUM] = 0;//since we don't know which one they meant if we're hacking this, always use first saber
+				animEvents[curAnimEvent].eventData[AED_SABER_SWING_saber_num] = 0;//since we don't know which one they meant if we're hacking this, always use first saber
 				animEvents[curAnimEvent].eventData[AED_SABER_SWING_PROBABILITY] = animEvents[curAnimEvent].eventData[AED_SOUND_PROBABILITY];
 				if (lowestVal < 4)
 				{//fast swing
@@ -1919,7 +1919,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, a
 			else if (!Q_stricmpn("sound/weapons/saber/saberspin", stringData, 29))
 			{//a saber spin
 				animEvents[curAnimEvent].eventType = AEV_SABER_SPIN;
-				animEvents[curAnimEvent].eventData[AED_SABER_SPIN_SABERNUM] = 0;//since we don't know which one they meant if we're hacking this, always use first saber
+				animEvents[curAnimEvent].eventData[AED_SABER_SPIN_saber_num] = 0;//since we don't know which one they meant if we're hacking this, always use first saber
 				animEvents[curAnimEvent].eventData[AED_SABER_SPIN_PROBABILITY] = animEvents[curAnimEvent].eventData[AED_SOUND_PROBABILITY];
 				if (stringData[29] == 'o')
 				{//saberspinoff
@@ -2473,7 +2473,7 @@ static void BG_StartLegsAnim(playerState_t* ps, int anim)
 	if (ps->pm_type >= PM_DEAD)
 	{
 		//vehicles are allowed to do this.. IF it's a vehicle death anim
-		if (ps->clientNum < MAX_CLIENTS || anim != BOTH_VT_DEATH1)
+		if (ps->client_num < MAX_CLIENTS || anim != BOTH_VT_DEATH1)
 		{
 			return;
 		}
@@ -2488,7 +2488,7 @@ static void BG_StartLegsAnim(playerState_t* ps, int anim)
 		BG_FlipPart(ps, SETANIM_LEGS);
 	}
 #ifdef _GAME
-	else if (g_entities[ps->clientNum].s.legsAnim == anim)
+	else if (g_entities[ps->client_num].s.legsAnim == anim)
 	{ //toggled anim to one anim then back to the one we were at previously in
 		//one frame, indicating that anim should be restarted.
 		BG_FlipPart(ps, SETANIM_LEGS);
@@ -2498,7 +2498,7 @@ static void BG_StartLegsAnim(playerState_t* ps, int anim)
 
 	/*
 	if ( pm->debugLevel ) {
-		Com_Printf("%d:  StartLegsAnim %d, on client#%d\n", pm->cmd.serverTime, anim, pm->ps->clientNum);
+		Com_Printf("%d:  StartLegsAnim %d, on client#%d\n", pm->cmd.serverTime, anim, pm->ps->client_num);
 	}
 	*/
 }
@@ -2551,7 +2551,7 @@ void BG_StartTorsoAnim(playerState_t* ps, int anim)
 		BG_FlipPart(ps, SETANIM_TORSO);
 	}
 #ifdef _GAME
-	else if (g_entities[ps->clientNum].s.torsoAnim == anim)
+	else if (g_entities[ps->client_num].s.torsoAnim == anim)
 	{ //toggled anim to one anim then back to the one we were at previously in
 		//one frame, indicating that anim should be restarted.
 		BG_FlipPart(ps, SETANIM_TORSO);
@@ -2605,19 +2605,19 @@ void PM_SetTorsoAnimTimer(int time)
 	BG_SetTorsoAnimTimer(pm->ps, time);
 }
 
-void BG_SaberStartTransAnim(int clientNum, int saberAnimLevel, int weapon, int anim, float* animSpeed, int broken)
+void BG_SaberStartTransAnim(int client_num, int saberAnimLevel, int weapon, int anim, float* animSpeed, int broken)
 {
 	if (anim >= BOTH_A1_T__B_ && anim <= BOTH_ROLL_STAB)
 	{
 		if (weapon == WP_SABER)
 		{
-			const saberInfo_t* saber = BG_MySaber(clientNum, 0);
+			const saberInfo_t* saber = BG_MySaber(client_num, 0);
 			if (saber
 				&& saber->animSpeedScale != 1.0f)
 			{
 				*animSpeed *= saber->animSpeedScale;
 			}
-			saber = BG_MySaber(clientNum, 1);
+			saber = BG_MySaber(client_num, 1);
 			if (saber
 				&& saber->animSpeedScale != 1.0f)
 			{
@@ -2685,7 +2685,7 @@ void BG_SetAnimFinal(playerState_t* ps, animation_t* animations,
 	assert(anim > -1);
 	assert(animations[anim].firstFrame > 0 || animations[anim].numFrames > 0);
 
-	BG_SaberStartTransAnim(ps->clientNum, ps->fd.saberAnimLevel, ps->weapon, anim, &editAnimSpeed, ps->brokenLimbs);
+	BG_SaberStartTransAnim(ps->client_num, ps->fd.saberAnimLevel, ps->weapon, anim, &editAnimSpeed, ps->brokenLimbs);
 
 	// Set torso anim
 	if (setAnimParts & SETANIM_TORSO)

@@ -456,7 +456,7 @@ void RT_FlyStop(gentity_t* self)
 	}
 }
 
-void RT_JetPackEffect(int duration)
+void RT_JetPackEffect(const int duration)
 {
 	if (NPC->genericBolt1 != -1)
 	{
@@ -761,7 +761,7 @@ void RT_Flying_Strafe(void)
 	}
 }
 
-void RT_Flying_Hunt(qboolean visible, qboolean advance)
+void RT_Flying_Hunt(const qboolean visible, const qboolean advance)
 {
 	vec3_t forward;
 
@@ -846,7 +846,7 @@ void RT_Flying_Hunt(qboolean visible, qboolean advance)
 	}
 }
 
-void RT_Flying_Ranged(qboolean visible, qboolean advance)
+void RT_Flying_Ranged(const qboolean visible, const qboolean advance)
 {
 	if (NPCInfo->scriptFlags & SCF_CHASE_ENEMIES)
 	{

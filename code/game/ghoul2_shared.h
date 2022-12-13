@@ -713,21 +713,21 @@ public:
 		}
 	}
 
-	CGhoul2Info& operator[](int idx)
+	CGhoul2Info& operator[](const int idx)
 	{
 		assert(mItem);
 		assert(idx >= 0 && idx < size());
 		return Array()[idx];
 	}
 
-	const CGhoul2Info& operator[](int idx) const
+	const CGhoul2Info& operator[](const int idx) const
 	{
 		assert(mItem);
 		assert(idx >= 0 && idx < size());
 		return Array()[idx];
 	}
 
-	void resize(int num)
+	void resize(const int num)
 	{
 		assert(num >= 0);
 		if (num)

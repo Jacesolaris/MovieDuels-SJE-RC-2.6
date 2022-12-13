@@ -106,22 +106,22 @@ void NPC_BSAdvanceFight()
 					//are we gonna hit him if we shoot at his center?
 					gi.trace(&tr, muzzle, nullptr, nullptr, enemy_org, NPC->s.number, MASK_SHOT,
 						static_cast<EG2_Collision>(0), 0);
-					const gentity_t* traceEnt = &g_entities[tr.entityNum];
-					if (traceEnt != NPC->enemy &&
-						(!traceEnt || !traceEnt->client || !NPC->client->enemyTeam || NPC->client->enemyTeam != traceEnt
+					const gentity_t* trace_ent = &g_entities[tr.entityNum];
+					if (trace_ent != NPC->enemy &&
+						(!trace_ent || !trace_ent->client || !NPC->client->enemyTeam || NPC->client->enemyTeam != trace_ent
 							->client->playerTeam))
 					{
 						//no, so shoot for the head
 						attack_scale *= 0.75;
 						gi.trace(&tr, muzzle, nullptr, nullptr, enemy_head, NPC->s.number, MASK_SHOT,
 							static_cast<EG2_Collision>(0), 0);
-						traceEnt = &g_entities[tr.entityNum];
+						trace_ent = &g_entities[tr.entityNum];
 					}
 
 					VectorCopy(tr.endpos, hitspot);
 
-					if (traceEnt == NPC->enemy || traceEnt->client && NPC->client->enemyTeam && NPC->client->enemyTeam
-						== traceEnt->client->playerTeam)
+					if (trace_ent == NPC->enemy || trace_ent->client && NPC->client->enemyTeam && NPC->client->enemyTeam
+						== trace_ent->client->playerTeam)
 					{
 						dead_on = qtrue;
 					}
@@ -130,9 +130,9 @@ void NPC_BSAdvanceFight()
 						attack_scale *= 0.5;
 						if (NPC->client->playerTeam)
 						{
-							if (traceEnt && traceEnt->client && traceEnt->client->playerTeam)
+							if (trace_ent && trace_ent->client && trace_ent->client->playerTeam)
 							{
-								if (NPC->client->playerTeam == traceEnt->client->playerTeam)
+								if (NPC->client->playerTeam == trace_ent->client->playerTeam)
 								{
 									//Don't shoot our own team
 									attack_ok = qfalse;
@@ -430,7 +430,7 @@ void NPC_BSInvestigate(void)
 				*/
 }
 
-qboolean NPC_CheckInvestigate(int alertEventNum)
+qboolean NPC_CheckInvestigate(const int alertEventNum)
 {
 	gentity_t* owner = level.alertEvents[alertEventNum].owner;
 	const int invAdd = level.alertEvents[alertEventNum].level;
@@ -1217,7 +1217,7 @@ NPC_BSSearchStart
 -------------------------
 */
 
-void NPC_BSSearchStart(int homeWp, bState_t bState)
+void NPC_BSSearchStart(const int homeWp, const bState_t bState)
 {
 	//FIXME: Reimplement
 	NPCInfo->homeWp = homeWp;
@@ -1944,7 +1944,7 @@ qboolean NPC_BSFlee(void)
 	return qfalse;
 }
 
-void NPC_StartFlee(gentity_t* enemy, vec3_t dangerPoint, int dangerLevel, int fleeTimeMin, int fleeTimeMax)
+void NPC_StartFlee(gentity_t* enemy, vec3_t dangerPoint, const int dangerLevel, const int fleeTimeMin, const int fleeTimeMax)
 {
 	if (Q3_TaskIDPending(NPC, TID_MOVE_NAV))
 	{
@@ -2039,8 +2039,8 @@ void NPC_StartFlee(gentity_t* enemy, vec3_t dangerPoint, int dangerLevel, int fl
 	TIMER_Set(NPC, "duck", 0);
 }
 
-void G_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t dangerPoint, int dangerLevel, int fleeTimeMin,
-	int fleeTimeMax)
+void G_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t dangerPoint, const int dangerLevel, const int fleeTimeMin,
+                 const int fleeTimeMax)
 {
 	if (!self->NPC)
 	{

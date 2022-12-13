@@ -31,7 +31,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define BOT_SPAWN_QUEUE_DEPTH	16
 
 static struct botSpawnQueue_s {
-	int		clientNum;
+	int		client_num;
 	int		spawnTime;
 } botSpawnQueue[BOT_SPAWN_QUEUE_DEPTH];
 
@@ -714,12 +714,12 @@ void G_CheckBotSpawn(void) {
 		if (botSpawnQueue[n].spawnTime > level.time) {
 			continue;
 		}
-		ClientBegin(botSpawnQueue[n].clientNum, qfalse);
+		ClientBegin(botSpawnQueue[n].client_num, qfalse);
 		botSpawnQueue[n].spawnTime = 0;
 
 		/*
 		if( level.gametype == GT_SINGLE_PLAYER ) {
-			trap->GetUserinfo( botSpawnQueue[n].clientNum, userinfo, sizeof(userinfo) );
+			trap->GetUserinfo( botSpawnQueue[n].client_num, userinfo, sizeof(userinfo) );
 			PlayerIntroSound( Info_ValueForKey (userinfo, "model") );
 		}
 		*/
@@ -731,17 +731,17 @@ void G_CheckBotSpawn(void) {
 AddBotToSpawnQueue
 ===============
 */
-static void AddBotToSpawnQueue(int clientNum, int delay) {
+static void AddBotToSpawnQueue(int client_num, int delay) {
 	for (int n = 0; n < BOT_SPAWN_QUEUE_DEPTH; n++) {
 		if (!botSpawnQueue[n].spawnTime) {
 			botSpawnQueue[n].spawnTime = level.time + delay;
-			botSpawnQueue[n].clientNum = clientNum;
+			botSpawnQueue[n].client_num = client_num;
 			return;
 		}
 	}
 
 	trap->Print(S_COLOR_YELLOW "Unable to delay spawn\n");
-	ClientBegin(clientNum, qfalse);
+	ClientBegin(client_num, qfalse);
 }
 
 /*
@@ -752,9 +752,9 @@ Called on client disconnect to make sure the delayed spawn
 doesn't happen on a freed index
 ===============
 */
-void G_RemoveQueuedBotBegin(int clientNum) {
+void G_RemoveQueuedBotBegin(int client_num) {
 	for (int n = 0; n < BOT_SPAWN_QUEUE_DEPTH; n++) {
-		if (botSpawnQueue[n].clientNum == clientNum) {
+		if (botSpawnQueue[n].client_num == client_num) {
 			botSpawnQueue[n].spawnTime = 0;
 			return;
 		}
@@ -766,18 +766,18 @@ void G_RemoveQueuedBotBegin(int clientNum) {
 G_BotConnect
 ===============
 */
-qboolean G_BotConnect(int clientNum, qboolean restart) {
+qboolean G_BotConnect(int client_num, qboolean restart) {
 	bot_settings_t	settings;
 	char			userinfo[MAX_INFO_STRING];
 
-	trap->GetUserinfo(clientNum, userinfo, sizeof(userinfo));
+	trap->GetUserinfo(client_num, userinfo, sizeof(userinfo));
 
 	Q_strncpyz(settings.personalityfile, Info_ValueForKey(userinfo, "personality"), sizeof(settings.personalityfile));
 	settings.skill = atof(Info_ValueForKey(userinfo, "skill"));
 	Q_strncpyz(settings.team, Info_ValueForKey(userinfo, "team"), sizeof(settings.team));
 
-	if (!BotAISetupClient(clientNum, &settings, restart)) {
-		trap->DropClient(clientNum, "BotAISetupClient failed");
+	if (!BotAISetupClient(client_num, &settings, restart)) {
+		trap->DropClient(client_num, "BotAISetupClient failed");
 		return qfalse;
 	}
 
@@ -793,8 +793,8 @@ static void G_AddBot(const char* name, float skill, const char* team, int delay,
 	char			userinfo[MAX_INFO_STRING] = { 0 };
 
 	// have the server allocate a client slot
-	const int clientNum = trap->BotAllocateClient();
-	if (clientNum == -1) {
+	const int client_num = trap->BotAllocateClient();
+	if (client_num == -1) {
 		//		trap->Print( S_COLOR_RED "Unable to add bot.  All player slots are in use.\n" );
 		//		trap->Print( S_COLOR_RED "Start server with more 'open' slots.\n" );
 		trap->SendServerCommand(-1, va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "UNABLE_TO_ADD_BOT")));
@@ -805,7 +805,7 @@ static void G_AddBot(const char* name, float skill, const char* team, int delay,
 	const char* botinfo = G_GetBotInfoByName(name);
 	if (!botinfo) {
 		trap->Print(S_COLOR_RED "Error: Bot '%s' not defined\n", name);
-		trap->BotFreeClient(clientNum);
+		trap->BotFreeClient(client_num);
 		return;
 	}
 
@@ -899,7 +899,7 @@ static void G_AddBot(const char* name, float skill, const char* team, int delay,
 	// initialize the bot settings
 	if (!team || !*team) {
 		if (level.gametype >= GT_TEAM) {
-			if (PickTeam(clientNum) == TEAM_RED)
+			if (PickTeam(client_num) == TEAM_RED)
 				team = "red";
 			else
 				team = "blue";
@@ -909,12 +909,12 @@ static void G_AddBot(const char* name, float skill, const char* team, int delay,
 	}
 	Info_SetValueForKey(userinfo, "team", team);
 
-	gentity_t* bot = &g_entities[clientNum];
+	gentity_t* bot = &g_entities[client_num];
 	//	bot->r.svFlags |= SVF_BOT;
 	//	bot->inuse = qtrue;
 
 		// register the userinfo
-	trap->SetUserinfo(clientNum, userinfo);
+	trap->SetUserinfo(client_num, userinfo);
 
 	if (level.gametype >= GT_TEAM)
 	{
@@ -935,12 +935,12 @@ static void G_AddBot(const char* name, float skill, const char* team, int delay,
 	const int preTeam = bot->client->sess.sessionTeam;
 
 	// have it connect to the game as a normal client
-	if (ClientConnect(clientNum, qtrue, qtrue))
+	if (ClientConnect(client_num, qtrue, qtrue))
 		return;
 
 	if (bot->client->sess.sessionTeam != preTeam)
 	{
-		trap->GetUserinfo(clientNum, userinfo, sizeof(userinfo));
+		trap->GetUserinfo(client_num, userinfo, sizeof(userinfo));
 
 		if (bot->client->sess.sessionTeam == TEAM_SPECTATOR)
 			bot->client->sess.sessionTeam = preTeam;
@@ -957,12 +957,12 @@ static void G_AddBot(const char* name, float skill, const char* team, int delay,
 
 		Info_SetValueForKey(userinfo, "team", team);
 
-		trap->SetUserinfo(clientNum, userinfo);
+		trap->SetUserinfo(client_num, userinfo);
 
 		bot->client->ps.persistant[PERS_TEAM] = bot->client->sess.sessionTeam;
 
 		G_ReadSessionData(bot->client);
-		if (!ClientUserinfoChanged(clientNum))
+		if (!ClientUserinfoChanged(client_num))
 			return;
 	}
 
@@ -990,11 +990,11 @@ static void G_AddBot(const char* name, float skill, const char* team, int delay,
 	else
 	{
 		if (delay == 0) {
-			ClientBegin(clientNum, qfalse);
+			ClientBegin(client_num, qfalse);
 			return;
 		}
 
-		AddBotToSpawnQueue(clientNum, delay);
+		AddBotToSpawnQueue(client_num, delay);
 	}
 }
 

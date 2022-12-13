@@ -286,7 +286,7 @@ Execute all of the server commands that were received along
 with this this snapshot.
 ====================
 */
-void CG_ExecuteNewServerCommands(int latestSequence)
+void CG_ExecuteNewServerCommands(const int latestSequence)
 {
 	while (cgs.serverCommandSequence < latestSequence)
 	{

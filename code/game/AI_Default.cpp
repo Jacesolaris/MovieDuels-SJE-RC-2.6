@@ -68,7 +68,7 @@ void NPC_StandIdle(void)
 	}
 }
 
-qboolean NPC_StandTrackAndShoot(const gentity_t* NPC, qboolean canDuck)
+qboolean NPC_StandTrackAndShoot(const gentity_t* NPC, const qboolean canDuck)
 {
 	qboolean attack_ok = qfalse;
 	qboolean duck_ok = qfalse;
@@ -447,7 +447,7 @@ void NPC_BSFace(void)
 	}
 }
 
-void NPC_BSPointShoot(qboolean shoot)
+void NPC_BSPointShoot(const qboolean shoot)
 {
 	//FIXME: doesn't check for clear shot...
 	vec3_t muzzle, dir, angles, org;

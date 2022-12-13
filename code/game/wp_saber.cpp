@@ -74,11 +74,11 @@ extern cvar_t* d_slowmoaction;
 void wp_block_points_regenerate_over_ride(const gentity_t* self, int override_amt);
 extern qboolean NPC_IsOversized(const gentity_t* self);
 
-extern qboolean WP_SaberBladeUseSecondBladeStyle(const saberInfo_t* saber, int bladeNum);
-extern qboolean WP_SaberBladeDoTransitionDamage(const saberInfo_t* saber, int bladeNum);
+extern qboolean WP_SaberBladeUseSecondBladeStyle(const saberInfo_t* saber, int blade_num);
+extern qboolean WP_SaberBladeDoTransitionDamage(const saberInfo_t* saber, int blade_num);
 extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
 extern qboolean G_ClearViewEntity(gentity_t* ent);
-extern void G_SetViewEntity(gentity_t* self, gentity_t* viewEntity);
+extern void G_SetViewEntity(gentity_t* self, gentity_t* view_entity);
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern void CG_ChangeWeapon(int num);
@@ -143,7 +143,7 @@ extern qboolean PM_SaberInOverHeadSlash(saberMoveName_t saberMove);
 extern qboolean PM_SaberInRollStab(saberMoveName_t saberMove);
 extern qboolean PM_SaberInLungeStab(saberMoveName_t saberMove);
 extern qboolean PM_StabDownAnim(int anim);
-extern int PM_PowerLevelForSaberAnim(const playerState_t* ps, int saberNum = 0);
+extern int PM_PowerLevelForSaberAnim(const playerState_t* ps, int saber_num = 0);
 extern void PM_VelocityForSaberMove(const playerState_t* ps, vec3_t throwDir);
 extern qboolean PM_VelocityForBlockedMove(const playerState_t* ps, vec3_t throwDir);
 extern qboolean PM_SaberCanInterruptMove(int move, int anim);
@@ -1687,7 +1687,7 @@ void WP_SaberFallSound(const gentity_t* owner, const gentity_t* saber)
 	}
 	if (owner && owner->client)
 	{
-		//have an owner, use their data (assume saberNum is 0 because only the 0 saber can be thrown)
+		//have an owner, use their data (assume saber_num is 0 because only the 0 saber can be thrown)
 		if (owner->client->ps.saber[0].fallSound[0])
 		{
 			//have an override
@@ -2473,7 +2473,7 @@ qboolean WP_GetSaberDeflectionAngle(const gentity_t* attacker, const gentity_t* 
 	return qtrue;
 }
 
-void WP_SaberClearDamageForEntNum(gentity_t* attacker, int entity_num, const int saber_num, const int blade_num)
+void WP_SaberClearDamageForEntNum(gentity_t* attacker, const int entity_num, const int saber_num, const int blade_num)
 {
 #ifndef FINAL_BUILD
 	if (d_saberCombat->integer)
@@ -7126,7 +7126,7 @@ void WP_SaberRadiusDamage(gentity_t* ent, vec3_t point, const float radius, cons
 
 /*
 ---------------------------------------------------------
-void WP_SaberDamageTrace( gentity_t *ent, int saberNum, int bladeNum )
+void WP_SaberDamageTrace( gentity_t *ent, int saber_num, int blade_num )
 
   Constantly trace from the old blade pos to new, down the saber beam and do damage
 
@@ -7506,14 +7506,14 @@ void WP_SaberDamageTrace(gentity_t* ent, int saber_num, int blade_num)
 						float knockback = (total_dist - VectorNormalize(hit_dir)) / total_dist * 200.0f;
 						hit_dir[2] = 0;
 						//FIXME: do we need to call G_Throw?  Seems unfair to put actual knockback on them, stops the attack
-						//G_Throw( traceEnt, hitDir, knockback );
+						//G_Throw( trace_ent, hitDir, knockback );
 						VectorMA(trace_ent->client->ps.velocity, knockback, hit_dir, trace_ent->client->ps.velocity);
 						trace_ent->client->ps.pm_time = 200;
 						trace_ent->client->ps.pm_flags |= PMF_TIME_NOFRICTION;
 #ifndef FINAL_BUILD
 						if (d_saberCombat->integer)
 						{
-							gi.Printf("%s pushing away %s at %s\n", ent->NPC_type, traceEnt->NPC_type, vtos(traceEnt->client->ps.velocity));
+							gi.Printf("%s pushing away %s at %s\n", ent->NPC_type, trace_ent->NPC_type, vtos(trace_ent->client->ps.velocity));
 						}
 #endif
 					}
@@ -19747,7 +19747,7 @@ void wp_saber_start_missile_block_check_md(gentity_t* self, const usercmd_t* ucm
 //GENERAL SABER============================================================================
 //GENERAL SABER============================================================================
 
-void WP_SetSaberMove(const gentity_t* self, short blocked)
+void WP_SetSaberMove(const gentity_t* self, const short blocked)
 {
 	self->client->ps.saberBlocked = blocked;
 }
@@ -29040,7 +29040,7 @@ void ForceTelepathy(gentity_t* self)
 					}
 					if (trace_ent->NPC)
 					{
-						//traceEnt->NPC->tempBehavior = BS_FOLLOW_LEADER;
+						//trace_ent->NPC->tempBehavior = BS_FOLLOW_LEADER;
 						trace_ent->client->leader = self;
 					}
 					//FIXME: maybe pick an enemy right here?
@@ -29273,7 +29273,7 @@ void ForceGrip(gentity_t* self)
 	}
 #else
 //rww - RAGDOLL_END
-	if (!traceEnt || traceEnt == self/*???*/ || traceEnt->bmodel || (traceEnt->health <= 0 && traceEnt->takedamage) || (traceEnt->NPC && traceEnt->NPC->scriptFlags & SCF_NO_FORCE))
+	if (!trace_ent || trace_ent == self/*???*/ || trace_ent->bmodel || (trace_ent->health <= 0 && trace_ent->takedamage) || (trace_ent->NPC && trace_ent->NPC->scriptFlags & SCF_NO_FORCE))
 	{
 		return;
 	}
@@ -29509,7 +29509,7 @@ void ForceGrip(gentity_t* self)
 	{
 		//can't grip non-clients... right?
 		//FIXME: Make it so objects flagged as "grabbable" are let through
-		//if ( Q_stricmp( "misc_model_breakable", traceEnt->classname ) || !(traceEnt->s.eFlags&EF_BOUNCE_HALF) || !traceEnt->physicsBounce )
+		//if ( Q_stricmp( "misc_model_breakable", trace_ent->classname ) || !(trace_ent->s.eFlags&EF_BOUNCE_HALF) || !trace_ent->physicsBounce )
 		{
 			return;
 		}
@@ -29624,7 +29624,7 @@ void ForceGrip(gentity_t* self)
 		{
 			//lifting sound?  or always?
 		}
-		//if ( traceEnt->s.number )
+		//if ( trace_ent->s.number )
 		{
 			//picks them up for a second first
 			self->client->ps.forcePowerDebounce[FP_GRIP] = level.time + 1000;
@@ -31418,11 +31418,11 @@ void ForceLightningDamage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, con
 						if (chanceOfFizz > 0)
 						{
 							vec3_t end;
-							constexpr int npcBladeNum = 0;
-							constexpr int npcSaberNum = 0;
-							VectorMA(trace_ent->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzlePoint,
-								trace_ent->client->ps.saber[npcSaberNum].blade[npcBladeNum].length * Q_flrand(0, 1),
-								trace_ent->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzleDir, end);
+							constexpr int npcblade_num = 0;
+							constexpr int npcsaber_num = 0;
+							VectorMA(trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzlePoint,
+								trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].length * Q_flrand(0, 1),
+								trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzleDir, end);
 							G_PlayEffect(G_EffectIndex("saber/fizz.efx"), end, fwd);
 						}
 
@@ -31526,12 +31526,12 @@ void ForceLightningDamage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, con
 							if (chanceOfFizz > 0)
 							{
 								vec3_t end;
-								constexpr int npcBladeNum = 0;
-								constexpr int npcSaberNum = 0;
-								VectorMA(trace_ent->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzlePoint,
-									trace_ent->client->ps.saber[npcSaberNum].blade[npcBladeNum].length *
+								constexpr int npcblade_num = 0;
+								constexpr int npcsaber_num = 0;
+								VectorMA(trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzlePoint,
+									trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].length *
 									Q_flrand(0, 1),
-									trace_ent->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzleDir, end);
+									trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzleDir, end);
 								G_PlayEffect(G_EffectIndex("saber/fizz.efx"), end, fwd);
 							}
 
@@ -31578,12 +31578,12 @@ void ForceLightningDamage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, con
 							if (chanceOfFizz > 0)
 							{
 								vec3_t end;
-								constexpr int npcBladeNum = 0;
-								constexpr int npcSaberNum = 0;
-								VectorMA(trace_ent->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzlePoint,
-									trace_ent->client->ps.saber[npcSaberNum].blade[npcBladeNum].length *
+								constexpr int npcblade_num = 0;
+								constexpr int npcsaber_num = 0;
+								VectorMA(trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzlePoint,
+									trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].length *
 									Q_flrand(0, 1),
-									trace_ent->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzleDir, end);
+									trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzleDir, end);
 								G_PlayEffect(G_EffectIndex("saber/fizz.efx"), end, fwd);
 							}
 
@@ -31636,11 +31636,11 @@ void ForceLightningDamage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, con
 						if (chanceOfFizz > 0)
 						{
 							vec3_t end;
-							constexpr int npcBladeNum = 0;
-							constexpr int npcSaberNum = 0;
-							VectorMA(trace_ent->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzlePoint,
-								trace_ent->client->ps.saber[npcSaberNum].blade[npcBladeNum].length * Q_flrand(0, 1),
-								trace_ent->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzleDir, end);
+							constexpr int npcblade_num = 0;
+							constexpr int npcsaber_num = 0;
+							VectorMA(trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzlePoint,
+								trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].length * Q_flrand(0, 1),
+								trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzleDir, end);
 							G_PlayEffect(G_EffectIndex("saber/fizz.efx"), end, fwd);
 						}
 
@@ -31875,48 +31875,48 @@ void ForceLightningDamage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, con
 	}
 }
 
-void ForceLightningDamage_AMD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, const float dist, const float dot, vec3_t impact_point)
+void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, const float dist, const float dot, vec3_t impact_point)
 {
 	qboolean LightningBlocked = qfalse;
 	qboolean IsClassGuard = qfalse;
 
-	if (traceEnt->NPC && traceEnt->NPC->scriptFlags & SCF_NO_FORCE)
+	if (trace_ent->NPC && trace_ent->NPC->scriptFlags & SCF_NO_FORCE)
 	{
 		if (!in_camera
-			&& traceEnt->health > 0)
+			&& trace_ent->health > 0)
 		{
-			if ((!Q_stricmp("Yoda", traceEnt->NPC_type) ||
-				!Q_stricmp("Ep1_Yoda", traceEnt->NPC_type) ||
-				!Q_stricmp("Ep2_Yoda", traceEnt->NPC_type) ||
-				!Q_stricmp("Ep3_Yoda", traceEnt->NPC_type) ||
-				!Q_stricmp("md_yoda", traceEnt->NPC_type) ||
-				!Q_stricmp("md_yoda_ep2", traceEnt->NPC_type) ||
-				!Q_stricmp("md_yoda_ot", traceEnt->NPC_type) ||
-				!Q_stricmp("md_yoda_hr", traceEnt->NPC_type) ||
-				!Q_stricmp("emperor", traceEnt->NPC_type) ||
-				!Q_stricmp("cultist_grip", traceEnt->NPC_type) ||
-				!Q_stricmp("cultist_drain", traceEnt->NPC_type) ||
-				!Q_stricmp("cultist_lightning", traceEnt->NPC_type) ||
-				!Q_stricmp("md_snoke", traceEnt->NPC_type) ||
-				!Q_stricmp("md_snoke_cin", traceEnt->NPC_type) ||
-				!Q_stricmp("md_emperor", traceEnt->NPC_type) ||
-				!Q_stricmp("md_emperor_fas", traceEnt->NPC_type) ||
-				!Q_stricmp("md_emperor_ros", traceEnt->NPC_type) ||
-				!Q_stricmp("md_emperor_ros_blind", traceEnt->NPC_type) ||
-				!Q_stricmp("Ep7_Snoke", traceEnt->NPC_type) ||
-				!Q_stricmp("Ep8_Snoke", traceEnt->NPC_type) ||
-				!Q_stricmp("Emperor_Palpatine", traceEnt->NPC_type))
-				&& traceEnt->s.weapon == WP_SABER
-				&& traceEnt->client->ps.SaberActive()
-				&& !traceEnt->client->ps.saberInFlight
-				&& (traceEnt->client->ps.saberMove == LS_READY || PM_SaberInParry(traceEnt->client->ps.saberMove) ||
-					PM_SaberInReturn(traceEnt->client->ps.saberMove))
-				&& InFOV(self->currentOrigin, traceEnt->currentOrigin, traceEnt->client->ps.viewangles, 20, 35)
-				&& !PM_InKnockDown(&traceEnt->client->ps)
-				&& !PM_SuperBreakLoseAnim(traceEnt->client->ps.torsoAnim)
-				&& !PM_SuperBreakWinAnim(traceEnt->client->ps.torsoAnim)
-				&& !PM_SaberInSpecialAttack(traceEnt->client->ps.torsoAnim)
-				&& !PM_InSpecialJump(traceEnt->client->ps.torsoAnim))
+			if ((!Q_stricmp("Yoda", trace_ent->NPC_type) ||
+				!Q_stricmp("Ep1_Yoda", trace_ent->NPC_type) ||
+				!Q_stricmp("Ep2_Yoda", trace_ent->NPC_type) ||
+				!Q_stricmp("Ep3_Yoda", trace_ent->NPC_type) ||
+				!Q_stricmp("md_yoda", trace_ent->NPC_type) ||
+				!Q_stricmp("md_yoda_ep2", trace_ent->NPC_type) ||
+				!Q_stricmp("md_yoda_ot", trace_ent->NPC_type) ||
+				!Q_stricmp("md_yoda_hr", trace_ent->NPC_type) ||
+				!Q_stricmp("emperor", trace_ent->NPC_type) ||
+				!Q_stricmp("cultist_grip", trace_ent->NPC_type) ||
+				!Q_stricmp("cultist_drain", trace_ent->NPC_type) ||
+				!Q_stricmp("cultist_lightning", trace_ent->NPC_type) ||
+				!Q_stricmp("md_snoke", trace_ent->NPC_type) ||
+				!Q_stricmp("md_snoke_cin", trace_ent->NPC_type) ||
+				!Q_stricmp("md_emperor", trace_ent->NPC_type) ||
+				!Q_stricmp("md_emperor_fas", trace_ent->NPC_type) ||
+				!Q_stricmp("md_emperor_ros", trace_ent->NPC_type) ||
+				!Q_stricmp("md_emperor_ros_blind", trace_ent->NPC_type) ||
+				!Q_stricmp("Ep7_Snoke", trace_ent->NPC_type) ||
+				!Q_stricmp("Ep8_Snoke", trace_ent->NPC_type) ||
+				!Q_stricmp("Emperor_Palpatine", trace_ent->NPC_type))
+				&& trace_ent->s.weapon == WP_SABER
+				&& trace_ent->client->ps.SaberActive()
+				&& !trace_ent->client->ps.saberInFlight
+				&& (trace_ent->client->ps.saberMove == LS_READY || PM_SaberInParry(trace_ent->client->ps.saberMove) ||
+					PM_SaberInReturn(trace_ent->client->ps.saberMove))
+				&& InFOV(self->currentOrigin, trace_ent->currentOrigin, trace_ent->client->ps.viewangles, 20, 35)
+				&& !PM_InKnockDown(&trace_ent->client->ps)
+				&& !PM_SuperBreakLoseAnim(trace_ent->client->ps.torsoAnim)
+				&& !PM_SuperBreakWinAnim(trace_ent->client->ps.torsoAnim)
+				&& !PM_SaberInSpecialAttack(trace_ent->client->ps.torsoAnim)
+				&& !PM_InSpecialJump(trace_ent->client->ps.torsoAnim))
 			{
 				//saber can block lightning
 				//make them do a parry
@@ -31934,21 +31934,21 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, 
 				if (chanceOfFizz > 0)
 				{
 					vec3_t end;
-					constexpr int npcBladeNum = 0;
-					constexpr int npcSaberNum = 0;
-					VectorMA(traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzlePoint,
-						traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].length * Q_flrand(0, 1),
-						traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzleDir, end);
+					constexpr int npcblade_num = 0;
+					constexpr int npcsaber_num = 0;
+					VectorMA(trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzlePoint,
+						trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].length * Q_flrand(0, 1),
+						trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzleDir, end);
 					G_PlayEffect(G_EffectIndex("saber/fizz.efx"), end, fwd);
 				}
 
-				switch (traceEnt->client->ps.saberAnimLevel)
+				switch (trace_ent->client->ps.saberAnimLevel)
 				{
 				case SS_DUAL:
-					NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P6_S6_T_, SETANIM_AFLAG_PACE);
+					NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P6_S6_T_, SETANIM_AFLAG_PACE);
 					break;
 				case SS_STAFF:
-					NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P7_S7_T_, SETANIM_AFLAG_PACE);
+					NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P7_S7_T_, SETANIM_AFLAG_PACE);
 					break;
 				case SS_FAST:
 				case SS_TAVION:
@@ -31957,62 +31957,62 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, 
 				case SS_MEDIUM:
 				case SS_NONE:
 				default:
-					NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P1_S1_T_, SETANIM_AFLAG_PACE);
+					NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P1_S1_T_, SETANIM_AFLAG_PACE);
 					break;
 				}
-				traceEnt->client->ps.weaponTime = Q_irand(300, 600);
+				trace_ent->client->ps.weaponTime = Q_irand(300, 600);
 				if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
 				{
 					Com_Printf(S_COLOR_RED"AMD Mode NPC Saber Lightning Block No Force Correct\n");
 				}
 			}
-			else if ((!Q_stricmp("Yoda", traceEnt->NPC_type) ||
-				!Q_stricmp("Ep1_Yoda", traceEnt->NPC_type) ||
-				!Q_stricmp("Ep2_Yoda", traceEnt->NPC_type) ||
-				!Q_stricmp("Ep3_Yoda", traceEnt->NPC_type) ||
-				!Q_stricmp("md_yoda", traceEnt->NPC_type) ||
-				!Q_stricmp("md_yoda_ep2", traceEnt->NPC_type) ||
-				!Q_stricmp("md_yoda_ot", traceEnt->NPC_type) ||
-				!Q_stricmp("md_yoda_hr", traceEnt->NPC_type) ||
-				!Q_stricmp("emperor", traceEnt->NPC_type) ||
-				!Q_stricmp("cultist_grip", traceEnt->NPC_type) ||
-				!Q_stricmp("cultist_drain", traceEnt->NPC_type) ||
-				!Q_stricmp("cultist_lightning", traceEnt->NPC_type) ||
-				!Q_stricmp("md_snoke", traceEnt->NPC_type) ||
-				!Q_stricmp("md_snoke_cin", traceEnt->NPC_type) ||
-				!Q_stricmp("md_emperor", traceEnt->NPC_type) ||
-				!Q_stricmp("md_emperor_fas", traceEnt->NPC_type) ||
-				!Q_stricmp("md_emperor_ros", traceEnt->NPC_type) ||
-				!Q_stricmp("md_emperor_ros_blind", traceEnt->NPC_type) ||
-				!Q_stricmp("Ep7_Snoke", traceEnt->NPC_type) ||
-				!Q_stricmp("Ep8_Snoke", traceEnt->NPC_type) ||
-				!Q_stricmp("Emperor_Palpatine", traceEnt->NPC_type))
-				&& traceEnt->s.weapon == WP_MELEE || traceEnt->s.weapon == WP_NONE || traceEnt->client->ps.weapon ==
-				WP_SABER && !traceEnt->client->ps.SaberActive()
-				&& !PM_InKnockDown(&traceEnt->client->ps)
-				&& !PM_InRoll(&traceEnt->client->ps)
-				&& traceEnt->client->ps.groundEntityNum != ENTITYNUM_NONE
-				&& !PM_RunningAnim(traceEnt->client->ps.legsAnim)
-				&& InFOV(self->currentOrigin, traceEnt->currentOrigin, traceEnt->client->ps.viewangles, 20, 35))
+			else if ((!Q_stricmp("Yoda", trace_ent->NPC_type) ||
+				!Q_stricmp("Ep1_Yoda", trace_ent->NPC_type) ||
+				!Q_stricmp("Ep2_Yoda", trace_ent->NPC_type) ||
+				!Q_stricmp("Ep3_Yoda", trace_ent->NPC_type) ||
+				!Q_stricmp("md_yoda", trace_ent->NPC_type) ||
+				!Q_stricmp("md_yoda_ep2", trace_ent->NPC_type) ||
+				!Q_stricmp("md_yoda_ot", trace_ent->NPC_type) ||
+				!Q_stricmp("md_yoda_hr", trace_ent->NPC_type) ||
+				!Q_stricmp("emperor", trace_ent->NPC_type) ||
+				!Q_stricmp("cultist_grip", trace_ent->NPC_type) ||
+				!Q_stricmp("cultist_drain", trace_ent->NPC_type) ||
+				!Q_stricmp("cultist_lightning", trace_ent->NPC_type) ||
+				!Q_stricmp("md_snoke", trace_ent->NPC_type) ||
+				!Q_stricmp("md_snoke_cin", trace_ent->NPC_type) ||
+				!Q_stricmp("md_emperor", trace_ent->NPC_type) ||
+				!Q_stricmp("md_emperor_fas", trace_ent->NPC_type) ||
+				!Q_stricmp("md_emperor_ros", trace_ent->NPC_type) ||
+				!Q_stricmp("md_emperor_ros_blind", trace_ent->NPC_type) ||
+				!Q_stricmp("Ep7_Snoke", trace_ent->NPC_type) ||
+				!Q_stricmp("Ep8_Snoke", trace_ent->NPC_type) ||
+				!Q_stricmp("Emperor_Palpatine", trace_ent->NPC_type))
+				&& trace_ent->s.weapon == WP_MELEE || trace_ent->s.weapon == WP_NONE || trace_ent->client->ps.weapon ==
+				WP_SABER && !trace_ent->client->ps.SaberActive()
+				&& !PM_InKnockDown(&trace_ent->client->ps)
+				&& !PM_InRoll(&trace_ent->client->ps)
+				&& trace_ent->client->ps.groundEntityNum != ENTITYNUM_NONE
+				&& !PM_RunningAnim(trace_ent->client->ps.legsAnim)
+				&& InFOV(self->currentOrigin, trace_ent->currentOrigin, trace_ent->client->ps.viewangles, 20, 35))
 			{
-				NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_FORCE_2HANDEDLIGHTNING_HOLD, SETANIM_AFLAG_PACE);
-				traceEnt->client->ps.weaponTime = Q_irand(300, 600);
+				NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_FORCE_2HANDEDLIGHTNING_HOLD, SETANIM_AFLAG_PACE);
+				trace_ent->client->ps.weaponTime = Q_irand(300, 600);
 				LightningBlocked = qtrue;
 
-				if (traceEnt->enemy
-					&& traceEnt->ghoul2.size())
+				if (trace_ent->enemy
+					&& trace_ent->ghoul2.size())
 				{
-					if (traceEnt->handRBolt != -1)
+					if (trace_ent->handRBolt != -1)
 					{
-						G_PlayEffect(G_EffectIndex("force/HBlockLightning.efx"), traceEnt->playerModel,
-							traceEnt->handRBolt, traceEnt->s.number, traceEnt->currentOrigin, 1000, qtrue);
+						G_PlayEffect(G_EffectIndex("force/HBlockLightning.efx"), trace_ent->playerModel,
+							trace_ent->handRBolt, trace_ent->s.number, trace_ent->currentOrigin, 1000, qtrue);
 					}
-					if (traceEnt->handLBolt != -1)
+					if (trace_ent->handLBolt != -1)
 					{
-						G_PlayEffect(G_EffectIndex("force/HBlockLightning.efx"), traceEnt->playerModel,
-							traceEnt->handLBolt, traceEnt->s.number, traceEnt->currentOrigin, 1000, qtrue);
+						G_PlayEffect(G_EffectIndex("force/HBlockLightning.efx"), trace_ent->playerModel,
+							trace_ent->handLBolt, trace_ent->s.number, trace_ent->currentOrigin, 1000, qtrue);
 					}
-					traceEnt->client->ps.powerups[PW_MEDITATE] = level.time + traceEnt->client->ps.torsoAnimTimer + 5000;
+					trace_ent->client->ps.powerups[PW_MEDITATE] = level.time + trace_ent->client->ps.torsoAnimTimer + 5000;
 					if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
 					{
 						Com_Printf(S_COLOR_RED"AMD Mode NPC hand Lightning Block No Force Correct\n");
@@ -32021,10 +32021,10 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, 
 			}
 			else
 			{
-				NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_WIND, SETANIM_AFLAG_PACE);
-				traceEnt->client->ps.weaponTime = Q_irand(300, 600);
+				NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_WIND, SETANIM_AFLAG_PACE);
+				trace_ent->client->ps.weaponTime = Q_irand(300, 600);
 				LightningBlocked = qtrue;
-				traceEnt->client->ps.powerups[PW_MEDITATE] = level.time + traceEnt->client->ps.torsoAnimTimer + 5000;
+				trace_ent->client->ps.powerups[PW_MEDITATE] = level.time + trace_ent->client->ps.torsoAnimTimer + 5000;
 				if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
 				{
 					Com_Printf(S_COLOR_RED"AMD Mode NPC NO Force Lightning Block Correct\n");
@@ -32034,19 +32034,19 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, 
 		return;
 	}
 
-	if (traceEnt->flags & FL_NOTARGET || traceEnt->noclip)
+	if (trace_ent->flags & FL_NOTARGET || trace_ent->noclip)
 	{
 		return;
 	}
 
-	if (traceEnt && traceEnt->takedamage)
+	if (trace_ent && trace_ent->takedamage)
 	{
-		if (traceEnt && traceEnt->client && traceEnt->client->NPC_class == CLASS_GUARD)
+		if (trace_ent && trace_ent->client && trace_ent->client->NPC_class == CLASS_GUARD)
 		{
 			IsClassGuard = qtrue;
 		}
-		if (!traceEnt->client || traceEnt->client->playerTeam != self->client->playerTeam || self->enemy == traceEnt ||
-			traceEnt->enemy == self || traceEnt->client->playerTeam == TEAM_SOLO || self->client->playerTeam ==
+		if (!trace_ent->client || trace_ent->client->playerTeam != self->client->playerTeam || self->enemy == trace_ent ||
+			trace_ent->enemy == self || trace_ent->client->playerTeam == TEAM_SOLO || self->client->playerTeam ==
 			TEAM_SOLO || IsClassGuard)
 		{
 			int fpBlockCost;
@@ -32097,9 +32097,9 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, 
 				dmg = Q_irand(1, 3);
 			}
 
-			if (traceEnt->client && traceEnt->NPC)
+			if (trace_ent->client && trace_ent->NPC)
 			{
-				if (jedi_win_po(traceEnt))
+				if (jedi_win_po(trace_ent))
 				{
 					fpBlockCost = Q_irand(0, 1);
 				}
@@ -32114,27 +32114,27 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, 
 			}
 			const int NPCfpBlockCost = Q_irand(1, 3);
 
-			if (traceEnt->client && traceEnt->health > 0)
+			if (trace_ent->client && trace_ent->health > 0)
 			{
-				if (traceEnt->client
-					&& traceEnt->health > 0
-					&& traceEnt->NPC
+				if (trace_ent->client
+					&& trace_ent->health > 0
+					&& trace_ent->NPC
 					&& !in_camera && !IsClassGuard)
 				{
-					if (traceEnt->s.weapon == WP_SABER
-						&& traceEnt->client->ps.SaberActive()
-						&& !traceEnt->client->ps.saberInFlight
-						&& (traceEnt->client->ps.saberMove == LS_READY ||
-							PM_SaberInParry(traceEnt->client->ps.saberMove) || PM_SaberInReturn(
-								traceEnt->client->ps.saberMove))
-						&& InFOV(self->currentOrigin, traceEnt->currentOrigin, traceEnt->client->ps.viewangles, 20, 35)
-						&& !PM_InKnockDown(&traceEnt->client->ps)
-						&& !PM_SuperBreakLoseAnim(traceEnt->client->ps.torsoAnim)
-						&& !PM_SuperBreakWinAnim(traceEnt->client->ps.torsoAnim)
-						&& !PM_SaberInSpecialAttack(traceEnt->client->ps.torsoAnim)
-						&& !PM_InSpecialJump(traceEnt->client->ps.torsoAnim)
-						&& !PM_SaberInKata(static_cast<saberMoveName_t>(traceEnt->client->ps.saberMove))
-						&& traceEnt->client->ps.blockPoints > 5)
+					if (trace_ent->s.weapon == WP_SABER
+						&& trace_ent->client->ps.SaberActive()
+						&& !trace_ent->client->ps.saberInFlight
+						&& (trace_ent->client->ps.saberMove == LS_READY ||
+							PM_SaberInParry(trace_ent->client->ps.saberMove) || PM_SaberInReturn(
+								trace_ent->client->ps.saberMove))
+						&& InFOV(self->currentOrigin, trace_ent->currentOrigin, trace_ent->client->ps.viewangles, 20, 35)
+						&& !PM_InKnockDown(&trace_ent->client->ps)
+						&& !PM_SuperBreakLoseAnim(trace_ent->client->ps.torsoAnim)
+						&& !PM_SuperBreakWinAnim(trace_ent->client->ps.torsoAnim)
+						&& !PM_SaberInSpecialAttack(trace_ent->client->ps.torsoAnim)
+						&& !PM_InSpecialJump(trace_ent->client->ps.torsoAnim)
+						&& !PM_SaberInKata(static_cast<saberMoveName_t>(trace_ent->client->ps.saberMove))
+						&& trace_ent->client->ps.blockPoints > 5)
 					{
 						//saber can block lightning
 						//make them do a parry
@@ -32152,21 +32152,21 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, 
 						if (chanceOfFizz > 0)
 						{
 							vec3_t end;
-							constexpr int npcBladeNum = 0;
-							constexpr int npcSaberNum = 0;
-							VectorMA(traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzlePoint,
-								traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].length * Q_flrand(0, 1),
-								traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzleDir, end);
+							constexpr int npcblade_num = 0;
+							constexpr int npcsaber_num = 0;
+							VectorMA(trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzlePoint,
+								trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].length * Q_flrand(0, 1),
+								trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzleDir, end);
 							G_PlayEffect(G_EffectIndex("saber/fizz.efx"), end, fwd);
 						}
 
-						switch (traceEnt->client->ps.saberAnimLevel)
+						switch (trace_ent->client->ps.saberAnimLevel)
 						{
 						case SS_DUAL:
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P6_S6_T_, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P6_S6_T_, SETANIM_AFLAG_PACE);
 							break;
 						case SS_STAFF:
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P7_S7_T_, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P7_S7_T_, SETANIM_AFLAG_PACE);
 							break;
 						case SS_FAST:
 						case SS_TAVION:
@@ -32175,17 +32175,17 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, 
 						case SS_MEDIUM:
 						case SS_NONE:
 						default:
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P1_S1_T_, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P1_S1_T_, SETANIM_AFLAG_PACE);
 							break;
 						}
-						traceEnt->client->ps.weaponTime = Q_irand(300, 600);
-						if (traceEnt->client->ps.blockPoints < BLOCKPOINTS_HALF)
+						trace_ent->client->ps.weaponTime = Q_irand(300, 600);
+						if (trace_ent->client->ps.blockPoints < BLOCKPOINTS_HALF)
 						{
-							WP_ForcePowerDrain(traceEnt, FP_ABSORB, fpBlockCost);
+							WP_ForcePowerDrain(trace_ent, FP_ABSORB, fpBlockCost);
 						}
 						else
 						{
-							WP_BlockPointsDrain(traceEnt, fpBlockCost);
+							WP_BlockPointsDrain(trace_ent, fpBlockCost);
 						}
 						dmg = Q_irand(0, 1);
 						if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
@@ -32193,38 +32193,38 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, 
 							Com_Printf(S_COLOR_GREEN"AMD Mode NPC Saber Lightning Block Correct\n");
 						}
 					}
-					else if (traceEnt->s.weapon == WP_MELEE
+					else if (trace_ent->s.weapon == WP_MELEE
 						&& !in_camera
-						&& Manual_HandBlocking(traceEnt)
-						&& !PM_InKnockDown(&traceEnt->client->ps)
-						&& !PM_InRoll(&traceEnt->client->ps)
-						&& traceEnt->client->ps.groundEntityNum != ENTITYNUM_NONE
-						&& !PM_RunningAnim(traceEnt->client->ps.legsAnim)
-						&& InFOV(self->currentOrigin, traceEnt->currentOrigin, traceEnt->client->ps.viewangles, 20, 35)
-						&& traceEnt->client->ps.forcePower > 20)
+						&& Manual_HandBlocking(trace_ent)
+						&& !PM_InKnockDown(&trace_ent->client->ps)
+						&& !PM_InRoll(&trace_ent->client->ps)
+						&& trace_ent->client->ps.groundEntityNum != ENTITYNUM_NONE
+						&& !PM_RunningAnim(trace_ent->client->ps.legsAnim)
+						&& InFOV(self->currentOrigin, trace_ent->currentOrigin, trace_ent->client->ps.viewangles, 20, 35)
+						&& trace_ent->client->ps.forcePower > 20)
 					{
-						NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_FORCE_2HANDEDLIGHTNING_HOLD, SETANIM_AFLAG_PACE);
-						traceEnt->client->ps.weaponTime = Q_irand(300, 600);
+						NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_FORCE_2HANDEDLIGHTNING_HOLD, SETANIM_AFLAG_PACE);
+						trace_ent->client->ps.weaponTime = Q_irand(300, 600);
 						LightningBlocked = qtrue;
 
-						if (traceEnt->ghoul2.size())
+						if (trace_ent->ghoul2.size())
 						{
-							if (traceEnt->handRBolt != -1)
+							if (trace_ent->handRBolt != -1)
 							{
-								G_PlayEffect(G_EffectIndex("force/HBlockLightning.efx"), traceEnt->playerModel,
-									traceEnt->handRBolt, traceEnt->s.number, traceEnt->currentOrigin, 1000,
+								G_PlayEffect(G_EffectIndex("force/HBlockLightning.efx"), trace_ent->playerModel,
+									trace_ent->handRBolt, trace_ent->s.number, trace_ent->currentOrigin, 1000,
 									qtrue);
 							}
-							if (traceEnt->handLBolt != -1)
+							if (trace_ent->handLBolt != -1)
 							{
-								G_PlayEffect(G_EffectIndex("force/HBlockLightning.efx"), traceEnt->playerModel,
-									traceEnt->handLBolt, traceEnt->s.number, traceEnt->currentOrigin, 1000,
+								G_PlayEffect(G_EffectIndex("force/HBlockLightning.efx"), trace_ent->playerModel,
+									trace_ent->handLBolt, trace_ent->s.number, trace_ent->currentOrigin, 1000,
 									qtrue);
 							}
 						}
-						traceEnt->client->ps.powerups[PW_MEDITATE] = level.time + traceEnt->client->ps.torsoAnimTimer + 5000;
+						trace_ent->client->ps.powerups[PW_MEDITATE] = level.time + trace_ent->client->ps.torsoAnimTimer + 5000;
 
-						WP_ForcePowerDrain(traceEnt, FP_ABSORB, NPCfpBlockCost);
+						WP_ForcePowerDrain(trace_ent, FP_ABSORB, NPCfpBlockCost);
 
 						dmg = Q_irand(0, 1);
 						if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
@@ -32233,15 +32233,15 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, 
 						}
 					}
 				}
-				else if (traceEnt->s.weapon == WP_SABER && traceEnt->client->ps.SaberActive())
+				else if (trace_ent->s.weapon == WP_SABER && trace_ent->client->ps.SaberActive())
 				{
-					if (!in_camera && !IsClassGuard && manual_saberblocking(traceEnt)
-						&& InFOV(self->currentOrigin, traceEnt->currentOrigin, traceEnt->client->ps.viewangles, 20, 35)
-						&& !PM_SaberInKata(static_cast<saberMoveName_t>(traceEnt->client->ps.saberMove))
-						&& traceEnt->client->ps.blockPoints > 5)
+					if (!in_camera && !IsClassGuard && manual_saberblocking(trace_ent)
+						&& InFOV(self->currentOrigin, trace_ent->currentOrigin, trace_ent->client->ps.viewangles, 20, 35)
+						&& !PM_SaberInKata(static_cast<saberMoveName_t>(trace_ent->client->ps.saberMove))
+						&& trace_ent->client->ps.blockPoints > 5)
 					{
 						//saber can block lightning
-						const qboolean ActiveBlocking = traceEnt->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;//Active Blocking
+						const qboolean ActiveBlocking = trace_ent->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;//Active Blocking
 						//make them do a parry
 						const float chanceOfFizz = Q_flrand(0.0f, 1.0f);
 						vec3_t fwd, right, up;
@@ -32256,12 +32256,12 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, 
 						if (chanceOfFizz > 0)
 						{
 							vec3_t end;
-							constexpr int npcBladeNum = 0;
-							constexpr int npcSaberNum = 0;
-							VectorMA(traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzlePoint,
-								traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].length * Q_flrand(0, 1),
-								traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzleDir, end);
-							if (traceEnt->client->ps.blockPoints > 50)
+							constexpr int npcblade_num = 0;
+							constexpr int npcsaber_num = 0;
+							VectorMA(trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzlePoint,
+								trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].length * Q_flrand(0, 1),
+								trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzleDir, end);
+							if (trace_ent->client->ps.blockPoints > 50)
 							{
 								G_PlayEffect(G_EffectIndex("saber/saber_Lightninghit.efx"), end, fwd);
 							}
@@ -32271,44 +32271,44 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, 
 							}
 						}
 
-						switch (traceEnt->client->ps.saberAnimLevel)
+						switch (trace_ent->client->ps.saberAnimLevel)
 						{
 						case SS_DUAL:
 							if (ActiveBlocking)
 							{
-								NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P6_S6_T__MD, SETANIM_AFLAG_PACE);
-								traceEnt->client->IsBlockingLightning = qtrue;
+								NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P6_S6_T__MD, SETANIM_AFLAG_PACE);
+								trace_ent->client->IsBlockingLightning = qtrue;
 							}
 							else
 							{
 								if (g_RealisticBlockingMode->integer)
 								{
-									NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P6_S6_T__MD, SETANIM_AFLAG_PACE);
+									NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P6_S6_T__MD, SETANIM_AFLAG_PACE);
 								}
 								else
 								{
-									NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_STAND_BLOCKING_ON_DUAL, SETANIM_AFLAG_PACE);
+									NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_STAND_BLOCKING_ON_DUAL, SETANIM_AFLAG_PACE);
 								}
-								traceEnt->client->IsBlockingLightning = qfalse;
+								trace_ent->client->IsBlockingLightning = qfalse;
 							}
 							break;
 						case SS_STAFF:
 							if (ActiveBlocking)
 							{
-								NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P7_S7_T__MD, SETANIM_AFLAG_PACE);
-								traceEnt->client->IsBlockingLightning = qtrue;
+								NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P7_S7_T__MD, SETANIM_AFLAG_PACE);
+								trace_ent->client->IsBlockingLightning = qtrue;
 							}
 							else
 							{
 								if (g_RealisticBlockingMode->integer)
 								{
-									NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P7_S7_T__MD, SETANIM_AFLAG_PACE);
+									NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P7_S7_T__MD, SETANIM_AFLAG_PACE);
 								}
 								else
 								{
-									NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_STAND_BLOCKING_ON_STAFF, SETANIM_AFLAG_PACE);
+									NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_STAND_BLOCKING_ON_STAFF, SETANIM_AFLAG_PACE);
 								}
-								traceEnt->client->IsBlockingLightning = qfalse;
+								trace_ent->client->IsBlockingLightning = qfalse;
 							}
 							break;
 						case SS_FAST:
@@ -32318,53 +32318,53 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, 
 						case SS_MEDIUM:
 							if (ActiveBlocking)
 							{
-								NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P1_S1_T__MD, SETANIM_AFLAG_PACE);
-								traceEnt->client->IsBlockingLightning = qtrue;
+								NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P1_S1_T__MD, SETANIM_AFLAG_PACE);
+								trace_ent->client->IsBlockingLightning = qtrue;
 							}
 							else
 							{
 								if (g_RealisticBlockingMode->integer)
 								{
-									NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P1_S1_T__MD, SETANIM_AFLAG_PACE);
+									NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P1_S1_T__MD, SETANIM_AFLAG_PACE);
 								}
 								else
 								{
-									NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_STAND_BLOCKING_ON, SETANIM_AFLAG_PACE);
+									NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_STAND_BLOCKING_ON, SETANIM_AFLAG_PACE);
 								}
-								traceEnt->client->IsBlockingLightning = qfalse;
+								trace_ent->client->IsBlockingLightning = qfalse;
 							}
 							break;
 						case SS_NONE:
 						default:
 							if (ActiveBlocking)
 							{
-								NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P1_S1_T__MD, SETANIM_AFLAG_PACE);
-								traceEnt->client->IsBlockingLightning = qtrue;
+								NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P1_S1_T__MD, SETANIM_AFLAG_PACE);
+								trace_ent->client->IsBlockingLightning = qtrue;
 							}
 							else
 							{
 								if (g_RealisticBlockingMode->integer)
 								{
-									NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P1_S1_T__MD, SETANIM_AFLAG_PACE);
+									NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P1_S1_T__MD, SETANIM_AFLAG_PACE);
 								}
 								else
 								{
-									NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_STAND_BLOCKING_ON, SETANIM_AFLAG_PACE);
+									NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_STAND_BLOCKING_ON, SETANIM_AFLAG_PACE);
 								}
-								traceEnt->client->IsBlockingLightning = qfalse;
+								trace_ent->client->IsBlockingLightning = qfalse;
 							}
 							break;
 						}
-						traceEnt->client->ps.weaponTime = Q_irand(300, 600);
+						trace_ent->client->ps.weaponTime = Q_irand(300, 600);
 						dmg = 0;
 
 						if (ActiveBlocking)
 						{
-							PM_AddBlockFatigue(&traceEnt->client->ps, fpBlockCost);
+							PM_AddBlockFatigue(&trace_ent->client->ps, fpBlockCost);
 						}
 						else
 						{
-							WP_ForcePowerDrain(traceEnt, FP_ABSORB, fpBlockCost);
+							WP_ForcePowerDrain(trace_ent, FP_ABSORB, fpBlockCost);
 						}
 
 						if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
@@ -32373,11 +32373,11 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, 
 						}
 					}
 					else if (in_camera && !IsClassGuard
-						&& traceEnt->NPC
-						&& traceEnt->client->ps.SaberActive()
-						&& !traceEnt->client->ps.saberInFlight
-						&& !PM_InKnockDown(&traceEnt->client->ps)
-						&& InFOV(self->currentOrigin, traceEnt->currentOrigin, traceEnt->client->ps.viewangles, 20, 35))
+						&& trace_ent->NPC
+						&& trace_ent->client->ps.SaberActive()
+						&& !trace_ent->client->ps.saberInFlight
+						&& !PM_InKnockDown(&trace_ent->client->ps)
+						&& InFOV(self->currentOrigin, trace_ent->currentOrigin, trace_ent->client->ps.viewangles, 20, 35))
 					{
 						const float chanceOfFizz = Q_flrand(0.0f, 1.0f);
 						vec3_t fwd, right, up;
@@ -32392,49 +32392,49 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, 
 						if (chanceOfFizz > 0)
 						{
 							vec3_t end;
-							constexpr int npcBladeNum = 0;
-							constexpr int npcSaberNum = 0;
-							VectorMA(traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzlePoint,
-								traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].length * Q_flrand(0, 1),
-								traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzleDir, end);
+							constexpr int npcblade_num = 0;
+							constexpr int npcsaber_num = 0;
+							VectorMA(trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzlePoint,
+								trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].length * Q_flrand(0, 1),
+								trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzleDir, end);
 							G_PlayEffect(G_EffectIndex("saber/fizz.efx"), end, fwd);
 						}
 
-						switch (traceEnt->client->ps.saberAnimLevel)
+						switch (trace_ent->client->ps.saberAnimLevel)
 						{
 						case SS_DUAL:
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P6_S6_TL, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P6_S6_TL, SETANIM_AFLAG_PACE);
 							break;
 						case SS_STAFF:
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P7_S7_TL, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P7_S7_TL, SETANIM_AFLAG_PACE);
 							break;
 						case SS_FAST:
 						case SS_TAVION:
 						case SS_STRONG:
 						case SS_DESANN:
 						case SS_MEDIUM:
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P1_S1_TL, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P1_S1_TL, SETANIM_AFLAG_PACE);
 							break;
 						case SS_NONE:
 						default:
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P1_S1_TL, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P1_S1_TL, SETANIM_AFLAG_PACE);
 							break;
 						}
-						traceEnt->client->ps.weaponTime = Q_irand(300, 600);
+						trace_ent->client->ps.weaponTime = Q_irand(300, 600);
 						dmg = 0;
 						if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
 						{
 							Com_Printf(S_COLOR_RED"AMD Mode NPC Saber Lightning Block CIN Correct\n");
 						}
 					}
-					else if (!in_camera && !IsClassGuard && (traceEnt->client->ps.forcePowersActive & 1 << FP_ABSORB &&
-						traceEnt->client->ps.forcePowerLevel[FP_ABSORB] > FORCE_LEVEL_2)
-						&& traceEnt->client->ps.forcePower > 20
-						&& !PM_InKnockDown(&traceEnt->client->ps)
-						&& !PM_InRoll(&traceEnt->client->ps)
-						&& traceEnt->client->ps.groundEntityNum != ENTITYNUM_NONE
-						&& !PM_RunningAnim(traceEnt->client->ps.legsAnim)
-						&& InFOV(self->currentOrigin, traceEnt->currentOrigin, traceEnt->client->ps.viewangles, 20, 35))
+					else if (!in_camera && !IsClassGuard && (trace_ent->client->ps.forcePowersActive & 1 << FP_ABSORB &&
+						trace_ent->client->ps.forcePowerLevel[FP_ABSORB] > FORCE_LEVEL_2)
+						&& trace_ent->client->ps.forcePower > 20
+						&& !PM_InKnockDown(&trace_ent->client->ps)
+						&& !PM_InRoll(&trace_ent->client->ps)
+						&& trace_ent->client->ps.groundEntityNum != ENTITYNUM_NONE
+						&& !PM_RunningAnim(trace_ent->client->ps.legsAnim)
+						&& InFOV(self->currentOrigin, trace_ent->currentOrigin, trace_ent->client->ps.viewangles, 20, 35))
 					{
 						//make them do a parry
 						const float chanceOfFizz = Q_flrand(0.0f, 1.0f);
@@ -32450,12 +32450,12 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, 
 						if (chanceOfFizz > 0)
 						{
 							vec3_t end;
-							constexpr int npcBladeNum = 0;
-							constexpr int npcSaberNum = 0;
-							VectorMA(traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzlePoint,
-								traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].length * Q_flrand(0, 1),
-								traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzleDir, end);
-							if (traceEnt->client->ps.blockPoints > 50)
+							constexpr int npcblade_num = 0;
+							constexpr int npcsaber_num = 0;
+							VectorMA(trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzlePoint,
+								trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].length * Q_flrand(0, 1),
+								trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzleDir, end);
+							if (trace_ent->client->ps.blockPoints > 50)
 							{
 								G_PlayEffect(G_EffectIndex("saber/saber_Lightninghit.efx"), end, fwd);
 							}
@@ -32465,29 +32465,29 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, 
 							}
 						}
 
-						switch (traceEnt->client->ps.saberAnimLevel)
+						switch (trace_ent->client->ps.saberAnimLevel)
 						{
 						case SS_DUAL:
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P6_S6_T__MD, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P6_S6_T__MD, SETANIM_AFLAG_PACE);
 							break;
 						case SS_STAFF:
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P7_S7_T__MD, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P7_S7_T__MD, SETANIM_AFLAG_PACE);
 							break;
 						case SS_FAST:
 						case SS_TAVION:
 						case SS_STRONG:
 						case SS_DESANN:
 						case SS_MEDIUM:
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P1_S1_T__MD, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P1_S1_T__MD, SETANIM_AFLAG_PACE);
 							break;
 						case SS_NONE:
 						default:
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P1_S1_T__MD, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P1_S1_T__MD, SETANIM_AFLAG_PACE);
 							break;
 						}
-						traceEnt->client->ps.weaponTime = Q_irand(300, 600);
+						trace_ent->client->ps.weaponTime = Q_irand(300, 600);
 						dmg = 0;
-						WP_ForcePowerDrain(traceEnt, FP_ABSORB, fpBlockCost);
+						WP_ForcePowerDrain(trace_ent, FP_ABSORB, fpBlockCost);
 						if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
 						{
 							Com_Printf(S_COLOR_RED"AMD Mode Player Saber Absorb Lightning Block Correct\n");
@@ -32498,40 +32498,40 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, 
 						dmg = 1;
 					}
 				}
-				else if (traceEnt->s.weapon == WP_MELEE || traceEnt->s.weapon == WP_NONE || traceEnt->client->ps.weapon
-					== WP_SABER && !traceEnt->client->ps.SaberActive())
+				else if (trace_ent->s.weapon == WP_MELEE || trace_ent->s.weapon == WP_NONE || trace_ent->client->ps.weapon
+					== WP_SABER && !trace_ent->client->ps.SaberActive())
 				{
 					if (!in_camera && !IsClassGuard
-						&& (Manual_HandBlocking(traceEnt) || traceEnt->client->ps.forcePowersActive & 1 << FP_ABSORB &&
-							traceEnt->client->ps.forcePowerLevel[FP_ABSORB] > FORCE_LEVEL_2)
-						&& !PM_InKnockDown(&traceEnt->client->ps)
-						&& !PM_InRoll(&traceEnt->client->ps)
-						&& traceEnt->client->ps.groundEntityNum != ENTITYNUM_NONE
-						&& !PM_RunningAnim(traceEnt->client->ps.legsAnim)
-						&& InFOV(self->currentOrigin, traceEnt->currentOrigin, traceEnt->client->ps.viewangles, 20, 35)
-						&& traceEnt->client->ps.forcePower > 20)
+						&& (Manual_HandBlocking(trace_ent) || trace_ent->client->ps.forcePowersActive & 1 << FP_ABSORB &&
+							trace_ent->client->ps.forcePowerLevel[FP_ABSORB] > FORCE_LEVEL_2)
+						&& !PM_InKnockDown(&trace_ent->client->ps)
+						&& !PM_InRoll(&trace_ent->client->ps)
+						&& trace_ent->client->ps.groundEntityNum != ENTITYNUM_NONE
+						&& !PM_RunningAnim(trace_ent->client->ps.legsAnim)
+						&& InFOV(self->currentOrigin, trace_ent->currentOrigin, trace_ent->client->ps.viewangles, 20, 35)
+						&& trace_ent->client->ps.forcePower > 20)
 					{
-						NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_FORCE_2HANDEDLIGHTNING_HOLD, SETANIM_AFLAG_PACE);
-						traceEnt->client->ps.weaponTime = Q_irand(300, 600);
+						NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_FORCE_2HANDEDLIGHTNING_HOLD, SETANIM_AFLAG_PACE);
+						trace_ent->client->ps.weaponTime = Q_irand(300, 600);
 						LightningBlocked = qtrue;
 
-						if (traceEnt->ghoul2.size())
+						if (trace_ent->ghoul2.size())
 						{
-							if (traceEnt->handRBolt != -1)
+							if (trace_ent->handRBolt != -1)
 							{
-								G_PlayEffect(G_EffectIndex("force/HBlockLightning.efx"), traceEnt->playerModel,
-									traceEnt->handRBolt, traceEnt->s.number, traceEnt->currentOrigin, 1000,
+								G_PlayEffect(G_EffectIndex("force/HBlockLightning.efx"), trace_ent->playerModel,
+									trace_ent->handRBolt, trace_ent->s.number, trace_ent->currentOrigin, 1000,
 									qtrue);
 							}
-							if (traceEnt->handLBolt != -1)
+							if (trace_ent->handLBolt != -1)
 							{
-								G_PlayEffect(G_EffectIndex("force/HBlockLightning.efx"), traceEnt->playerModel,
-									traceEnt->handLBolt, traceEnt->s.number, traceEnt->currentOrigin, 1000,
+								G_PlayEffect(G_EffectIndex("force/HBlockLightning.efx"), trace_ent->playerModel,
+									trace_ent->handLBolt, trace_ent->s.number, trace_ent->currentOrigin, 1000,
 									qtrue);
 							}
 						}
-						traceEnt->client->ps.powerups[PW_MEDITATE] = level.time + traceEnt->client->ps.torsoAnimTimer + 5000;
-						WP_ForcePowerDrain(traceEnt, FP_ABSORB, fpBlockCost);
+						trace_ent->client->ps.powerups[PW_MEDITATE] = level.time + trace_ent->client->ps.torsoAnimTimer + 5000;
+						WP_ForcePowerDrain(trace_ent, FP_ABSORB, fpBlockCost);
 						if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
 						{
 							Com_Printf(S_COLOR_RED"AMD Mode Player Hand Lightning Block Correct\n");
@@ -32544,14 +32544,14 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, 
 				}
 			}
 
-			if (traceEnt && traceEnt->client && traceEnt->client->ps.powerups[PW_GALAK_SHIELD])
+			if (trace_ent && trace_ent->client && trace_ent->client->ps.powerups[PW_GALAK_SHIELD])
 			{
 				//has shield up
 				dmg = 0;
 				LightningBlocked = qtrue;
 			}
 
-			if (traceEnt && traceEnt->client && traceEnt->client->NPC_class == CLASS_OBJECT)
+			if (trace_ent && trace_ent->client && trace_ent->client->NPC_class == CLASS_OBJECT)
 			{
 				dmg = 0;
 				LightningBlocked = qtrue;
@@ -32565,9 +32565,9 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, 
 
 			int modPowerLevel = -1;
 
-			if (traceEnt->client)
+			if (trace_ent->client)
 			{
-				modPowerLevel = WP_AbsorbConversion(traceEnt, traceEnt->client->ps.forcePowerLevel[FP_ABSORB], FP_LIGHTNING,
+				modPowerLevel = WP_AbsorbConversion(trace_ent, trace_ent->client->ps.forcePowerLevel[FP_ABSORB], FP_LIGHTNING,
 				                                    self->client->ps.forcePowerLevel[FP_LIGHTNING], 1);
 			}
 
@@ -32589,9 +32589,9 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, 
 
 			if (dmg && !LightningBlocked || IsClassGuard) //amd
 			{
-				if (jedi_win_po(traceEnt))
+				if (jedi_win_po(trace_ent))
 				{
-					G_Damage(traceEnt, self, self, dir, impact_point, dmg, DAMAGE_LIGHNING_KNOCKBACK, MOD_FORCE_LIGHTNING);
+					G_Damage(trace_ent, self, self, dir, impact_point, dmg, DAMAGE_LIGHNING_KNOCKBACK, MOD_FORCE_LIGHTNING);
 					if (g_lightningdamage->integer)
 					{
 						gi.Printf(S_COLOR_RED"WINDU AMD LIGHTNING DAMAGE KNOCKBACK TEST\n");
@@ -32599,154 +32599,154 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, 
 				}
 				else
 				{
-					G_Damage(traceEnt, self, self, dir, impact_point, dmg, DAMAGE_DEATH_KNOCKBACK, MOD_FORCE_LIGHTNING);
+					G_Damage(trace_ent, self, self, dir, impact_point, dmg, DAMAGE_DEATH_KNOCKBACK, MOD_FORCE_LIGHTNING);
 					if (g_lightningdamage->integer)
 					{
 						gi.Printf(S_COLOR_RED"NORMAL AMD LIGHTNING DAMAGE KNOCKBACK TEST\n");
 					}
 				}
 
-				if (!in_camera && (traceEnt->NPC || (traceEnt->s.number < MAX_CLIENTS ||
-					G_ControlledByPlayer(traceEnt)))
-					&& !PM_SaberInKata(static_cast<saberMoveName_t>(traceEnt->client->ps.saberMove))
-					&& !(traceEnt->s.weapon == WP_EMPLACED_GUN))
+				if (!in_camera && (trace_ent->NPC || (trace_ent->s.number < MAX_CLIENTS ||
+					G_ControlledByPlayer(trace_ent)))
+					&& !PM_SaberInKata(static_cast<saberMoveName_t>(trace_ent->client->ps.saberMove))
+					&& !(trace_ent->s.weapon == WP_EMPLACED_GUN))
 				{
-					if (traceEnt && traceEnt->client && traceEnt->client->ps.stats[STAT_HEALTH] <= 35)
+					if (trace_ent && trace_ent->client && trace_ent->client->ps.stats[STAT_HEALTH] <= 35)
 					{
-						traceEnt->client->stunDamage = 5;
-						traceEnt->client->stunTime = level.time + 1000;
+						trace_ent->client->stunDamage = 5;
+						trace_ent->client->stunTime = level.time + 1000;
 
-						gentity_t* tent = G_TempEntity(traceEnt->currentOrigin, EV_STUNNED);
-						tent->owner = traceEnt;
+						gentity_t* tent = G_TempEntity(trace_ent->currentOrigin, EV_STUNNED);
+						tent->owner = trace_ent;
 					}
 
-					if (PM_RunningAnim(traceEnt->client->ps.legsAnim) && (traceEnt->client->ps.stats[STAT_HEALTH] > 1 || IsClassGuard))
+					if (PM_RunningAnim(trace_ent->client->ps.legsAnim) && (trace_ent->client->ps.stats[STAT_HEALTH] > 1 || IsClassGuard))
 					{
-						G_KnockOver(traceEnt, self, dir, 25, qtrue);
+						G_KnockOver(trace_ent, self, dir, 25, qtrue);
 					}
-					else if (!PM_RunningAnim(traceEnt->client->ps.legsAnim) && !PM_InKnockDown(&traceEnt->client->ps)
-						&& traceEnt->client->ps.groundEntityNum != ENTITYNUM_NONE && traceEnt->client->ps.stats[STAT_HEALTH] > 1)
+					else if (!PM_RunningAnim(trace_ent->client->ps.legsAnim) && !PM_InKnockDown(&trace_ent->client->ps)
+						&& trace_ent->client->ps.groundEntityNum != ENTITYNUM_NONE && trace_ent->client->ps.stats[STAT_HEALTH] > 1)
 					{
-						if (traceEnt->client->ps.stats[STAT_HEALTH] < 75)
+						if (trace_ent->client->ps.stats[STAT_HEALTH] < 75)
 						{
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_COWER1, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_COWER1, SETANIM_AFLAG_PACE);
 						}
-						else if (traceEnt->client->ps.stats[STAT_HEALTH] < 50)
+						else if (trace_ent->client->ps.stats[STAT_HEALTH] < 50)
 						{
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_SONICPAIN_HOLD, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_SONICPAIN_HOLD, SETANIM_AFLAG_PACE);
 						}
 						else
 						{
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_WIND, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_WIND, SETANIM_AFLAG_PACE);
 						}
 					}
-					else if (traceEnt->client->ps.groundEntityNum == ENTITYNUM_NONE && traceEnt->client->ps.stats[STAT_HEALTH] > 1)
+					else if (trace_ent->client->ps.groundEntityNum == ENTITYNUM_NONE && trace_ent->client->ps.stats[STAT_HEALTH] > 1)
 					{
-						if (traceEnt->client->ps.stats[STAT_HEALTH] < 75)
+						if (trace_ent->client->ps.stats[STAT_HEALTH] < 75)
 						{
-							NPC_SetAnim(traceEnt, SETANIM_BOTH, Q_irand(BOTH_SLAPDOWNRIGHT, BOTH_SLAPDOWNLEFT), SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_BOTH, Q_irand(BOTH_SLAPDOWNRIGHT, BOTH_SLAPDOWNLEFT), SETANIM_AFLAG_PACE);
 						}
 						else
 						{
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_WIND, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_WIND, SETANIM_AFLAG_PACE);
 						}
 					}
 				}
 			}
 
-			if (traceEnt->client)
+			if (trace_ent->client)
 			{
 				if (!Q_irand(0, 2))
 				{
-					G_Sound(traceEnt, G_SoundIndex(va("sound/weapons/force/lightninghit%d.mp3", Q_irand(1, 3))));
+					G_Sound(trace_ent, G_SoundIndex(va("sound/weapons/force/lightninghit%d.mp3", Q_irand(1, 3))));
 				}
 
-				if (traceEnt->client && traceEnt->client->ps.powerups[PW_CLOAKED])
+				if (trace_ent->client && trace_ent->client->ps.powerups[PW_CLOAKED])
 				{
 					//disable cloak temporarily
-					player_decloak(traceEnt);
-					G_AddVoiceEvent(traceEnt, Q_irand(EV_ANGER1, EV_ANGER3), 1000);
+					player_decloak(trace_ent);
+					G_AddVoiceEvent(trace_ent, Q_irand(EV_ANGER1, EV_ANGER3), 1000);
 				}
-				traceEnt->s.powerups |= 1 << PW_SHOCKED;
+				trace_ent->s.powerups |= 1 << PW_SHOCKED;
 
-				if (traceEnt && traceEnt->client &&
-					(traceEnt->health <= 0 || traceEnt->client->NPC_class == CLASS_ATST
-						|| traceEnt->client->NPC_class == CLASS_GONK
-						|| traceEnt->client->NPC_class == CLASS_INTERROGATOR
-						|| traceEnt->client->NPC_class == CLASS_MARK1
-						|| traceEnt->client->NPC_class == CLASS_MARK2
-						|| traceEnt->client->NPC_class == CLASS_MOUSE
-						|| traceEnt->client->NPC_class == CLASS_PROBE
-						|| traceEnt->client->NPC_class == CLASS_PROTOCOL
-						|| traceEnt->client->NPC_class == CLASS_R2D2
-						|| traceEnt->client->NPC_class == CLASS_R5D2
-						|| traceEnt->client->NPC_class == CLASS_SEEKER
-						|| traceEnt->client->NPC_class == CLASS_SENTRY
-						|| traceEnt->client->NPC_class == CLASS_SBD
-						|| traceEnt->client->NPC_class == CLASS_BATTLEDROID
-						|| traceEnt->client->NPC_class == CLASS_DROIDEKA
-						|| traceEnt->client->NPC_class == CLASS_OBJECT
-						|| traceEnt->client->NPC_class == CLASS_ASSASSIN_DROID
-						|| traceEnt->client->NPC_class == CLASS_SABER_DROID))
+				if (trace_ent && trace_ent->client &&
+					(trace_ent->health <= 0 || trace_ent->client->NPC_class == CLASS_ATST
+						|| trace_ent->client->NPC_class == CLASS_GONK
+						|| trace_ent->client->NPC_class == CLASS_INTERROGATOR
+						|| trace_ent->client->NPC_class == CLASS_MARK1
+						|| trace_ent->client->NPC_class == CLASS_MARK2
+						|| trace_ent->client->NPC_class == CLASS_MOUSE
+						|| trace_ent->client->NPC_class == CLASS_PROBE
+						|| trace_ent->client->NPC_class == CLASS_PROTOCOL
+						|| trace_ent->client->NPC_class == CLASS_R2D2
+						|| trace_ent->client->NPC_class == CLASS_R5D2
+						|| trace_ent->client->NPC_class == CLASS_SEEKER
+						|| trace_ent->client->NPC_class == CLASS_SENTRY
+						|| trace_ent->client->NPC_class == CLASS_SBD
+						|| trace_ent->client->NPC_class == CLASS_BATTLEDROID
+						|| trace_ent->client->NPC_class == CLASS_DROIDEKA
+						|| trace_ent->client->NPC_class == CLASS_OBJECT
+						|| trace_ent->client->NPC_class == CLASS_ASSASSIN_DROID
+						|| trace_ent->client->NPC_class == CLASS_SABER_DROID))
 				{
 					// special droid only behaviors
-					traceEnt->client->ps.powerups[PW_SHOCKED] = level.time + 4000;
+					trace_ent->client->ps.powerups[PW_SHOCKED] = level.time + 4000;
 				}
 				else if (LightningBlocked)
 				{
-					traceEnt->client->ps.powerups[PW_SHOCKED] = 0;
+					trace_ent->client->ps.powerups[PW_SHOCKED] = 0;
 				}
 				else
 				{
-					traceEnt->client->ps.powerups[PW_SHOCKED] = level.time + 1500;
+					trace_ent->client->ps.powerups[PW_SHOCKED] = level.time + 1500;
 				}
 			}
 		}
 	}
 }
 
-void ForceLightningDamage_MD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, const float dist, const float dot, vec3_t impact_point)
+void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, const float dist, const float dot, vec3_t impact_point)
 {
 	qboolean LightningBlocked = qfalse;
 	qboolean IsClassGuard = qfalse;
 
-	if (traceEnt->NPC && traceEnt->NPC->scriptFlags & SCF_NO_FORCE)
+	if (trace_ent->NPC && trace_ent->NPC->scriptFlags & SCF_NO_FORCE)
 	{
 		if (!in_camera
-			&& traceEnt->health > 0)
+			&& trace_ent->health > 0)
 		{
-			if ((!Q_stricmp("Yoda", traceEnt->NPC_type) ||
-				!Q_stricmp("Ep1_Yoda", traceEnt->NPC_type) ||
-				!Q_stricmp("Ep2_Yoda", traceEnt->NPC_type) ||
-				!Q_stricmp("Ep3_Yoda", traceEnt->NPC_type) ||
-				!Q_stricmp("md_yoda", traceEnt->NPC_type) ||
-				!Q_stricmp("md_yoda_ep2", traceEnt->NPC_type) ||
-				!Q_stricmp("md_yoda_ot", traceEnt->NPC_type) ||
-				!Q_stricmp("md_yoda_hr", traceEnt->NPC_type) ||
-				!Q_stricmp("emperor", traceEnt->NPC_type) ||
-				!Q_stricmp("cultist_grip", traceEnt->NPC_type) ||
-				!Q_stricmp("cultist_drain", traceEnt->NPC_type) ||
-				!Q_stricmp("cultist_lightning", traceEnt->NPC_type) ||
-				!Q_stricmp("md_snoke", traceEnt->NPC_type) ||
-				!Q_stricmp("md_snoke_cin", traceEnt->NPC_type) ||
-				!Q_stricmp("md_emperor", traceEnt->NPC_type) ||
-				!Q_stricmp("md_emperor_ros", traceEnt->NPC_type) ||
-				!Q_stricmp("md_emperor_fas", traceEnt->NPC_type) ||
-				!Q_stricmp("md_emperor_ros_blind", traceEnt->NPC_type) ||
-				!Q_stricmp("Ep7_Snoke", traceEnt->NPC_type) ||
-				!Q_stricmp("Ep8_Snoke", traceEnt->NPC_type) ||
-				!Q_stricmp("Emperor_Palpatine", traceEnt->NPC_type))
-				&& traceEnt->s.weapon == WP_SABER
-				&& traceEnt->client->ps.SaberActive()
-				&& !traceEnt->client->ps.saberInFlight
-				&& (traceEnt->client->ps.saberMove == LS_READY || PM_SaberInParry(traceEnt->client->ps.saberMove) ||
-					PM_SaberInReturn(traceEnt->client->ps.saberMove))
-				&& InFOV(self->currentOrigin, traceEnt->currentOrigin, traceEnt->client->ps.viewangles, 20, 35)
-				&& !PM_InKnockDown(&traceEnt->client->ps)
-				&& !PM_SuperBreakLoseAnim(traceEnt->client->ps.torsoAnim)
-				&& !PM_SuperBreakWinAnim(traceEnt->client->ps.torsoAnim)
-				&& !PM_SaberInSpecialAttack(traceEnt->client->ps.torsoAnim)
-				&& !PM_InSpecialJump(traceEnt->client->ps.torsoAnim))
+			if ((!Q_stricmp("Yoda", trace_ent->NPC_type) ||
+				!Q_stricmp("Ep1_Yoda", trace_ent->NPC_type) ||
+				!Q_stricmp("Ep2_Yoda", trace_ent->NPC_type) ||
+				!Q_stricmp("Ep3_Yoda", trace_ent->NPC_type) ||
+				!Q_stricmp("md_yoda", trace_ent->NPC_type) ||
+				!Q_stricmp("md_yoda_ep2", trace_ent->NPC_type) ||
+				!Q_stricmp("md_yoda_ot", trace_ent->NPC_type) ||
+				!Q_stricmp("md_yoda_hr", trace_ent->NPC_type) ||
+				!Q_stricmp("emperor", trace_ent->NPC_type) ||
+				!Q_stricmp("cultist_grip", trace_ent->NPC_type) ||
+				!Q_stricmp("cultist_drain", trace_ent->NPC_type) ||
+				!Q_stricmp("cultist_lightning", trace_ent->NPC_type) ||
+				!Q_stricmp("md_snoke", trace_ent->NPC_type) ||
+				!Q_stricmp("md_snoke_cin", trace_ent->NPC_type) ||
+				!Q_stricmp("md_emperor", trace_ent->NPC_type) ||
+				!Q_stricmp("md_emperor_ros", trace_ent->NPC_type) ||
+				!Q_stricmp("md_emperor_fas", trace_ent->NPC_type) ||
+				!Q_stricmp("md_emperor_ros_blind", trace_ent->NPC_type) ||
+				!Q_stricmp("Ep7_Snoke", trace_ent->NPC_type) ||
+				!Q_stricmp("Ep8_Snoke", trace_ent->NPC_type) ||
+				!Q_stricmp("Emperor_Palpatine", trace_ent->NPC_type))
+				&& trace_ent->s.weapon == WP_SABER
+				&& trace_ent->client->ps.SaberActive()
+				&& !trace_ent->client->ps.saberInFlight
+				&& (trace_ent->client->ps.saberMove == LS_READY || PM_SaberInParry(trace_ent->client->ps.saberMove) ||
+					PM_SaberInReturn(trace_ent->client->ps.saberMove))
+				&& InFOV(self->currentOrigin, trace_ent->currentOrigin, trace_ent->client->ps.viewangles, 20, 35)
+				&& !PM_InKnockDown(&trace_ent->client->ps)
+				&& !PM_SuperBreakLoseAnim(trace_ent->client->ps.torsoAnim)
+				&& !PM_SuperBreakWinAnim(trace_ent->client->ps.torsoAnim)
+				&& !PM_SaberInSpecialAttack(trace_ent->client->ps.torsoAnim)
+				&& !PM_InSpecialJump(trace_ent->client->ps.torsoAnim))
 			{
 				//saber can block lightning
 				//make them do a parry
@@ -32764,21 +32764,21 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, c
 				if (chanceOfFizz > 0)
 				{
 					vec3_t end;
-					constexpr int npcBladeNum = 0;
-					constexpr int npcSaberNum = 0;
-					VectorMA(traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzlePoint,
-						traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].length * Q_flrand(0, 1),
-						traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzleDir, end);
+					constexpr int npcblade_num = 0;
+					constexpr int npcsaber_num = 0;
+					VectorMA(trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzlePoint,
+						trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].length * Q_flrand(0, 1),
+						trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzleDir, end);
 					G_PlayEffect(G_EffectIndex("saber/fizz.efx"), end, fwd);
 				}
 
-				switch (traceEnt->client->ps.saberAnimLevel)
+				switch (trace_ent->client->ps.saberAnimLevel)
 				{
 				case SS_DUAL:
-					NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P6_S6_T_, SETANIM_AFLAG_PACE);
+					NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P6_S6_T_, SETANIM_AFLAG_PACE);
 					break;
 				case SS_STAFF:
-					NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P7_S7_T_, SETANIM_AFLAG_PACE);
+					NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P7_S7_T_, SETANIM_AFLAG_PACE);
 					break;
 				case SS_FAST:
 				case SS_TAVION:
@@ -32787,62 +32787,62 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, c
 				case SS_MEDIUM:
 				case SS_NONE:
 				default:
-					NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P1_S1_T_, SETANIM_AFLAG_PACE);
+					NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P1_S1_T_, SETANIM_AFLAG_PACE);
 					break;
 				}
-				traceEnt->client->ps.weaponTime = Q_irand(300, 600);
+				trace_ent->client->ps.weaponTime = Q_irand(300, 600);
 				if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
 				{
 					Com_Printf(S_COLOR_RED"MD Mode NPC Saber Lightning Block No Force Correct\n");
 				}
 			}
-			else if ((!Q_stricmp("Yoda", traceEnt->NPC_type) ||
-				!Q_stricmp("Ep1_Yoda", traceEnt->NPC_type) ||
-				!Q_stricmp("Ep2_Yoda", traceEnt->NPC_type) ||
-				!Q_stricmp("Ep3_Yoda", traceEnt->NPC_type) ||
-				!Q_stricmp("md_yoda", traceEnt->NPC_type) ||
-				!Q_stricmp("md_yoda_ep2", traceEnt->NPC_type) ||
-				!Q_stricmp("md_yoda_ot", traceEnt->NPC_type) ||
-				!Q_stricmp("md_yoda_hr", traceEnt->NPC_type) ||
-				!Q_stricmp("emperor", traceEnt->NPC_type) ||
-				!Q_stricmp("cultist_grip", traceEnt->NPC_type) ||
-				!Q_stricmp("cultist_drain", traceEnt->NPC_type) ||
-				!Q_stricmp("cultist_lightning", traceEnt->NPC_type) ||
-				!Q_stricmp("md_snoke", traceEnt->NPC_type) ||
-				!Q_stricmp("md_snoke_cin", traceEnt->NPC_type) ||
-				!Q_stricmp("md_emperor", traceEnt->NPC_type) ||
-				!Q_stricmp("md_emperor_fas", traceEnt->NPC_type) ||
-				!Q_stricmp("md_emperor_ros", traceEnt->NPC_type) ||
-				!Q_stricmp("md_emperor_ros_blind", traceEnt->NPC_type) ||
-				!Q_stricmp("Ep7_Snoke", traceEnt->NPC_type) ||
-				!Q_stricmp("Ep8_Snoke", traceEnt->NPC_type) ||
-				!Q_stricmp("Emperor_Palpatine", traceEnt->NPC_type))
-				&& traceEnt->s.weapon == WP_MELEE || traceEnt->s.weapon == WP_NONE || traceEnt->client->ps.weapon ==
-				WP_SABER && !traceEnt->client->ps.SaberActive()
-				&& !PM_InKnockDown(&traceEnt->client->ps)
-				&& !PM_InRoll(&traceEnt->client->ps)
-				&& traceEnt->client->ps.groundEntityNum != ENTITYNUM_NONE
-				&& !PM_RunningAnim(traceEnt->client->ps.legsAnim)
-				&& InFOV(self->currentOrigin, traceEnt->currentOrigin, traceEnt->client->ps.viewangles, 20, 35))
+			else if ((!Q_stricmp("Yoda", trace_ent->NPC_type) ||
+				!Q_stricmp("Ep1_Yoda", trace_ent->NPC_type) ||
+				!Q_stricmp("Ep2_Yoda", trace_ent->NPC_type) ||
+				!Q_stricmp("Ep3_Yoda", trace_ent->NPC_type) ||
+				!Q_stricmp("md_yoda", trace_ent->NPC_type) ||
+				!Q_stricmp("md_yoda_ep2", trace_ent->NPC_type) ||
+				!Q_stricmp("md_yoda_ot", trace_ent->NPC_type) ||
+				!Q_stricmp("md_yoda_hr", trace_ent->NPC_type) ||
+				!Q_stricmp("emperor", trace_ent->NPC_type) ||
+				!Q_stricmp("cultist_grip", trace_ent->NPC_type) ||
+				!Q_stricmp("cultist_drain", trace_ent->NPC_type) ||
+				!Q_stricmp("cultist_lightning", trace_ent->NPC_type) ||
+				!Q_stricmp("md_snoke", trace_ent->NPC_type) ||
+				!Q_stricmp("md_snoke_cin", trace_ent->NPC_type) ||
+				!Q_stricmp("md_emperor", trace_ent->NPC_type) ||
+				!Q_stricmp("md_emperor_fas", trace_ent->NPC_type) ||
+				!Q_stricmp("md_emperor_ros", trace_ent->NPC_type) ||
+				!Q_stricmp("md_emperor_ros_blind", trace_ent->NPC_type) ||
+				!Q_stricmp("Ep7_Snoke", trace_ent->NPC_type) ||
+				!Q_stricmp("Ep8_Snoke", trace_ent->NPC_type) ||
+				!Q_stricmp("Emperor_Palpatine", trace_ent->NPC_type))
+				&& trace_ent->s.weapon == WP_MELEE || trace_ent->s.weapon == WP_NONE || trace_ent->client->ps.weapon ==
+				WP_SABER && !trace_ent->client->ps.SaberActive()
+				&& !PM_InKnockDown(&trace_ent->client->ps)
+				&& !PM_InRoll(&trace_ent->client->ps)
+				&& trace_ent->client->ps.groundEntityNum != ENTITYNUM_NONE
+				&& !PM_RunningAnim(trace_ent->client->ps.legsAnim)
+				&& InFOV(self->currentOrigin, trace_ent->currentOrigin, trace_ent->client->ps.viewangles, 20, 35))
 			{
-				NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_FORCE_2HANDEDLIGHTNING_HOLD, SETANIM_AFLAG_PACE);
-				traceEnt->client->ps.weaponTime = Q_irand(300, 600);
+				NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_FORCE_2HANDEDLIGHTNING_HOLD, SETANIM_AFLAG_PACE);
+				trace_ent->client->ps.weaponTime = Q_irand(300, 600);
 				LightningBlocked = qtrue;
 
-				if (traceEnt->enemy
-					&& traceEnt->ghoul2.size())
+				if (trace_ent->enemy
+					&& trace_ent->ghoul2.size())
 				{
-					if (traceEnt->handRBolt != -1)
+					if (trace_ent->handRBolt != -1)
 					{
-						G_PlayEffect(G_EffectIndex("force/HBlockLightning.efx"), traceEnt->playerModel,
-							traceEnt->handRBolt, traceEnt->s.number, traceEnt->currentOrigin, 1000, qtrue);
+						G_PlayEffect(G_EffectIndex("force/HBlockLightning.efx"), trace_ent->playerModel,
+							trace_ent->handRBolt, trace_ent->s.number, trace_ent->currentOrigin, 1000, qtrue);
 					}
-					if (traceEnt->handLBolt != -1)
+					if (trace_ent->handLBolt != -1)
 					{
-						G_PlayEffect(G_EffectIndex("force/HBlockLightning.efx"), traceEnt->playerModel,
-							traceEnt->handLBolt, traceEnt->s.number, traceEnt->currentOrigin, 1000, qtrue);
+						G_PlayEffect(G_EffectIndex("force/HBlockLightning.efx"), trace_ent->playerModel,
+							trace_ent->handLBolt, trace_ent->s.number, trace_ent->currentOrigin, 1000, qtrue);
 					}
-					traceEnt->client->ps.powerups[PW_MEDITATE] = level.time + traceEnt->client->ps.torsoAnimTimer + 5000;
+					trace_ent->client->ps.powerups[PW_MEDITATE] = level.time + trace_ent->client->ps.torsoAnimTimer + 5000;
 					if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
 					{
 						Com_Printf(S_COLOR_RED"MD Mode NPC hand Lightning Block No Force Correct\n");
@@ -32851,10 +32851,10 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, c
 			}
 			else
 			{
-				NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_WIND, SETANIM_AFLAG_PACE);
-				traceEnt->client->ps.weaponTime = Q_irand(300, 600);
+				NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_WIND, SETANIM_AFLAG_PACE);
+				trace_ent->client->ps.weaponTime = Q_irand(300, 600);
 				LightningBlocked = qtrue;
-				traceEnt->client->ps.powerups[PW_MEDITATE] = level.time + traceEnt->client->ps.torsoAnimTimer + 5000;
+				trace_ent->client->ps.powerups[PW_MEDITATE] = level.time + trace_ent->client->ps.torsoAnimTimer + 5000;
 				if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
 				{
 					Com_Printf(S_COLOR_RED"MD Mode NPC NO Force Lightning Block Correct\n");
@@ -32864,19 +32864,19 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, c
 		return;
 	}
 
-	if (traceEnt->flags & FL_NOTARGET || traceEnt->noclip)
+	if (trace_ent->flags & FL_NOTARGET || trace_ent->noclip)
 	{
 		return;
 	}
 
-	if (traceEnt && traceEnt->takedamage)
+	if (trace_ent && trace_ent->takedamage)
 	{
-		if (traceEnt && traceEnt->client && traceEnt->client->NPC_class == CLASS_GUARD)
+		if (trace_ent && trace_ent->client && trace_ent->client->NPC_class == CLASS_GUARD)
 		{
 			IsClassGuard = qtrue;
 		}
-		if (!traceEnt->client || traceEnt->client->playerTeam != self->client->playerTeam || self->enemy == traceEnt ||
-			traceEnt->enemy == self || traceEnt->client->playerTeam == TEAM_SOLO || self->client->playerTeam ==
+		if (!trace_ent->client || trace_ent->client->playerTeam != self->client->playerTeam || self->enemy == trace_ent ||
+			trace_ent->enemy == self || trace_ent->client->playerTeam == TEAM_SOLO || self->client->playerTeam ==
 			TEAM_SOLO || IsClassGuard)
 		{
 			int fpBlockCost;
@@ -32927,9 +32927,9 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, c
 				dmg = Q_irand(1, 3);
 			}
 
-			if (traceEnt->client && traceEnt->NPC)
+			if (trace_ent->client && trace_ent->NPC)
 			{
-				if (jedi_win_po(traceEnt))
+				if (jedi_win_po(trace_ent))
 				{
 					fpBlockCost = Q_irand(0, 1);
 				}
@@ -32944,27 +32944,27 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, c
 			}
 			const int NPCfpBlockCost = Q_irand(1, 3);
 
-			if (traceEnt->client && traceEnt->health > 0)
+			if (trace_ent->client && trace_ent->health > 0)
 			{
-				if (traceEnt->client
-					&& traceEnt->health > 0
-					&& traceEnt->NPC
+				if (trace_ent->client
+					&& trace_ent->health > 0
+					&& trace_ent->NPC
 					&& !in_camera && !IsClassGuard)
 				{
-					if (traceEnt->s.weapon == WP_SABER
-						&& traceEnt->client->ps.SaberActive()
-						&& !traceEnt->client->ps.saberInFlight
-						&& (traceEnt->client->ps.saberMove == LS_READY ||
-							PM_SaberInParry(traceEnt->client->ps.saberMove) || PM_SaberInReturn(
-								traceEnt->client->ps.saberMove))
-						&& InFOV(self->currentOrigin, traceEnt->currentOrigin, traceEnt->client->ps.viewangles, 20, 35)
-						&& !PM_InKnockDown(&traceEnt->client->ps)
-						&& !PM_SuperBreakLoseAnim(traceEnt->client->ps.torsoAnim)
-						&& !PM_SuperBreakWinAnim(traceEnt->client->ps.torsoAnim)
-						&& !PM_SaberInSpecialAttack(traceEnt->client->ps.torsoAnim)
-						&& !PM_InSpecialJump(traceEnt->client->ps.torsoAnim)
-						&& !PM_SaberInKata(static_cast<saberMoveName_t>(traceEnt->client->ps.saberMove))
-						&& traceEnt->client->ps.forcePower > 5)
+					if (trace_ent->s.weapon == WP_SABER
+						&& trace_ent->client->ps.SaberActive()
+						&& !trace_ent->client->ps.saberInFlight
+						&& (trace_ent->client->ps.saberMove == LS_READY ||
+							PM_SaberInParry(trace_ent->client->ps.saberMove) || PM_SaberInReturn(
+								trace_ent->client->ps.saberMove))
+						&& InFOV(self->currentOrigin, trace_ent->currentOrigin, trace_ent->client->ps.viewangles, 20, 35)
+						&& !PM_InKnockDown(&trace_ent->client->ps)
+						&& !PM_SuperBreakLoseAnim(trace_ent->client->ps.torsoAnim)
+						&& !PM_SuperBreakWinAnim(trace_ent->client->ps.torsoAnim)
+						&& !PM_SaberInSpecialAttack(trace_ent->client->ps.torsoAnim)
+						&& !PM_InSpecialJump(trace_ent->client->ps.torsoAnim)
+						&& !PM_SaberInKata(static_cast<saberMoveName_t>(trace_ent->client->ps.saberMove))
+						&& trace_ent->client->ps.forcePower > 5)
 					{
 						//saber can block lightning
 						//make them do a parry
@@ -32982,21 +32982,21 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, c
 						if (chanceOfFizz > 0)
 						{
 							vec3_t end;
-							constexpr int npcBladeNum = 0;
-							constexpr int npcSaberNum = 0;
-							VectorMA(traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzlePoint,
-								traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].length * Q_flrand(0, 1),
-								traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzleDir, end);
+							constexpr int npcblade_num = 0;
+							constexpr int npcsaber_num = 0;
+							VectorMA(trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzlePoint,
+								trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].length * Q_flrand(0, 1),
+								trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzleDir, end);
 							G_PlayEffect(G_EffectIndex("saber/fizz.efx"), end, fwd);
 						}
 
-						switch (traceEnt->client->ps.saberAnimLevel)
+						switch (trace_ent->client->ps.saberAnimLevel)
 						{
 						case SS_DUAL:
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P6_S6_T_, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P6_S6_T_, SETANIM_AFLAG_PACE);
 							break;
 						case SS_STAFF:
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P7_S7_T_, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P7_S7_T_, SETANIM_AFLAG_PACE);
 							break;
 						case SS_FAST:
 						case SS_TAVION:
@@ -33005,49 +33005,49 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, c
 						case SS_MEDIUM:
 						case SS_NONE:
 						default:
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P1_S1_T_, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P1_S1_T_, SETANIM_AFLAG_PACE);
 							break;
 						}
-						traceEnt->client->ps.weaponTime = Q_irand(300, 600);
-						WP_ForcePowerDrain(traceEnt, FP_ABSORB, fpBlockCost);
+						trace_ent->client->ps.weaponTime = Q_irand(300, 600);
+						WP_ForcePowerDrain(trace_ent, FP_ABSORB, fpBlockCost);
 						dmg = Q_irand(0, 1);
 						if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
 						{
 							Com_Printf(S_COLOR_GREEN"MD Mode NPC Saber Lightning Block Correct\n");
 						}
 					}
-					else if (traceEnt->s.weapon == WP_MELEE
+					else if (trace_ent->s.weapon == WP_MELEE
 						&& !in_camera
-						&& Manual_HandBlocking(traceEnt)
-						&& !PM_InKnockDown(&traceEnt->client->ps)
-						&& !PM_InRoll(&traceEnt->client->ps)
-						&& traceEnt->client->ps.groundEntityNum != ENTITYNUM_NONE
-						&& !PM_RunningAnim(traceEnt->client->ps.legsAnim)
-						&& InFOV(self->currentOrigin, traceEnt->currentOrigin, traceEnt->client->ps.viewangles, 20, 35)
-						&& traceEnt->client->ps.forcePower > 20)
+						&& Manual_HandBlocking(trace_ent)
+						&& !PM_InKnockDown(&trace_ent->client->ps)
+						&& !PM_InRoll(&trace_ent->client->ps)
+						&& trace_ent->client->ps.groundEntityNum != ENTITYNUM_NONE
+						&& !PM_RunningAnim(trace_ent->client->ps.legsAnim)
+						&& InFOV(self->currentOrigin, trace_ent->currentOrigin, trace_ent->client->ps.viewangles, 20, 35)
+						&& trace_ent->client->ps.forcePower > 20)
 					{
-						NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_FORCE_2HANDEDLIGHTNING_HOLD, SETANIM_AFLAG_PACE);
-						traceEnt->client->ps.weaponTime = Q_irand(300, 600);
+						NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_FORCE_2HANDEDLIGHTNING_HOLD, SETANIM_AFLAG_PACE);
+						trace_ent->client->ps.weaponTime = Q_irand(300, 600);
 						LightningBlocked = qtrue;
 
-						if (traceEnt->ghoul2.size())
+						if (trace_ent->ghoul2.size())
 						{
-							if (traceEnt->handRBolt != -1)
+							if (trace_ent->handRBolt != -1)
 							{
-								G_PlayEffect(G_EffectIndex("force/HBlockLightning.efx"), traceEnt->playerModel,
-									traceEnt->handRBolt, traceEnt->s.number, traceEnt->currentOrigin, 1000,
+								G_PlayEffect(G_EffectIndex("force/HBlockLightning.efx"), trace_ent->playerModel,
+									trace_ent->handRBolt, trace_ent->s.number, trace_ent->currentOrigin, 1000,
 									qtrue);
 							}
-							if (traceEnt->handLBolt != -1)
+							if (trace_ent->handLBolt != -1)
 							{
-								G_PlayEffect(G_EffectIndex("force/HBlockLightning.efx"), traceEnt->playerModel,
-									traceEnt->handLBolt, traceEnt->s.number, traceEnt->currentOrigin, 1000,
+								G_PlayEffect(G_EffectIndex("force/HBlockLightning.efx"), trace_ent->playerModel,
+									trace_ent->handLBolt, trace_ent->s.number, trace_ent->currentOrigin, 1000,
 									qtrue);
 							}
 						}
-						traceEnt->client->ps.powerups[PW_MEDITATE] = level.time + traceEnt->client->ps.torsoAnimTimer +
+						trace_ent->client->ps.powerups[PW_MEDITATE] = level.time + trace_ent->client->ps.torsoAnimTimer +
 							5000;
-						WP_ForcePowerDrain(traceEnt, FP_ABSORB, NPCfpBlockCost);
+						WP_ForcePowerDrain(trace_ent, FP_ABSORB, NPCfpBlockCost);
 						dmg = Q_irand(0, 1);
 						if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
 						{
@@ -33055,12 +33055,12 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, c
 						}
 					}
 				}
-				else if (traceEnt->s.weapon == WP_SABER && traceEnt->client->ps.SaberActive())
+				else if (trace_ent->s.weapon == WP_SABER && trace_ent->client->ps.SaberActive())
 				{
-					if (!in_camera && !IsClassGuard && manual_saberblocking(traceEnt)
-						&& InFOV(self->currentOrigin, traceEnt->currentOrigin, traceEnt->client->ps.viewangles, 20, 35)
-						&& !PM_SaberInKata(static_cast<saberMoveName_t>(traceEnt->client->ps.saberMove))
-						&& traceEnt->client->ps.forcePower > 20)
+					if (!in_camera && !IsClassGuard && manual_saberblocking(trace_ent)
+						&& InFOV(self->currentOrigin, trace_ent->currentOrigin, trace_ent->client->ps.viewangles, 20, 35)
+						&& !PM_SaberInKata(static_cast<saberMoveName_t>(trace_ent->client->ps.saberMove))
+						&& trace_ent->client->ps.forcePower > 20)
 					{
 						//saber can block lightning
 						//make them do a parry
@@ -33077,12 +33077,12 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, c
 						if (chanceOfFizz > 0)
 						{
 							vec3_t end;
-							constexpr int npcBladeNum = 0;
-							constexpr int npcSaberNum = 0;
-							VectorMA(traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzlePoint,
-								traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].length * Q_flrand(0, 1),
-								traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzleDir, end);
-							if (traceEnt->client->ps.forcePower > 50)
+							constexpr int npcblade_num = 0;
+							constexpr int npcsaber_num = 0;
+							VectorMA(trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzlePoint,
+								trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].length * Q_flrand(0, 1),
+								trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzleDir, end);
+							if (trace_ent->client->ps.forcePower > 50)
 							{
 								G_PlayEffect(G_EffectIndex("saber/saber_Lightninghit.efx"), end, fwd);
 							}
@@ -33092,13 +33092,13 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, c
 							}
 						}
 
-						switch (traceEnt->client->ps.saberAnimLevel)
+						switch (trace_ent->client->ps.saberAnimLevel)
 						{
 						case SS_DUAL:
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P6_S6_T_, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P6_S6_T_, SETANIM_AFLAG_PACE);
 							break;
 						case SS_STAFF:
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P7_S7_T_, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P7_S7_T_, SETANIM_AFLAG_PACE);
 							break;
 						case SS_FAST:
 						case SS_TAVION:
@@ -33107,23 +33107,23 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, c
 						case SS_MEDIUM:
 						case SS_NONE:
 						default:
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P1_S1_T_, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P1_S1_T_, SETANIM_AFLAG_PACE);
 							break;
 						}
-						traceEnt->client->ps.weaponTime = Q_irand(300, 600);
+						trace_ent->client->ps.weaponTime = Q_irand(300, 600);
 						dmg = 0;
-						WP_ForcePowerDrain(traceEnt, FP_ABSORB, fpBlockCost);
+						WP_ForcePowerDrain(trace_ent, FP_ABSORB, fpBlockCost);
 						if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
 						{
 							Com_Printf(S_COLOR_RED"MD Mode Player Saber Lightning Block Correct\n");
 						}
 					}
 					else if (in_camera && !IsClassGuard
-						&& traceEnt->NPC
-						&& traceEnt->client->ps.SaberActive()
-						&& !traceEnt->client->ps.saberInFlight
-						&& !PM_InKnockDown(&traceEnt->client->ps)
-						&& InFOV(self->currentOrigin, traceEnt->currentOrigin, traceEnt->client->ps.viewangles, 20, 35))
+						&& trace_ent->NPC
+						&& trace_ent->client->ps.SaberActive()
+						&& !trace_ent->client->ps.saberInFlight
+						&& !PM_InKnockDown(&trace_ent->client->ps)
+						&& InFOV(self->currentOrigin, trace_ent->currentOrigin, trace_ent->client->ps.viewangles, 20, 35))
 					{
 						const float chanceOfFizz = Q_flrand(0.0f, 1.0f);
 						vec3_t fwd, right, up;
@@ -33138,49 +33138,49 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, c
 						if (chanceOfFizz > 0)
 						{
 							vec3_t end;
-							constexpr int npcBladeNum = 0;
-							constexpr int npcSaberNum = 0;
-							VectorMA(traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzlePoint,
-								traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].length * Q_flrand(0, 1),
-								traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzleDir, end);
+							constexpr int npcblade_num = 0;
+							constexpr int npcsaber_num = 0;
+							VectorMA(trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzlePoint,
+								trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].length * Q_flrand(0, 1),
+								trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzleDir, end);
 							G_PlayEffect(G_EffectIndex("saber/fizz.efx"), end, fwd);
 						}
 
-						switch (traceEnt->client->ps.saberAnimLevel)
+						switch (trace_ent->client->ps.saberAnimLevel)
 						{
 						case SS_DUAL:
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P6_S6_TL, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P6_S6_TL, SETANIM_AFLAG_PACE);
 							break;
 						case SS_STAFF:
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P7_S7_TL, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P7_S7_TL, SETANIM_AFLAG_PACE);
 							break;
 						case SS_FAST:
 						case SS_TAVION:
 						case SS_STRONG:
 						case SS_DESANN:
 						case SS_MEDIUM:
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P1_S1_TL, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P1_S1_TL, SETANIM_AFLAG_PACE);
 							break;
 						case SS_NONE:
 						default:
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P1_S1_TL, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P1_S1_TL, SETANIM_AFLAG_PACE);
 							break;
 						}
-						traceEnt->client->ps.weaponTime = Q_irand(300, 600);
+						trace_ent->client->ps.weaponTime = Q_irand(300, 600);
 						dmg = 0;
 						if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
 						{
 							Com_Printf(S_COLOR_RED"MD Mode NPC Saber Lightning Block CIN Correct\n");
 						}
 					}
-					else if (!in_camera && !IsClassGuard && (traceEnt->client->ps.forcePowersActive & 1 << FP_ABSORB &&
-						traceEnt->client->ps.forcePowerLevel[FP_ABSORB] > FORCE_LEVEL_2)
-						&& traceEnt->client->ps.forcePower > 20
-						&& !PM_InKnockDown(&traceEnt->client->ps)
-						&& !PM_InRoll(&traceEnt->client->ps)
-						&& traceEnt->client->ps.groundEntityNum != ENTITYNUM_NONE
-						&& !PM_RunningAnim(traceEnt->client->ps.legsAnim)
-						&& InFOV(self->currentOrigin, traceEnt->currentOrigin, traceEnt->client->ps.viewangles, 20, 35))
+					else if (!in_camera && !IsClassGuard && (trace_ent->client->ps.forcePowersActive & 1 << FP_ABSORB &&
+						trace_ent->client->ps.forcePowerLevel[FP_ABSORB] > FORCE_LEVEL_2)
+						&& trace_ent->client->ps.forcePower > 20
+						&& !PM_InKnockDown(&trace_ent->client->ps)
+						&& !PM_InRoll(&trace_ent->client->ps)
+						&& trace_ent->client->ps.groundEntityNum != ENTITYNUM_NONE
+						&& !PM_RunningAnim(trace_ent->client->ps.legsAnim)
+						&& InFOV(self->currentOrigin, trace_ent->currentOrigin, trace_ent->client->ps.viewangles, 20, 35))
 					{
 						//make them do a parry
 						const float chanceOfFizz = Q_flrand(0.0f, 1.0f);
@@ -33196,12 +33196,12 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, c
 						if (chanceOfFizz > 0)
 						{
 							vec3_t end;
-							constexpr int npcBladeNum = 0;
-							constexpr int npcSaberNum = 0;
-							VectorMA(traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzlePoint,
-								traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].length * Q_flrand(0, 1),
-								traceEnt->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzleDir, end);
-							if (traceEnt->client->ps.forcePower > 50)
+							constexpr int npcblade_num = 0;
+							constexpr int npcsaber_num = 0;
+							VectorMA(trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzlePoint,
+								trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].length * Q_flrand(0, 1),
+								trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzleDir, end);
+							if (trace_ent->client->ps.forcePower > 50)
 							{
 								G_PlayEffect(G_EffectIndex("saber/saber_Lightninghit.efx"), end, fwd);
 							}
@@ -33211,13 +33211,13 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, c
 							}
 						}
 
-						switch (traceEnt->client->ps.saberAnimLevel)
+						switch (trace_ent->client->ps.saberAnimLevel)
 						{
 						case SS_DUAL:
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P6_S6_T_, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P6_S6_T_, SETANIM_AFLAG_PACE);
 							break;
 						case SS_STAFF:
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P7_S7_T_, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P7_S7_T_, SETANIM_AFLAG_PACE);
 							break;
 						case SS_FAST:
 						case SS_TAVION:
@@ -33226,12 +33226,12 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, c
 						case SS_MEDIUM:
 						case SS_NONE:
 						default:
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_P1_S1_T_, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P1_S1_T_, SETANIM_AFLAG_PACE);
 							break;
 						}
-						traceEnt->client->ps.weaponTime = Q_irand(300, 600);
+						trace_ent->client->ps.weaponTime = Q_irand(300, 600);
 						dmg = 0;
-						WP_ForcePowerDrain(traceEnt, FP_ABSORB, fpBlockCost);
+						WP_ForcePowerDrain(trace_ent, FP_ABSORB, fpBlockCost);
 						if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
 						{
 							Com_Printf(S_COLOR_RED"MD Mode Player Saber Absorb Lightning Block Correct\n");
@@ -33242,41 +33242,41 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, c
 						dmg = 1;
 					}
 				}
-				else if (traceEnt->s.weapon == WP_MELEE || traceEnt->s.weapon == WP_NONE || traceEnt->client->ps.weapon
-					== WP_SABER && !traceEnt->client->ps.SaberActive())
+				else if (trace_ent->s.weapon == WP_MELEE || trace_ent->s.weapon == WP_NONE || trace_ent->client->ps.weapon
+					== WP_SABER && !trace_ent->client->ps.SaberActive())
 				{
 					if (!in_camera && !IsClassGuard
-						&& (Manual_HandBlocking(traceEnt) || traceEnt->client->ps.forcePowersActive & 1 << FP_ABSORB &&
-							traceEnt->client->ps.forcePowerLevel[FP_ABSORB] > FORCE_LEVEL_2)
-						&& !PM_InKnockDown(&traceEnt->client->ps)
-						&& !PM_InRoll(&traceEnt->client->ps)
-						&& traceEnt->client->ps.groundEntityNum != ENTITYNUM_NONE
-						&& !PM_RunningAnim(traceEnt->client->ps.legsAnim)
-						&& InFOV(self->currentOrigin, traceEnt->currentOrigin, traceEnt->client->ps.viewangles, 20, 35)
-						&& traceEnt->client->ps.forcePower > 20)
+						&& (Manual_HandBlocking(trace_ent) || trace_ent->client->ps.forcePowersActive & 1 << FP_ABSORB &&
+							trace_ent->client->ps.forcePowerLevel[FP_ABSORB] > FORCE_LEVEL_2)
+						&& !PM_InKnockDown(&trace_ent->client->ps)
+						&& !PM_InRoll(&trace_ent->client->ps)
+						&& trace_ent->client->ps.groundEntityNum != ENTITYNUM_NONE
+						&& !PM_RunningAnim(trace_ent->client->ps.legsAnim)
+						&& InFOV(self->currentOrigin, trace_ent->currentOrigin, trace_ent->client->ps.viewangles, 20, 35)
+						&& trace_ent->client->ps.forcePower > 20)
 					{
-						NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_FORCE_2HANDEDLIGHTNING_HOLD, SETANIM_AFLAG_PACE);
-						traceEnt->client->ps.weaponTime = Q_irand(300, 600);
+						NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_FORCE_2HANDEDLIGHTNING_HOLD, SETANIM_AFLAG_PACE);
+						trace_ent->client->ps.weaponTime = Q_irand(300, 600);
 						LightningBlocked = qtrue;
 
-						if (traceEnt->ghoul2.size())
+						if (trace_ent->ghoul2.size())
 						{
-							if (traceEnt->handRBolt != -1)
+							if (trace_ent->handRBolt != -1)
 							{
-								G_PlayEffect(G_EffectIndex("force/HBlockLightning.efx"), traceEnt->playerModel,
-									traceEnt->handRBolt, traceEnt->s.number, traceEnt->currentOrigin, 1000,
+								G_PlayEffect(G_EffectIndex("force/HBlockLightning.efx"), trace_ent->playerModel,
+									trace_ent->handRBolt, trace_ent->s.number, trace_ent->currentOrigin, 1000,
 									qtrue);
 							}
-							if (traceEnt->handLBolt != -1)
+							if (trace_ent->handLBolt != -1)
 							{
-								G_PlayEffect(G_EffectIndex("force/HBlockLightning.efx"), traceEnt->playerModel,
-									traceEnt->handLBolt, traceEnt->s.number, traceEnt->currentOrigin, 1000,
+								G_PlayEffect(G_EffectIndex("force/HBlockLightning.efx"), trace_ent->playerModel,
+									trace_ent->handLBolt, trace_ent->s.number, trace_ent->currentOrigin, 1000,
 									qtrue);
 							}
 						}
-						traceEnt->client->ps.powerups[PW_MEDITATE] = level.time + traceEnt->client->ps.torsoAnimTimer +
+						trace_ent->client->ps.powerups[PW_MEDITATE] = level.time + trace_ent->client->ps.torsoAnimTimer +
 							5000;
-						WP_ForcePowerDrain(traceEnt, FP_ABSORB, fpBlockCost);
+						WP_ForcePowerDrain(trace_ent, FP_ABSORB, fpBlockCost);
 						if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
 						{
 							Com_Printf(S_COLOR_RED"MD Mode Player Hand Lightning Block Correct\n");
@@ -33289,14 +33289,14 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, c
 				}
 			}
 
-			if (traceEnt && traceEnt->client && traceEnt->client->ps.powerups[PW_GALAK_SHIELD])
+			if (trace_ent && trace_ent->client && trace_ent->client->ps.powerups[PW_GALAK_SHIELD])
 			{
 				//has shield up
 				dmg = 0;
 				LightningBlocked = qtrue;
 			}
 
-			if (traceEnt && traceEnt->client && traceEnt->client->NPC_class == CLASS_OBJECT)
+			if (trace_ent && trace_ent->client && trace_ent->client->NPC_class == CLASS_OBJECT)
 			{
 				dmg = 0;
 				LightningBlocked = qtrue;
@@ -33310,9 +33310,9 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, c
 
 			int modPowerLevel = -1;
 
-			if (traceEnt->client)
+			if (trace_ent->client)
 			{
-				modPowerLevel = WP_AbsorbConversion(traceEnt, traceEnt->client->ps.forcePowerLevel[FP_ABSORB], FP_LIGHTNING,
+				modPowerLevel = WP_AbsorbConversion(trace_ent, trace_ent->client->ps.forcePowerLevel[FP_ABSORB], FP_LIGHTNING,
 				                                    self->client->ps.forcePowerLevel[FP_LIGHTNING], 1);
 			}
 
@@ -33334,9 +33334,9 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, c
 
 			if (dmg && !LightningBlocked || IsClassGuard) //md
 			{
-				if (jedi_win_po(traceEnt))
+				if (jedi_win_po(trace_ent))
 				{
-					G_Damage(traceEnt, self, self, dir, impact_point, dmg, DAMAGE_LIGHNING_KNOCKBACK,
+					G_Damage(trace_ent, self, self, dir, impact_point, dmg, DAMAGE_LIGHNING_KNOCKBACK,
 						MOD_FORCE_LIGHTNING);
 					if (g_lightningdamage->integer)
 					{
@@ -33345,106 +33345,106 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* traceEnt, vec3_t dir, c
 				}
 				else
 				{
-					G_Damage(traceEnt, self, self, dir, impact_point, dmg, DAMAGE_DEATH_KNOCKBACK, MOD_FORCE_LIGHTNING);
+					G_Damage(trace_ent, self, self, dir, impact_point, dmg, DAMAGE_DEATH_KNOCKBACK, MOD_FORCE_LIGHTNING);
 					if (g_lightningdamage->integer)
 					{
 						gi.Printf(S_COLOR_RED"NORMAL MD LIGHTNING KNOCKBACK TEST\n");
 					}
 				}
 
-				if (!in_camera && (traceEnt->NPC
-					|| (traceEnt->s.number < MAX_CLIENTS || G_ControlledByPlayer(traceEnt)))
-					&& !(traceEnt->s.weapon == WP_EMPLACED_GUN)
-					&& !PM_SaberInKata(static_cast<saberMoveName_t>(traceEnt->client->ps.saberMove)))
+				if (!in_camera && (trace_ent->NPC
+					|| (trace_ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(trace_ent)))
+					&& !(trace_ent->s.weapon == WP_EMPLACED_GUN)
+					&& !PM_SaberInKata(static_cast<saberMoveName_t>(trace_ent->client->ps.saberMove)))
 				{
-					if (traceEnt->client->ps.stats[STAT_HEALTH] <= 20)
+					if (trace_ent->client->ps.stats[STAT_HEALTH] <= 20)
 					{
-						traceEnt->client->stunDamage = 5;
-						traceEnt->client->stunTime = level.time + 1000;
+						trace_ent->client->stunDamage = 5;
+						trace_ent->client->stunTime = level.time + 1000;
 
-						gentity_t* tent = G_TempEntity(traceEnt->currentOrigin, EV_STUNNED);
-						tent->owner = traceEnt;
+						gentity_t* tent = G_TempEntity(trace_ent->currentOrigin, EV_STUNNED);
+						tent->owner = trace_ent;
 					}
 
-					if (PM_RunningAnim(traceEnt->client->ps.legsAnim) && (traceEnt->client->ps.stats[STAT_HEALTH] > 1 || IsClassGuard))
+					if (PM_RunningAnim(trace_ent->client->ps.legsAnim) && (trace_ent->client->ps.stats[STAT_HEALTH] > 1 || IsClassGuard))
 					{
-						G_KnockOver(traceEnt, self, dir, 25, qtrue);
+						G_KnockOver(trace_ent, self, dir, 25, qtrue);
 					}
-					else if (!PM_RunningAnim(traceEnt->client->ps.legsAnim) && !PM_InKnockDown(&traceEnt->client->ps)
-						&& traceEnt->client->ps.groundEntityNum != ENTITYNUM_NONE && traceEnt->client->ps.stats[STAT_HEALTH] > 1)
+					else if (!PM_RunningAnim(trace_ent->client->ps.legsAnim) && !PM_InKnockDown(&trace_ent->client->ps)
+						&& trace_ent->client->ps.groundEntityNum != ENTITYNUM_NONE && trace_ent->client->ps.stats[STAT_HEALTH] > 1)
 					{
-						if (traceEnt->client->ps.stats[STAT_HEALTH] < 75)
+						if (trace_ent->client->ps.stats[STAT_HEALTH] < 75)
 						{
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_COWER1, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_COWER1, SETANIM_AFLAG_PACE);
 						}
-						else if (traceEnt->client->ps.stats[STAT_HEALTH] < 50)
+						else if (trace_ent->client->ps.stats[STAT_HEALTH] < 50)
 						{
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_SONICPAIN_HOLD, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_SONICPAIN_HOLD, SETANIM_AFLAG_PACE);
 						}
 						else
 						{
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_WIND, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_WIND, SETANIM_AFLAG_PACE);
 						}
 					}
-					else if (traceEnt->client->ps.groundEntityNum == ENTITYNUM_NONE && traceEnt->client->ps.stats[STAT_HEALTH] > 1)
+					else if (trace_ent->client->ps.groundEntityNum == ENTITYNUM_NONE && trace_ent->client->ps.stats[STAT_HEALTH] > 1)
 					{
-						if (traceEnt->client->ps.stats[STAT_HEALTH] < 75)
+						if (trace_ent->client->ps.stats[STAT_HEALTH] < 75)
 						{
-							NPC_SetAnim(traceEnt, SETANIM_BOTH, Q_irand(BOTH_SLAPDOWNRIGHT, BOTH_SLAPDOWNLEFT), SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_BOTH, Q_irand(BOTH_SLAPDOWNRIGHT, BOTH_SLAPDOWNLEFT), SETANIM_AFLAG_PACE);
 						}
 						else
 						{
-							NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_WIND, SETANIM_AFLAG_PACE);
+							NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_WIND, SETANIM_AFLAG_PACE);
 						}
 					}
 				}
 			}
 
-			if (traceEnt->client)
+			if (trace_ent->client)
 			{
 				if (!Q_irand(0, 2))
 				{
-					G_Sound(traceEnt, G_SoundIndex(va("sound/weapons/force/lightninghit%d.mp3", Q_irand(1, 3))));
+					G_Sound(trace_ent, G_SoundIndex(va("sound/weapons/force/lightninghit%d.mp3", Q_irand(1, 3))));
 				}
 
-				if (traceEnt->client && traceEnt->client->ps.powerups[PW_CLOAKED])
+				if (trace_ent->client && trace_ent->client->ps.powerups[PW_CLOAKED])
 				{
 					//disable cloak temporarily
-					player_decloak(traceEnt);
-					G_AddVoiceEvent(traceEnt, Q_irand(EV_ANGER1, EV_ANGER3), 1000);
+					player_decloak(trace_ent);
+					G_AddVoiceEvent(trace_ent, Q_irand(EV_ANGER1, EV_ANGER3), 1000);
 				}
-				traceEnt->s.powerups |= 1 << PW_SHOCKED;
+				trace_ent->s.powerups |= 1 << PW_SHOCKED;
 
-				if (traceEnt && traceEnt->client &&
-					(traceEnt->health <= 0 || traceEnt->client->NPC_class == CLASS_ATST
-						|| traceEnt->client->NPC_class == CLASS_GONK
-						|| traceEnt->client->NPC_class == CLASS_INTERROGATOR
-						|| traceEnt->client->NPC_class == CLASS_MARK1
-						|| traceEnt->client->NPC_class == CLASS_MARK2
-						|| traceEnt->client->NPC_class == CLASS_MOUSE
-						|| traceEnt->client->NPC_class == CLASS_PROBE
-						|| traceEnt->client->NPC_class == CLASS_PROTOCOL
-						|| traceEnt->client->NPC_class == CLASS_R2D2
-						|| traceEnt->client->NPC_class == CLASS_R5D2
-						|| traceEnt->client->NPC_class == CLASS_SEEKER
-						|| traceEnt->client->NPC_class == CLASS_SENTRY
-						|| traceEnt->client->NPC_class == CLASS_SBD
-						|| traceEnt->client->NPC_class == CLASS_BATTLEDROID
-						|| traceEnt->client->NPC_class == CLASS_DROIDEKA
-						|| traceEnt->client->NPC_class == CLASS_OBJECT
-						|| traceEnt->client->NPC_class == CLASS_ASSASSIN_DROID
-						|| traceEnt->client->NPC_class == CLASS_SABER_DROID))
+				if (trace_ent && trace_ent->client &&
+					(trace_ent->health <= 0 || trace_ent->client->NPC_class == CLASS_ATST
+						|| trace_ent->client->NPC_class == CLASS_GONK
+						|| trace_ent->client->NPC_class == CLASS_INTERROGATOR
+						|| trace_ent->client->NPC_class == CLASS_MARK1
+						|| trace_ent->client->NPC_class == CLASS_MARK2
+						|| trace_ent->client->NPC_class == CLASS_MOUSE
+						|| trace_ent->client->NPC_class == CLASS_PROBE
+						|| trace_ent->client->NPC_class == CLASS_PROTOCOL
+						|| trace_ent->client->NPC_class == CLASS_R2D2
+						|| trace_ent->client->NPC_class == CLASS_R5D2
+						|| trace_ent->client->NPC_class == CLASS_SEEKER
+						|| trace_ent->client->NPC_class == CLASS_SENTRY
+						|| trace_ent->client->NPC_class == CLASS_SBD
+						|| trace_ent->client->NPC_class == CLASS_BATTLEDROID
+						|| trace_ent->client->NPC_class == CLASS_DROIDEKA
+						|| trace_ent->client->NPC_class == CLASS_OBJECT
+						|| trace_ent->client->NPC_class == CLASS_ASSASSIN_DROID
+						|| trace_ent->client->NPC_class == CLASS_SABER_DROID))
 				{
 					// special droid only behaviors
-					traceEnt->client->ps.powerups[PW_SHOCKED] = level.time + 4000;
+					trace_ent->client->ps.powerups[PW_SHOCKED] = level.time + 4000;
 				}
 				else if (LightningBlocked)
 				{
-					traceEnt->client->ps.powerups[PW_SHOCKED] = 0;
+					trace_ent->client->ps.powerups[PW_SHOCKED] = 0;
 				}
 				else
 				{
-					traceEnt->client->ps.powerups[PW_SHOCKED] = level.time + 1500;
+					trace_ent->client->ps.powerups[PW_SHOCKED] = level.time + 1500;
 				}
 			}
 		}
@@ -33455,7 +33455,7 @@ void ForceShootLightning(gentity_t* self)
 {
 	trace_t tr;
 	vec3_t forward;
-	gentity_t* traceEnt;
+	gentity_t* trace_ent;
 
 	if (self->health <= 0)
 	{
@@ -33490,38 +33490,38 @@ void ForceShootLightning(gentity_t* self)
 			mins[i] = center[i] - radius;
 			maxs[i] = center[i] + radius;
 		}
-		const int numListedEntities = gi.EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+		const int num_listed_entities = gi.EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
 
-		for (int e = 0; e < numListedEntities; e++)
+		for (int e = 0; e < num_listed_entities; e++)
 		{
 			vec3_t size;
 			vec3_t ent_org;
 			vec3_t dir;
-			traceEnt = entityList[e];
+			trace_ent = entityList[e];
 
-			if (!traceEnt)
+			if (!trace_ent)
 				continue;
-			if (traceEnt == self)
+			if (trace_ent == self)
 				continue;
-			if (traceEnt->owner == self && traceEnt->s.weapon != WP_THERMAL) //can push your own thermals
+			if (trace_ent->owner == self && trace_ent->s.weapon != WP_THERMAL) //can push your own thermals
 				continue;
-			if (!traceEnt->inuse)
+			if (!trace_ent->inuse)
 				continue;
-			if (!traceEnt->takedamage)
+			if (!trace_ent->takedamage)
 				continue;
-			if (traceEnt->health <= 0) //no torturing corpses
+			if (trace_ent->health <= 0) //no torturing corpses
 				continue;
 			//this is all to see if we need to start a saber attack, if it's in flight, this doesn't matter
 			// find the distance from the edge of the bounding box
 			for (i = 0; i < 3; i++)
 			{
-				if (center[i] < traceEnt->absmin[i])
+				if (center[i] < trace_ent->absmin[i])
 				{
-					v[i] = traceEnt->absmin[i] - center[i];
+					v[i] = trace_ent->absmin[i] - center[i];
 				}
-				else if (center[i] > traceEnt->absmax[i])
+				else if (center[i] > trace_ent->absmax[i])
 				{
-					v[i] = center[i] - traceEnt->absmax[i];
+					v[i] = center[i] - trace_ent->absmax[i];
 				}
 				else
 				{
@@ -33529,8 +33529,8 @@ void ForceShootLightning(gentity_t* self)
 				}
 			}
 
-			VectorSubtract(traceEnt->absmax, traceEnt->absmin, size);
-			VectorMA(traceEnt->absmin, 0.5, size, ent_org);
+			VectorSubtract(trace_ent->absmax, trace_ent->absmin, size);
+			VectorMA(trace_ent->absmin, 0.5, size, ent_org);
 
 			//see if they're in front of me
 			//must be within the forward cone
@@ -33547,7 +33547,7 @@ void ForceShootLightning(gentity_t* self)
 			}
 
 			//in PVS?
-			if (!traceEnt->bmodel && !gi.inPVS(ent_org, self->client->renderInfo.handLPoint))
+			if (!trace_ent->bmodel && !gi.inPVS(ent_org, self->client->renderInfo.handLPoint))
 			{
 				//must be in PVS
 				continue;
@@ -33556,7 +33556,7 @@ void ForceShootLightning(gentity_t* self)
 			//Now check and see if we can actually hit it
 			gi.trace(&tr, self->client->renderInfo.handLPoint, vec3_origin, vec3_origin, ent_org, self->s.number,
 				MASK_SHOT, static_cast<EG2_Collision>(0), 0);
-			if (tr.fraction < 1.0f && tr.entityNum != traceEnt->s.number)
+			if (tr.fraction < 1.0f && tr.entityNum != trace_ent->s.number)
 			{
 				//must have clear LOS
 				continue;
@@ -33566,16 +33566,16 @@ void ForceShootLightning(gentity_t* self)
 			{
 				if (g_SerenityJediEngineMode->integer == 2)
 				{
-					ForceLightningDamage_AMD(self, traceEnt, dir, dist, dot, ent_org);
+					ForceLightningDamage_AMD(self, trace_ent, dir, dist, dot, ent_org);
 				}
 				else
 				{
-					ForceLightningDamage_MD(self, traceEnt, dir, dist, dot, ent_org);
+					ForceLightningDamage_MD(self, trace_ent, dir, dist, dot, ent_org);
 				}
 			}
 			else
 			{
-				ForceLightningDamage(self, traceEnt, dir, dist, dot, ent_org);
+				ForceLightningDamage(self, trace_ent, dir, dist, dot, ent_org);
 			}
 		}
 	}
@@ -33599,14 +33599,14 @@ void ForceShootLightning(gentity_t* self)
 				return;
 			}
 
-			traceEnt = &g_entities[tr.entityNum];
+			trace_ent = &g_entities[tr.entityNum];
 			//NOTE: only NPCs do this auto-dodge
-			if (traceEnt
-				&& traceEnt->s.number >= MAX_CLIENTS
-				&& traceEnt->client
-				&& traceEnt->client->ps.forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0)
+			if (trace_ent
+				&& trace_ent->s.number >= MAX_CLIENTS
+				&& trace_ent->client
+				&& trace_ent->client->ps.forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0)
 			{
-				if (!jedi_dodge_evasion(traceEnt, self, &tr, HL_NONE))
+				if (!jedi_dodge_evasion(trace_ent, self, &tr, HL_NONE))
 				{
 					//act like we didn't even hit him
 					VectorCopy(tr.endpos, start);
@@ -33619,22 +33619,22 @@ void ForceShootLightning(gentity_t* self)
 			break;
 		}
 
-		traceEnt = &g_entities[tr.entityNum];
+		trace_ent = &g_entities[tr.entityNum];
 
 		if (g_SerenityJediEngineMode->integer)
 		{
 			if (g_SerenityJediEngineMode->integer == 2)
 			{
-				ForceLightningDamage_AMD(self, traceEnt, forward, 0, 0, tr.endpos);
+				ForceLightningDamage_AMD(self, trace_ent, forward, 0, 0, tr.endpos);
 			}
 			else
 			{
-				ForceLightningDamage_MD(self, traceEnt, forward, 0, 0, tr.endpos);
+				ForceLightningDamage_MD(self, trace_ent, forward, 0, 0, tr.endpos);
 			}
 		}
 		else
 		{
-			ForceLightningDamage(self, traceEnt, forward, 0, 0, tr.endpos);
+			ForceLightningDamage(self, trace_ent, forward, 0, 0, tr.endpos);
 		}
 	}
 }
@@ -36370,7 +36370,7 @@ void ForceGrasp(gentity_t* self)
 	}
 #else
 //rww - RAGDOLL_END
-	if (!traceEnt || traceEnt == self/*???*/ || traceEnt->bmodel || (traceEnt->health <= 0 && traceEnt->takedamage) || (traceEnt->NPC && traceEnt->NPC->scriptFlags & SCF_NO_FORCE))
+	if (!trace_ent || trace_ent == self/*???*/ || trace_ent->bmodel || (trace_ent->health <= 0 && trace_ent->takedamage) || (trace_ent->NPC && trace_ent->NPC->scriptFlags & SCF_NO_FORCE))
 	{
 		return;
 	}
@@ -36604,7 +36604,7 @@ void ForceGrasp(gentity_t* self)
 	{
 		//can't grip non-clients... right?
 		//FIXME: Make it so objects flagged as "grabbable" are let through
-		//if ( Q_stricmp( "misc_model_breakable", traceEnt->classname ) || !(traceEnt->s.eFlags&EF_BOUNCE_HALF) || !traceEnt->physicsBounce )
+		//if ( Q_stricmp( "misc_model_breakable", trace_ent->classname ) || !(trace_ent->s.eFlags&EF_BOUNCE_HALF) || !trace_ent->physicsBounce )
 		{
 			return;
 		}
@@ -36725,7 +36725,7 @@ void ForceGrasp(gentity_t* self)
 		{
 			//lifting sound?  or always?
 		}
-		//if ( traceEnt->s.number )
+		//if ( trace_ent->s.number )
 		{
 			//picks them up for a second first
 			self->client->ps.forcePowerDebounce[FP_GRASP] = level.time + 1000;

@@ -23,7 +23,7 @@ constexpr auto OL_S = 0.5f;
 constexpr auto OL_Y = 30;
 constexpr auto OL_H = 6;
 
-static void WorkshopDrawEntityInformation(gentity_t* ent, int x, const char* title)
+static void WorkshopDrawEntityInformation(const gentity_t* ent, const int x, const char* title)
 {
 	int add = OL_H;
 	constexpr vec4_t textcolor = { 0.4f, 0.4f, 0.8f, 1.0f };
@@ -217,10 +217,10 @@ void workshop_draw_clientside_information()
 		return;
 	}
 	// Draw the information for the NPC that is in our crosshairs
-	if (cg.crosshairClientNum != ENTITYNUM_NONE && cg.crosshairClientNum != 0 && g_entities[cg.crosshairClientNum].
+	if (cg.crosshairclient_num != ENTITYNUM_NONE && cg.crosshairclient_num != 0 && g_entities[cg.crosshairclient_num].
 		client)
 	{
-		gentity_t* crossEnt = &g_entities[cg.crosshairClientNum];
+		gentity_t* crossEnt = &g_entities[cg.crosshairclient_num];
 		WorkshopDrawEntityInformation(crossEnt, 10, "Crosshair AI");
 	}
 
@@ -235,7 +235,7 @@ void workshop_draw_clientside_information()
 //
 //	Draws a box around the bounding box of the entity
 //
-void WorkshopDrawEntBox(const gentity_t* ent, int colorOverride = -1)
+void WorkshopDrawEntBox(const gentity_t* ent, const int colorOverride = -1)
 {
 	unsigned color = 0x666666; // G_SoundOnEnt(ent, "satan.mp3");
 
@@ -1146,7 +1146,7 @@ void Workshop_Set_Scale_f(gentity_t* ent)
 
 // Mind control an NPC
 extern qboolean G_ClearViewEntity(gentity_t* ent);
-extern void G_SetViewEntity(gentity_t* self, gentity_t* viewEntity);
+extern void G_SetViewEntity(gentity_t* self, gentity_t* view_entity);
 
 void Workshop_MindControl_f(gentity_t* ent)
 {
@@ -1229,12 +1229,12 @@ void Workshop_Block_f(gentity_t* ent)
 	}
 }
 
-extern void WP_RemoveSaber(gentity_t* ent, int saberNum);
+extern void WP_RemoveSaber(gentity_t* ent, int saber_num);
 extern qboolean WP_SaberParseParms(const char* SaberName, saberInfo_t* saber, qboolean setColors = qtrue);
 extern qboolean WP_UseFirstValidSaberStyle(const gentity_t* ent, int* saberAnimLevel);
 extern void WP_SaberSetDefaults(saberInfo_t* saber, qboolean setColors = qtrue);
 
-int WP_SetSaberNPCModel(gclient_t* client, class_t npcClass)
+int WP_SetSaberNPCModel(gclient_t* client, const class_t npcClass)
 {
 	//FIXME: read from NPCs.cfg
 	if (client)
@@ -1283,7 +1283,7 @@ int WP_SetSaberNPCModel(gclient_t* client, class_t npcClass)
 	}
 }
 
-void WP_RemovenpcSaber(gentity_t* ent, int saberNum)
+void WP_RemovenpcSaber(gentity_t* ent, const int saber_num)
 {
 	gentity_t* selected = &g_entities[selectedAI];
 
@@ -1292,16 +1292,16 @@ void WP_RemovenpcSaber(gentity_t* ent, int saberNum)
 		return;
 	}
 	//reset everything for this saber just in case
-	WP_SaberSetDefaults(&selected->client->ps.saber[saberNum]);
+	WP_SaberSetDefaults(&selected->client->ps.saber[saber_num]);
 
 	selected->client->ps.dualSabers = qfalse;
-	selected->client->ps.saber[saberNum].Deactivate();
-	selected->client->ps.saber[saberNum].SetLength(0.0f);
-	if (selected->weaponModel[saberNum] > 0)
+	selected->client->ps.saber[saber_num].Deactivate();
+	selected->client->ps.saber[saber_num].SetLength(0.0f);
+	if (selected->weaponModel[saber_num] > 0)
 	{
-		gi.G2API_SetSkin(&selected->ghoul2[selected->weaponModel[saberNum]], -1, 0);
-		gi.G2API_RemoveGhoul2Model(selected->ghoul2, selected->weaponModel[saberNum]);
-		selected->weaponModel[saberNum] = -1;
+		gi.G2API_SetSkin(&selected->ghoul2[selected->weaponModel[saber_num]], -1, 0);
+		gi.G2API_RemoveGhoul2Model(selected->ghoul2, selected->weaponModel[saber_num]);
+		selected->weaponModel[saber_num] = -1;
 	}
 	if (selected->client->ps.saberAnimLevel == SS_DUAL || selected->client->ps.saberAnimLevel == SS_STAFF)
 	{
@@ -1417,7 +1417,7 @@ void WP_SetSecondSaberNPCEntModelSkin(gentity_t* ent, gentity_t* saberent)
 	}
 }
 
-void WP_SetNPCSaber(gentity_t* ent, int saberNum, const char* saberName)
+void WP_SetNPCSaber(gentity_t* ent, const int saber_num, const char* saberName)
 {
 	gentity_t* selected = &g_entities[selectedAI];
 
@@ -1427,41 +1427,41 @@ void WP_SetNPCSaber(gentity_t* ent, int saberNum, const char* saberName)
 	}
 	if (Q_stricmp("none", saberName) == 0 || Q_stricmp("remove", saberName) == 0)
 	{
-		WP_RemoveSaber(selected, saberNum);
+		WP_RemoveSaber(selected, saber_num);
 		return;
 	}
-	if (selected->weaponModel[saberNum] > 0)
+	if (selected->weaponModel[saber_num] > 0)
 	{
-		gi.G2API_RemoveGhoul2Model(selected->ghoul2, selected->weaponModel[saberNum]);
-		selected->weaponModel[saberNum] = -1;
+		gi.G2API_RemoveGhoul2Model(selected->ghoul2, selected->weaponModel[saber_num]);
+		selected->weaponModel[saber_num] = -1;
 	}
-	WP_SaberParseParms(saberName, &selected->client->ps.saber[saberNum]); //get saber info
-	if (selected->client->ps.saber[saberNum].stylesLearned)
+	WP_SaberParseParms(saberName, &selected->client->ps.saber[saber_num]); //get saber info
+	if (selected->client->ps.saber[saber_num].stylesLearned)
 	{
-		selected->client->ps.saberStylesKnown |= selected->client->ps.saber[saberNum].stylesLearned;
+		selected->client->ps.saberStylesKnown |= selected->client->ps.saber[saber_num].stylesLearned;
 	}
-	if (selected->client->ps.saber[saberNum].singleBladeStyle)
+	if (selected->client->ps.saber[saber_num].singleBladeStyle)
 	{
-		selected->client->ps.saberStylesKnown |= selected->client->ps.saber[saberNum].singleBladeStyle;
+		selected->client->ps.saberStylesKnown |= selected->client->ps.saber[saber_num].singleBladeStyle;
 	}
-	if (saberNum == 1 && selected->client->ps.saber[1].saberFlags & SFL_TWO_HANDED)
+	if (saber_num == 1 && selected->client->ps.saber[1].saberFlags & SFL_TWO_HANDED)
 	{
 		//not allowed to use a 2-handed saber as second saber
-		WP_RemoveSaber(selected, saberNum);
+		WP_RemoveSaber(selected, saber_num);
 		return;
 	}
-	G_ModelIndex(selected->client->ps.saber[saberNum].model);
+	G_ModelIndex(selected->client->ps.saber[saber_num].model);
 	WP_SaberInitBladeData(selected);
-	if (saberNum == 1)
+	if (saber_num == 1)
 	{
 		//now have 2 sabers
 		selected->client->ps.dualSabers = qtrue;
 	}
 	if (selected->client->ps.weapon == WP_SABER)
 	{
-		WP_SaberAddG2SaberModels(selected, saberNum);
-		selected->client->ps.saber[saberNum].SetLength(0.0f);
-		selected->client->ps.saber[saberNum].Activate();
+		WP_SaberAddG2SaberModels(selected, saber_num);
+		selected->client->ps.saber[saber_num].SetLength(0.0f);
+		selected->client->ps.saber[saber_num].Activate();
 	}
 	else
 	{
@@ -1469,14 +1469,14 @@ void WP_SetNPCSaber(gentity_t* ent, int saberNum, const char* saberName)
 		WP_SaberAddHolsteredG2SaberModels(selected);
 	}
 
-	if (selected->client->ps.saber[saberNum].stylesLearned)
+	if (selected->client->ps.saber[saber_num].stylesLearned)
 	{
 		//change to the style we're supposed to be using
-		selected->client->ps.saberStylesKnown |= selected->client->ps.saber[saberNum].stylesLearned;
+		selected->client->ps.saberStylesKnown |= selected->client->ps.saber[saber_num].stylesLearned;
 	}
-	if (selected->client->ps.saber[saberNum].singleBladeStyle)
+	if (selected->client->ps.saber[saber_num].singleBladeStyle)
 	{
-		selected->client->ps.saberStylesKnown |= selected->client->ps.saber[saberNum].singleBladeStyle;
+		selected->client->ps.saberStylesKnown |= selected->client->ps.saber[saber_num].singleBladeStyle;
 	}
 	WP_UseFirstValidSaberStyle(selected, &selected->client->ps.saberAnimLevel);
 }
@@ -1592,41 +1592,41 @@ extern cvar_t* g_NPCsabertwocolor;
 void Workshop_Set_SaberColor_f(gentity_t* ent)
 {
 	//FIXME: just list the colors, each additional listing sets that blade
-	int saberNum = atoi(gi.argv(1));
+	int saber_num = atoi(gi.argv(1));
 	const char* color[MAX_BLADES];
-	int bladeNum;
+	int blade_num;
 
-	for (bladeNum = 0; bladeNum < MAX_BLADES; bladeNum++)
+	for (blade_num = 0; blade_num < MAX_BLADES; blade_num++)
 	{
-		color[bladeNum] = gi.argv(2 + bladeNum);
+		color[blade_num] = gi.argv(2 + blade_num);
 	}
 
-	if (saberNum < 1 || saberNum > 2 || gi.argc() < 3)
+	if (saber_num < 1 || saber_num > 2 || gi.argc() < 3)
 	{
-		gi.Printf("Usage:  saberColor <saberNum> <blade1 color> <blade2 color> ... <blade8 color>\n");
-		gi.Printf("valid saberNums:  1 or 2\n");
+		gi.Printf("Usage:  saberColor <saber_num> <blade1 color> <blade2 color> ... <blade8 color>\n");
+		gi.Printf("valid saber_nums:  1 or 2\n");
 		gi.Printf("valid colors:  red, orange, yellow, green, blue, and purple\n");
 
 		return;
 	}
-	saberNum--;
+	saber_num--;
 
 	const gentity_t* selected = &g_entities[selectedAI];
 
-	for (bladeNum = 0; bladeNum < MAX_BLADES; bladeNum++)
+	for (blade_num = 0; blade_num < MAX_BLADES; blade_num++)
 	{
-		if (!color[bladeNum] || !color[bladeNum][0])
+		if (!color[blade_num] || !color[blade_num][0])
 		{
 			break;
 		}
-		selected->client->ps.saber[saberNum].blade[bladeNum].color = TranslateSaberColor(color[bladeNum]);
+		selected->client->ps.saber[saber_num].blade[blade_num].color = TranslateSaberColor(color[blade_num]);
 	}
 
-	if (saberNum == 0)
+	if (saber_num == 0)
 	{
 		gi.cvar_set("g_NPCsabercolor", color[0]);
 	}
-	else if (saberNum == 1)
+	else if (saber_num == 1)
 	{
 		gi.cvar_set("g_NPCsabertwocolor", color[0]);
 	}

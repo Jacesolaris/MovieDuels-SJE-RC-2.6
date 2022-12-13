@@ -108,8 +108,8 @@ This is the only way control passes into the cgame module.
 This must be the very first function compiled into the .q3vm file
 ================
 */
-extern "C" Q_EXPORT intptr_t QDECL vmMain(intptr_t command, intptr_t arg0, intptr_t arg1, intptr_t arg2, intptr_t arg3,
-	intptr_t arg4, intptr_t arg5, intptr_t arg6, intptr_t arg7)
+extern "C" Q_EXPORT intptr_t QDECL vmMain(const intptr_t command, const intptr_t arg0, intptr_t arg1, intptr_t arg2, intptr_t arg3,
+                                          intptr_t arg4, intptr_t arg5, intptr_t arg6, intptr_t arg7)
 {
 	centity_t* cent;
 
@@ -157,7 +157,7 @@ extern "C" Q_EXPORT intptr_t QDECL vmMain(intptr_t command, intptr_t arg0, intpt
 	case CG_DRAW_DATAPAD_HUD:
 		if (cg.snap)
 		{
-			cent = &cg_entities[cg.snap->ps.clientNum];
+			cent = &cg_entities[cg.snap->ps.client_num];
 			CG_DrawDataPadHUD(cent);
 		}
 		return 0;
@@ -165,7 +165,7 @@ extern "C" Q_EXPORT intptr_t QDECL vmMain(intptr_t command, intptr_t arg0, intpt
 	case CG_DRAW_DATAPAD_OBJECTIVES:
 		if (cg.snap)
 		{
-			cent = &cg_entities[cg.snap->ps.clientNum];
+			cent = &cg_entities[cg.snap->ps.client_num];
 			CG_DrawDataPadObjectives(cent);
 		}
 		return 0;
@@ -215,27 +215,27 @@ static void CG_Set2DRatio(void)
 Ghoul2 Insert Start
 */
 
-void CG_ResizeG2Bolt(boltInfo_v* bolt, int newCount)
+void CG_ResizeG2Bolt(boltInfo_v* bolt, const int newCount)
 {
 	bolt->resize(newCount);
 }
 
-void CG_ResizeG2Surface(surfaceInfo_v* surface, int newCount)
+void CG_ResizeG2Surface(surfaceInfo_v* surface, const int newCount)
 {
 	surface->resize(newCount);
 }
 
-void CG_ResizeG2Bone(boneInfo_v* bone, int newCount)
+void CG_ResizeG2Bone(boneInfo_v* bone, const int newCount)
 {
 	bone->resize(newCount);
 }
 
-void CG_ResizeG2(CGhoul2Info_v* ghoul2, int newCount)
+void CG_ResizeG2(CGhoul2Info_v* ghoul2, const int newCount)
 {
 	ghoul2->resize(newCount);
 }
 
-void CG_ResizeG2TempBone(mdxaBone_v* tempBone, int newCount)
+void CG_ResizeG2TempBone(mdxaBone_v* tempBone, const int newCount)
 {
 	tempBone->resize(newCount);
 }
@@ -723,7 +723,7 @@ int CG_CrosshairPlayer()
 	{
 		return -1;
 	}
-	return cg.crosshairClientNum;
+	return cg.crosshairclient_num;
 }
 
 int CG_GetCameraPos(vec3_t camerapos)
@@ -824,7 +824,7 @@ NORETURN void CG_Error(const char* msg, ...)
 CG_Argv
 ================
 */
-const char* CG_Argv(int arg)
+const char* CG_Argv(const int arg)
 {
 	static char buffer[MAX_STRING_CHARS];
 
@@ -842,7 +842,7 @@ CG_RegisterItemSounds
 The server says this item is used on this level
 =================
 */
-void CG_RegisterItemSounds(int itemNum)
+void CG_RegisterItemSounds(const int itemNum)
 {
 	char data[MAX_QPATH];
 
@@ -1435,7 +1435,7 @@ Only call if clientInfo->infoValid is not true
 
 For players and NPCs to register their models
 */
-void CG_RegisterClientModels(int entityNum)
+void CG_RegisterClientModels(const int entityNum)
 {
 	if (entityNum < 0 || entityNum > ENTITYNUM_WORLD)
 	{
@@ -1999,7 +1999,7 @@ Some weapons like the noghri stick can be used by the player
 but those are in special circumstances.
 =================
 */
-static qboolean CG_IsWeaponUsablePlayer(int weaponNum)
+static qboolean CG_IsWeaponUsablePlayer(const int weaponNum)
 {
 	if (weaponNum == WP_ATST_MAIN || weaponNum == WP_ATST_SIDE || weaponNum == WP_EMPLACED_GUN
 		|| weaponNum == WP_BOT_LASER || weaponNum == WP_TURRET || weaponNum == WP_TIE_FIGHTER
@@ -2814,7 +2814,7 @@ static void CG_RegisterGraphics(void)
 CG_ConfigString
 =================
 */
-const char* CG_ConfigString(int index)
+const char* CG_ConfigString(const int index)
 {
 	if (index < 0 || index >= MAX_CONFIGSTRINGS)
 	{
@@ -2839,7 +2839,7 @@ CG_StartMusic
 
 ======================
 */
-void CG_StartMusic(qboolean bForceStart)
+void CG_StartMusic(const qboolean bForceStart)
 {
 	const char* s;
 	char parm1[MAX_QPATH], parm2[MAX_QPATH];
@@ -3008,7 +3008,7 @@ using cgMiscEntData_t = struct cgMiscEntData_s
 static cgMiscEntData_t MiscEnts[MAX_MISC_ENTS]; //statically allocated for now.
 static int NumMiscEnts = 0;
 
-void CG_CreateMiscEntFromGent(const gentity_t* ent, const vec3_t scale, float zOff)
+void CG_CreateMiscEntFromGent(const gentity_t* ent, const vec3_t scale, const float zOff)
 {
 	//store the model data
 	if (NumMiscEnts == MAX_MISC_ENTS)
@@ -3147,7 +3147,7 @@ CG_Init
 Called after every level change or subsystem restart
 =================
 */
-void CG_Init(int serverCommandSequence)
+void CG_Init(const int serverCommandSequence)
 {
 	cgs.serverCommandSequence = serverCommandSequence;
 
@@ -3252,7 +3252,7 @@ void CG_Shutdown(void)
 CG_DrawNode
 -------------------------
 */
-void CG_DrawNode(vec3_t origin, int type)
+void CG_DrawNode(vec3_t origin, const int type)
 {
 	localEntity_t* ex = CG_AllocLocalEntity();
 
@@ -3304,7 +3304,7 @@ CG_DrawRadius
 -------------------------
 */
 
-void CG_DrawRadius(vec3_t origin, unsigned int radius, int type)
+void CG_DrawRadius(vec3_t origin, const unsigned int radius, const int type)
 {
 	localEntity_t* ex = CG_AllocLocalEntity();
 
@@ -3351,7 +3351,7 @@ CG_DrawEdge
 -------------------------
 */
 
-void CG_DrawEdge(vec3_t start, vec3_t end, int type)
+void CG_DrawEdge(vec3_t start, vec3_t end, const int type)
 {
 	switch (type)
 	{
@@ -3587,7 +3587,7 @@ CG_DrawAlert
 -------------------------
 */
 
-void CG_DrawAlert(vec3_t origin, float rating)
+void CG_DrawAlert(vec3_t origin, const float rating)
 {
 	vec3_t drawPos;
 
@@ -4374,7 +4374,7 @@ void CG_PrevInventory_f()
 FindInventoryItemTag
 ===================
 */
-gitem_t* FindInventoryItemTag(int tag)
+gitem_t* FindInventoryItemTag(const int tag)
 {
 	for (int i = 1; i < bg_numItems; i++)
 	{
@@ -5042,7 +5042,7 @@ int showDataPadPowers[MAX_DPSHOWPOWERS] =
 ForcePower_Valid
 ===============
 */
-qboolean ForcePower_Valid(int index)
+qboolean ForcePower_Valid(const int index)
 {
 	const gentity_t* player = &g_entities[0];
 
@@ -5460,7 +5460,7 @@ void CG_DrawForceSelect_side()
 ForcePowerDataPad_Valid
 ===============
 */
-qboolean ForcePowerDataPad_Valid(int index)
+qboolean ForcePowerDataPad_Valid(const int index)
 {
 	const gentity_t* player = &g_entities[0];
 

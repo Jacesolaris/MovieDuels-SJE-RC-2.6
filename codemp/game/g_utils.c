@@ -278,9 +278,9 @@ int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean 
 		maxs[i] = origin[i] + radius;
 	}
 
-	const int numListedEntities = trap->EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+	const int num_listed_entities = trap->EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
 
-	for (int e = 0; e < numListedEntities; e++)
+	for (int e = 0; e < num_listed_entities; e++)
 	{
 		gentity_t* ent = &g_entities[entityList[e]];
 
@@ -1352,7 +1352,7 @@ G_EntitySound
 void G_EntitySound(gentity_t* ent, int channel, int soundIndex) {
 	gentity_t* te = G_TempEntity(ent->r.currentOrigin, EV_ENTITY_SOUND);
 	te->s.eventParm = soundIndex;
-	te->s.clientNum = ent->s.number;
+	te->s.client_num = ent->s.number;
 	te->s.trickedentindex = channel;
 }
 
@@ -1361,7 +1361,7 @@ void G_SoundOnEnt(gentity_t* ent, int channel, const char* soundPath)
 {
 	gentity_t* te = G_TempEntity(ent->r.currentOrigin, EV_ENTITY_SOUND);
 	te->s.eventParm = G_SoundIndex((char*)soundPath);
-	te->s.clientNum = ent->s.number;
+	te->s.client_num = ent->s.number;
 	te->s.trickedentindex = channel;
 }
 

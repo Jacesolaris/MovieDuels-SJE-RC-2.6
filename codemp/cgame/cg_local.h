@@ -757,7 +757,7 @@ typedef struct chatBoxItem_s
 typedef struct cg_s {
 	int			clientFrame;		// incremented each frame
 
-	int			clientNum;
+	int			client_num;
 
 	qboolean	demoPlayback;
 	qboolean	levelShot;			// taking a level menu screenshot
@@ -881,7 +881,7 @@ typedef struct cg_s {
 	int			lastKillTime;
 
 	// crosshair client ID
-	int			crosshairClientNum;
+	int			crosshairclient_num;
 	int			crosshairClientTime;
 
 	int			crosshairVehNum;
@@ -1780,7 +1780,7 @@ extern  char systemChat[256];
 void CG_AddLagometerFrameInfo(void);
 void CG_AddLagometerSnapshotInfo(snapshot_t* snap);
 void CG_CenterPrint(const char* str, int y, int charWidth);
-void CG_DrawHead(float x, float y, float w, float h, int clientNum, vec3_t headAngles);
+void CG_DrawHead(float x, float y, float w, float h, int client_num, vec3_t headAngles);
 void CG_DrawActive(stereoFrame_t stereoView);
 void CG_DrawFlagModel(float x, float y, float w, float h, int team, qboolean force2D);
 void CG_DrawTeamBackground(int x, int y, int w, int h, float alpha, int team);
@@ -1816,8 +1816,8 @@ void CG_DestroyNPCClient(clientInfo_t** ci);
 void CG_Player(centity_t* cent);
 void CG_ResetPlayerEntity(centity_t* cent);
 void CG_AddRefEntityWithPowerups(refEntity_t* ent, entityState_t* state, int team);
-void CG_NewClientInfo(int clientNum, qboolean entitiesInitialized);
-sfxHandle_t	CG_CustomSound(int clientNum, const char* soundName);
+void CG_NewClientInfo(int client_num, qboolean entitiesInitialized);
+sfxHandle_t	CG_CustomSound(int client_num, const char* soundName);
 void CG_PlayerShieldHit(int entitynum, vec3_t angles, int amount);
 
 //
@@ -1888,7 +1888,7 @@ void CG_RegisterWeapon(int weaponNum);
 void CG_RegisterItemVisuals(int itemNum);
 
 void CG_FireWeapon(centity_t* cent, qboolean alt_fire);
-void CG_MissileHitWall(int weapon, int clientNum, vec3_t origin, vec3_t dir, impactSound_t soundType, qboolean alt_fire, int charge);
+void CG_MissileHitWall(int weapon, int client_num, vec3_t origin, vec3_t dir, impactSound_t soundType, qboolean alt_fire, int charge);
 void CG_MissileHitPlayer(int weapon, vec3_t origin, vec3_t dir, int entityNum, qboolean alt_fire);
 
 void CG_AddViewWeapon(playerState_t* ps);
@@ -1957,7 +1957,7 @@ void CG_ProcessSnapshots(void);
 //
 void CG_LoadingString(const char* s);
 void CG_LoadingItem(int itemNum);
-void CG_LoadingClient(int clientNum);
+void CG_LoadingClient(int client_num);
 void CG_DrawInformation(void);
 
 //

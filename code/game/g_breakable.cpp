@@ -38,7 +38,7 @@ extern gentity_t* G_CreateObject(gentity_t* owner, vec3_t origin, vec3_t angles,
 extern qboolean player_locked;
 
 //---------------------------------------------------
-static void CacheChunkEffects(material_t material)
+static void CacheChunkEffects(const material_t material)
 {
 	switch (material)
 	{
@@ -1043,7 +1043,7 @@ void TieBomberThink(gentity_t* self)
 	}
 }
 
-void misc_model_breakable_gravity_init(gentity_t* ent, qboolean dropToFloor)
+void misc_model_breakable_gravity_init(gentity_t* ent, const qboolean dropToFloor)
 {
 	//G_SoundIndex( "sound/movers/objects/objectHurt.wav" );
 	G_EffectIndex("melee/kick_impact");

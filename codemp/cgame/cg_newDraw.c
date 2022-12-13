@@ -67,7 +67,7 @@ qhandle_t CG_StatusHandle(int task) {
 float CG_GetValue(int ownerDraw) {
 	clientInfo_t* ci;
 
-	const centity_t* cent = &cg_entities[cg.snap->ps.clientNum];
+	const centity_t* cent = &cg_entities[cg.snap->ps.client_num];
 	const playerState_t* ps = &cg.snap->ps;
 
 	switch (ownerDraw) {
@@ -831,7 +831,7 @@ void CG_KeyEvent(int key, qboolean down) {
 	}
 }
 
-int CG_ClientNumFromName(const char* p) {
+int CG_client_numFromName(const char* p) {
 	for (int i = 0; i < cgs.maxclients; i++) {
 		if (cgs.clientinfo[i].infoValid && Q_stricmp(cgs.clientinfo[i].name, p) == 0) {
 			return i;

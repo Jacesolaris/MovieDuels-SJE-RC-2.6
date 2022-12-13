@@ -28,7 +28,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 extern cvar_t* g_SerenityJediEngineMode;
 //---------------------------------------------------------
-void WP_FireStunBaton(gentity_t* ent, qboolean alt_fire)
+void WP_FireStunBaton(gentity_t* ent, const qboolean alt_fire)
 {
 	if (alt_fire)
 	{

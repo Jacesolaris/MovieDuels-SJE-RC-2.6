@@ -138,7 +138,7 @@ void FX_CloneWeaponHitWall(vec3_t origin, vec3_t normal)
 FX_CloneWeaponHitPlayer
 -------------------------
 */
-void FX_CloneWeaponHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, qboolean humanoid)
+void FX_CloneWeaponHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, const qboolean humanoid)
 {
 	if (humanoid)
 	{
@@ -210,7 +210,7 @@ void FX_CloneAltProjectileThink(centity_t* cent, const weaponInfo_s* weapon)
 FX_CloneAltHitWall
 -------------------------
 */
-void FX_CloneAltHitWall(vec3_t origin, vec3_t normal, int power)
+void FX_CloneAltHitWall(vec3_t origin, vec3_t normal, const int power)
 {
 	switch (power)
 	{

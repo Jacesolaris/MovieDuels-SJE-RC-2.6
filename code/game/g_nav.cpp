@@ -44,7 +44,7 @@ NPC_SetMoveGoal
 -------------------------
 */
 
-void NPC_SetMoveGoal(const gentity_t* ent, vec3_t point, int radius, qboolean isNavGoal, int combatPoint,
+void NPC_SetMoveGoal(const gentity_t* ent, vec3_t point, const int radius, const qboolean isNavGoal, const int combatPoint,
 	gentity_t* targetEnt)
 {
 	//Must be an NPC
@@ -104,7 +104,7 @@ waypoint_testDirection
 -------------------------
 */
 
-static float waypoint_testDirection(vec3_t origin, float yaw, float minDist)
+static float waypoint_testDirection(vec3_t origin, const float yaw, const float minDist)
 {
 	vec3_t trace_dir, test_pos;
 	vec3_t maxs, mins;

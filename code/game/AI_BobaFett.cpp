@@ -279,7 +279,7 @@ void Boba_DustFallNear(const vec3_t origin, const int dustcount)
 ////////////////////////////////////////////////////////////////////////////////////////
 // This is just a super silly wrapper around NPC_Change Weapon
 ////////////////////////////////////////////////////////////////////////////////////////
-void Boba_ChangeWeapon(int wp)
+void Boba_ChangeWeapon(const int wp)
 {
 	if (NPC->s.weapon == wp)
 	{
@@ -292,7 +292,7 @@ void Boba_ChangeWeapon(int wp)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Choose an "anti-knockdown" response
 ////////////////////////////////////////////////////////////////////////////////////////
-qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir, qboolean forceKnockdown)
+qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir, const qboolean forceKnockdown)
 {
 	if (self->client->NPC_class != CLASS_BOBAFETT && self->client->NPC_class != CLASS_MANDALORIAN && self->client->
 		NPC_class != CLASS_JANGO && self->client->NPC_class != CLASS_JANGODUAL)
@@ -395,7 +395,7 @@ bool Boba_CanSeeEnemy(const gentity_t* self)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void Boba_Pain(gentity_t* self, gentity_t* inflictor, int damage, int mod)
+void Boba_Pain(gentity_t* self, gentity_t* inflictor, int damage, const int mod)
 {
 	if (mod == MOD_SABER && !(NPCInfo->aiFlags & NPCAI_FLAMETHROW))
 	{
@@ -556,46 +556,46 @@ void Boba_FireFlameThrower(gentity_t* self)
 	}
 	gi.trace(&tr, start, self->mins, self->maxs, end, self->s.number, MASK_SHOT, static_cast<EG2_Collision>(0), 0);
 
-	gentity_t* traceEnt = &g_entities[tr.entityNum];
+	gentity_t* trace_ent = &g_entities[tr.entityNum];
 
-	if (tr.entityNum < ENTITYNUM_WORLD && traceEnt->takedamage)
+	if (tr.entityNum < ENTITYNUM_WORLD && trace_ent->takedamage)
 	{
 		if (g_SerenityJediEngineMode->integer)
 		{
-			G_Damage(traceEnt, self, self, dir, tr.endpos, damage_md,
+			G_Damage(trace_ent, self, self, dir, tr.endpos, damage_md,
 				DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC | DAMAGE_IGNORE_TEAM, MOD_LAVA, HL_NONE);
 		}
 		else
 		{
-			G_Damage(traceEnt, self, self, dir, tr.endpos, damage,
+			G_Damage(trace_ent, self, self, dir, tr.endpos, damage,
 				DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC | DAMAGE_IGNORE_TEAM, MOD_LAVA, HL_NONE);
 		}
 
-		if (traceEnt->health > 0 && traceEnt->painDebounceTime > level.time)
+		if (trace_ent->health > 0 && trace_ent->painDebounceTime > level.time)
 		{
-			G_Throw(traceEnt, dir, 30);
+			G_Throw(trace_ent, dir, 30);
 
-			if (damage && traceEnt->client)
+			if (damage && trace_ent->client)
 			{
-				if (g_SerenityJediEngineMode->integer == 2 && traceEnt->health < 70 && traceEnt->ghoul2.size())
+				if (g_SerenityJediEngineMode->integer == 2 && trace_ent->health < 70 && trace_ent->ghoul2.size())
 				{
-					if (traceEnt->chestBolt != -1)
+					if (trace_ent->chestBolt != -1)
 					{
-						G_PlayEffect(G_EffectIndex("flamethrower/flame_impact"), traceEnt->playerModel,
-							traceEnt->chestBolt, traceEnt->s.number, traceEnt->currentOrigin, 3000, qtrue);
+						G_PlayEffect(G_EffectIndex("flamethrower/flame_impact"), trace_ent->playerModel,
+							trace_ent->chestBolt, trace_ent->s.number, trace_ent->currentOrigin, 3000, qtrue);
 					}
 				}
-				if (!PM_InRoll(&traceEnt->client->ps)
-					&& !PM_InKnockDown(&traceEnt->client->ps))
+				if (!PM_InRoll(&trace_ent->client->ps)
+					&& !PM_InKnockDown(&trace_ent->client->ps))
 				{
-					NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_WIND, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+					NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_WIND, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				}
 			}
-			player_Burn(traceEnt);
+			player_Burn(trace_ent);
 		}
 		else
 		{
-			Player_CheckBurn(traceEnt);
+			Player_CheckBurn(trace_ent);
 		}
 	}
 }
@@ -630,46 +630,46 @@ void Mando_FireFlameThrower(gentity_t* self)
 	}
 	gi.trace(&tr, start, self->mins, self->maxs, end, self->s.number, MASK_SHOT, static_cast<EG2_Collision>(0), 0);
 
-	gentity_t* traceEnt = &g_entities[tr.entityNum];
+	gentity_t* trace_ent = &g_entities[tr.entityNum];
 
-	if (tr.entityNum < ENTITYNUM_WORLD && traceEnt->takedamage)
+	if (tr.entityNum < ENTITYNUM_WORLD && trace_ent->takedamage)
 	{
 		if (g_SerenityJediEngineMode->integer)
 		{
-			G_Damage(traceEnt, self, self, dir, tr.endpos, damage_md,
+			G_Damage(trace_ent, self, self, dir, tr.endpos, damage_md,
 				DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC | DAMAGE_IGNORE_TEAM, MOD_LAVA, HL_NONE);
 		}
 		else
 		{
-			G_Damage(traceEnt, self, self, dir, tr.endpos, damage,
+			G_Damage(trace_ent, self, self, dir, tr.endpos, damage,
 				DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC | DAMAGE_IGNORE_TEAM, MOD_LAVA, HL_NONE);
 		}
 
-		if (traceEnt->health > 0 && traceEnt->painDebounceTime > level.time)
+		if (trace_ent->health > 0 && trace_ent->painDebounceTime > level.time)
 		{
-			G_Throw(traceEnt, dir, 30);
+			G_Throw(trace_ent, dir, 30);
 
-			if (damage && traceEnt->client)
+			if (damage && trace_ent->client)
 			{
-				if (g_SerenityJediEngineMode->integer == 2 && traceEnt->health < 70 && traceEnt->ghoul2.size())
+				if (g_SerenityJediEngineMode->integer == 2 && trace_ent->health < 70 && trace_ent->ghoul2.size())
 				{
-					if (traceEnt->chestBolt != -1)
+					if (trace_ent->chestBolt != -1)
 					{
-						G_PlayEffect(G_EffectIndex("flamethrower/flame_impact"), traceEnt->playerModel,
-							traceEnt->chestBolt, traceEnt->s.number, traceEnt->currentOrigin, 3000, qtrue);
+						G_PlayEffect(G_EffectIndex("flamethrower/flame_impact"), trace_ent->playerModel,
+							trace_ent->chestBolt, trace_ent->s.number, trace_ent->currentOrigin, 3000, qtrue);
 					}
 				}
-				if (!PM_InRoll(&traceEnt->client->ps)
-					&& !PM_InKnockDown(&traceEnt->client->ps))
+				if (!PM_InRoll(&trace_ent->client->ps)
+					&& !PM_InKnockDown(&trace_ent->client->ps))
 				{
-					NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_WIND, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+					NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_WIND, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				}
 			}
-			player_Burn(traceEnt);
+			player_Burn(trace_ent);
 		}
 		else
 		{
-			Player_CheckBurn(traceEnt);
+			Player_CheckBurn(trace_ent);
 		}
 	}
 }
@@ -889,7 +889,7 @@ void Boba_VibrobladePunch(gentity_t* self)
 	self->s.weapon = oldWeapon;
 }
 
-void Boba_FireWristMissile(gentity_t* self, int whichMissile)
+void Boba_FireWristMissile(gentity_t* self, const int whichMissile)
 {
 	static int shotsFired = 0; //only 5 shots allowed for wristlaser; only 1 for missile launcher or dart
 
@@ -1030,7 +1030,7 @@ void Boba_FireWristMissile(gentity_t* self, int whichMissile)
 	self->s.weapon = oldWeapon;
 }
 
-void Boba_EndWristMissile(const gentity_t* self, int whichMissile)
+void Boba_EndWristMissile(const gentity_t* self, const int whichMissile)
 {
 	if (missileStates[whichMissile].hold)
 	{

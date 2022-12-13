@@ -395,7 +395,7 @@ void Rancor_DropVictim(gentity_t* self)
 	self->count = 0; //drop him
 }
 
-void Rancor_Swing(int boltIndex, qboolean tryGrab)
+void Rancor_Swing(const int boltIndex, const qboolean tryGrab)
 {
 	gentity_t* radiusEnts[128];
 	const float radius = NPC->spawnflags & SPF_RANCOR_MUTANT ? 200 : 88;
@@ -823,7 +823,7 @@ void Rancor_Bite(void)
 //------------------------------
 extern gentity_t* TossClientItems(gentity_t* self);
 
-void Rancor_Attack(float distance, qboolean doCharge, qboolean aimAtBlockedEntity)
+void Rancor_Attack(const float distance, const qboolean doCharge, const qboolean aimAtBlockedEntity)
 {
 	if (!TIMER_Exists(NPC, "attacking")
 		&& TIMER_Done(NPC, "attackDebounce"))
@@ -1290,7 +1290,7 @@ void Rancor_Combat(void)
 NPC_Rancor_Pain
 -------------------------
 */
-void NPC_Rancor_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
+void NPC_Rancor_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage, int mod,
 	int hitLoc)
 {
 	qboolean hitByRancor = qfalse;
@@ -1542,13 +1542,13 @@ void Rancor_FireBreathAttack(void)
 
 	gi.trace(&tr, start, trace_mins, trace_maxs, end, NPC->s.number, MASK_SHOT, static_cast<EG2_Collision>(0), 0);
 
-	gentity_t* traceEnt = &g_entities[tr.entityNum];
+	gentity_t* trace_ent = &g_entities[tr.entityNum];
 	if (tr.entityNum < ENTITYNUM_WORLD
-		&& traceEnt->takedamage
-		&& traceEnt->client)
+		&& trace_ent->takedamage
+		&& trace_ent->client)
 	{
 		//breath attack only does damage to living things
-		G_Damage(traceEnt, NPC, NPC, dir, tr.endpos, damage * 2,
+		G_Damage(trace_ent, NPC, NPC, dir, tr.endpos, damage * 2,
 			DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC | DAMAGE_IGNORE_TEAM, MOD_LAVA, HL_NONE);
 	}
 	if (tr.fraction < 1.0f)

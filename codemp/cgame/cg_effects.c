@@ -971,7 +971,7 @@ void CG_ScorePlum(int client, vec3_t org, int score) {
 	static vec3_t lastPos;
 
 	// only visualize for the client that scored
-	if (client != cg.predictedPlayerState.clientNum || cg_scorePlums.integer == 0) {
+	if (client != cg.predictedPlayerState.client_num || cg_scorePlums.integer == 0) {
 		return;
 	}
 

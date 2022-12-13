@@ -81,7 +81,7 @@ void func_usable_think(gentity_t* self)
 	}
 }
 
-qboolean G_EntIsRemovableUsable(int entNum)
+qboolean G_EntIsRemovableUsable(const int entNum)
 {
 	const gentity_t* ent = &g_entities[entNum];
 	if (ent->classname && !Q_stricmp("func_usable", ent->classname))

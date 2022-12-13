@@ -58,11 +58,11 @@ extern pml_t pml;
 extern int c_pmove;
 
 void PM_ClipVelocity(vec3_t in, vec3_t normal, vec3_t out, float overbounce);
-void PM_AddTouchEnt(int entityNum);
-void PM_AddEvent(int newEvent);
+void PM_AddTouchEnt(int entity_num);
+void PM_AddEvent(int new_event);
 
-qboolean PM_SlideMove(float gravity);
-void PM_StepSlideMove(float gravity);
+qboolean PM_SlideMove(float grav_mod);
+void PM_StepSlideMove(float grav_mod);
 
 extern qboolean BG_AllowThirdPersonSpecialMove(const playerState_t* ps);
 

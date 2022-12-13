@@ -90,7 +90,7 @@ extern "C" {
 #define Q_max(x,y) ((x)>(y)?(x):(y))
 
 #if defined(_MSC_VER)
-	static __inline long Q_ftol(float f)
+	static __inline long Q_ftol(const float f)
 	{
 		return (long)f;
 	}

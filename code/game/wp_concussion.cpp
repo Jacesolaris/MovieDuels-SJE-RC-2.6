@@ -147,27 +147,27 @@ static void WP_FireConcussionAlt(gentity_t* ent)
 			break;
 		}
 
-		gentity_t* traceEnt = &g_entities[tr.entityNum];
+		gentity_t* trace_ent = &g_entities[tr.entityNum];
 
-		if (traceEnt)
+		if (trace_ent)
 		{
-			if (WP_SaberMustDisruptorBlock(traceEnt, ent, qfalse, tr.endpos, -1, -1) && !
-				WP_DoingForcedAnimationForForcePowers(traceEnt))
+			if (WP_SaberMustDisruptorBlock(trace_ent, ent, qfalse, tr.endpos, -1, -1) && !
+				WP_DoingForcedAnimationForForcePowers(trace_ent))
 			{
-				G_MissileReflectEffect(traceEnt, tr.endpos, tr.plane.normal);
-				WP_ForcePowerDrain(traceEnt, FP_SABER_DEFENSE, WP_SaberBlockCost(traceEnt, ent, tr.endpos));
+				G_MissileReflectEffect(trace_ent, tr.endpos, tr.plane.normal);
+				WP_ForcePowerDrain(trace_ent, FP_SABER_DEFENSE, WP_SaberBlockCost(trace_ent, ent, tr.endpos));
 				//force player into a projective block move.
-				hitDodged = WP_SaberBlockBolt_MD(traceEnt, tr.endpos, qtrue);
+				hitDodged = WP_SaberBlockBolt_MD(trace_ent, tr.endpos, qtrue);
 			}
 			else
 			{
-				if (traceEnt->s.number < MAX_CLIENTS || G_ControlledByPlayer(traceEnt))
+				if (trace_ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(trace_ent))
 				{
-					hitDodged = jedi_disruptor_dodge_evasion(traceEnt, ent, &tr, HL_NONE);
+					hitDodged = jedi_disruptor_dodge_evasion(trace_ent, ent, &tr, HL_NONE);
 				}
 				else
 				{
-					hitDodged = jedi_npc_disruptor_dodge_evasion(traceEnt, ent, &tr, HL_NONE);
+					hitDodged = jedi_npc_disruptor_dodge_evasion(trace_ent, ent, &tr, HL_NONE);
 				}
 				//acts like we didn't even hit him
 			}
@@ -176,34 +176,34 @@ static void WP_FireConcussionAlt(gentity_t* ent)
 		{
 			if (render_impact)
 			{
-				if (tr.entityNum < ENTITYNUM_WORLD && traceEnt->takedamage
-					|| !Q_stricmp(traceEnt->classname, "misc_model_breakable")
-					|| traceEnt->s.eType == ET_MOVER)
+				if (tr.entityNum < ENTITYNUM_WORLD && trace_ent->takedamage
+					|| !Q_stricmp(trace_ent->classname, "misc_model_breakable")
+					|| trace_ent->s.eType == ET_MOVER)
 				{
 					// Create a simple impact type mark that doesn't last long in the world
 					G_PlayEffect(G_EffectIndex("concussion/alt_hit"), tr.endpos, tr.plane.normal);
 
-					if (traceEnt->client && LogAccuracyHit(traceEnt, ent))
+					if (trace_ent->client && LogAccuracyHit(trace_ent, ent))
 					{
 						//NOTE: hitting multiple ents can still get you over 100% accuracy
 						ent->client->ps.persistant[PERS_ACCURACY_HITS]++;
 					}
 
 					const int hitLoc = G_GetHitLocFromTrace(&tr, MOD_CONC_ALT);
-					const auto noKnockBack = static_cast<qboolean>((traceEnt->flags & FL_NO_KNOCKBACK) != 0);
+					const auto noKnockBack = static_cast<qboolean>((trace_ent->flags & FL_NO_KNOCKBACK) != 0);
 					//will be set if they die, I want to know if it was on *before* they died
-					if (traceEnt && traceEnt->client && traceEnt->client->NPC_class == CLASS_GALAKMECH)
+					if (trace_ent && trace_ent->client && trace_ent->client->NPC_class == CLASS_GALAKMECH)
 					{
 						//hehe
-						G_Damage(traceEnt, ent, ent, forwardVec, tr.endpos, 10, DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC,
+						G_Damage(trace_ent, ent, ent, forwardVec, tr.endpos, 10, DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC,
 							MOD_CONC_ALT, hitLoc);
 						break;
 					}
-					G_Damage(traceEnt, ent, ent, forwardVec, tr.endpos, damage, DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC,
+					G_Damage(trace_ent, ent, ent, forwardVec, tr.endpos, damage, DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC,
 						MOD_CONC_ALT, hitLoc);
 
 					//do knockback and knockdown manually
-					if (traceEnt->client)
+					if (trace_ent->client)
 					{
 						//only if we hit a client
 						vec3_t pushDir;
@@ -212,30 +212,30 @@ static void WP_FireConcussionAlt(gentity_t* ent)
 						{
 							pushDir[2] = 0.2f;
 						} //hmm, re-normalize?  nah...
-						//if ( traceEnt->NPC || Q_irand(0,g_spskill->integer+1) )
+						//if ( trace_ent->NPC || Q_irand(0,g_spskill->integer+1) )
 						{
 							if (!noKnockBack)
 							{
 								//knock-backable
-								G_Throw(traceEnt, pushDir, 200);
-								if (traceEnt->client->NPC_class == CLASS_ROCKETTROOPER)
+								G_Throw(trace_ent, pushDir, 200);
+								if (trace_ent->client->NPC_class == CLASS_ROCKETTROOPER)
 								{
-									traceEnt->client->ps.pm_time = Q_irand(1500, 3000);
+									trace_ent->client->ps.pm_time = Q_irand(1500, 3000);
 								}
 							}
-							if (traceEnt->health > 0)
+							if (trace_ent->health > 0)
 							{
 								//alive
-								if (G_HasKnockdownAnims(traceEnt))
+								if (G_HasKnockdownAnims(trace_ent))
 								{
 									//knock-downable
-									G_Knockdown(traceEnt, ent, pushDir, 400, qtrue);
+									G_Knockdown(trace_ent, ent, pushDir, 400, qtrue);
 								}
 							}
 						}
 					}
 
-					if (traceEnt->s.eType == ET_MOVER)
+					if (trace_ent->s.eType == ET_MOVER)
 					{
 						//stop the traces on any mover
 						break;
@@ -361,7 +361,7 @@ static void WP_FireConcussion(gentity_t* ent)
 	missile->bounceCount = 0;
 }
 
-void WP_Concussion(gentity_t* ent, qboolean alt_fire)
+void WP_Concussion(gentity_t* ent, const qboolean alt_fire)
 {
 	if (alt_fire)
 	{

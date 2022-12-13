@@ -114,7 +114,7 @@ public:
 	// Constructors
 	////////////////////////////////////////////////////////////////////////////////////
 	CBBox() { mMin.Set(RAVL_BB_EMPTY_MIN);	mMax.Set(RAVL_BB_EMPTY_MAX); }
-	CBBox(float Radius) { mMin.Set(-Radius);				mMax.Set(Radius); }
+	CBBox(const float Radius) { mMin.Set(-Radius);				mMax.Set(Radius); }
 	CBBox(const CVec3& t) { mMin = t;						mMax = t; }
 	CBBox(const CVec3& min, const CVec3& max) { mMin = min;						mMax = max; }
 	CBBox(const CBBox& t) { mMin = t.mMin;					mMax = t.mMax; }
@@ -136,7 +136,7 @@ public:
 	// Translation, Rotation, Expansion
 	////////////////////////////////////////////////////////////////////////////////////
 	void	Translate(const CVec3& f) { mMin += f; mMax += f; }
-	void	Expand(float x) { mMin -= x; mMax += x; }
+	void	Expand(const float x) { mMin -= x; mMax += x; }
 	void	Expand(const CVec3& f) { mMin -= f; mMax += f; }
 	//	void	ThroughMatrix(const CBBox &from, const CMatrix4 &mat);
 
@@ -144,7 +144,7 @@ public:
 		// Volumetric & Area Operations
 		////////////////////////////////////////////////////////////////////////////////////
 	float	Volume() const { return (mMax[0] - mMin[0]) * (mMax[1] - mMin[1]) * (mMax[2] - mMin[2]); }
-	float	AxisSize(int axis) const { return mMax[axis] - mMin[axis]; }
+	float	AxisSize(const int axis) const { return mMax[axis] - mMin[axis]; }
 	float	LargestAxisSize() const;
 	float	DistanceEstimate(const CVec3& p) const;			// Manhattan Distance
 	float	AreaEstimate(const CVec3& p) const;				// Manhattan Distance * LargestAxisSize()

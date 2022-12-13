@@ -42,7 +42,7 @@ inline void Vector2Clear(vec2_t a)
 	a[1] = 0.0f;
 }
 
-inline void Vector2Set(vec2_t a, float b, float c)
+inline void Vector2Set(vec2_t a, const float b, const float c)
 {
 	a[0] = b;
 	a[1] = c;

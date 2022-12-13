@@ -608,7 +608,7 @@ Find all trigger entities that ent's current position touches.
 Spectators will only interact with teleporters.
 ============
 */
-void G_MoverTouchPushTriggers(gentity_t* ent, vec3_t oldOrg)
+void G_MoverTouchPushTriggers(gentity_t* ent, vec3_t old_org)
 {
 	int			touch[MAX_GENTITIES];
 	trace_t		trace;
@@ -628,7 +628,7 @@ void G_MoverTouchPushTriggers(gentity_t* ent, vec3_t oldOrg)
 		stepSize = 1;
 	}
 
-	VectorSubtract(ent->r.currentOrigin, oldOrg, dir);
+	VectorSubtract(ent->r.currentOrigin, old_org, dir);
 	const float dist = VectorNormalize(dir);
 	for (float step = 0; step <= dist; step += stepSize)
 	{
@@ -914,7 +914,7 @@ but any server game effects are handled here
 */
 qboolean BG_InKnockDownOnly(int anim);
 
-void ClientEvents(gentity_t* ent, int oldEventSequence) {
+void ClientEvents(gentity_t* ent, int old_event_sequence) {
 	int		damage;
 	vec3_t	dir;
 	//	vec3_t	origin, angles;
@@ -924,10 +924,10 @@ void ClientEvents(gentity_t* ent, int oldEventSequence) {
 
 	const gclient_t* client = ent->client;
 
-	if (oldEventSequence < client->ps.eventSequence - MAX_PS_EVENTS) {
-		oldEventSequence = client->ps.eventSequence - MAX_PS_EVENTS;
+	if (old_event_sequence < client->ps.eventSequence - MAX_PS_EVENTS) {
+		old_event_sequence = client->ps.eventSequence - MAX_PS_EVENTS;
 	}
-	for (int i = oldEventSequence; i < client->ps.eventSequence; i++) {
+	for (int i = old_event_sequence; i < client->ps.eventSequence; i++) {
 		const int event = client->ps.events[i & (MAX_PS_EVENTS - 1)];
 
 		switch (event) {
@@ -1077,10 +1077,10 @@ void SendPendingPredictableEvents(playerState_t* ps) {
 		t->s.number = number;
 		t->s.eType = ET_EVENTS + event;
 		t->s.eFlags |= EF_PLAYER_EVENT;
-		t->s.otherEntityNum = ps->clientNum;
+		t->s.otherEntityNum = ps->client_num;
 		// send to everyone except the client who generated the event
 		t->r.svFlags |= SVF_NOTSINGLECLIENT;
-		t->r.singleClient = ps->clientNum;
+		t->r.singleClient = ps->client_num;
 		// set back external event
 		ps->externalEvent = extEvent;
 	}
@@ -3514,11 +3514,11 @@ ClientThink
 A new command has arrived from the client
 ==================
 */
-void ClientThink(int clientNum, usercmd_t* ucmd) {
-	gentity_t* ent = g_entities + clientNum;
-	if (clientNum < MAX_CLIENTS)
+void ClientThink(int client_num, usercmd_t* ucmd) {
+	gentity_t* ent = g_entities + client_num;
+	if (client_num < MAX_CLIENTS)
 	{
-		trap->GetUsercmd(clientNum, &ent->client->pers.cmd);
+		trap->GetUsercmd(client_num, &ent->client->pers.cmd);
 	}
 
 	// mark the time we got info, so we can display the
@@ -3533,7 +3533,7 @@ void ClientThink(int clientNum, usercmd_t* ucmd) {
 	/* 	This was moved to clientthink_real, but since its sort of a risky change i left it here for
 		now as a more concrete reference - BSD
 
-		if ( clientNum < MAX_CLIENTS
+		if ( client_num < MAX_CLIENTS
 			&& ent->client->ps.m_iVehicleNum )
 		{//driving a vehicle
 			if (g_entities[ent->client->ps.m_iVehicleNum].client)
@@ -3561,14 +3561,14 @@ void ClientThink(int clientNum, usercmd_t* ucmd) {
 	}
 	// vehicles are clients and when running synchronous they still need to think here
 	// so special case them.
-	else if (clientNum >= MAX_CLIENTS) {
+	else if (client_num >= MAX_CLIENTS) {
 		ClientThink_real(ent);
 	}
 
 	/*	This was moved to clientthink_real, but since its sort of a risky change i left it here for
 		now as a more concrete reference - BSD
 
-		if ( clientNum < MAX_CLIENTS
+		if ( client_num < MAX_CLIENTS
 			&& ent->client->ps.m_iVehicleNum )
 		{//driving a vehicle
 			//run it
@@ -3623,17 +3623,17 @@ void SpectatorClientEndFrame(gentity_t* ent) {
 
 	// if we are doing a chase cam or a remote view, grab the latest info
 	if (ent->client->sess.spectatorState == SPECTATOR_FOLLOW) {
-		int clientNum = ent->client->sess.spectatorClient;
+		int client_num = ent->client->sess.spectatorClient;
 
 		// team follow1 and team follow2 go to whatever clients are playing
-		if (clientNum == -1) {
-			clientNum = level.follow1;
+		if (client_num == -1) {
+			client_num = level.follow1;
 		}
-		else if (clientNum == -2) {
-			clientNum = level.follow2;
+		else if (client_num == -2) {
+			client_num = level.follow2;
 		}
-		if (clientNum >= 0) {
-			const gclient_t* cl = &level.clients[clientNum];
+		if (client_num >= 0) {
+			const gclient_t* cl = &level.clients[client_num];
 			if (cl->pers.connected == CON_CONNECTED && cl->sess.sessionTeam != TEAM_SPECTATOR) {
 				//flags = (cl->mGameFlags & ~(PSG_VOTED | PSG_TEAMVOTED)) | (ent->client->mGameFlags & (PSG_VOTED | PSG_TEAMVOTED));
 				//ent->client->mGameFlags = flags;

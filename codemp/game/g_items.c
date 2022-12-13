@@ -721,18 +721,18 @@ void pas_think(gentity_t* ent)
 	testMaxs[1] = ent->r.currentOrigin[1] + ent->r.maxs[1] - 4;
 	testMaxs[2] = ent->r.currentOrigin[2] + ent->r.maxs[2] - 4;
 
-	int numListedEntities = trap->EntitiesInBox(testMins, testMaxs, iEntityList, MAX_GENTITIES);
+	int num_listed_entities = trap->EntitiesInBox(testMins, testMaxs, iEntityList, MAX_GENTITIES);
 
-	while (i < numListedEntities)
+	while (i < num_listed_entities)
 	{
 		if (iEntityList[i] < MAX_CLIENTS)
 		{ //client stuck inside me. go nonsolid.
 			const int clNum = iEntityList[i];
 
-			numListedEntities = trap->EntitiesInBox(g_entities[clNum].r.absmin, g_entities[clNum].r.absmax, iEntityList, MAX_GENTITIES);
+			num_listed_entities = trap->EntitiesInBox(g_entities[clNum].r.absmin, g_entities[clNum].r.absmax, iEntityList, MAX_GENTITIES);
 
 			i = 0;
-			while (i < numListedEntities)
+			while (i < num_listed_entities)
 			{
 				if (iEntityList[i] == ent->s.number)
 				{
@@ -1403,7 +1403,7 @@ void ItemUse_UseDisp(gentity_t* ent, int type)
 		gentity_t* te = G_TempEntity(ent->client->ps.origin, EV_LOCALTIMER);
 		te->s.time = level.time;
 		te->s.time2 = TOSS_DEBOUNCE_TIME;
-		te->s.owner = ent->client->ps.clientNum;
+		te->s.owner = ent->client->ps.client_num;
 	}
 }
 

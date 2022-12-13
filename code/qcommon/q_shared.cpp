@@ -101,7 +101,7 @@ qboolean COM_CompareExtension(const char* in, const char* ext)
 COM_DefaultExtension
 ==================
 */
-void COM_DefaultExtension(char* path, int maxSize, const char* extension)
+void COM_DefaultExtension(char* path, const int maxSize, const char* extension)
 {
 	const char* dot = strrchr(path, '.'), * slash;
 	if (dot && (!((slash = strrchr(path, '/'))) || slash < dot))
@@ -296,7 +296,7 @@ int COM_Compress(char* data_p)
 	return out - data_p;
 }
 
-char* COM_ParseExt(const char** data_p, qboolean allowLineBreaks)
+char* COM_ParseExt(const char** data_p, const qboolean allowLineBreaks)
 {
 	int c;
 	qboolean hasNewLines = qfalse;
@@ -562,7 +562,7 @@ void SkipRestOfLine(const char** data)
 	*data = p;
 }
 
-void Parse1DMatrix(const char** buf_p, int x, float* m)
+void Parse1DMatrix(const char** buf_p, const int x, float* m)
 {
 	COM_MatchToken(buf_p, "(");
 
@@ -575,7 +575,7 @@ void Parse1DMatrix(const char** buf_p, int x, float* m)
 	COM_MatchToken(buf_p, ")");
 }
 
-void Parse2DMatrix(const char** buf_p, int y, int x, float* m)
+void Parse2DMatrix(const char** buf_p, const int y, const int x, float* m)
 {
 	COM_MatchToken(buf_p, "(");
 
@@ -587,7 +587,7 @@ void Parse2DMatrix(const char** buf_p, int y, int x, float* m)
 	COM_MatchToken(buf_p, ")");
 }
 
-void Parse3DMatrix(const char** buf_p, int z, int y, int x, float* m)
+void Parse3DMatrix(const char** buf_p, const int z, const int y, const int x, float* m)
 {
 	COM_MatchToken(buf_p, "(");
 
@@ -724,7 +724,7 @@ int Q_parseSaberColor(const char* p, float* color)
 ============================================================================
 */
 
-int QDECL Com_sprintf(char* dest, int size, const char* fmt, ...)
+int QDECL Com_sprintf(char* dest, const int size, const char* fmt, ...)
 {
 	va_list argptr;
 
@@ -1017,7 +1017,7 @@ void Info_SetValueForKey(char* s, const char* key, const char* value)
 Com_CharIsOneOfCharset
 ==================
 */
-static qboolean Com_CharIsOneOfCharset(char c, const char* set)
+static qboolean Com_CharIsOneOfCharset(const char c, const char* set)
 {
 	for (size_t i = 0; i < strlen(set); i++)
 	{
@@ -1053,7 +1053,7 @@ char* Com_SkipCharset(char* s, const char* sep)
 Com_SkipTokens
 ==================
 */
-char* Com_SkipTokens(char* s, int numTokens, const char* sep)
+char* Com_SkipTokens(char* s, const int numTokens, const char* sep)
 {
 	int sepCount = 0;
 	char* p = s;
@@ -1110,7 +1110,7 @@ GetStringForID
 -------------------------
 */
 
-const char* GetStringForID(const stringID_table_t* table, int id)
+const char* GetStringForID(const stringID_table_t* table, const int id)
 {
 	int index = 0;
 
@@ -1125,30 +1125,30 @@ const char* GetStringForID(const stringID_table_t* table, int id)
 	return nullptr;
 }
 
-int Q_clampi(int min, int value, int max)
+int Q_clampi(const int min, const int value, const int max)
 {
 	if (value < min) return min;
 	if (value > max) return max;
 	return value;
 }
 
-qboolean Q_InBitflags(const uint32_t* bits, int index, uint32_t bitsPerByte)
+qboolean Q_InBitflags(const uint32_t* bits, const int index, const uint32_t bitsPerByte)
 {
 	return bits[index / bitsPerByte] & 1 << index % bitsPerByte ? qtrue : qfalse;
 }
 
-void Q_AddToBitflags(uint32_t* bits, int index, uint32_t bitsPerByte)
+void Q_AddToBitflags(uint32_t* bits, const int index, const uint32_t bitsPerByte)
 {
 	bits[index / bitsPerByte] |= 1 << index % bitsPerByte;
 }
 
-void Q_RemoveFromBitflags(uint32_t* bits, int index, uint32_t bitsPerByte)
+void Q_RemoveFromBitflags(uint32_t* bits, const int index, const uint32_t bitsPerByte)
 {
 	bits[index / bitsPerByte] &= ~(1 << index % bitsPerByte);
 }
 
-void* Q_LinearSearch(const void* key, const void* ptr, size_t count,
-	size_t size, cmpFunc_t cmp)
+void* Q_LinearSearch(const void* key, const void* ptr, const size_t count,
+                     const size_t size, const cmpFunc_t cmp)
 {
 	for (size_t i = 0; i < count; i++)
 	{

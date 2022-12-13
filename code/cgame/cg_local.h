@@ -430,7 +430,7 @@ using cg_t = struct
 	int lowAmmoWarning; // 1 = low, 2 = empty
 
 	// crosshair client ID
-	int crosshairClientNum; //who you're looking at
+	int crosshairclient_num; //who you're looking at
 	int crosshairClientTime; //last time you looked at them
 
 	// powerup active flashing

@@ -295,7 +295,7 @@ namespace ragl
 		//
 		// Visited regions are makred on the "closed" bit field.
 		////////////////////////////////////////////////////////////////////////////////////
-		bool	has_valid_region_edge(int CurRegion, int TargetRegion, const typename TGraph::user& user)
+		bool	has_valid_region_edge(int CurRegion, const int TargetRegion, const typename TGraph::user& user)
 		{
 			// Mark The Cur Region As Visited, So We Don't Try To Return To It
 			//-----------------------------------------------------------------

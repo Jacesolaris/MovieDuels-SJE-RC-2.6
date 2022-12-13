@@ -115,7 +115,7 @@ CG_ItemPickup
 A new item was picked up this frame
 ================
 */
-void CG_ItemPickup(int itemNum, qboolean bHadItem)
+void CG_ItemPickup(const int itemNum, const qboolean bHadItem)
 {
 	cg.itemPickup = itemNum;
 	cg.itemPickupTime = cg.time;
@@ -210,9 +210,9 @@ UseItem
 extern void CG_ToggleBinoculars();
 extern void CG_ToggleLAGoggles();
 
-void UseItem(int itemNum)
+void UseItem(const int itemNum)
 {
-	const centity_t* cent = &cg_entities[cg.snap->ps.clientNum];
+	const centity_t* cent = &cg_entities[cg.snap->ps.client_num];
 
 	if (G_IsRidingVehicle(cent->gent))
 	{
@@ -275,7 +275,7 @@ static void CG_UseItem(const centity_t* cent)
 	}
 
 	// print a message if the local player
-	if (es->number == cg.snap->ps.clientNum)
+	if (es->number == cg.snap->ps.client_num)
 	{
 		if (!itemNum)
 		{
@@ -299,7 +299,7 @@ Returns qtrue for event types that access cent->gent directly (and don't require
 to be the player / entity 0).
 ==============
 */
-qboolean CG_UnsafeEventType(int eventType)
+qboolean CG_UnsafeEventType(const int eventType)
 {
 	switch (eventType)
 	{
@@ -361,7 +361,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 		return;
 	}
 
-	const int clientNum = cent->gent->s.number;
+	const int client_num = cent->gent->s.number;
 
 	switch (event)
 	{
@@ -393,7 +393,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 	case EV_FALL_SHORT:
 		DEBUGNAME("EV_FALL_SHORT");
 		cgi_S_StartSound(nullptr, es->number, CHAN_AUTO, cgs.media.landSound);
-		if (clientNum == cg.predicted_player_state.clientNum)
+		if (client_num == cg.predicted_player_state.client_num)
 		{
 			// smooth landing z changes
 			cg.landChange = -8;
@@ -421,7 +421,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 			//still alive
 			CG_TryPlayCustomSound(nullptr, es->number, CHAN_BODY, "*pain100.wav", CS_BASIC);
 		}
-		if (clientNum == cg.predicted_player_state.clientNum)
+		if (client_num == cg.predicted_player_state.client_num)
 		{
 			// smooth landing z changes
 			cg.landChange = -16;
@@ -434,7 +434,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 		CG_TryPlayCustomSound(nullptr, es->number, CHAN_BODY, "*land1.wav", CS_BASIC);
 		cgi_S_StartSound(nullptr, es->number, CHAN_AUTO, cgs.media.landSound);
 		cent->pe.painTime = cg.time; // don't play a pain sound right after this
-		if (clientNum == cg.predicted_player_state.clientNum)
+		if (client_num == cg.predicted_player_state.client_num)
 		{
 			// smooth landing z changes
 			cg.landChange = -24;
@@ -451,7 +451,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 		{
 			float oldStep;
 
-			if (clientNum != cg.predicted_player_state.clientNum)
+			if (client_num != cg.predicted_player_state.client_num)
 			{
 				break;
 			}
@@ -572,7 +572,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 			cgi_S_StartSound(nullptr, es->number, CHAN_AUTO, cgi_S_RegisterSound(item->pickup_sound));
 
 			// show icon and name on status bar
-			if (es->number == cg.snap->ps.clientNum)
+			if (es->number == cg.snap->ps.client_num)
 			{
 				CG_ItemPickup(index, bHadItem);
 			}
@@ -585,7 +585,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 	case EV_NOAMMO:
 		DEBUGNAME("EV_NOAMMO");
 		//cgi_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.noAmmoSound );
-		if (es->number == cg.snap->ps.clientNum)
+		if (es->number == cg.snap->ps.client_num)
 		{
 			CG_OutOfAmmoChange();
 		}
@@ -665,7 +665,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 
 	case EV_POWERUP_BATTLESUIT:
 		DEBUGNAME("EV_POWERUP_BATTLESUIT");
-		if (es->number == cg.snap->ps.clientNum)
+		if (es->number == cg.snap->ps.client_num)
 		{
 			cg.powerupActive = PW_BATTLESUIT;
 			cg.powerupTime = cg.time;
@@ -865,12 +865,12 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 		DEBUGNAME("EV_GLOBAL_SOUND");
 		if (cgs.sound_precache[es->eventParm])
 		{
-			cgi_S_StartSound(nullptr, cg.snap->ps.clientNum, CHAN_AUTO, cgs.sound_precache[es->eventParm]);
+			cgi_S_StartSound(nullptr, cg.snap->ps.client_num, CHAN_AUTO, cgs.sound_precache[es->eventParm]);
 		}
 		else
 		{
 			s = CG_ConfigString(CS_SOUNDS + es->eventParm);
-			CG_TryPlayCustomSound(nullptr, cg.snap->ps.clientNum, CHAN_AUTO, s, CS_BASIC);
+			CG_TryPlayCustomSound(nullptr, cg.snap->ps.client_num, CHAN_AUTO, s, CS_BASIC);
 		}
 		break;
 

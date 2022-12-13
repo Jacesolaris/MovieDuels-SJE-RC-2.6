@@ -50,7 +50,7 @@ constexpr auto JUMP_SPEED = 200.0f;
 
 static qboolean NPC_TryJump();
 
-static qboolean NPC_Jump(vec3_t dest, int goalEntNum)
+static qboolean NPC_Jump(vec3_t dest, const int goalEntNum)
 {
 	//FIXME: if land on enemy, knock him down & jump off again
 	float bestImpactDist = Q3_INFINITE; //fireSpeed,
@@ -285,7 +285,7 @@ qboolean NPC_CanTryJump()
 	return qtrue;
 }
 
-qboolean NPC_TryJump(const vec3_t& pos, float max_xy_dist, float max_z_diff)
+qboolean NPC_TryJump(const vec3_t& pos, const float max_xy_dist, const float max_z_diff)
 {
 	if (NPC_CanTryJump())
 	{
@@ -320,7 +320,7 @@ qboolean NPC_TryJump(const vec3_t& pos, float max_xy_dist, float max_z_diff)
 	return qfalse;
 }
 
-qboolean NPC_TryJump(gentity_t* goal, float max_xy_dist, float max_z_diff)
+qboolean NPC_TryJump(gentity_t* goal, const float max_xy_dist, const float max_z_diff)
 {
 	if (NPC_CanTryJump())
 	{

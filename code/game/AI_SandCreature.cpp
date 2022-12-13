@@ -244,7 +244,7 @@ qboolean SandCreature_Move(void)
 	//often erroneously returns false ???  something wrong with NAV...?
 }
 
-void SandCreature_Attack(qboolean miss)
+void SandCreature_Attack(const qboolean miss)
 {
 	//FIXME: make it able to grab a thermal detonator, take it down,
 	//		then have it explode inside them, killing them
@@ -374,7 +374,7 @@ float SandCreature_EntScore(const gentity_t* ent)
 	return moveSpeed - dist;
 }
 
-void SandCreature_SeekEnt(gentity_t* bestEnt, float score)
+void SandCreature_SeekEnt(gentity_t* bestEnt, const float score)
 {
 	NPCInfo->enemyLastSeenTime = level.time;
 	VectorCopy(bestEnt->currentOrigin, NPCInfo->enemyLastSeenLocation);
@@ -487,7 +487,7 @@ void SandCreature_CheckMovingEnts(void)
 	}
 }
 
-void SandCreature_SeekAlert(int alertEvent)
+void SandCreature_SeekAlert(const int alertEvent)
 {
 	const alertEvent_t* alert = &level.alertEvents[alertEvent];
 
@@ -514,7 +514,7 @@ void SandCreature_CheckAlerts(void)
 	}
 }
 
-float SandCreature_DistSqToGoal(qboolean goalIsEnemy)
+float SandCreature_DistSqToGoal(const qboolean goalIsEnemy)
 {
 	float goalDistSq;
 	if (!NPCInfo->goalEntity || goalIsEnemy)

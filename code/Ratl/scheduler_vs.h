@@ -83,7 +83,7 @@ namespace ratl
 			int		mEvent;
 
 			timed_event() {}
-			timed_event(float time, int event) : mTime(time), mEvent(event) {}
+			timed_event(const float time, const int event) : mTime(time), mEvent(event) {}
 			bool	operator<  (const timed_event& t) const
 			{
 				return	mTime > t.mTime;

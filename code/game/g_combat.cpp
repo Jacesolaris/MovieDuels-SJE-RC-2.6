@@ -97,7 +97,7 @@ extern qboolean PM_InKnockDown(const playerState_t* ps);
 extern qboolean PM_InRoll(const playerState_t* ps);
 extern qboolean PM_SpinningAnim(int anim);
 extern qboolean PM_RunningAnim(int anim);
-extern int PM_PowerLevelForSaberAnim(const playerState_t* ps, int saberNum = 0);
+extern int PM_PowerLevelForSaberAnim(const playerState_t* ps, int saber_num = 0);
 extern qboolean PM_SaberInSpecialAttack(int anim);
 extern qboolean PM_SpinningSaberAnim(int anim);
 extern qboolean PM_FlippingAnim(int anim);
@@ -119,7 +119,7 @@ static int G_CheckForLedge(const gentity_t* self, vec3_t fallCheckDir, float che
 static void G_TrackWeaponUsage(const gentity_t* self, const gentity_t* inflictor, int add, int mod);
 static qboolean G_Dismemberable(const gentity_t* self, int hitLoc);
 extern gitem_t* FindItemForAmmo(ammo_t ammo);
-extern void WP_RemoveSaber(gentity_t* ent, int saberNum);
+extern void WP_RemoveSaber(gentity_t* ent, int saber_num);
 extern cvar_t* g_SerenityJediEngineMode;
 extern cvar_t* g_Bloodmist;
 extern void Jetpack_Off(const gentity_t* ent);
@@ -136,7 +136,7 @@ AddScore
 Adds score to both the client and his team
 ============
 */
-void AddScore(const gentity_t* ent, int score)
+void AddScore(const gentity_t* ent, const int score)
 {
 	if (!ent->client)
 	{
@@ -609,7 +609,7 @@ G_AlertTeam
 -------------------------
 */
 
-void G_AlertTeam(const gentity_t* victim, gentity_t* attacker, float radius, float soundDist)
+void G_AlertTeam(const gentity_t* victim, gentity_t* attacker, const float radius, const float soundDist)
 {
 	gentity_t* radiusEnts[128];
 	vec3_t mins, maxs;
@@ -888,7 +888,7 @@ void DeathFX(const gentity_t* ent)
 	}
 }
 
-void G_SetMissionStatusText(const gentity_t* attacker, int mod)
+void G_SetMissionStatusText(const gentity_t* attacker, const int mod)
 {
 	if (statusTextIndex >= 0)
 	{
@@ -961,7 +961,7 @@ void G_MakeTeamVulnerable(void)
 	}
 }
 
-void G_StartMatrixEffect(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f, int spinTime = 0)
+void G_StartMatrixEffect(const gentity_t* ent, const int meFlags = 0, const int length = 1000, const float timeScale = 0.0f, const int spinTime = 0)
 {
 	//FIXME: allow them to specify a different focal entity or point?
 	if (g_timescale->value != 1.0 || in_camera)
@@ -987,8 +987,8 @@ void G_StartMatrixEffect(const gentity_t* ent, int meFlags = 0, int length = 100
 	}
 }
 
-void G_StartStasisEffect_FORCE_LEVEL_1(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f,
-	int spinTime = 0)
+void G_StartStasisEffect_FORCE_LEVEL_1(const gentity_t* ent, const int meFlags = 0, const int length = 1000, const float timeScale = 0.0f,
+                                       const int spinTime = 0)
 {
 	if (g_timescale->value != 1.0 || in_camera)
 	{
@@ -1013,8 +1013,8 @@ void G_StartStasisEffect_FORCE_LEVEL_1(const gentity_t* ent, int meFlags = 0, in
 	}
 }
 
-void G_StartStasisEffect_FORCE_LEVEL_2(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f,
-	int spinTime = 0)
+void G_StartStasisEffect_FORCE_LEVEL_2(const gentity_t* ent, const int meFlags = 0, const int length = 1000, const float timeScale = 0.0f,
+                                       const int spinTime = 0)
 {
 	if (g_timescale->value != 1.0 || in_camera)
 	{
@@ -1042,7 +1042,7 @@ void G_StartStasisEffect_FORCE_LEVEL_2(const gentity_t* ent, int meFlags = 0, in
 static qhandle_t ItemActivateSound = 0;
 extern cvar_t* g_IconBackgroundSlow;
 
-void G_StartNextItemEffect(gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f, int spinTime = 0)
+void G_StartNextItemEffect(gentity_t* ent, const int meFlags = 0, const int length = 1000, const float timeScale = 0.0f, const int spinTime = 0)
 {
 	static qboolean registered = qfalse;
 
@@ -1123,7 +1123,7 @@ qboolean G_JediInRoom(vec3_t from)
 }
 
 qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hitLoc, vec3_t point, vec3_t dir,
-	vec3_t bladeDir, int mod, saberType_t saberType)
+	vec3_t bladeDir, const int mod, const saberType_t saberType)
 {
 	qboolean dismember = qfalse;
 
@@ -2027,7 +2027,7 @@ const char* hitLocName[HL_MAX] =
 	"generic6" //HL_GENERIC6
 };
 
-qboolean G_LimbLost(const gentity_t* ent, int hitLoc)
+qboolean G_LimbLost(const gentity_t* ent, const int hitLoc)
 {
 	switch (hitLoc)
 	{
@@ -2118,7 +2118,7 @@ qboolean G_LimbLost(const gentity_t* ent, int hitLoc)
 extern qboolean G_GetRootSurfNameWithVariant(gentity_t* ent, const char* rootSurfName, char* returnSurfName,
 	int returnSize);
 
-void G_RemoveWeaponsWithLimbs(gentity_t* ent, gentity_t* limb, int limbAnim)
+void G_RemoveWeaponsWithLimbs(gentity_t* ent, gentity_t* limb, const int limbAnim)
 {
 	int checkAnim;
 
@@ -2210,8 +2210,8 @@ static qboolean G_Dismember(gentity_t* ent, vec3_t point,
 	const char* limbBone, const char* rotateBone, const char* limbName,
 	const char* limbCapName, const char* stubCapName, const char* limbTagName,
 	const char* stubTagName,
-	int limbAnim, float limbRollBase, float limbPitchBase,
-	int damage, int hitLoc)
+	const int limbAnim, const float limbRollBase, const float limbPitchBase,
+	int damage, const int hitLoc)
 {
 	vec3_t dir, newPoint;
 	const vec3_t limbAngles = { 0, ent->client->ps.legsYaw, 0 };
@@ -2459,7 +2459,7 @@ static qboolean G_Dismember(gentity_t* ent, vec3_t point,
 	return qtrue;
 }
 
-static qboolean G_Dismemberable(const gentity_t* self, int hitLoc)
+static qboolean G_Dismemberable(const gentity_t* self, const int hitLoc)
 {
 	if (self->client->dismembered)
 	{
@@ -2513,7 +2513,7 @@ static qboolean G_Dismemberable(const gentity_t* self, int hitLoc)
 	return qtrue;
 }
 
-static qboolean G_Dismemberable2(const gentity_t* self, int hitLoc)
+static qboolean G_Dismemberable2(const gentity_t* self, const int hitLoc)
 {
 	if (self->client->dismembered)
 	{
@@ -2538,7 +2538,7 @@ static qboolean G_Dismemberable2(const gentity_t* self, int hitLoc)
 
 constexpr auto MAX_VARIANTS = 8;
 
-qboolean G_GetRootSurfNameWithVariant(gentity_t* ent, const char* rootSurfName, char* returnSurfName, int returnSize)
+qboolean G_GetRootSurfNameWithVariant(gentity_t* ent, const char* rootSurfName, char* returnSurfName, const int returnSize)
 {
 	if (!gi.G2API_GetSurfaceRenderStatus(&ent->ghoul2[ent->playerModel], rootSurfName))
 	{
@@ -2561,7 +2561,7 @@ qboolean G_GetRootSurfNameWithVariant(gentity_t* ent, const char* rootSurfName, 
 
 extern qboolean g_standard_humanoid(gentity_t* self);
 
-qboolean G_DoDismemberment(gentity_t* self, vec3_t point, int mod, int damage, int hitLoc, qboolean force = qfalse)
+qboolean G_DoDismemberment(gentity_t* self, vec3_t point, const int mod, const int damage, const int hitLoc, const qboolean force = qfalse)
 {
 	if ((g_dismemberment->integer || g_saberRealisticCombat->integer > 1) && mod == MOD_SABER) //only lightsaber
 	{
@@ -2737,7 +2737,7 @@ qboolean G_DoDismemberment(gentity_t* self, vec3_t point, int mod, int damage, i
 	return qfalse;
 }
 
-qboolean G_DoDismembermentcin(gentity_t* self, vec3_t point, int mod, int damage, int hitLoc, qboolean force = qfalse)
+qboolean G_DoDismembermentcin(gentity_t* self, vec3_t point, const int mod, const int damage, const int hitLoc, const qboolean force = qfalse)
 {
 	if (mod == MOD_SABER) //only lightsaber
 	{
@@ -2886,7 +2886,7 @@ qboolean G_DoDismembermentcin(gentity_t* self, vec3_t point, int mod, int damage
 	return qfalse;
 }
 
-qboolean G_DoGunDismemberment(gentity_t* self, vec3_t point, int mod, int damage, int hitLoc, qboolean force = qfalse)
+qboolean G_DoGunDismemberment(gentity_t* self, vec3_t point, const int mod, const int damage, const int hitLoc, qboolean force = qfalse)
 {
 	if (mod == MOD_BLASTER
 		|| mod == MOD_BLASTER_ALT
@@ -3719,7 +3719,7 @@ static int G_CheckSpecialDeathAnim(gentity_t* self, vec3_t point, int damage, in
 
 extern qboolean PM_FinishedCurrentLegsAnim(gentity_t* self);
 
-static int G_PickDeathAnim(gentity_t* self, vec3_t point, int damage, int mod, int hitLoc)
+static int G_PickDeathAnim(gentity_t* self, vec3_t point, const int damage, const int mod, int hitLoc)
 {
 	//FIXME: play dead flop anims on body if in an appropriate _DEAD anim when this func is called
 	int deathAnim = -1;
@@ -4283,8 +4283,8 @@ extern void Wampa_DropVictim(gentity_t* self);
 extern void WP_StopForceHealEffects(const gentity_t* self);
 extern void Boba_NoDeadFlameThrower(const gentity_t* self);
 
-void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath, int dflags,
-	int hitLoc)
+void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const int damage, const int meansOfDeath, const int dflags,
+                const int hitLoc)
 {
 	int anim;
 	int contents;
@@ -5638,8 +5638,8 @@ qboolean G_CheckForStrongAttackMomentum(const gentity_t* self)
 	return qfalse;
 }
 
-void PlayerPain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
-	int hitLoc)
+void PlayerPain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage, const int mod,
+                const int hitLoc)
 {
 	if (self->client->NPC_class == CLASS_ATST)
 	{
@@ -5760,7 +5760,7 @@ void PlayerPain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const v
 CheckArmor
 ================
 */
-int CheckArmor(const gentity_t* ent, int damage, int dflags, int mod)
+int CheckArmor(const gentity_t* ent, const int damage, const int dflags, const int mod)
 {
 	int save;
 
@@ -5918,7 +5918,7 @@ int CheckArmor(const gentity_t* ent, int damage, int dflags, int mod)
 	return save;
 }
 
-void G_Slapdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength, qboolean breakSaberLock)
+void G_Slapdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength, const qboolean breakSaberLock)
 {
 	if (!self || !self->client)
 	{
@@ -6116,7 +6116,7 @@ void G_Slapdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, floa
 	}
 }
 
-void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength, qboolean breakSaberLock)
+void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength, const qboolean breakSaberLock)
 {
 	if (!self || !self->client || !attacker || !attacker->client)
 	{
@@ -6314,7 +6314,7 @@ void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, flo
 	}
 }
 
-void G_KnockOver(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength, qboolean breakSaberLock)
+void G_KnockOver(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, const float strength, const qboolean breakSaberLock)
 {
 	if (!self || !self->client || !attacker || !attacker->client)
 	{
@@ -6836,7 +6836,7 @@ int G_LocationDamage(const vec3_t point, const gentity_t* targ, gentity_t* attac
 	return take;
 }
 
-void G_CheckKnockdown(gentity_t* targ, gentity_t* attacker, vec3_t newDir, int dflags, int mod)
+void G_CheckKnockdown(gentity_t* targ, gentity_t* attacker, vec3_t newDir, const int dflags, const int mod)
 {
 	if (!targ || !attacker)
 	{
@@ -6914,7 +6914,7 @@ void G_CheckKnockdown(gentity_t* targ, gentity_t* attacker, vec3_t newDir, int d
 	}
 }
 
-void G_CheckLightningKnockdown(gentity_t* targ, gentity_t* attacker, vec3_t newDir, int dflags, int mod)
+void G_CheckLightningKnockdown(gentity_t* targ, gentity_t* attacker, vec3_t newDir, const int dflags, const int mod)
 {
 	if (!targ || !attacker)
 	{
@@ -7175,7 +7175,7 @@ static int G_CheckForLedge(const gentity_t* self, vec3_t fallCheckDir, const flo
 	return 0;
 }
 
-static void G_FriendlyFireReaction(const gentity_t* self, const gentity_t* other, int dflags)
+static void G_FriendlyFireReaction(const gentity_t* self, const gentity_t* other, const int dflags)
 {
 	if (!player->client->ps.viewEntity || other->s.number != player->client->ps.viewEntity)
 	{
@@ -7234,7 +7234,7 @@ float damageModifier[HL_MAX] =
 	1.0f, //HL_GENERIC6,
 };
 
-void G_TrackWeaponUsage(const gentity_t* self, const gentity_t* inflictor, int add, int mod)
+void G_TrackWeaponUsage(const gentity_t* self, const gentity_t* inflictor, const int add, const int mod)
 {
 	if (!self || !self->client || self->s.number)
 	{
@@ -7361,7 +7361,7 @@ void G_TrackWeaponUsage(const gentity_t* self, const gentity_t* inflictor, int a
 	}
 }
 
-qboolean G_NonLocationSpecificDamage(int meansOfDeath)
+qboolean G_NonLocationSpecificDamage(const int meansOfDeath)
 {
 	if (meansOfDeath == MOD_EXPLOSIVE
 		|| meansOfDeath == MOD_REPEATER_ALT
@@ -9237,8 +9237,8 @@ extern void G_GetMassAndVelocityForEnt(const gentity_t* ent, float* mass, vec3_t
 G_RadiusDamage
 ============
 */
-void G_RadiusDamage(const vec3_t origin, gentity_t* attacker, float damage, float radius,
-	const gentity_t* ignore, int mod)
+void G_RadiusDamage(const vec3_t origin, gentity_t* attacker, const float damage, float radius,
+	const gentity_t* ignore, const int mod)
 {
 	gentity_t* entityList[MAX_GENTITIES];
 	vec3_t mins, maxs;
@@ -9268,9 +9268,9 @@ void G_RadiusDamage(const vec3_t origin, gentity_t* attacker, float damage, floa
 		dFlags |= DAMAGE_NO_KNOCKBACK;
 	}
 
-	const int numListedEntities = gi.EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+	const int num_listed_entities = gi.EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
 
-	for (int e = 0; e < numListedEntities; e++)
+	for (int e = 0; e < num_listed_entities; e++)
 	{
 		gentity_t* ent = entityList[e];
 
@@ -9377,7 +9377,7 @@ void G_RadiusDamage(const vec3_t origin, gentity_t* attacker, float damage, floa
 }
 
 //Combat Reward Code
-void AddFatigueKillBonus(const gentity_t* attacker, const gentity_t* victim, int meansOfDeath)
+void AddFatigueKillBonus(const gentity_t* attacker, const gentity_t* victim, const int meansOfDeath)
 {
 	const qboolean holding_block = attacker->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
 
@@ -9439,7 +9439,7 @@ void AddFatigueKillBonus(const gentity_t* attacker, const gentity_t* victim, int
 	}
 }
 
-void AddFatigueHurtBonus(const gentity_t* attacker, const gentity_t* victim, int mod)
+void AddFatigueHurtBonus(const gentity_t* attacker, const gentity_t* victim, const int mod)
 {
 	const qboolean holding_block = attacker->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
 
@@ -9488,7 +9488,7 @@ void AddFatigueHurtBonus(const gentity_t* attacker, const gentity_t* victim, int
 		//add bonus
 		if (g_SerenityJediEngineMode->integer == 2)
 		{
-			if (attacker->s.clientNum >= MAX_CLIENTS && !G_ControlledByPlayer(attacker))
+			if (attacker->s.client_num >= MAX_CLIENTS && !G_ControlledByPlayer(attacker))
 			{
 				WP_BlockPointsRegenerate(attacker, FATIGUE_HURTBONUSMAX);
 			}
@@ -9508,7 +9508,7 @@ void AddFatigueHurtBonus(const gentity_t* attacker, const gentity_t* victim, int
 	}
 }
 
-void AddFatigueHurtBonusMax(const gentity_t* attacker, const gentity_t* victim, int mod)
+void AddFatigueHurtBonusMax(const gentity_t* attacker, const gentity_t* victim, const int mod)
 {
 	const qboolean holding_block = attacker->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
 

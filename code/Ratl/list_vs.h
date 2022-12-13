@@ -183,7 +183,7 @@ namespace ratl
 			//--------------
 			iterator() : mLoc(0), mOwner(nullptr)
 			{}
-			iterator(list_base* p, int t) : mLoc(t), mOwner(p)
+			iterator(list_base* p, const int t) : mLoc(t), mOwner(p)
 			{}
 			iterator(const iterator& t) : mLoc(t.mLoc), mOwner(t.mOwner)
 			{}
@@ -285,7 +285,7 @@ namespace ratl
 			//--------------
 			const_iterator() : mLoc(0), mOwner(nullptr)
 			{}
-			const_iterator(const list_base* p, int t) : mLoc(t), mOwner(p)
+			const_iterator(const list_base* p, const int t) : mLoc(t), mOwner(p)
 			{}
 			const_iterator(const const_iterator& t) : mLoc(t.mLoc), mOwner(t.mOwner)
 			{}

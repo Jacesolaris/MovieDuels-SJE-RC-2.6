@@ -73,7 +73,7 @@ namespace ratl
 		// If it failes, it returns false, and the handle passed in points to the next
 		// free slot.
 		////////////////////////////////////////////////////////////////////////////////////
-		bool		find_existing(int& handle, const void* data, int datasize)
+		bool		find_existing(int& handle, const void* data, const int datasize)
 		{
 #ifdef _DEBUG
 			mFinds++;
@@ -102,7 +102,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// A simple hash function for the range of [0, SIZE_HANDLES]
 		////////////////////////////////////////////////////////////////////////////////////
-		static int			hash(const void* data, int datasize)
+		static int			hash(const void* data, const int datasize)
 		{
 			int	 h = 0;
 			for (int i = 0; i < datasize; i++)
@@ -138,7 +138,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Check To See If This Memory Pool Has Enough Space Left For (minimum) Bytes
 		////////////////////////////////////////////////////////////////////////////////////
-		bool		full(int minimum)	 const
+		bool		full(const int minimum)	 const
 		{
 			return SIZE - mDataAlloc < minimum;
 		}
@@ -170,7 +170,7 @@ namespace ratl
 		//
 		// In both cases, it gives you a handle to look up the data later.
 		////////////////////////////////////////////////////////////////////////////////////
-		int			get_handle(const void* data, int datasize)
+		int			get_handle(const void* data, const int datasize)
 		{
 			int	handle = hash(data, datasize);				// Initialize Our Handle By Hash Fcn
 			if (!find_existing(handle, data, datasize))

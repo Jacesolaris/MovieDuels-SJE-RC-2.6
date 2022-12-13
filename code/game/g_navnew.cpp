@@ -35,7 +35,7 @@ NAV_HitNavGoal
 -------------------------
 */
 
-qboolean NAV_HitNavGoal(vec3_t point, vec3_t mins, vec3_t maxs, vec3_t dest, int radius, qboolean flying)
+qboolean NAV_HitNavGoal(vec3_t point, vec3_t mins, vec3_t maxs, vec3_t dest, const int radius, const qboolean flying)
 {
 	vec3_t dmins, dmaxs, pmins, pmaxs;
 
@@ -186,7 +186,7 @@ qboolean NPC_ClearPathToGoal(vec3_t dir, gentity_t* goal)
 	return qfalse;
 }
 
-qboolean NAV_DirSafe(const gentity_t* self, vec3_t dir, float dist)
+qboolean NAV_DirSafe(const gentity_t* self, vec3_t dir, const float dist)
 {
 	vec3_t mins, end;
 	trace_t trace;
@@ -208,7 +208,7 @@ qboolean NAV_DirSafe(const gentity_t* self, vec3_t dir, float dist)
 	return qfalse;
 }
 
-qboolean NAV_MoveDirSafe(const gentity_t* self, const usercmd_t* cmd, float distScale = 1.0f)
+qboolean NAV_MoveDirSafe(const gentity_t* self, const usercmd_t* cmd, const float distScale = 1.0f)
 {
 	vec3_t moveDir;
 

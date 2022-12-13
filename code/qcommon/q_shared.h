@@ -961,13 +961,13 @@ using bladeInfo_t = struct
 	vec3_t muzzleDirOld;
 	saberTrail_t trail;
 
-	void ActivateTrail(float duration)
+	void ActivateTrail(const float duration)
 	{
 		trail.inAction = qtrue;
 		trail.duration = duration;
 	};
 
-	void DeactivateTrail(float duration)
+	void DeactivateTrail(const float duration)
 	{
 		trail.inAction = qfalse;
 		trail.duration = duration;
@@ -1245,7 +1245,7 @@ using saberInfo_t = struct
 	//	[in]		int iBlade		Which Blade to activate.
 	//	[in]		bool bActive	Whether to activate it (default true), or deactivate it (false).
 	//	[return]	void
-	void BladeActivate(int iBlade, qboolean bActive = qtrue)
+	void BladeActivate(const int iBlade, const qboolean bActive = qtrue)
 	{
 		// Validate blade ID/Index.
 		if (iBlade < 0 || iBlade >= numBlades)
@@ -1296,7 +1296,7 @@ using saberInfo_t = struct
 		return qfalse;
 	}
 
-	void SetLength(float length)
+	void SetLength(const float length)
 	{
 		for (int i = 0; i < numBlades; i++)
 		{
@@ -1331,7 +1331,7 @@ using saberInfo_t = struct
 		return len1;
 	};
 
-	void ActivateTrail(float duration)
+	void ActivateTrail(const float duration)
 	{
 		for (int i = 0; i < numBlades; i++)
 		{
@@ -1339,7 +1339,7 @@ using saberInfo_t = struct
 		}
 	};
 
-	void DeactivateTrail(float duration)
+	void DeactivateTrail(const float duration)
 	{
 		for (int i = 0; i < numBlades; i++)
 		{
@@ -1585,7 +1585,7 @@ public:
 	//	[in]		int iBlade		Which Blade to activate.
 	//	[in]		bool bActive	Whether to activate it (default true), or deactivate it (false).
 	//	[return]	void
-	void BladeActivate(int iBlade, qboolean bActive = qtrue)
+	void BladeActivate(const int iBlade, const qboolean bActive = qtrue)
 	{
 		// Validate blade ID/Index.
 		if (iBlade < 0 || iBlade >= numBlades)
@@ -1606,7 +1606,7 @@ public:
 		return qfalse;
 	}
 
-	void SetLength(float length)
+	void SetLength(const float length)
 	{
 		for (int i = 0; i < numBlades; i++)
 		{
@@ -1641,7 +1641,7 @@ public:
 		return len1;
 	};
 
-	void ActivateTrail(float duration)
+	void ActivateTrail(const float duration)
 	{
 		for (int i = 0; i < numBlades; i++)
 		{
@@ -1649,7 +1649,7 @@ public:
 		}
 	};
 
-	void DeactivateTrail(float duration)
+	void DeactivateTrail(const float duration)
 	{
 		for (int i = 0; i < numBlades; i++)
 		{
@@ -1781,7 +1781,7 @@ public:
 	int externalEventParm;
 	int externalEventTime;
 
-	int clientNum; // ranges from 0 to MAX_CLIENTS-1
+	int client_num; // ranges from 0 to MAX_CLIENTS-1
 	int weapon; // copied to entityState_t->weapon
 	int weaponstate;
 
@@ -1938,13 +1938,13 @@ public:
 		}
 	};
 
-	int SaberDisarmBonus(int bladeNum)
+	int SaberDisarmBonus(int blade_num)
 	{
 		int disarmBonus = 0;
 		if (saber[0].Active())
 		{
 			if (saber[0].bladeStyle2Start > 0
-				&& bladeNum >= saber[0].bladeStyle2Start)
+				&& blade_num >= saber[0].bladeStyle2Start)
 			{
 				disarmBonus += saber[0].disarmBonus2;
 			}
@@ -1957,7 +1957,7 @@ public:
 		{
 			//bonus for having 2 sabers
 			if (saber[1].bladeStyle2Start > 0
-				&& bladeNum >= saber[1].bladeStyle2Start)
+				&& blade_num >= saber[1].bladeStyle2Start)
 			{
 				disarmBonus += 1 + saber[1].disarmBonus2;
 			}
@@ -2230,7 +2230,7 @@ public:
 		saved_game.write<int32_t>(externalEvent);
 		saved_game.write<int32_t>(externalEventParm);
 		saved_game.write<int32_t>(externalEventTime);
-		saved_game.write<int32_t>(clientNum);
+		saved_game.write<int32_t>(client_num);
 		saved_game.write<int32_t>(weapon);
 		saved_game.write<int32_t>(weaponstate);
 		saved_game.write<int32_t>(batteryCharge);
@@ -2501,7 +2501,7 @@ public:
 		saved_game.read<int32_t>(externalEvent);
 		saved_game.read<int32_t>(externalEventParm);
 		saved_game.read<int32_t>(externalEventTime);
-		saved_game.read<int32_t>(clientNum);
+		saved_game.read<int32_t>(client_num);
 		saved_game.read<int32_t>(weapon);
 		saved_game.read<int32_t>(weaponstate);
 		saved_game.read<int32_t>(batteryCharge);
@@ -2932,7 +2932,7 @@ using entityState_t = struct entityState_s
 	int modelindex;
 	int modelindex2;
 	int modelindex3;
-	int clientNum; // 0 to (MAX_CLIENTS - 1), for players and corpses
+	int client_num; // 0 to (MAX_CLIENTS - 1), for players and corpses
 	mutable int frame;
 
 	int		NPC_class; //we need to see what it is on the client for a few effects.
@@ -3078,7 +3078,7 @@ using entityState_t = struct entityState_s
 		saved_game.write<int32_t>(modelindex);
 		saved_game.write<int32_t>(modelindex2);
 		saved_game.write<int32_t>(modelindex3);
-		saved_game.write<int32_t>(clientNum);
+		saved_game.write<int32_t>(client_num);
 		saved_game.write<int32_t>(frame);
 		saved_game.write<int32_t>(solid);
 		saved_game.write<int32_t>(event);
@@ -3197,7 +3197,7 @@ using entityState_t = struct entityState_s
 		saved_game.read<int32_t>(modelindex);
 		saved_game.read<int32_t>(modelindex2);
 		saved_game.read<int32_t>(modelindex3);
-		saved_game.read<int32_t>(clientNum);
+		saved_game.read<int32_t>(client_num);
 		saved_game.read<int32_t>(frame);
 		saved_game.read<int32_t>(solid);
 		saved_game.read<int32_t>(event);

@@ -3249,8 +3249,8 @@ void G_GetDismemberBolt(gentity_t* self, vec3_t boltPoint, int limbType)
 		gentity_t* te = G_TempEntity(boltPoint, EV_SABER_HIT);
 		te->s.otherEntityNum = self->s.number;
 		te->s.otherEntityNum2 = ENTITYNUM_NONE;
-		te->s.weapon = 0;//saberNum
-		te->s.legsAnim = 0;//bladeNum
+		te->s.weapon = 0;//saber_num
+		te->s.legsAnim = 0;//blade_num
 
 		VectorCopy(boltPoint, te->s.origin);
 		VectorCopy(boltAngles, te->s.angles);
@@ -4432,7 +4432,7 @@ void G_Damage(gentity_t* targ, gentity_t* inflictor, gentity_t* attacker, vec3_t
 	if (targ->client)
 	{//don't take damage when in a walker, or fighter
 		//unless the walker/fighter is dead!!! -rww
-		if (targ->client->ps.clientNum < MAX_CLIENTS && targ->client->ps.m_iVehicleNum)
+		if (targ->client->ps.client_num < MAX_CLIENTS && targ->client->ps.m_iVehicleNum)
 		{
 			gentity_t* veh = &g_entities[targ->client->ps.m_iVehicleNum];
 			if (veh->m_pVehicle && veh->health > 0)
@@ -5601,9 +5601,9 @@ qboolean G_RadiusDamage(vec3_t origin, gentity_t* attacker, float damage, float 
 		maxs[i] = origin[i] + radius;
 	}
 
-	const int numListedEntities = trap->EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+	const int num_listed_entities = trap->EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
 
-	for (int e = 0; e < numListedEntities; e++) {
+	for (int e = 0; e < num_listed_entities; e++) {
 		gentity_t* ent = &g_entities[entityList[e]];
 
 		if (ent == ignore)

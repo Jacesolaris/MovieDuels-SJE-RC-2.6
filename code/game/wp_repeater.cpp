@@ -150,7 +150,7 @@ extern qboolean PM_CrouchAnim(int anim);
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
 
 //---------------------------------------------------------
-void WP_FireRepeater(gentity_t* ent, qboolean alt_fire)
+void WP_FireRepeater(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	vec3_t angs;

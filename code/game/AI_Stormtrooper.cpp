@@ -49,7 +49,7 @@ extern qboolean PM_CrouchAnim(int anim);
 extern void npc_check_evasion();
 extern cvar_t* g_SerenityJediEngineMode;
 extern cvar_t* g_allowgunnerbash;
-extern qboolean WP_AbsorbKick(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir);
+extern qboolean WP_AbsorbKick(gentity_t* self, const gentity_t* pusher, const vec3_t push_dir);
 
 extern cvar_t* d_asynchronousGroupAI;
 
@@ -95,7 +95,7 @@ void NPC_Saboteur_Precache(void)
 	G_SoundIndex("sound/chars/shadowtrooper/decloak.wav");
 }
 
-void Saboteur_Decloak(gentity_t* self, int uncloakTime)
+void Saboteur_Decloak(gentity_t* self, const int uncloakTime)
 {
 	if (self && self->client)
 	{
@@ -147,7 +147,7 @@ enum
 	LSTATE_INVESTIGATE,
 };
 
-void ST_AggressionAdjust(const gentity_t* self, int change)
+void ST_AggressionAdjust(const gentity_t* self, const int change)
 {
 	int upper_threshold, lower_threshold;
 
@@ -258,7 +258,7 @@ qboolean NPC_IsGunner(const gentity_t* self)
 	return qfalse;
 }
 
-static void ST_Speech(const gentity_t* self, int speechType, float failChance)
+static void ST_Speech(const gentity_t* self, const int speechType, const float failChance)
 {
 	if (Q_flrand(0.0f, 1.0f) < failChance)
 	{
@@ -400,8 +400,8 @@ NPC_ST_Pain
 -------------------------
 */
 
-void NPC_ST_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
-	int hitLoc)
+void NPC_ST_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage, const int mod,
+                 const int hitLoc)
 {
 	self->NPC->localState = LSTATE_UNDERFIRE;
 
@@ -466,7 +466,7 @@ void NPC_ST_SayMovementSpeech(void)
 	NPCInfo->movementSpeechChance = 0.0f;
 }
 
-void NPC_ST_StoreMovementSpeech(int speech, float chance)
+void NPC_ST_StoreMovementSpeech(const int speech, const float chance)
 {
 	NPCInfo->movementSpeech = speech;
 	NPCInfo->movementSpeechChance = chance;
@@ -898,9 +898,9 @@ qboolean NPC_CheckEnemiesInSpotlight(void)
 		maxs[i] = NPC->client->renderInfo.eyePoint[i] + NPC->speed;
 	}
 
-	const int numListedEntities = gi.EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+	const int num_listed_entities = gi.EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
 
-	for (i = 0; i < numListedEntities; i++)
+	for (i = 0; i < num_listed_entities; i++)
 	{
 		if (!PInUse(i))
 			continue;
@@ -1003,7 +1003,7 @@ NPC_ST_InvestigateEvent
 
 constexpr auto MAX_CHECK_THRESHOLD = 1;
 
-static qboolean NPC_ST_InvestigateEvent(int eventID, bool extraSuspicious)
+static qboolean NPC_ST_InvestigateEvent(const int eventID, const bool extraSuspicious)
 {
 	//If they've given themselves away, just take them as an enemy
 	if (NPCInfo->confusionTime < level.time)
@@ -1187,7 +1187,7 @@ ST_OffsetLook
 -------------------------
 */
 
-static void ST_OffsetLook(float offset, vec3_t out)
+static void ST_OffsetLook(const float offset, vec3_t out)
 {
 	vec3_t angles, forward, temp;
 
@@ -1619,7 +1619,7 @@ static void ST_CheckMoveState(void)
 	}
 }
 
-void ST_ResolveBlockedShot(int hit)
+void ST_ResolveBlockedShot(const int hit)
 {
 	int stuckTime;
 	//figure out how long we intend to stand here, max
@@ -2239,9 +2239,9 @@ void ST_Commander(void)
 				maxs[i1] = NPC->currentOrigin[i1] + 200;
 			}
 
-			const int numListedEntities = gi.EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+			const int num_listed_entities = gi.EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
 
-			for (int e = 0; e < numListedEntities; e++)
+			for (int e = 0; e < num_listed_entities; e++)
 			{
 				gentity_t* ent = entityList[e];
 
@@ -2444,20 +2444,20 @@ void Noghri_StickTrace(void)
 			if (trace.fraction < 1.0f && trace.entityNum != lastHit)
 			{
 				//hit something
-				gentity_t* traceEnt = &g_entities[trace.entityNum];
-				if (traceEnt->takedamage
-					&& (!traceEnt->client || traceEnt == NPC->enemy || traceEnt->client->NPC_class != NPC->client->
+				gentity_t* trace_ent = &g_entities[trace.entityNum];
+				if (trace_ent->takedamage
+					&& (!trace_ent->client || trace_ent == NPC->enemy || trace_ent->client->NPC_class != NPC->client->
 						NPC_class))
 				{
 					//smack
 					const int dmg = Q_irand(12, 20); //FIXME: base on skill!
 					//FIXME: debounce?
-					G_Sound(traceEnt, G_SoundIndex(va("sound/weapons/tusken_staff/stickhit%d.wav", Q_irand(1, 4))));
-					G_Damage(traceEnt, NPC, NPC, vec3_origin, trace.endpos, dmg, DAMAGE_NO_KNOCKBACK, MOD_MELEE);
-					if (traceEnt->health > 0 && dmg > 17)
+					G_Sound(trace_ent, G_SoundIndex(va("sound/weapons/tusken_staff/stickhit%d.wav", Q_irand(1, 4))));
+					G_Damage(trace_ent, NPC, NPC, vec3_origin, trace.endpos, dmg, DAMAGE_NO_KNOCKBACK, MOD_MELEE);
+					if (trace_ent->health > 0 && dmg > 17)
 					{
 						//do pain on enemy
-						G_Knockdown(traceEnt, NPC, dir, 300, qtrue);
+						G_Knockdown(trace_ent, NPC, dir, 300, qtrue);
 					}
 					lastHit = trace.entityNum;
 					hit = qtrue;
@@ -2506,20 +2506,20 @@ void Noghri_StickTracennew(gentity_t* self)
 			if (trace.fraction < 1.0f && trace.entityNum != lastHit)
 			{
 				//hit something
-				gentity_t* traceEnt = &g_entities[trace.entityNum];
-				if (traceEnt->takedamage
-					&& (!traceEnt->client || traceEnt == self->enemy || traceEnt->client->NPC_class != self->client->
+				gentity_t* trace_ent = &g_entities[trace.entityNum];
+				if (trace_ent->takedamage
+					&& (!trace_ent->client || trace_ent == self->enemy || trace_ent->client->NPC_class != self->client->
 						NPC_class))
 				{
 					//smack
 					const int dmg = Q_irand(12, 20); //FIXME: base on skill!
 					//FIXME: debounce?
-					G_Sound(traceEnt, G_SoundIndex(va("sound/weapons/tusken_staff/stickhit%d.wav", Q_irand(1, 4))));
-					G_Damage(traceEnt, self, self, vec3_origin, trace.endpos, dmg, DAMAGE_NO_KNOCKBACK, MOD_MELEE);
-					if (traceEnt->health > 0 && dmg > 17)
+					G_Sound(trace_ent, G_SoundIndex(va("sound/weapons/tusken_staff/stickhit%d.wav", Q_irand(1, 4))));
+					G_Damage(trace_ent, self, self, vec3_origin, trace.endpos, dmg, DAMAGE_NO_KNOCKBACK, MOD_MELEE);
+					if (trace_ent->health > 0 && dmg > 17)
 					{
 						//do pain on enemy
-						G_Knockdown(traceEnt, self, dir, 300, qtrue);
+						G_Knockdown(trace_ent, self, dir, 300, qtrue);
 					}
 					lastHit = trace.entityNum;
 					hit = qtrue;

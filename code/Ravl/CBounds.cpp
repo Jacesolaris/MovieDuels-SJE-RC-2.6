@@ -176,7 +176,7 @@ ESide CBBox::InOutTest(const CVec3& v) const
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-ESide CBBox::InOutTest(const CVec3& v, float tolout, float tolin) const
+ESide CBBox::InOutTest(const CVec3& v, const float tolout, const float tolin) const
 {
 	if (v[0]<mMin[0] - tolout || v[0]>mMax[0] + tolout ||
 		v[1]<mMin[1] - tolout || v[1]>mMax[1] + tolout ||
@@ -196,7 +196,7 @@ ESide CBBox::InOutTest(const CVec3& v, float tolout, float tolin) const
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool CBBox::BoxTouchTest(const CBBox& b2, float tolout) const
+bool CBBox::BoxTouchTest(const CBBox& b2, const float tolout) const
 {
 	if (mMin[0] - tolout > b2.mMax[0] ||
 		mMin[1] - tolout > b2.mMax[1] ||
@@ -213,7 +213,7 @@ bool CBBox::BoxTouchTest(const CBBox& b2, float tolout) const
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool CBBox::SphereTouchTest(const CVec3& v, float rad) const
+bool CBBox::SphereTouchTest(const CVec3& v, const float rad) const
 {
 	if (v[0]<mMin[0] - rad || v[0]>mMax[0] + rad ||
 		v[1]<mMin[1] - rad || v[1]>mMax[1] + rad ||

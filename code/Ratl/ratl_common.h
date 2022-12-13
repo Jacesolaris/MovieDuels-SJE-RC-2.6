@@ -130,23 +130,23 @@ namespace ratl
 		} __attribute__((aligned(16)));
 #endif
 
-		inline void* cpy(void* dest, const void* src, size_t count)
+		inline void* cpy(void* dest, const void* src, const size_t count)
 		{
 			return memcpy(dest, src, count);
 		}
-		inline void* set(void* dest, int c, size_t count)
+		inline void* set(void* dest, const int c, const size_t count)
 		{
 			return memset(dest, c, count);
 		}
-		inline int		cmp(const void* buf1, const void* buf2, size_t count)
+		inline int		cmp(const void* buf1, const void* buf2, const size_t count)
 		{
 			return memcmp(buf1, buf2, count);
 		}
-		inline bool	eql(const void* buf1, const void* buf2, size_t count)
+		inline bool	eql(const void* buf1, const void* buf2, const size_t count)
 		{
 			return memcmp(buf1, buf2, count) == 0;
 		}
-		inline void* zero(void* dest, size_t count)
+		inline void* zero(void* dest, const size_t count)
 		{
 			return memset(dest, 0, count);
 		}
@@ -157,7 +157,7 @@ namespace ratl
 			cpy(dest, src, sizeof(T));
 		}
 		template<class T>
-		inline 	void	set(T* dest, int c)
+		inline 	void	set(T* dest, const int c)
 		{
 			set(dest, c, sizeof(T));
 		}
@@ -202,7 +202,7 @@ namespace ratl
 			strcpy(dest, src);
 		}
 
-		inline void	ncpy(char* dest, const char* src, size_t destBufferLen)
+		inline void	ncpy(char* dest, const char* src, const size_t destBufferLen)
 		{
 			strncpy(dest, src, destBufferLen);
 		}
@@ -212,7 +212,7 @@ namespace ratl
 			strcat(dest, src);
 		}
 
-		inline void	ncat(char* dest, const char* src, size_t destBufferLen)
+		inline void	ncat(char* dest, const char* src, const size_t destBufferLen)
 		{
 			ncpy(dest + len(dest), src, destBufferLen - len(dest));
 		}
@@ -325,7 +325,7 @@ namespace ratl
 		static const int SIZE = SZ;
 		static const int CAPACITY = SZ;
 
-		explicit bits_base(bool init = true, bool initValue = false)
+		explicit bits_base(const bool init = true, const bool initValue = false)
 		{
 			if (init)
 			{
@@ -358,7 +358,7 @@ namespace ratl
 			assert(i >= 0 && i < SIZE);
 			mV[i >> BITS_SHIFT] &= ~(1 << (i & BITS_AND));
 		}
-		void mark_bit(const int i, bool set)
+		void mark_bit(const int i, const bool set)
 		{
 			assert(i >= 0 && i < SIZE);
 			if (set)
@@ -375,7 +375,7 @@ namespace ratl
 			assert(i >= 0 && i < SIZE);
 			return (mV[i >> BITS_SHIFT] & 1 << (i & BITS_AND)) != 0;
 		}
-		int	next_bit(int start = 0, bool onBit = true) const
+		int	next_bit(int start = 0, const bool onBit = true) const
 		{
 			assert(start >= 0 && start <= SIZE);  //we have to accept start==size for the way the loops are done
 			if (start >= SIZE)
@@ -480,7 +480,7 @@ namespace ratl
 			return true;
 		}
 
-		static int	next_bit(int start = 0, bool onBit = true)
+		static int	next_bit(const int start = 0, const bool onBit = true)
 		{
 			assert(onBit); ///I didn't want to add the sz template arg, you could though
 			return start;

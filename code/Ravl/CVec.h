@@ -124,8 +124,8 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	// Member Accessors
 	////////////////////////////////////////////////////////////////////////////////////
-	const float& operator[](int i) const { return v[i]; }
-	float& operator[](int i) { return v[i]; }
+	const float& operator[](const int i) const { return v[i]; }
+	float& operator[](const int i) { return v[i]; }
 	float& pitch() { return v[0]; }
 	float& yaw() { return v[1]; }
 	float& roll() { return v[2]; }
@@ -424,7 +424,7 @@ public:
 	//  (Start)/
 	//
 	////////////////////////////////////////////////////////////////////////////////////
-	ESide	LRTest(const CVec4& Start, const CVec4& End, float Tolerance = 0.0) const
+	ESide	LRTest(const CVec4& Start, const CVec4& End, const float Tolerance = 0.0) const
 	{
 		const float Area = AreaParallelPipid(Start, End);
 		if (Area > Tolerance)
@@ -554,8 +554,8 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	// Member Accessors
 	////////////////////////////////////////////////////////////////////////////////////
-	const float& operator[](int i) const { return v[i]; }
-	float& operator[](int i) { return v[i]; }
+	const float& operator[](const int i) const { return v[i]; }
+	float& operator[](const int i) { return v[i]; }
 	float& pitch() { return v[0]; }
 	float& yaw() { return v[1]; }
 	float& roll() { return v[2]; }
@@ -850,7 +850,7 @@ public:
 	//  (Start)/
 	//
 	////////////////////////////////////////////////////////////////////////////////////
-	ESide	LRTest(const CVec3& Start, const CVec3& End, float Tolerance = 0.0) const
+	ESide	LRTest(const CVec3& Start, const CVec3& End, const float Tolerance = 0.0) const
 	{
 		const float Area = AreaParallelPipid(Start, End);
 		if (Area > Tolerance)

@@ -67,7 +67,7 @@ NPC_CheckAttacker
 -------------------------
 */
 
-static void NPC_CheckAttacker(gentity_t* other, int mod)
+static void NPC_CheckAttacker(gentity_t* other, const int mod)
 {
 	//FIXME: I don't see anything in here that would stop teammates from taking a teammate
 	//			as an enemy.  Ideally, there would be code before this to prevent that from
@@ -175,7 +175,7 @@ NPC_GetPainChance
 -------------------------
 */
 
-float NPC_GetPainChance(const gentity_t* self, int damage)
+float NPC_GetPainChance(const gentity_t* self, const int damage)
 {
 	if (!self->enemy)
 	{
@@ -221,8 +221,8 @@ constexpr auto MIN_PAIN_TIME = 200;
 
 extern int G_PickPainAnim(const gentity_t* self, const vec3_t point, int damage, int hitLoc);
 
-void NPC_ChoosePainAnimation(gentity_t* self, const gentity_t* other, const vec3_t point, int damage, int mod, int hitLoc,
-	int voiceEvent = -1)
+void NPC_ChoosePainAnimation(gentity_t* self, const gentity_t* other, const vec3_t point, const int damage, const int mod, const int hitLoc,
+                             const int voiceEvent = -1)
 {
 	//If we've already taken pain, then don't take it again
 	if (level.time < self->painDebounceTime && mod != MOD_ELECTROCUTE && mod != MOD_MELEE)
@@ -422,7 +422,7 @@ void NPC_ChoosePainAnimation(gentity_t* self, const gentity_t* other, const vec3
 
 extern qboolean G_ValidEnemy(const gentity_t* self, const gentity_t* enemy);
 
-gentity_t* G_CheckControlledTurretEnemy(const gentity_t* self, gentity_t* enemy, qboolean validate)
+gentity_t* G_CheckControlledTurretEnemy(const gentity_t* self, gentity_t* enemy, const qboolean validate)
 {
 	if (enemy->e_UseFunc == useF_emplaced_gun_use
 		|| enemy->e_UseFunc == useF_eweb_use)
@@ -447,8 +447,8 @@ extern void Boba_Pain(gentity_t* self, gentity_t* inflictor, int damage, int mod
 NPC_Pain
 ===============
 */
-void NPC_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
-	int hitLoc)
+void NPC_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage, const int mod,
+              const int hitLoc)
 {
 	team_t otherTeam = TEAM_FREE;
 	int voiceEvent = -1;
@@ -772,7 +772,7 @@ NPC_TempLookTarget
 -------------------------
 */
 
-void NPC_TempLookTarget(const gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime)
+void NPC_TempLookTarget(const gentity_t* self, const int lookEntNum, int minLookTime, int maxLookTime)
 {
 	if (!self->client)
 	{
@@ -1535,7 +1535,7 @@ NPC_UseResponse
 -------------------------
 */
 
-void NPC_UseResponse(gentity_t* self, const gentity_t* user, qboolean useWhenDone)
+void NPC_UseResponse(gentity_t* self, const gentity_t* user, const qboolean useWhenDone)
 {
 	if (!self->NPC || !self->client)
 	{

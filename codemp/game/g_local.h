@@ -906,7 +906,7 @@ typedef struct level_locals_s {
 	int			numNonSpectatorClients;	// includes connecting clients
 	int			numPlayingClients;		// connected, non-spectators
 	int			sortedClients[MAX_CLIENTS];		// sorted by score
-	int			follow1, follow2;		// clientNums for auto-follow spectators
+	int			follow1, follow2;		// client_nums for auto-follow spectators
 
 	int			snd_fry;				// sound index for standing in lava
 
@@ -1264,9 +1264,9 @@ qboolean CheckGauntletAttack(gentity_t* ent);
 //
 // g_client.c
 //
-int TeamCount(int ignoreClientNum, team_t team);
+int TeamCount(int ignoreclient_num, team_t team);
 int TeamLeader(int team);
-team_t PickTeam(int ignoreClientNum);
+team_t PickTeam(int ignoreclient_num);
 void SetClientViewAngle(gentity_t* ent, vec3_t angle);
 gentity_t* SelectSpawnPoint(vec3_t avoidPoint, vec3_t origin, vec3_t angles, team_t team, qboolean isbot);
 void MaintainBodyQueue(gentity_t* ent);
@@ -1332,13 +1332,13 @@ const char* G_GetStringEdString(char* refSection, char* refName);
 //
 // g_client.c
 //
-char* ClientConnect(int clientNum, qboolean firstTime, qboolean isBot);
-qboolean ClientUserinfoChanged(int clientNum);
-void ClientDisconnect(int clientNum);
-void ClientBegin(int clientNum, qboolean allowTeamReset);
+char* ClientConnect(int client_num, qboolean firstTime, qboolean isBot);
+qboolean ClientUserinfoChanged(int client_num);
+void ClientDisconnect(int client_num);
+void ClientBegin(int client_num, qboolean allowTeamReset);
 void G_BreakArm(gentity_t* ent, int arm);
 void G_UpdateClientAnims(gentity_t* self, float animSpeedScale);
-void ClientCommand(int clientNum);
+void ClientCommand(int client_num);
 void G_ClearVote(gentity_t* ent);
 void G_ClearTeamVote(gentity_t* ent, int team);
 
@@ -1346,7 +1346,7 @@ void G_ClearTeamVote(gentity_t* ent, int team);
 // g_active.c
 //
 void G_CheckClientTimeouts(gentity_t* ent);
-void ClientThink(int clientNum, usercmd_t* ucmd);
+void ClientThink(int client_num, usercmd_t* ucmd);
 void ClientEndFrame(gentity_t* ent);
 void G_RunClient(gentity_t* ent);
 
@@ -1393,8 +1393,8 @@ void G_InitBots(void);
 char* G_GetBotInfoByNumber(int num);
 char* G_GetBotInfoByName(const char* name);
 void G_CheckBotSpawn(void);
-void G_RemoveQueuedBotBegin(int clientNum);
-qboolean G_BotConnect(int clientNum, qboolean restart);
+void G_RemoveQueuedBotBegin(int client_num);
+qboolean G_BotConnect(int client_num, qboolean restart);
 void Svcmd_AddBot_f(void);
 void Svcmd_BotList_f(void);
 void BotInterbreedEndMatch(void);
@@ -1466,7 +1466,7 @@ qboolean InFront(vec3_t spot, vec3_t from, vec3_t fromAngles, float threshHold);
 #define MAX_FILEPATH			144
 
 int		OrgVisible(vec3_t org1, vec3_t org2, int ignore);
-void	BotOrder(gentity_t* ent, int clientnum, int ordernum);
+void	BotOrder(gentity_t* ent, int client_num, int ordernum);
 int		in_field_of_vision(vec3_t viewangles, float fov, vec3_t angles);
 
 // ai_util.c

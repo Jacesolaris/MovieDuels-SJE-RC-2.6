@@ -419,7 +419,7 @@ SelectSpawnPoint
 Chooses a player start, deathmatch start, etc
 ============
 */
-gentity_t* SelectSpawnPoint(vec3_t avoidPoint, team_t team, vec3_t origin, vec3_t angles)
+gentity_t* SelectSpawnPoint(vec3_t avoidPoint, const team_t team, vec3_t origin, vec3_t angles)
 {
 	gentity_t* spot;
 	gentity_t* nearestSpot;
@@ -512,7 +512,7 @@ void respawn(gentity_t* ent)
 ClientCheckName
 ============
 */
-static void ClientCleanName(const char* in, char* out, int outSize)
+static void ClientCleanName(const char* in, char* out, const int outSize)
 {
 	int outpos = 0, colorlessLen = 0, spaces = 0, ats = 0;
 
@@ -591,14 +591,14 @@ The game can override any of the settings and call gi.SetUserinfo
 if desired.
 ============
 */
-void ClientUserinfoChanged(int clientNum)
+void ClientUserinfoChanged(const int client_num)
 {
-	const gentity_t* ent = g_entities + clientNum;
+	const gentity_t* ent = g_entities + client_num;
 	gclient_t* client = ent->client;
 	char userinfo[MAX_INFO_STRING] = { 0 }, buf[MAX_INFO_STRING] = { 0 },
 		sound[MAX_STRING_CHARS] = { 0 }, oldname[34] = { 0 };
 
-	gi.GetUserinfo(clientNum, userinfo, sizeof userinfo);
+	gi.GetUserinfo(client_num, userinfo, sizeof userinfo);
 
 	// set name
 	Q_strncpyz(oldname, client->pers.netname, sizeof oldname);
@@ -627,7 +627,7 @@ void ClientUserinfoChanged(int clientNum)
 	Q_strcat(buf, sizeof buf, va("hc\\%i\\", client->pers.maxHealth));
 	Q_strcat(buf, sizeof buf, va("snd\\%s\\", sound));
 
-	gi.SetConfigstring(CS_PLAYERS + clientNum, buf);
+	gi.SetConfigstring(CS_PLAYERS + client_num, buf);
 }
 
 /*
@@ -716,10 +716,10 @@ to be placed into the level.  This will happen every level load,
 and on transition between teams, but doesn't happen on respawns
 ============
 */
-void ClientBegin(int clientNum, const usercmd_t* cmd, SavedGameJustLoaded_e eSavedGameJustLoaded)
+void ClientBegin(const int client_num, const usercmd_t* cmd, const SavedGameJustLoaded_e eSavedGameJustLoaded)
 {
-	gentity_t* ent = g_entities + clientNum;
-	gclient_t* client = level.clients + clientNum;
+	gentity_t* ent = g_entities + client_num;
+	gclient_t* client = level.clients + client_num;
 
 	if (eSavedGameJustLoaded == eFULL) //qbFromSavedGame)
 	{
@@ -1378,7 +1378,7 @@ qboolean G_StandardHumanoid(const char* GLAName)
 	return qfalse;
 }
 
-qboolean G_ClassHasBadBones(int NPC_class)
+qboolean G_ClassHasBadBones(const int NPC_class)
 {
 	switch (NPC_class)
 	{
@@ -1455,8 +1455,8 @@ void G_NextTestAxes()
 	}
 }
 
-void G_BoneOrientationsForClass(int NPC_class, const char* boneName, Eorientations* oUp, Eorientations* oRt,
-	Eorientations* oFwd)
+void G_BoneOrientationsForClass(const int NPC_class, const char* boneName, Eorientations* oUp, Eorientations* oRt,
+                                Eorientations* oFwd)
 {
 	//defaults
 	*oUp = POSITIVE_X;
@@ -2408,8 +2408,8 @@ void G_AddWeaponModels(gentity_t* ent)
 }
 
 extern saber_colors_t TranslateSaberColor(const char* name);
-extern void WP_RemoveSaber(gentity_t* ent, int saberNum);
-extern void WP_RemoveSecondSaber(gentity_t* ent, int saberNum);
+extern void WP_RemoveSaber(gentity_t* ent, int saber_num);
+extern void WP_RemoveSecondSaber(gentity_t* ent, int saber_num);
 
 void G_SetSabersFromCVars(gentity_t* ent)
 {
@@ -3152,7 +3152,7 @@ qboolean ClientSpawn(gentity_t* ent, SavedGameJustLoaded_e eSavedGameJustLoaded)
 		client->crouchheight = CROUCH_MAXS_2;
 		client->standheight = DEFAULT_MAXS_2;
 
-		client->ps.clientNum = index;
+		client->ps.client_num = index;
 
 		// give default weapons
 		//these are precached in g_items, ClearRegisteredItems()
@@ -3460,9 +3460,9 @@ Called when a player drops from the server.
 Will not be called between levels.
 ============
 */
-void ClientDisconnect(int clientNum)
+void ClientDisconnect(const int client_num)
 {
-	gentity_t* ent = g_entities + clientNum;
+	gentity_t* ent = g_entities + client_num;
 
 	if (!ent->client)
 	{
@@ -3487,7 +3487,7 @@ void ClientDisconnect(int clientNum)
 		Weapon_StunFree(ent->client->stun);
 	}
 
-	gi.SetConfigstring(CS_PLAYERS + clientNum, "");
+	gi.SetConfigstring(CS_PLAYERS + client_num, "");
 
 	IIcarusInterface::GetIcarus()->DeleteIcarusID(ent->m_iIcarusID);
 }

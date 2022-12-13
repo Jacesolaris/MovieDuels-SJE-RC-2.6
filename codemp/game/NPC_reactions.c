@@ -111,7 +111,7 @@ static void NPC_CheckAttacker(gentity_t* other, int mod)
 		}
 	}
 
-	//OJKFIXME: clientnum 0
+	//OJKFIXME: client_num 0
 	//Special case player interactions
 	if (other == &g_entities[0])
 	{

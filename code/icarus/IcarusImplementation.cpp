@@ -43,7 +43,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 // required implementation of CIcarusInterface
 
-IIcarusInterface* IIcarusInterface::GetIcarus(int flavor, bool constructIfNecessary)
+IIcarusInterface* IIcarusInterface::GetIcarus(const int flavor, const bool constructIfNecessary)
 {
 	if (!CIcarus::s_instances && constructIfNecessary)
 	{
@@ -90,7 +90,7 @@ int CIcarus::s_flavorsAvailable = 0;
 
 CIcarus** CIcarus::s_instances = nullptr;
 
-CIcarus::CIcarus(int flavor) :
+CIcarus::CIcarus(const int flavor) :
 	m_flavor(flavor), m_nextSequencerID(0)
 {
 	m_GUID = 0;
@@ -194,7 +194,7 @@ void CIcarus::Free(void)
 	m_sequencerMap.clear();
 }
 
-int CIcarus::GetIcarusID(int gameID)
+int CIcarus::GetIcarusID(const int gameID)
 {
 	CSequencer* sequencer = CSequencer::Create();
 	CTaskManager* taskManager = CTaskManager::Create();
@@ -275,7 +275,7 @@ CSequence* CIcarus::GetSequence(void)
 	return sequence;
 }
 
-CSequence* CIcarus::GetSequence(int id)
+CSequence* CIcarus::GetSequence(const int id)
 {
 	sequence_l::iterator si;
 	STL_ITERATE(si, m_sequences)
@@ -301,7 +301,7 @@ void CIcarus::DeleteSequence(CSequence* sequence)
 #endif
 }
 
-int CIcarus::AllocateSequences(int numSequences, const int* idTable)
+int CIcarus::AllocateSequences(const int numSequences, const int* idTable)
 {
 	CSequence* sequence;
 
@@ -322,7 +322,7 @@ int CIcarus::AllocateSequences(int numSequences, const int* idTable)
 	return true;
 }
 
-void CIcarus::Precache(char* buffer, long length)
+void CIcarus::Precache(char* buffer, const long length)
 {
 	IGameInterface* game = IGameInterface::GetGame(m_flavor);
 	CBlockStream stream;
@@ -407,7 +407,7 @@ void CIcarus::Precache(char* buffer, long length)
 	stream.Free();
 }
 
-CSequencer* CIcarus::FindSequencer(int sequencerID)
+CSequencer* CIcarus::FindSequencer(const int sequencerID)
 {
 	const auto mi = m_sequencerMap.find(sequencerID);
 
@@ -417,7 +417,7 @@ CSequencer* CIcarus::FindSequencer(int sequencerID)
 	return (*mi).second;
 }
 
-int CIcarus::Run(int icarusID, char* buffer, long length)
+int CIcarus::Run(const int icarusID, char* buffer, const long length)
 {
 	CSequencer* sequencer = FindSequencer(icarusID);
 	if (sequencer)
@@ -750,7 +750,7 @@ int CIcarus::Load()
 	return true;
 }
 
-int CIcarus::Update(int icarusID)
+int CIcarus::Update(const int icarusID)
 {
 	const CSequencer* sequencer = FindSequencer(icarusID);
 	if (sequencer)
@@ -760,7 +760,7 @@ int CIcarus::Update(int icarusID)
 	return -1;
 }
 
-int CIcarus::IsRunning(int icarusID)
+int CIcarus::IsRunning(const int icarusID)
 {
 	const CSequencer* sequencer = FindSequencer(icarusID);
 	if (sequencer)
@@ -770,7 +770,7 @@ int CIcarus::IsRunning(int icarusID)
 	return false;
 }
 
-void CIcarus::Completed(int icarusID, int taskID)
+void CIcarus::Completed(const int icarusID, const int taskID)
 {
 	const CSequencer* sequencer = FindSequencer(icarusID);
 	if (sequencer)
@@ -798,7 +798,7 @@ void CIcarus::CreateBuffer()
 }
 
 // Write to a buffer.
-void CIcarus::BufferWrite(const void* pSrcData, unsigned long ulNumBytesToWrite)
+void CIcarus::BufferWrite(const void* pSrcData, const unsigned long ulNumBytesToWrite)
 {
 	if (!pSrcData)
 		return;
@@ -828,7 +828,7 @@ void CIcarus::BufferWrite(const void* pSrcData, unsigned long ulNumBytesToWrite)
 }
 
 // Read from a buffer.
-void CIcarus::BufferRead(void* pDstBuff, unsigned long ulNumBytesToRead)
+void CIcarus::BufferRead(void* pDstBuff, const unsigned long ulNumBytesToRead)
 {
 	if (!pDstBuff)
 		return;

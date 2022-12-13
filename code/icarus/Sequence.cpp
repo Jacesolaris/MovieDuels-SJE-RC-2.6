@@ -209,7 +209,7 @@ PopCommand
 -------------------------
 */
 
-CBlock* CSequence::PopCommand(int type)
+CBlock* CSequence::PopCommand(const int type)
 {
 	CBlock* command = nullptr;
 
@@ -248,7 +248,7 @@ PushCommand
 -------------------------
 */
 
-int CSequence::PushCommand(CBlock* block, int type)
+int CSequence::PushCommand(CBlock* block, const int type)
 {
 	//Make sure everything is ok
 	assert(type == PUSH_FRONT || type == PUSH_BACK);
@@ -281,7 +281,7 @@ SetFlag
 -------------------------
 */
 
-void CSequence::SetFlag(int flag)
+void CSequence::SetFlag(const int flag)
 {
 	m_flags |= flag;
 }
@@ -292,7 +292,7 @@ RemoveFlag
 -------------------------
 */
 
-void CSequence::RemoveFlag(int flag, bool children)
+void CSequence::RemoveFlag(const int flag, const bool children)
 {
 	m_flags &= ~flag;
 
@@ -317,7 +317,7 @@ HasFlag
 -------------------------
 */
 
-int CSequence::HasFlag(int flag) const
+int CSequence::HasFlag(const int flag) const
 {
 	return m_flags & flag;
 }
@@ -340,7 +340,7 @@ GetChildByID
 -------------------------
 */
 
-CSequence* CSequence::GetChildByID(int id)
+CSequence* CSequence::GetChildByID(const int id)
 {
 	if (id < 0)
 		return nullptr;
@@ -369,7 +369,7 @@ GetChildByIndex
 -------------------------
 */
 
-CSequence* CSequence::GetChildByIndex(int iIndex)
+CSequence* CSequence::GetChildByIndex(const int iIndex)
 {
 	if (iIndex < 0 || iIndex >= static_cast<int>(m_children.size()))
 		return nullptr;

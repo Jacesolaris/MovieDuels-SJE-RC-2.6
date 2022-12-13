@@ -34,7 +34,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "ghoul2/G2.h"
 //==========================================================================
 
-extern qboolean WP_SaberBladeUseSecondBladeStyle(saberInfo_t* saber, int bladeNum);
+extern qboolean WP_SaberBladeUseSecondBladeStyle(saberInfo_t* saber, int blade_num);
 extern qboolean CG_VehicleWeaponImpact(centity_t* cent);
 extern qboolean CG_InFighter(void);
 extern qboolean CG_InATST(void);
@@ -277,8 +277,8 @@ static void CG_Obituary(entityState_t* ent) {
 
 clientkilled:
 
-	// check for kill messages from the current clientNum
-	if (attacker == cg.snap->ps.clientNum) {
+	// check for kill messages from the current client_num
+	if (attacker == cg.snap->ps.client_num) {
 		char* s;
 
 		if (cgs.gametype < GT_TEAM && cgs.gametype != GT_DUEL && cgs.gametype != GT_POWERDUEL) {
@@ -345,8 +345,8 @@ clientkilled:
 	else {
 		Q_strncpyz(attackerName, Info_ValueForKey(attackerInfo, "n"), sizeof(attackerName) - 2);
 		strcat(attackerName, S_COLOR_WHITE);
-		// check for kill messages about the current clientNum
-		if (target == cg.snap->ps.clientNum) {
+		// check for kill messages about the current client_num
+		if (target == cg.snap->ps.client_num) {
 			Q_strncpyz(cg.killerName, attackerName, sizeof(cg.killerName));
 		}
 	}
@@ -465,7 +465,7 @@ clientkilled:
 
 void CG_ToggleBinoculars(const centity_t* cent, int forceZoom)
 {
-	if (cent->currentState.number != cg.snap->ps.clientNum)
+	if (cent->currentState.number != cg.snap->ps.client_num)
 	{
 		return;
 	}
@@ -496,11 +496,11 @@ void CG_ToggleBinoculars(const centity_t* cent, int forceZoom)
 
 	if (cg.snap->ps.zoomMode == 0)
 	{
-		trap->S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_AUTO, cgs.media.zoomStart);
+		trap->S_StartSound(NULL, cg.snap->ps.client_num, CHAN_AUTO, cgs.media.zoomStart);
 	}
 	else if (cg.snap->ps.zoomMode == 2)
 	{
-		trap->S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_AUTO, cgs.media.zoomEnd);
+		trap->S_StartSound(NULL, cg.snap->ps.client_num, CHAN_AUTO, cgs.media.zoomEnd);
 	}
 }
 
@@ -525,7 +525,7 @@ CG_UseItem
 ===============
 */
 static void CG_UseItem(const centity_t* cent) {
-	int clientNum;
+	int client_num;
 
 	const entityState_t* es = &cent->currentState;
 
@@ -535,7 +535,7 @@ static void CG_UseItem(const centity_t* cent) {
 	}
 
 	// print a message if the local player
-	if (es->number == cg.snap->ps.clientNum) {
+	if (es->number == cg.snap->ps.client_num) {
 		if (!itemNum) {
 			//CG_CenterPrint( "No item to use", SCREEN_HEIGHT * 0.30, BIGCHAR_WIDTH );
 		}
@@ -562,9 +562,9 @@ static void CG_UseItem(const centity_t* cent) {
 		//	case HI_MEDKIT:
 	case HI_MEDPAC:
 	case HI_MEDPAC_BIG:
-		clientNum = cent->currentState.clientNum;
-		if (clientNum >= 0 && clientNum < MAX_CLIENTS) {
-			clientInfo_t* ci = &cgs.clientinfo[clientNum];
+		client_num = cent->currentState.client_num;
+		if (client_num >= 0 && client_num < MAX_CLIENTS) {
+			clientInfo_t* ci = &cgs.clientinfo[client_num];
 			ci->medkitUsageTime = cg.time;
 		}
 		//Different sound for big bacta?
@@ -584,7 +584,7 @@ static void CG_UseItem(const centity_t* cent) {
 		break; //Do something?
 	}
 
-	if (cg.snap && cg.snap->ps.clientNum == cent->currentState.number && itemNum != HI_BINOCULARS &&
+	if (cg.snap && cg.snap->ps.client_num == cent->currentState.number && itemNum != HI_BINOCULARS &&
 		itemNum != HI_JETPACK && itemNum != HI_HEALTHDISP && itemNum != HI_AMMODISP && itemNum != HI_CLOAK && itemNum != HI_EWEB)
 	{ //if not using binoculars/jetpack/dispensers/cloak, we just used that item up, so switch
 		BG_CycleInven(&cg.snap->ps, 1);
@@ -917,7 +917,7 @@ void CG_GetCTFMessageEvent(entityState_t* es)
 
 qboolean BG_InKnockDownOnly(int anim);
 
-void DoFall(centity_t* cent, entityState_t* es, int clientNum)
+void DoFall(centity_t* cent, entityState_t* es, int client_num)
 {
 	const int delta = es->eventParm;
 
@@ -962,7 +962,7 @@ void DoFall(centity_t* cent, entityState_t* es, int clientNum)
 		trap->S_StartSound(NULL, es->number, CHAN_AUTO, cgs.media.landSound);
 	}
 
-	if (clientNum == cg.predictedPlayerState.clientNum)
+	if (client_num == cg.predictedPlayerState.client_num)
 	{
 		// smooth landing z changes
 		cg.landChange = -delta;
@@ -1313,7 +1313,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 	int				event;
 	vec3_t			dir;
 	const char* s;
-	int				clientNum;
+	int				client_num;
 	int				eID = 0;
 	int				isnd = 0;
 	centity_t* cl_ent;
@@ -1330,14 +1330,14 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 		return;
 	}
 
-	clientNum = es->clientNum;
-	if (clientNum < 0 || clientNum >= MAX_CLIENTS) {
-		clientNum = 0;
+	client_num = es->client_num;
+	if (client_num < 0 || client_num >= MAX_CLIENTS) {
+		client_num = 0;
 	}
 
 	if (es->eType == ET_NPC)
 	{
-		clientNum = es->number;
+		client_num = es->number;
 
 		if (!cent->npcClient)
 		{
@@ -1473,11 +1473,11 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 
 	case EV_FALL:
 		DEBUGNAME("EV_FALL");
-		if (es->number == cg.snap->ps.clientNum && cg.snap->ps.fallingToDeath)
+		if (es->number == cg.snap->ps.client_num && cg.snap->ps.fallingToDeath)
 		{
 			break;
 		}
-		DoFall(cent, es, clientNum);
+		DoFall(cent, es, client_num);
 		break;
 	case EV_STEP_4:
 	case EV_STEP_8:
@@ -1489,7 +1489,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 			int		delta;
 			int		step;
 
-			if (clientNum != cg.predictedPlayerState.clientNum) {
+			if (client_num != cg.predictedPlayerState.client_num) {
 				break;
 			}
 			// if we are interpolating, we don't need to smooth steps
@@ -1533,9 +1533,9 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 		DEBUGNAME("EV_GLOBAL_DUEL");
 		//used for beginning of power duels
 		//if (cg.predictedPlayerState.persistant[PERS_TEAM] != TEAM_SPECTATOR)
-		if (es->otherEntityNum == cg.predictedPlayerState.clientNum ||
-			es->otherEntityNum2 == cg.predictedPlayerState.clientNum ||
-			es->groundEntityNum == cg.predictedPlayerState.clientNum)
+		if (es->otherEntityNum == cg.predictedPlayerState.client_num ||
+			es->otherEntityNum2 == cg.predictedPlayerState.client_num ||
+			es->groundEntityNum == cg.predictedPlayerState.client_num)
 		{
 			CG_CenterPrint(CG_GetStringEdString("MP_SVGAME", "BEGIN_DUEL"), 120, GIANTCHAR_WIDTH * 2);
 			trap->S_StartLocalSound(cgs.media.countFightSound, CHAN_ANNOUNCER);
@@ -1545,7 +1545,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 	case EV_PRIVATE_DUEL:
 		DEBUGNAME("EV_PRIVATE_DUEL");
 
-		if (cg.snap->ps.clientNum != es->number)
+		if (cg.snap->ps.client_num != es->number)
 		{
 			break;
 		}
@@ -1577,13 +1577,13 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 		break;
 	case EV_ROLL:
 		DEBUGNAME("EV_ROLL");
-		if (es->number == cg.snap->ps.clientNum && cg.snap->ps.fallingToDeath)
+		if (es->number == cg.snap->ps.client_num && cg.snap->ps.fallingToDeath)
 		{
 			break;
 		}
 		if (es->eventParm)
 		{ //fall-roll-in-one event
-			DoFall(cent, es, clientNum);
+			DoFall(cent, es, client_num);
 		}
 
 		trap->S_StartSound(NULL, es->number, CHAN_VOICE, CG_CustomSound(es->number, "*jump1.wav"));
@@ -1840,7 +1840,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 
 	case EV_SIEGESPEC:
 		DEBUGNAME("EV_SIEGESPEC");
-		if (es->owner == cg.predictedPlayerState.clientNum)
+		if (es->owner == cg.predictedPlayerState.client_num)
 		{
 			cg_siegeDeathTime = es->time;
 		}
@@ -1878,7 +1878,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 				index = cg_entities[es->eventParm].currentState.trickedentindex4;
 				trap->S_StartSound(NULL, es->number, CHAN_AUTO, cgs.media.holocronPickup);
 
-				if (es->number == cg.snap->ps.clientNum && showPowersName[index])
+				if (es->number == cg.snap->ps.client_num && showPowersName[index])
 				{
 					const char* strText = CG_GetStringEdString("MP_INGAME", "PICKUPLINE");
 
@@ -1889,7 +1889,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 				//Show the player their force selection bar in case picking the holocron up changed the current selection
 				if (index != FP_SABER_OFFENSE && index != FP_SABER_DEFENSE && index != FP_SABERTHROW &&
 					index != FP_LEVITATION &&
-					es->number == cg.snap->ps.clientNum &&
+					es->number == cg.snap->ps.client_num &&
 					(index == cg.snap->ps.fd.forcePowerSelected || !(cg.snap->ps.fd.forcePowersActive & (1 << cg.snap->ps.fd.forcePowerSelected))))
 				{
 					if (cg.forceSelect != index)
@@ -1899,7 +1899,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 					}
 				}
 
-				if (es->number == cg.snap->ps.clientNum && newindex)
+				if (es->number == cg.snap->ps.client_num && newindex)
 				{
 					if (cg.forceSelectTime < cg.time)
 					{
@@ -1934,7 +1934,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 			}
 
 			// show icon and name on status bar
-			if (es->number == cg.snap->ps.clientNum) {
+			if (es->number == cg.snap->ps.client_num) {
 				CG_ItemPickup(index);
 			}
 		}
@@ -1954,11 +1954,11 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 			item = &bg_itemlist[index];
 			// powerup pickups are global
 			if (item->pickup_sound && item->pickup_sound[0]) {
-				trap->S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_AUTO, trap->S_RegisterSound(item->pickup_sound));
+				trap->S_StartSound(NULL, cg.snap->ps.client_num, CHAN_AUTO, trap->S_RegisterSound(item->pickup_sound));
 			}
 
 			// show icon and name on status bar
-			if (es->number == cg.snap->ps.clientNum) {
+			if (es->number == cg.snap->ps.client_num) {
 				CG_ItemPickup(index);
 			}
 		}
@@ -1978,21 +1978,21 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 	case EV_NOAMMO:
 		DEBUGNAME("EV_NOAMMO");
 		//		trap->S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.noAmmoSound );
-		if (es->number == cg.snap->ps.clientNum)
+		if (es->number == cg.snap->ps.client_num)
 		{
 			if (CG_InFighter() || CG_InATST() || cg.snap->ps.weapon == WP_NONE)
 			{//just letting us know our vehicle is out of ammo
 				//FIXME: flash something on HUD or give some message so we know we have no ammo
-				centity_t* localCent = &cg_entities[cg.snap->ps.clientNum];
+				centity_t* localCent = &cg_entities[cg.snap->ps.client_num];
 				if (localCent->m_pVehicle
 					&& localCent->m_pVehicle->m_pVehicleInfo
 					&& localCent->m_pVehicle->m_pVehicleInfo->weapon[es->eventParm].soundNoAmmo)
 				{//play the "no Ammo" sound for this weapon
-					trap->S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_AUTO, localCent->m_pVehicle->m_pVehicleInfo->weapon[es->eventParm].soundNoAmmo);
+					trap->S_StartSound(NULL, cg.snap->ps.client_num, CHAN_AUTO, localCent->m_pVehicle->m_pVehicleInfo->weapon[es->eventParm].soundNoAmmo);
 				}
 				else
 				{//play the default "no ammo" sound
-					trap->S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_AUTO, cgs.media.noAmmoSound);
+					trap->S_StartSound(NULL, cg.snap->ps.client_num, CHAN_AUTO, cgs.media.noAmmoSound);
 				}
 				//flash the HUD so they associate the sound with the visual indicator that they don't have enough ammo
 				if (cg_vehicleAmmoWarningTime < cg.time
@@ -2126,7 +2126,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 		CG_FireWeapon(cent, qtrue);
 
 		//if you just exploded your detpacks and you have no ammo left for them, autoswitch
-		if (cg.snap->ps.clientNum == cent->currentState.number &&
+		if (cg.snap->ps.client_num == cent->currentState.number &&
 			cg.snap->ps.weapon == WP_DET_PACK)
 		{
 			if (cg.snap->ps.ammo[weaponData[WP_DET_PACK].ammoIndex] == 0)
@@ -2181,36 +2181,36 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 				}
 				if (client && client->infoValid)
 				{
-					int saberNum = es->weapon;
-					int bladeNum = es->legsAnim;
-					if (WP_SaberBladeUseSecondBladeStyle(&client->saber[saberNum], bladeNum))
+					int saber_num = es->weapon;
+					int blade_num = es->legsAnim;
+					if (WP_SaberBladeUseSecondBladeStyle(&client->saber[saber_num], blade_num))
 					{//use second blade style values
-						if (client->saber[saberNum].hitPersonEffect2)
+						if (client->saber[saber_num].hitPersonEffect2)
 						{//custom hit person effect
-							hitPersonFxID = hitPersonSmallFxID = hitPersonMidFxID = client->saber[saberNum].hitPersonEffect2;
+							hitPersonFxID = hitPersonSmallFxID = hitPersonMidFxID = client->saber[saber_num].hitPersonEffect2;
 						}
-						if (client->saber[saberNum].hitOtherEffect2)
+						if (client->saber[saber_num].hitOtherEffect2)
 						{//custom hit other effect
-							hitOtherFxID = client->saber[saberNum].hitOtherEffect2;
+							hitOtherFxID = client->saber[saber_num].hitOtherEffect2;
 						}
-						if (client->saber[saberNum].hit2Sound[0])
+						if (client->saber[saber_num].hit2Sound[0])
 						{//custom hit sound
-							hitSound = client->saber[saberNum].hit2Sound[Q_irand(0, 2)];
+							hitSound = client->saber[saber_num].hit2Sound[Q_irand(0, 2)];
 						}
 					}
 					else
 					{//use first blade style values
-						if (client->saber[saberNum].hitPersonEffect)
+						if (client->saber[saber_num].hitPersonEffect)
 						{//custom hit person effect
-							hitPersonFxID = hitPersonSmallFxID = hitPersonMidFxID = client->saber[saberNum].hitPersonEffect;
+							hitPersonFxID = hitPersonSmallFxID = hitPersonMidFxID = client->saber[saber_num].hitPersonEffect;
 						}
-						if (client->saber[saberNum].hitOtherEffect)
+						if (client->saber[saber_num].hitOtherEffect)
 						{//custom hit other effect
 							hitOtherFxID = client->saber[0].hitOtherEffect;
 						}
-						if (client->saber[saberNum].hitSound[0])
+						if (client->saber[saber_num].hitSound[0])
 						{//custom hit sound
-							hitSound = client->saber[saberNum].hitSound[Q_irand(0, 2)];
+							hitSound = client->saber[saber_num].hitSound[Q_irand(0, 2)];
 						}
 					}
 				}
@@ -2321,31 +2321,31 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 					}
 					if (client && client->infoValid)
 					{
-						int saberNum = es->weapon;
-						int bladeNum = es->legsAnim;
-						if (WP_SaberBladeUseSecondBladeStyle(&client->saber[saberNum], bladeNum))
+						int saber_num = es->weapon;
+						int blade_num = es->legsAnim;
+						if (WP_SaberBladeUseSecondBladeStyle(&client->saber[saber_num], blade_num))
 						{//use second blade style values
-							if (client->saber[saberNum].blockEffect2)
+							if (client->saber[saber_num].blockEffect2)
 							{//custom saber block effect
-								blockFXID = client->saber[saberNum].blockEffect2;
+								blockFXID = client->saber[saber_num].blockEffect2;
 							}
-							if (client->saber[saberNum].block2Sound[0])
+							if (client->saber[saber_num].block2Sound[0])
 							{//custom hit sound
-								blockSound = client->saber[saberNum].block2Sound[Q_irand(0, 2)];
+								blockSound = client->saber[saber_num].block2Sound[Q_irand(0, 2)];
 							}
 						}
 						else
 						{
-							if (client->saber[saberNum].blockEffect)
+							if (client->saber[saber_num].blockEffect)
 							{//custom saber block effect
-								blockFXID = client->saber[saberNum].blockEffect;
+								blockFXID = client->saber[saber_num].blockEffect;
 							}
-							if (client->saber[saberNum].blockSound[0])
+							if (client->saber[saber_num].blockSound[0])
 							{//custom hit sound
-								blockSound = client->saber[saberNum].blockSound[Q_irand(0, 2)];
+								blockSound = client->saber[saber_num].blockSound[Q_irand(0, 2)];
 							}
 						}
-						if ((client->saber[saberNum].saberFlags2 & SFL2_NO_CLASH_FLARE))
+						if ((client->saber[saber_num].saberFlags2 & SFL2_NO_CLASH_FLARE))
 						{
 							noFlare = qtrue;
 						}
@@ -2445,7 +2445,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 
 			trap->S_StartSound(NULL, es->number, CHAN_AUTO, trap->S_RegisterSound("sound/weapons/saber/saberon.wav"));
 
-			if (cg.snap->ps.clientNum == es->number)
+			if (cg.snap->ps.client_num == es->number)
 			{
 				trap->S_StartLocalSound(cgs.media.happyMusic, CHAN_LOCAL);
 				CGCam_SetMusicMult(0.3f, 5000);
@@ -2455,7 +2455,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 
 	case EV_DISRUPTOR_MAIN_SHOT:
 		DEBUGNAME("EV_DISRUPTOR_MAIN_SHOT");
-		if (cent->currentState.eventParm != cg.snap->ps.clientNum ||
+		if (cent->currentState.eventParm != cg.snap->ps.client_num ||
 			cg.renderingThirdPerson)
 		{ //h4q3ry
 			CG_GetClientWeaponMuzzleBoltPoint(cent->currentState.eventParm, cent->currentState.origin2);
@@ -2472,7 +2472,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 
 	case EV_DISRUPTOR_SNIPER_SHOT:
 		DEBUGNAME("EV_DISRUPTOR_SNIPER_SHOT");
-		if (cent->currentState.eventParm != cg.snap->ps.clientNum ||
+		if (cent->currentState.eventParm != cg.snap->ps.client_num ||
 			cg.renderingThirdPerson)
 		{ //h4q3ry
 			CG_GetClientWeaponMuzzleBoltPoint(cent->currentState.eventParm, cent->currentState.origin2);
@@ -2515,7 +2515,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 
 	case EV_DISRUPTOR_ZOOMSOUND:
 		DEBUGNAME("EV_DISRUPTOR_ZOOMSOUND");
-		if (es->number == cg.snap->ps.clientNum)
+		if (es->number == cg.snap->ps.client_num)
 		{
 			if (cg.snap->ps.zoomMode)
 			{
@@ -2599,14 +2599,14 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 
 	case EV_SCREENSHAKE:
 		DEBUGNAME("EV_SCREENSHAKE");
-		if (!es->modelindex || cg.predictedPlayerState.clientNum == es->modelindex - 1)
+		if (!es->modelindex || cg.predictedPlayerState.client_num == es->modelindex - 1)
 		{
 			CGCam_Shake(es->angles[0], es->time);
 		}
 		break;
 	case EV_LOCALTIMER:
 		DEBUGNAME("EV_LOCALTIMER");
-		if (es->owner == cg.predictedPlayerState.clientNum)
+		if (es->owner == cg.predictedPlayerState.client_num)
 		{
 			CG_LocalTimingBar(es->time, es->time2);
 		}
@@ -2674,7 +2674,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 
 	case EV_ITEMUSEFAIL:
 		DEBUGNAME("EV_ITEMUSEFAIL");
-		if (cg.snap->ps.clientNum == es->number)
+		if (cg.snap->ps.client_num == es->number)
 		{
 			char* psStringEDRef = NULL;
 
@@ -2843,7 +2843,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 
 	case EV_GIVE_NEW_RANK:
 		DEBUGNAME("EV_GIVE_NEW_RANK");
-		if (es->trickedentindex == cg.snap->ps.clientNum)
+		if (es->trickedentindex == cg.snap->ps.client_num)
 		{
 			trap->Cvar_Set("ui_rankChange", va("%i", es->eventParm));
 
@@ -3144,10 +3144,10 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 		DEBUGNAME("EV_VOICECMD_SOUND");
 		if (es->groundEntityNum < MAX_CLIENTS && es->groundEntityNum >= 0)
 		{
-			int clientNum = es->groundEntityNum;
+			int client_num = es->groundEntityNum;
 			sfxHandle_t sfx = cgs.gameSounds[es->eventParm];
-			clientInfo_t* ci = &cgs.clientinfo[clientNum];
-			centity_t* vChatEnt = &cg_entities[clientNum];
+			clientInfo_t* ci = &cgs.clientinfo[client_num];
+			centity_t* vChatEnt = &cg_entities[client_num];
 			char descr[1024] = { 0 };
 
 			Q_strncpyz(descr, CG_GetStringForVoiceSound(CG_ConfigString(CS_SOUNDS + es->eventParm)), sizeof(descr));
@@ -3155,17 +3155,17 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 			if (!sfx)
 			{
 				s = CG_ConfigString(CS_SOUNDS + es->eventParm);
-				sfx = CG_CustomSound(clientNum, s);
+				sfx = CG_CustomSound(client_num, s);
 			}
 
 			if (sfx)
 			{
-				if (clientNum != cg.predictedPlayerState.clientNum)
+				if (client_num != cg.predictedPlayerState.client_num)
 				{ //play on the head as well to simulate hearing in radio and in world
 					if (ci->team == cg.predictedPlayerState.persistant[PERS_TEAM])
 					{ //don't hear it if this person is on the other team, but they can still
 						//hear it in the world spot.
-						trap->S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_MENU1, sfx);
+						trap->S_StartSound(NULL, cg.snap->ps.client_num, CHAN_MENU1, sfx);
 					}
 				}
 				if (ci->team == cg.predictedPlayerState.persistant[PERS_TEAM])
@@ -3178,7 +3178,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 				}
 
 				//and play in world for everyone
-				trap->S_StartSound(NULL, clientNum, CHAN_VOICE, sfx);
+				trap->S_StartSound(NULL, client_num, CHAN_VOICE, sfx);
 				vChatEnt->vChatTime = cg.time + 1000;
 			}
 		}
@@ -3209,11 +3209,11 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 	case EV_GLOBAL_SOUND:	// play from the player's head so it never diminishes
 		DEBUGNAME("EV_GLOBAL_SOUND");
 		if (cgs.gameSounds[es->eventParm]) {
-			trap->S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_MENU1, cgs.gameSounds[es->eventParm]);
+			trap->S_StartSound(NULL, cg.snap->ps.client_num, CHAN_MENU1, cgs.gameSounds[es->eventParm]);
 		}
 		else {
 			s = CG_ConfigString(CS_SOUNDS + es->eventParm);
-			trap->S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_MENU1, CG_CustomSound(es->number, s));
+			trap->S_StartSound(NULL, cg.snap->ps.client_num, CHAN_MENU1, CG_CustomSound(es->number, s));
 		}
 		break;
 
@@ -3295,11 +3295,11 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 		DEBUGNAME("EV_ENTITY_SOUND");
 		//somewhat of a hack - weapon is the caller entity's index, trickedentindex is the proper sound channel
 		if (cgs.gameSounds[es->eventParm]) {
-			trap->S_StartSound(NULL, es->clientNum, es->trickedentindex, cgs.gameSounds[es->eventParm]);
+			trap->S_StartSound(NULL, es->client_num, es->trickedentindex, cgs.gameSounds[es->eventParm]);
 		}
 		else {
 			s = CG_ConfigString(CS_SOUNDS + es->eventParm);
-			trap->S_StartSound(NULL, es->clientNum, es->trickedentindex, CG_CustomSound(es->clientNum, s));
+			trap->S_StartSound(NULL, es->client_num, es->trickedentindex, CG_CustomSound(es->client_num, s));
 		}
 		break;
 
@@ -3329,7 +3329,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 		// so ignore events on the player
 		DEBUGNAME("EV_PAIN");
 
-		if (!cg_oldPainSounds.integer || (cent->currentState.number != cg.snap->ps.clientNum))
+		if (!cg_oldPainSounds.integer || (cent->currentState.number != cg.snap->ps.client_num))
 		{
 			CG_PainEvent(cent, es->eventParm);
 		}
@@ -3341,7 +3341,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 		DEBUGNAME("EV_DEATHx");
 		trap->S_StartSound(NULL, es->number, CHAN_VOICE,
 			CG_CustomSound(es->number, va("*death%i.wav", event - EV_DEATH1 + 1)));
-		if (es->eventParm && es->number == cg.snap->ps.clientNum)
+		if (es->eventParm && es->number == cg.snap->ps.client_num)
 		{
 			trap->S_StartLocalSound(cgs.media.dramaticFailure, CHAN_LOCAL);
 			CGCam_SetMusicMult(0.3f, 5000);
@@ -3359,7 +3359,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 #ifdef BASE_COMPAT
 	case EV_POWERUP_QUAD:
 		DEBUGNAME("EV_POWERUP_QUAD");
-		if (es->number == cg.snap->ps.clientNum) {
+		if (es->number == cg.snap->ps.client_num) {
 			cg.powerupActive = PW_QUAD;
 			cg.powerupTime = cg.time;
 		}
@@ -3367,7 +3367,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position) {
 		break;
 	case EV_POWERUP_BATTLESUIT:
 		DEBUGNAME("EV_POWERUP_BATTLESUIT");
-		if (es->number == cg.snap->ps.clientNum) {
+		if (es->number == cg.snap->ps.client_num) {
 			cg.powerupActive = PW_BATTLESUIT;
 			cg.powerupTime = cg.time;
 		}

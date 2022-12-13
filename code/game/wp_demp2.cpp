@@ -108,9 +108,9 @@ void DEMP2_AltRadiusDamage(gentity_t* ent)
 		maxs[i] = ent->currentOrigin[i] + radius;
 	}
 
-	const int numListedEntities = gi.EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+	const int num_listed_entities = gi.EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
 
-	for (int e = 0; e < numListedEntities; e++)
+	for (int e = 0; e < num_listed_entities; e++)
 	{
 		gentity_t* gent = entityList[e];
 
@@ -275,7 +275,7 @@ static void WP_DEMP2_AltFire(gentity_t* ent)
 }
 
 //---------------------------------------------------------
-void WP_FireDEMP2(gentity_t* ent, qboolean alt_fire)
+void WP_FireDEMP2(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	if (alt_fire)

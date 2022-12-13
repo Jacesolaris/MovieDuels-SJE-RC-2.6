@@ -47,7 +47,7 @@ extern void ViewHeightFix(const gentity_t* ent);
 extern void AddLeanOfs(const gentity_t* ent, vec3_t point);
 extern void subtract_lean_ofs(const gentity_t* ent, vec3_t point);
 
-void CalcEntitySpot(const gentity_t* ent, spot_t spot, vec3_t point)
+void CalcEntitySpot(const gentity_t* ent, const spot_t spot, vec3_t point)
 {
 	vec3_t forward, up, right;
 	vec3_t start, end;
@@ -713,7 +713,7 @@ static void NPC_UpdateShootAngles (vec3_t angles, qboolean doPitch, qboolean doY
 Does update angles on shootAngles
 */
 
-void NPC_UpdateShootAngles(vec3_t angles, qboolean doPitch, qboolean doYaw)
+void NPC_UpdateShootAngles(vec3_t angles, const qboolean doPitch, const qboolean doYaw)
 {
 	//FIXME: shoot angles either not set right or not used!
 	float error;
@@ -1157,7 +1157,7 @@ NPC_FindEnemy
 -------------------------
 */
 
-qboolean NPC_FindEnemy(qboolean checkAlerts = qfalse)
+qboolean NPC_FindEnemy(const qboolean checkAlerts = qfalse)
 {
 	//We're ignoring all enemies for now
 	if (NPC->svFlags & SVF_IGNORE_ENEMIES)
@@ -1224,7 +1224,7 @@ NPC_FacePosition
 -------------------------
 */
 
-qboolean NPC_FacePosition(vec3_t position, qboolean doPitch)
+qboolean NPC_FacePosition(vec3_t position, const qboolean doPitch)
 {
 	vec3_t muzzle;
 	qboolean facing = qtrue;
@@ -1295,7 +1295,7 @@ NPC_FaceEntity
 -------------------------
 */
 
-qboolean NPC_FaceEntity(const gentity_t* ent, qboolean doPitch)
+qboolean NPC_FaceEntity(const gentity_t* ent, const qboolean doPitch)
 {
 	vec3_t ent_pos;
 
@@ -1311,7 +1311,7 @@ NPC_FaceEnemy
 -------------------------
 */
 
-qboolean NPC_FaceEnemy(qboolean doPitch)
+qboolean NPC_FaceEnemy(const qboolean doPitch)
 {
 	if (NPC == nullptr)
 		return qfalse;
@@ -1367,7 +1367,7 @@ void NPC_ClearLookTarget(const gentity_t* self)
 NPC_SetLookTarget
 -------------------------
 */
-void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime)
+void NPC_SetLookTarget(const gentity_t* self, const int entNum, const int clearTime)
 {
 	if (!self->client)
 	{
@@ -1454,7 +1454,7 @@ void G_CheckCharmed(gentity_t* self)
 	}
 }
 
-void G_GetBoltPosition(gentity_t* self, int boltIndex, vec3_t pos, int modelIndex = 0)
+void G_GetBoltPosition(gentity_t* self, const int boltIndex, vec3_t pos, const int modelIndex = 0)
 {
 	if (!self || !self->ghoul2.size())
 	{
@@ -1489,12 +1489,12 @@ float NPC_EntRangeFromBolt(const gentity_t* targEnt, const int boltIndex)
 	return Distance(targEnt->currentOrigin, org);
 }
 
-float NPC_EnemyRangeFromBolt(int boltIndex)
+float NPC_EnemyRangeFromBolt(const int boltIndex)
 {
 	return NPC_EntRangeFromBolt(NPC->enemy, boltIndex);
 }
 
-int G_GetEntsNearBolt(gentity_t* self, gentity_t** radiusEnts, float radius, int boltIndex, vec3_t boltOrg)
+int G_GetEntsNearBolt(gentity_t* self, gentity_t** radiusEnts, const float radius, const int boltIndex, vec3_t boltOrg)
 {
 	vec3_t mins, maxs;
 
@@ -1516,7 +1516,7 @@ int G_GetEntsNearBolt(gentity_t* self, gentity_t** radiusEnts, float radius, int
 	return gi.EntitiesInBox(mins, maxs, radiusEnts, 128);
 }
 
-int NPC_GetEntsNearBolt(gentity_t** radiusEnts, float radius, int boltIndex, vec3_t boltOrg)
+int NPC_GetEntsNearBolt(gentity_t** radiusEnts, const float radius, const int boltIndex, vec3_t boltOrg)
 {
 	return G_GetEntsNearBolt(NPC, radiusEnts, radius, boltIndex, boltOrg);
 }

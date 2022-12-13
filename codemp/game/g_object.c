@@ -22,7 +22,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #include "g_local.h"
 
-extern void G_MoverTouchPushTriggers(gentity_t* ent, vec3_t oldOrg);
+extern void G_MoverTouchPushTriggers(gentity_t* ent, vec3_t old_org);
 void G_StopObjectMoving(gentity_t* object);
 
 void pitch_roll_for_slope(gentity_t* forwhom, vec3_t pass_slope);
@@ -182,12 +182,12 @@ void G_RunObject(gentity_t* ent)
 	//hit something
 
 	//Do impact damage
-	gentity_t* traceEnt = &g_entities[tr.entityNum];
-	if (tr.fraction || (traceEnt && traceEnt->takedamage))
+	gentity_t* trace_ent = &g_entities[tr.entityNum];
+	if (tr.fraction || (trace_ent && trace_ent->takedamage))
 	{
 		if (!VectorCompare(ent->r.currentOrigin, oldOrg))
 		{//moved and impacted
-			if ((traceEnt && traceEnt->takedamage))
+			if ((trace_ent && trace_ent->takedamage))
 			{//hurt someone
 //				G_Sound( ent, G_SoundIndex( "sound/movers/objects/objectHurt.wav" ) );
 			}
@@ -196,7 +196,7 @@ void G_RunObject(gentity_t* ent)
 
 		if (ent->s.weapon != WP_SABER)
 		{
-			DoImpact(ent, traceEnt, qtrue);
+			DoImpact(ent, trace_ent, qtrue);
 		}
 	}
 

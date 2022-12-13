@@ -175,7 +175,7 @@ TAG_Add
 -------------------------
 */
 
-reference_tag_t* TAG_Add(const char* name, const char* owner, vec3_t origin, vec3_t angles, int radius, int flags)
+reference_tag_t* TAG_Add(const char* name, const char* owner, vec3_t origin, vec3_t angles, const int radius, const int flags)
 {
 	const auto tag = new reference_tag_t;
 	VALIDATEP(tag);

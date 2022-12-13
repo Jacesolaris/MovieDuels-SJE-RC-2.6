@@ -21,8 +21,8 @@ namespace Q
 			return accumulator;
 		}
 
-		inline gsl::cstring_view::const_iterator skipWhitespace(gsl::cstring_view::const_iterator begin,
-			gsl::cstring_view::const_iterator end)
+		inline gsl::cstring_view::const_iterator skipWhitespace(const gsl::cstring_view::const_iterator begin,
+		                                                        const gsl::cstring_view::const_iterator end)
 		{
 			return std::find_if_not<gsl::cstring_view::const_iterator, int(*)(int)>(
 				begin, end,
@@ -111,8 +111,8 @@ namespace Q
 			/// @note required by istream.tellg()
 			typename std::basic_streambuf<CharT>::pos_type seekoff(
 				typename std::basic_streambuf<CharT>::off_type off,
-				std::ios_base::seekdir dir,
-				std::ios_base::openmode which
+				const std::ios_base::seekdir dir,
+				const std::ios_base::openmode which
 			) override
 			{
 				const typename std::basic_streambuf<CharT>::pos_type errVal{ -1 };

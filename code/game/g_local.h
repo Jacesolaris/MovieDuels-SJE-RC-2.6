@@ -424,7 +424,7 @@ Ghoul2 Insert End
 
 int G_EffectIndex(const char* name);
 void G_PlayEffect(const char* name, const vec3_t origin);
-void G_PlayEffect(const char* name, int clientNum);
+void G_PlayEffect(const char* name, int client_num);
 void G_PlayEffect(const char* name, const vec3_t origin, const vec3_t fwd);
 void G_PlayEffect(const char* name, const vec3_t origin, const vec3_t axis[3]);
 void G_PlayEffect(int fxID, const vec3_t origin);
@@ -617,15 +617,15 @@ extern void G_SoundIndexOnEnt(const gentity_t* ent, soundChannel_t channel, int 
 // g_client.c
 //
 char* ClientConnect(int client_num, qboolean first_time, SavedGameJustLoaded_e e_saved_game_just_loaded);
-void ClientUserinfoChanged(int clientNum);
-void ClientDisconnect(int clientNum);
-void ClientBegin(int clientNum, const usercmd_t* cmd, SavedGameJustLoaded_e eSavedGameJustLoaded);
-void ClientCommand(int clientNum);
+void ClientUserinfoChanged(int client_num);
+void ClientDisconnect(int client_num);
+void ClientBegin(int client_num, const usercmd_t* cmd, SavedGameJustLoaded_e eSavedGameJustLoaded);
+void ClientCommand(int client_num);
 
 //
 // g_active.c
 //
-void ClientThink(int clientNum, usercmd_t* cmd);
+void ClientThink(int client_num, usercmd_t* ucmd);
 void ClientEndFrame(gentity_t* ent);
 
 //

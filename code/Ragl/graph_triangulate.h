@@ -289,7 +289,7 @@ namespace ragl
 		// This function is a simple routine to prune out any edges which are larger or
 		// smaller than the desired range (min, max).
 		////////////////////////////////////////////////////////////////////////////////////
-		void	alpha_shape(typename TGraph::user& user, float max, float min = 0)
+		void	alpha_shape(typename TGraph::user& user, const float max, const float min = 0)
 		{
 			ratl::vector_vs<int, MAXEDGES>		CullEdges;
 			for (typename TEdges::iterator it = mEdges.begin(); it != mEdges.end(); ++it)
@@ -354,7 +354,7 @@ namespace ragl
 			THullIter	mHullLoc;
 			bool		mOnHull;
 
-			void		flip_face(int OldFace, int NewFace)
+			void		flip_face(const int OldFace, const int NewFace)
 			{
 				assert(mRight != mLeft);
 				assert(mLeft != NewFace && mRight != NewFace);
@@ -370,7 +370,7 @@ namespace ragl
 				assert(mRight != mLeft);
 			}
 
-			static void	verify(int PtA, int PtB, int Edge)
+			static void	verify(const int PtA, const int PtB, const int Edge)
 			{
 				assert(PtA == mA || PtA == mB);
 				assert(PtB == mA || PtB == mB);
@@ -379,7 +379,7 @@ namespace ragl
 				assert(mA != mB);
 			}
 
-			static void	verify(int PtA, int PtB, int PtC, int Edge)
+			static void	verify(const int PtA, const int PtB, const int PtC, const int Edge)
 			{
 				assert(PtC == mA && (PtA == mB || PtB == mB) || PtC == mB && (PtA == mA || PtB == mA));
 
@@ -413,7 +413,7 @@ namespace ragl
 
 			int			mFlips;
 
-			int& opposing_node(int A, int B)
+			int& opposing_node(const int A, const int B)
 			{
 				if (mA != A && mA != B)
 				{
@@ -427,7 +427,7 @@ namespace ragl
 				return mC;
 			}
 
-			int& relative_left(int edge)
+			int& relative_left(const int edge)
 			{
 				if (edge == mLeft)
 				{
@@ -440,7 +440,7 @@ namespace ragl
 				assert(edge == mBottom);	// If you hit this assert, then the edge is not in this face
 				return mLeft;
 			}
-			int& relative_right(int edge)
+			int& relative_right(const int edge)
 			{
 				if (edge == mLeft)
 				{

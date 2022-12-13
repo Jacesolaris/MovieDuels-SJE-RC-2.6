@@ -1517,8 +1517,8 @@ void shipboundary_think(gentity_t* ent)
 		return;
 	}
 
-	const int numListedEntities = gi.EntitiesInBox(ent->absmin, ent->absmax, entityList, MAX_GENTITIES);
-	while (i < numListedEntities)
+	const int num_listed_entities = gi.EntitiesInBox(ent->absmin, ent->absmax, entityList, MAX_GENTITIES);
+	while (i < num_listed_entities)
 	{
 		gentity_t* listedEnt = entityList[i];
 		if (listedEnt->inuse && listedEnt->client && listedEnt->s.m_iVehicleNum)

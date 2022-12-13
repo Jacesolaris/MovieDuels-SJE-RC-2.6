@@ -49,9 +49,9 @@ extern vec4_t textcolor_scroll;
 float gfAdvanceHack = 0.0f; // MUST default to this
 int giLinesOutput; // hack-city after release, only used by one function
 //
-const char* CG_DisplayBoxedText(int iBoxX, int iBoxY, int iBoxWidth, int iBoxHeight,
-	const char* psText, int iFontHandle, float fScale,
-	const vec4_t v4Color)
+const char* CG_DisplayBoxedText(const int iBoxX, const int iBoxY, const int iBoxWidth, const int iBoxHeight,
+                                const char* psText, const int iFontHandle, const float fScale,
+                                const vec4_t v4Color)
 {
 	giLinesOutput = 0;
 	cgi_R_SetColor(v4Color);
@@ -185,7 +185,7 @@ void CG_CaptionTextStop(void)
 //
 // returns 0 if failed, else strlen...
 //
-static int cg_SP_GetStringTextStringWithRetry(const char* psReference, char* psDest, int iSizeofDest)
+static int cg_SP_GetStringTextStringWithRetry(const char* psReference, char* psDest, const int iSizeofDest)
 {
 	if (psReference[0] == '#')
 	{
@@ -213,7 +213,7 @@ static int cg_SP_GetStringTextStringWithRetry(const char* psReference, char* psD
 //	the "filename" part of which should be the same as the StripEd reference we're looking for in the current
 //	level's string package...
 //
-void CG_CaptionText(const char* str, int sound)
+void CG_CaptionText(const char* str, const int sound)
 {
 	char text[8192] = { 0 };
 
@@ -465,7 +465,7 @@ CG_ScrollText - split text up into seperate lines
 */
 int giScrollTextPixelWidth = SCREEN_WIDTH;
 
-void CG_ScrollText(const char* str, int iPixelWidth)
+void CG_ScrollText(const char* str, const int iPixelWidth)
 {
 	giScrollTextPixelWidth = iPixelWidth;
 
@@ -655,7 +655,7 @@ Called for important messages that should stay in the center of the screen
 for a few moments
 ==============
 */
-void CG_CenterPrint(const char* str, int y)
+void CG_CenterPrint(const char* str, const int y)
 {
 	// Find text to match the str given
 	if (*str == '@')

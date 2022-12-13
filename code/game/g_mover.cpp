@@ -85,7 +85,7 @@ G_PlayDoorSound
 -------------------------
 */
 
-void G_PlayDoorSound(gentity_t* ent, int type)
+void G_PlayDoorSound(gentity_t* ent, const int type)
 {
 	if (VALIDSTRING(ent->soundSet) == false)
 		return;
@@ -264,7 +264,7 @@ qboolean G_TryPushingEntity(gentity_t* check, gentity_t* pusher, vec3_t move, ve
 	{
 		//Do damage
 		if (pusher->spawnflags & MOVER_CRUSHER //a crusher
-			&& check->s.clientNum >= MAX_CLIENTS //not the player
+			&& check->s.client_num >= MAX_CLIENTS //not the player
 			&& check->client //NPC
 			&& check->health <= 0 //dead
 			&& G_OkayToRemoveCorpse(check)) //okay to remove him
@@ -649,7 +649,7 @@ void CalcTeamDoorCenter(const gentity_t* ent, vec3_t center)
 SetMoverState
 ===============
 */
-void SetMoverState(gentity_t* ent, moverState_t moverState, int time)
+void SetMoverState(gentity_t* ent, const moverState_t moverState, const int time)
 {
 	vec3_t delta;
 	float f;
@@ -717,7 +717,7 @@ All entities in a mover team will move from pos1 to pos2
 in the same amount of time
 ================
 */
-void MatchTeam(gentity_t* teamLeader, int moverState, int time)
+void MatchTeam(gentity_t* teamLeader, int moverState, const int time)
 {
 	for (gentity_t* slave = teamLeader; slave; slave = slave->teamchain)
 	{
@@ -1207,7 +1207,7 @@ void Blocked_Door(gentity_t* ent, gentity_t* other)
 	if (ent->damage)
 	{
 		if (ent->spawnflags & MOVER_CRUSHER //a crusher
-			&& other->s.clientNum >= MAX_CLIENTS //not the player
+			&& other->s.client_num >= MAX_CLIENTS //not the player
 			&& other->client //NPC
 			&& other->health <= 0 //dead
 			&& G_OkayToRemoveCorpse(other)) //okay to remove him
@@ -1327,7 +1327,7 @@ void Think_MatchTeam(gentity_t* ent)
 	MatchTeam(ent, ent->moverState, level.time);
 }
 
-qboolean G_EntIsDoor(int entityNum)
+qboolean G_EntIsDoor(const int entityNum)
 {
 	if (entityNum < 0 || entityNum >= ENTITYNUM_WORLD)
 	{
@@ -1390,7 +1390,7 @@ gentity_t* G_FindDoorTrigger(const gentity_t* ent)
 
 qboolean G_TriggerActive(const gentity_t* self);
 
-qboolean G_EntIsUnlockedDoor(int entityNum)
+qboolean G_EntIsUnlockedDoor(const int entityNum)
 {
 	if (entityNum < 0 || entityNum >= ENTITYNUM_WORLD)
 	{

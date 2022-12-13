@@ -1488,7 +1488,7 @@ bool CPrimitiveTemplate::ParseModels(const CGPProperty& grp)
 }
 
 static bool ParseFX(const CGPProperty& grp, CFxScheduler& scheduler, CMediaHandles& handles, SFxHelper& helper,
-	int& flags, int successFlags, gsl::czstring loadError, gsl::czstring emptyError)
+	int& flags, const int successFlags, const gsl::czstring loadError, const gsl::czstring emptyError)
 {
 	bool any = false;
 	for (auto& value : grp.GetValues())
@@ -1601,7 +1601,7 @@ bool CPrimitiveTemplate::ParsePlayFxStrings(const CGPProperty& grp)
 }
 
 bool CPrimitiveTemplate::ParseGroup(const CGPGroup& grp, const StringViewIMap<ParseMethod>& parseMethods,
-	gsl::czstring name)
+                                    const gsl::czstring name)
 {
 	for (auto& cur : grp.GetProperties())
 	{

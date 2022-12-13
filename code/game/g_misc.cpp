@@ -243,7 +243,7 @@ void TeleportPlayer(gentity_t* player, vec3_t origin, vec3_t angles)
 	gi.linkentity(player);
 }
 
-void TeleportMover(gentity_t* mover, vec3_t origin, vec3_t diffAngles, qboolean snapAngle)
+void TeleportMover(gentity_t* mover, vec3_t origin, vec3_t diffAngles, const qboolean snapAngle)
 {
 	//FIXME: need an effect
 	vec3_t newAngle;
@@ -335,7 +335,7 @@ void SP_misc_teleporter(gentity_t* ent)
 	}
 
 	ent->s.modelindex = G_ModelIndex("models/objects/dmspot.md3");
-	ent->s.clientNum = 1;
+	ent->s.client_num = 1;
 	//	ent->s.loopSound = G_SoundIndex("sound/world/amb10.wav");
 	ent->contents = CONTENTS_SOLID;
 
@@ -444,8 +444,8 @@ void setCamera(gentity_t* ent)
 		ent->s.frame = 75;
 	}
 
-	// clientNum holds the rotate offset
-	ent->s.clientNum = ent->owner->s.clientNum;
+	// client_num holds the rotate offset
+	ent->s.client_num = ent->owner->s.client_num;
 
 	VectorCopy(ent->owner->s.origin, ent->s.origin2);
 
@@ -585,7 +585,7 @@ void SP_misc_portal_camera(gentity_t* ent)
 
 	G_SpawnFloat("roll", "0", &roll);
 
-	ent->s.clientNum = roll / 360.0 * 256;
+	ent->s.client_num = roll / 360.0 * 256;
 	ent->wait *= 1000;
 }
 
@@ -740,7 +740,7 @@ void SP_misc_skyportal(gentity_t* ent)
 }
 
 extern qboolean G_ClearViewEntity(gentity_t* ent);
-extern void G_SetViewEntity(gentity_t* self, gentity_t* viewEntity);
+extern void G_SetViewEntity(gentity_t* self, gentity_t* view_entity);
 extern void SP_fx_runner(gentity_t* ent);
 
 void camera_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags, int hitLoc)
@@ -1976,8 +1976,8 @@ void maglock_link(gentity_t* self)
 		*/
 		return;
 	}
-	gentity_t* traceEnt = &g_entities[trace.entityNum];
-	if (trace.entityNum >= ENTITYNUM_WORLD || !traceEnt || Q_stricmp("func_door", traceEnt->classname))
+	gentity_t* trace_ent = &g_entities[trace.entityNum];
+	if (trace.entityNum >= ENTITYNUM_WORLD || !trace_ent || Q_stricmp("func_door", trace_ent->classname))
 	{
 		self->e_ThinkFunc = thinkF_maglock_link;
 		self->nextthink = level.time + 100;
@@ -1986,12 +1986,12 @@ void maglock_link(gentity_t* self)
 		return;
 	}
 
-	//check the traceEnt, make sure it's a door and give it a lockCount and deactivate it
+	//check the trace_ent, make sure it's a door and give it a lockCount and deactivate it
 	//find the trigger for the door
-	self->activator = G_FindDoorTrigger(traceEnt);
+	self->activator = G_FindDoorTrigger(trace_ent);
 	if (!self->activator)
 	{
-		self->activator = traceEnt;
+		self->activator = trace_ent;
 	}
 	self->activator->lockCount++;
 	self->activator->svFlags |= SVF_INACTIVE;
@@ -2979,7 +2979,7 @@ Drivable ATST, when used by player, they become the ATST.  When the player hits 
 
 "target" - what to use when it dies
 */
-void misc_atst_setanim(gentity_t* self, int bone, int anim)
+void misc_atst_setanim(gentity_t* self, const int bone, const int anim)
 {
 	if (bone < 0 || anim < 0)
 	{

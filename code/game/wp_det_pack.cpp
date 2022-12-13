@@ -107,7 +107,7 @@ static void WP_DropDetPack(gentity_t* self, vec3_t start, vec3_t dir)
 }
 
 //---------------------------------------------------------
-void WP_FireDetPack(gentity_t* ent, qboolean alt_fire)
+void WP_FireDetPack(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	if (!ent || !ent->client)

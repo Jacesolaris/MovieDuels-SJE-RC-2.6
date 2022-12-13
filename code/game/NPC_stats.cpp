@@ -34,7 +34,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "../Rufl/hstring.h"
 #include "../Ratl/vector_vs.h"
 
-extern void WP_RemoveSaber(gentity_t* ent, int saberNum);
+extern void WP_RemoveSaber(gentity_t* ent, int saber_num);
 extern qboolean NPCsPrecached;
 extern vec3_t playerMins;
 extern vec3_t playerMaxs;
@@ -473,8 +473,8 @@ void SpewDebugStuffToFile(animation_t* bgGlobalAnimations)
 }
 #endif
 
-int CG_CheckAnimFrameForEventType(const animevent_t* animEvents, int keyFrame, animEventType_t eventType,
-	unsigned short modelIndex)
+int CG_CheckAnimFrameForEventType(const animevent_t* animEvents, const int keyFrame, const animEventType_t eventType,
+                                  const unsigned short modelIndex)
 {
 	for (int i = 0; i < MAX_ANIM_EVENTS; i++)
 	{
@@ -501,9 +501,9 @@ int CG_CheckAnimFrameForEventType(const animevent_t* animEvents, int keyFrame, a
 ParseAnimationEvtBlock
 ======================
 */
-static void ParseAnimationEvtBlock(int glaIndex, unsigned short modelIndex, const char* aeb_filename,
-	animevent_t* animEvents, const animation_t* animations, unsigned char& lastAnimEvent,
-	const char** text_p, bool bIsFrameSkipped)
+static void ParseAnimationEvtBlock(const int glaIndex, const unsigned short modelIndex, const char* aeb_filename,
+                                   animevent_t* animEvents, const animation_t* animations, unsigned char& lastAnimEvent,
+                                   const char** text_p, const bool bIsFrameSkipped)
 {
 	const char* token;
 	int num, n, lowestVal, highestVal;
@@ -717,7 +717,7 @@ static void ParseAnimationEvtBlock(int glaIndex, unsigned short modelIndex, cons
 			{
 				//a saber swing
 				animEvents[curAnimEvent].eventType = AEV_SABER_SWING;
-				animEvents[curAnimEvent].eventData[AED_SABER_SWING_SABERNUM] = 0;
+				animEvents[curAnimEvent].eventData[AED_SABER_SWING_saber_num] = 0;
 				//since we don't know which one they meant if we're hacking this, always use first saber
 				animEvents[curAnimEvent].eventData[AED_SABER_SWING_PROBABILITY] = animEvents[curAnimEvent].eventData[
 					AED_SOUND_PROBABILITY];
@@ -741,7 +741,7 @@ static void ParseAnimationEvtBlock(int glaIndex, unsigned short modelIndex, cons
 			{
 				//a saber spin
 				animEvents[curAnimEvent].eventType = AEV_SABER_SPIN;
-				animEvents[curAnimEvent].eventData[AED_SABER_SPIN_SABERNUM] = 0;
+				animEvents[curAnimEvent].eventData[AED_SABER_SPIN_saber_num] = 0;
 				//since we don't know which one they meant if we're hacking this, always use first saber
 				animEvents[curAnimEvent].eventData[AED_SABER_SPIN_PROBABILITY] = animEvents[curAnimEvent].eventData[
 					AED_SOUND_PROBABILITY];
@@ -913,8 +913,8 @@ This file's presence is not required
 ======================
 */
 static
-void G_ParseAnimationEvtFile(int glaIndex, const char* eventsDirectory, int fileIndex, int iRealGLAIndex = -1,
-	bool modelSpecific = false)
+void G_ParseAnimationEvtFile(const int glaIndex, const char* eventsDirectory, const int fileIndex, const int iRealGLAIndex = -1,
+                             const bool modelSpecific = false)
 {
 	char text[80000];
 	const char* text_p = text;
@@ -1001,7 +1001,7 @@ models/players/visor/animation.cfg, etc
 
 ======================
 */
-qboolean G_ParseAnimationFile(int glaIndex, const char* skeletonName, int fileIndex)
+qboolean G_ParseAnimationFile(const int glaIndex, const char* skeletonName, const int fileIndex)
 {
 	char text[160000];
 	const char* text_p = text;
@@ -1474,7 +1474,7 @@ void NPC_PrecacheAnimationCFG(const char* NPC_type)
 
 extern int NPC_WeaponsForTeam(team_t team, int spawnflags, const char* NPC_type);
 
-void NPC_PrecacheWeapons(team_t playerTeam, const int spawnflags, const char* NPCtype)
+void NPC_PrecacheWeapons(const team_t playerTeam, const int spawnflags, const char* NPCtype)
 {
 	const int weapons = NPC_WeaponsForTeam(playerTeam, spawnflags, NPCtype);
 	for (int curWeap = WP_SABER; curWeap < WP_NUM_WEAPONS; curWeap++)

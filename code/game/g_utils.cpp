@@ -53,7 +53,7 @@ G_FindConfigstringIndex
 */
 extern void ForceTelepathy(gentity_t* self);
 
-int g_find_configstring_index(const char* name, const int start, const int max, qboolean create)
+int g_find_configstring_index(const char* name, const int start, const int max, const qboolean create)
 {
 	int i;
 
@@ -147,7 +147,7 @@ constexpr auto FX_ENT_RADIUS = 32;
 //-----------------------------
 
 //-----------------------------
-void G_PlayEffect(int fxID, const vec3_t origin, const vec3_t fwd)
+void G_PlayEffect(const int fxID, const vec3_t origin, const vec3_t fwd)
 {
 	vec3_t temp;
 
@@ -166,7 +166,7 @@ void G_PlayEffect(int fxID, const vec3_t origin, const vec3_t fwd)
 
 // Play an effect at the origin of the specified entity
 //----------------------------
-void G_PlayEffect(int fxID, int entNum, const vec3_t fwd)
+void G_PlayEffect(const int fxID, const int entNum, const vec3_t fwd)
 {
 	vec3_t temp;
 
@@ -183,17 +183,17 @@ void G_PlayEffect(int fxID, int entNum, const vec3_t fwd)
 
 // Play an effect bolted onto the muzzle of the specified client
 //----------------------------
-void G_PlayEffect(const char* name, int clientNum)
+void G_PlayEffect(const char* name, const int client_num)
 {
-	gentity_t* tent = G_TempEntity(g_entities[clientNum].currentOrigin, EV_PLAY_MUZZLE_EFFECT);
+	gentity_t* tent = G_TempEntity(g_entities[client_num].currentOrigin, EV_PLAY_MUZZLE_EFFECT);
 	tent->s.eventParm = G_EffectIndex(name);
-	tent->s.otherEntityNum = clientNum;
+	tent->s.otherEntityNum = client_num;
 	VectorSet(tent->maxs, FX_ENT_RADIUS, FX_ENT_RADIUS, FX_ENT_RADIUS);
 	VectorScale(tent->maxs, -1, tent->mins);
 }
 
 //-----------------------------
-void G_PlayEffect(int fxID, const vec3_t origin, const vec3_t axis[3])
+void G_PlayEffect(const int fxID, const vec3_t origin, const vec3_t axis[3])
 {
 	gentity_t* tent = G_TempEntity(origin, EV_PLAY_EFFECT);
 	tent->s.eventParm = fxID;
@@ -208,7 +208,7 @@ void G_PlayEffect(int fxID, const vec3_t origin, const vec3_t axis[3])
 
 // Effect playing utilities	- bolt an effect to a ghoul2 models bolton point
 //-----------------------------
-void G_PlayEffect(int fxID, const int modelIndex, const int boltIndex, const int entNum, const vec3_t origin,
+void G_PlayEffect(const int fxID, const int modelIndex, const int boltIndex, const int entNum, const vec3_t origin,
                   const int iLoopTime, const qboolean isRelative) //iLoopTime 0 = not looping, 1 for infinite, else duration
 {
 	gentity_t* tent = G_TempEntity(origin, EV_PLAY_EFFECT);
@@ -229,7 +229,7 @@ void G_PlayEffect(const char* name, const vec3_t origin)
 	G_PlayEffect(G_EffectIndex(name), origin, up);
 }
 
-void G_PlayEffect(int fxID, const vec3_t origin)
+void G_PlayEffect(const int fxID, const vec3_t origin)
 {
 	constexpr vec3_t up = { 0, 0, 1 };
 
@@ -248,7 +248,7 @@ void G_PlayEffect(const char* name, const vec3_t origin, const vec3_t axis[3])
 	G_PlayEffect(G_EffectIndex(name), origin, axis);
 }
 
-void G_StopEffect(int fxID, const int modelIndex, const int boltIndex, const int entNum)
+void G_StopEffect(const int fxID, const int modelIndex, const int boltIndex, const int entNum)
 {
 	gentity_t* tent = G_TempEntity(g_entities[entNum].currentOrigin, EV_STOP_EFFECT);
 	tent->s.eventParm = fxID;
@@ -269,7 +269,7 @@ extern qboolean CG_TryPlayCustomSound(vec3_t origin, int entity_num, soundChanne
 	int custom_sound_set);
 extern cvar_t* g_timescale;
 //NOTE: Do NOT Try to use this before the cgame DLL is valid, it will NOT work!
-void G_SoundOnEnt(const gentity_t* ent, soundChannel_t channel, const char* soundPath)
+void G_SoundOnEnt(const gentity_t* ent, const soundChannel_t channel, const char* soundPath)
 {
 	const int index = G_SoundIndex(soundPath);
 
@@ -294,7 +294,7 @@ void G_SoundOnEnt(const gentity_t* ent, soundChannel_t channel, const char* soun
 	}
 }
 
-void G_SoundIndexOnEnt(const gentity_t* ent, soundChannel_t channel, int index)
+void G_SoundIndexOnEnt(const gentity_t* ent, const soundChannel_t channel, const int index)
 {
 	if (!ent)
 	{
@@ -310,7 +310,7 @@ void G_SoundIndexOnEnt(const gentity_t* ent, soundChannel_t channel, int index)
 
 extern cvar_t* g_skippingcin;
 
-void G_SpeechEvent(const gentity_t* self, int event)
+void G_SpeechEvent(const gentity_t* self, const int event)
 {
 	if (in_camera
 		&& g_skippingcin
@@ -490,7 +490,7 @@ NULL will be returned if the end of the list is reached.
 
 =============
 */
-gentity_t* G_Find(gentity_t* from, int fieldofs, const char* match)
+gentity_t* G_Find(gentity_t* from, const int fieldofs, const char* match)
 {
 	if (!match || !match[0])
 	{
@@ -526,7 +526,7 @@ gentity_t* G_Find(gentity_t* from, int fieldofs, const char* match)
 G_RadiusList - given an origin and a radius, return all entities that are in use that are within the list
 ============
 */
-int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean takeDamage,
+int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, const qboolean takeDamage,
 	gentity_t* ent_list[MAX_GENTITIES])
 {
 	gentity_t* entityList[MAX_GENTITIES];
@@ -546,9 +546,9 @@ int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean 
 		maxs[i] = origin[i] + radius;
 	}
 
-	const int numListedEntities = gi.EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+	const int num_listed_entities = gi.EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
 	radius *= radius; //square for the length squared below
-	for (int e = 0; e < numListedEntities; e++)
+	for (int e = 0; e < num_listed_entities; e++)
 	{
 		gentity_t* ent = entityList[e];
 
@@ -775,7 +775,7 @@ float vectoyaw(const vec3_t vec)
 	return yaw;
 }
 
-void G_InitGentity(gentity_t* e, qboolean bFreeG2)
+void G_InitGentity(gentity_t* e, const qboolean bFreeG2)
 {
 	e->inuse = qtrue;
 	SetInUse(e);
@@ -1115,7 +1115,7 @@ The origin will be snapped to save net bandwidth, so care
 must be taken if the origin is right on a surface (snap towards start vector first)
 =================
 */
-gentity_t* G_TempEntity(const vec3_t origin, int event)
+gentity_t* G_TempEntity(const vec3_t origin, const int event)
 {
 	vec3_t snapped;
 
@@ -1276,7 +1276,7 @@ void G_AddEvent(gentity_t* ent, int event, int eventParm)
 G_Sound
 =============
 */
-void G_Sound(const gentity_t* ent, int soundIndex)
+void G_Sound(const gentity_t* ent, const int soundIndex)
 {
 	gentity_t* te = G_TempEntity(ent->currentOrigin, EV_GENERAL_SOUND);
 	te->s.eventParm = soundIndex;
@@ -1287,7 +1287,7 @@ void G_Sound(const gentity_t* ent, int soundIndex)
 G_Sound
 =============
 */
-void G_SoundAtSpot(vec3_t org, int soundIndex, qboolean broadcast)
+void G_SoundAtSpot(vec3_t org, const int soundIndex, const qboolean broadcast)
 {
 	gentity_t* te = G_TempEntity(org, EV_GENERAL_SOUND);
 	te->s.eventParm = soundIndex;
@@ -1304,7 +1304,7 @@ G_SoundBroadcast
   Plays sound that can permeate PVS blockage
 =============
 */
-void G_SoundBroadcast(const gentity_t* ent, int soundIndex)
+void G_SoundBroadcast(const gentity_t* ent, const int soundIndex)
 {
 	gentity_t* te = G_TempEntity(ent->currentOrigin, EV_GLOBAL_SOUND); //full volume
 	te->s.eventParm = soundIndex;
@@ -1370,7 +1370,7 @@ qboolean G_CheckInSolidTeleport(const vec3_t& teleportPos, const gentity_t* self
 }
 
 //===============================================================================
-qboolean G_CheckInSolid(gentity_t* self, qboolean fix)
+qboolean G_CheckInSolid(gentity_t* self, const qboolean fix)
 {
 	trace_t trace;
 	vec3_t end, mins;
@@ -1477,7 +1477,7 @@ void Svcmd_Use_f(void)
 
 //======================================================
 
-void G_SetActiveState(const char* targetstring, qboolean actState)
+void G_SetActiveState(const char* targetstring, const qboolean actState)
 {
 	gentity_t* target = nullptr;
 	while (nullptr != (target = G_Find(target, FOFS(targetname), targetstring)))
@@ -1978,7 +1978,7 @@ tryJetPack:
 
 extern int killPlayerTimer;
 
-void G_ChangeMap(const char* mapname, const char* spawntarget, qboolean hub)
+void G_ChangeMap(const char* mapname, const char* spawntarget, const qboolean hub)
 {
 	if (g_entities[0].client->ps.pm_type == PM_DEAD)
 	{
@@ -2068,8 +2068,8 @@ void G_SetAngles(gentity_t* ent, const vec3_t angles)
 	VectorCopy(angles, ent->s.apos.trBase);
 }
 
-qboolean G_ClearTrace(const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int ignore,
-	int clipmask)
+qboolean G_ClearTrace(const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, const int ignore,
+                      const int clipmask)
 {
 	static trace_t tr;
 
@@ -2085,7 +2085,7 @@ qboolean G_ClearTrace(const vec3_t start, const vec3_t mins, const vec3_t maxs, 
 
 extern void CG_TestLine(vec3_t start, vec3_t end, int time, unsigned int color, int radius);
 
-void G_DebugLine(vec3_t A, vec3_t B, int duration, int color, qboolean deleteornot)
+void G_DebugLine(vec3_t A, vec3_t B, const int duration, const int color, qboolean deleteornot)
 {
 	/*
 	gentity_t *tent = G_TempEntity( A, EV_DEBUG_LINE );
@@ -2099,7 +2099,7 @@ void G_DebugLine(vec3_t A, vec3_t B, int duration, int color, qboolean deleteorn
 	CG_TestLine(A, B, duration, color, 1);
 }
 
-qboolean G_ExpandPointToBBox(vec3_t point, const vec3_t mins, const vec3_t maxs, int ignore, const int clipmask)
+qboolean G_ExpandPointToBBox(vec3_t point, const vec3_t mins, const vec3_t maxs, const int ignore, const int clipmask)
 {
 	trace_t tr;
 	vec3_t start, end;
@@ -2169,7 +2169,7 @@ void removeBoltSurface(gentity_t* ent)
 }
 
 void G_SetBoltSurfaceRemoval(const int entNum, const int modelIndex, const int boltIndex, const int surfaceIndex,
-	float duration)
+                             const float duration)
 {
 	constexpr vec3_t snapped = { 0, 0, 0 };
 

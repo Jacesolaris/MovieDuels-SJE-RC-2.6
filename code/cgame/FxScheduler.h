@@ -88,7 +88,7 @@ private:
 	std::vector<int> mMediaList;
 
 public:
-	void AddHandle(int item) { mMediaList.push_back(item); }
+	void AddHandle(const int item) { mMediaList.push_back(item); }
 
 	int GetHandle() const
 	{
@@ -121,19 +121,19 @@ public:
 		mMax = 0;
 	}
 
-	void SetRange(float min, float max)
+	void SetRange(const float min, const float max)
 	{
 		mMin = min;
 		mMax = max;
 	}
 
-	void SetMin(float min) { mMin = min; }
-	void SetMax(float max) { mMax = max; }
+	void SetMin(const float min) { mMin = min; }
+	void SetMax(const float max) { mMax = max; }
 
 	float GetMax() const { return mMax; }
 	float GetMin() const { return mMin; }
 
-	float GetVal(float percent) const
+	float GetVal(const float percent) const
 	{
 		if (mMin == mMax) { return mMin; }
 		return mMin + (mMax - mMin) * percent;
@@ -151,7 +151,7 @@ public:
 		return static_cast<int>((flrand(mMin, mMax) + 0.5f));
 	}
 
-	void ForceRange(float min, float max)
+	void ForceRange(const float min, const float max)
 	{
 		if (mMin < min) { mMin = min; }
 		if (mMin > max) { mMin = max; }

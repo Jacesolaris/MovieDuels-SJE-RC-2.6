@@ -95,7 +95,7 @@ A token can be:
 - EOL- or comment-delimited (if readToEOL == true); i.e. reads to end of line or the first // or /*
 @param text adjusted to start beyond the read token
 */
-static gsl::cstring_view GetToken(gsl::cstring_view& text, bool allowLineBreaks, bool readToEOL = false)
+static gsl::cstring_view GetToken(gsl::cstring_view& text, const bool allowLineBreaks, const bool readToEOL = false)
 {
 	skipWhitespaceAndComments(text, allowLineBreaks);
 	// EOF
@@ -147,7 +147,7 @@ static gsl::cstring_view GetToken(gsl::cstring_view& text, bool allowLineBreaks,
 	return token;
 }
 
-CGPProperty::CGPProperty(gsl::cstring_view initKey, gsl::cstring_view initValue)
+CGPProperty::CGPProperty(const gsl::cstring_view initKey, const gsl::cstring_view initValue)
 	: mKey(initKey)
 {
 	if (!initValue.empty())
@@ -156,7 +156,7 @@ CGPProperty::CGPProperty(gsl::cstring_view initKey, gsl::cstring_view initValue)
 	}
 }
 
-void CGPProperty::AddValue(gsl::cstring_view newValue)
+void CGPProperty::AddValue(const gsl::cstring_view newValue)
 {
 	mValues.push_back(newValue);
 }
@@ -232,7 +232,7 @@ bool CGPGroup::Parse(gsl::cstring_view& data, const bool topLevel)
 	}
 }
 
-bool CGenericParser2::Parse(gsl::czstring filename)
+bool CGenericParser2::Parse(const gsl::czstring filename)
 {
 	Clear();
 	mFileContent = FS::ReadFile(filename);

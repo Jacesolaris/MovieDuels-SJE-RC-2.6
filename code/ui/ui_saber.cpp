@@ -410,7 +410,7 @@ qboolean UI_SaberTypeForSaber(const char* saber_name, char* saber_type)
 	return UI_SaberParseParm(saber_name, "saberType", saber_type);
 }
 
-int UI_SaberNumBladesForSaber(const char* saber_name)
+int UI_saber_numBladesForSaber(const char* saber_name)
 {
 	char numBladesString[8] = { 0 };
 	UI_SaberParseParm(saber_name, "numBlades", numBladesString);
@@ -426,7 +426,7 @@ int UI_SaberNumBladesForSaber(const char* saber_name)
 	return numBlades;
 }
 
-qboolean UI_SaberShouldDrawBlade(const char* saber_name, const int bladeNum)
+qboolean UI_SaberShouldDrawBlade(const char* saber_name, const int blade_num)
 {
 	int bladeStyle2Start = 0, noBlade = 0;
 	char bladeStyle2StartString[8] = { 0 };
@@ -437,7 +437,7 @@ qboolean UI_SaberShouldDrawBlade(const char* saber_name, const int bladeNum)
 		bladeStyle2Start = atoi(bladeStyle2StartString);
 	}
 	if (bladeStyle2Start
-		&& bladeNum >= bladeStyle2Start)
+		&& blade_num >= bladeStyle2Start)
 	{
 		//use second blade style
 		UI_SaberParseParm(saber_name, "noBlade2", noBladeString);
@@ -2879,7 +2879,7 @@ void UI_SaberDrawBlades(itemDef_t* item, vec3_t origin, const float cur_yaw)
 		}
 		if (saber[0])
 		{
-			const int num_blades = UI_SaberNumBladesForSaber(saber);
+			const int num_blades = UI_saber_numBladesForSaber(saber);
 			if (num_blades)
 			{
 				//okay, here we go, time to draw each blade...

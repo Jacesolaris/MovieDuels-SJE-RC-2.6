@@ -47,7 +47,7 @@ extern qboolean TryGrapple(gentity_t* ent); //g_cmds.c
 extern qboolean BG_FullBodyTauntAnim(int anim);
 extern float PM_WalkableGroundDistance(void);
 extern qboolean PM_GroundSlideOkay(float zNormal);
-extern saberInfo_t* BG_MySaber(int clientNum, int saberNum);
+extern saberInfo_t* BG_MySaber(int client_num, int saber_num);
 
 pmove_t* pm;
 pml_t		pml;
@@ -260,7 +260,7 @@ qboolean BG_KnockDownable(playerState_t* ps)
 static QINLINE qboolean PM_IsRocketTrooper(void)
 {
 	/*
-	if (pm->ps->clientNum < MAX_CLIENTS &&
+	if (pm->ps->client_num < MAX_CLIENTS &&
 		pm->gametype == GT_SIEGE &&
 		pm->nonHumanoid)
 	{
@@ -274,8 +274,8 @@ static QINLINE qboolean PM_IsRocketTrooper(void)
 int PM_GetSaberStance(void)
 {
 	int anim = BOTH_STAND2;
-	const saberInfo_t* saber1 = BG_MySaber(pm->ps->clientNum, 0);
-	const saberInfo_t* saber2 = BG_MySaber(pm->ps->clientNum, 1);
+	const saberInfo_t* saber1 = BG_MySaber(pm->ps->client_num, 0);
+	const saberInfo_t* saber2 = BG_MySaber(pm->ps->client_num, 1);
 
 	if (!pm->ps->saberEntityNum)
 	{ //lost it
@@ -453,7 +453,7 @@ static int pm_flying = FLY_NONE;
 
 void PM_SetSpecialMoveValues(void)
 {
-	if (pm->ps->clientNum < MAX_CLIENTS)
+	if (pm->ps->client_num < MAX_CLIENTS)
 	{ //we know that real players aren't vehs
 		pm_flying = FLY_NONE;
 		return;
@@ -757,7 +757,7 @@ void PM_HoverTrace(void)
 		{//sit on water
 			traceContents |= (CONTENTS_WATER | CONTENTS_SLIME | CONTENTS_LAVA);
 		}
-		pm->trace(trace, pm->ps->origin, pm->mins, pm->maxs, point, pm->ps->clientNum, traceContents);
+		pm->trace(trace, pm->ps->origin, pm->mins, pm->maxs, point, pm->ps->client_num, traceContents);
 		if (trace->plane.normal[0] > 0.5f || trace->plane.normal[0] < -0.5f ||
 			trace->plane.normal[1] > 0.5f || trace->plane.normal[1] < -0.5f)
 		{ //steep slanted hill, don't go up it.
@@ -859,8 +859,8 @@ PM_AddEvent
 
 ===============
 */
-void PM_AddEvent(int newEvent) {
-	BG_AddPredictableEventToPlayerstate(newEvent, 0, pm->ps);
+void PM_AddEvent(int new_event) {
+	BG_AddPredictableEventToPlayerstate(new_event, 0, pm->ps);
 }
 
 void PM_AddEventWithParm(int newEvent, int parm)
@@ -873,8 +873,8 @@ void PM_AddEventWithParm(int newEvent, int parm)
 PM_AddTouchEnt
 ===============
 */
-void PM_AddTouchEnt(int entityNum) {
-	if (entityNum == ENTITYNUM_WORLD) {
+void PM_AddTouchEnt(int entity_num) {
+	if (entity_num == ENTITYNUM_WORLD) {
 		return;
 	}
 	if (pm->numtouch >= MAXTOUCH) {
@@ -883,13 +883,13 @@ void PM_AddTouchEnt(int entityNum) {
 
 	// see if it is already added
 	for (int i = 0; i < pm->numtouch; i++) {
-		if (pm->touchents[i] == entityNum) {
+		if (pm->touchents[i] == entity_num) {
 			return;
 		}
 	}
 
 	// add it
-	pm->touchents[pm->numtouch++] = entityNum;
+	pm->touchents[pm->numtouch++] = entity_num;
 }
 
 /*
@@ -922,7 +922,7 @@ void PM_ClipVelocity(vec3_t in, vec3_t normal, vec3_t out, float overbounce) {
 	}
 	if (pm->stepSlideFix)
 	{
-		if (pm->ps->clientNum < MAX_CLIENTS//normal player
+		if (pm->ps->client_num < MAX_CLIENTS//normal player
 			&& pm->ps->groundEntityNum != ENTITYNUM_NONE//on the ground
 			&& normal[2] < MIN_WALK_NORMAL)//sliding against a steep slope
 		{//if walking on the ground, don't slide up slopes that are too steep to walk on
@@ -964,7 +964,7 @@ static void PM_Friction(void) {
 
 	float drop = 0;
 
-	if (pm->ps->clientNum >= MAX_CLIENTS)
+	if (pm->ps->client_num >= MAX_CLIENTS)
 	{
 		pEnt = pm_entSelf;
 	}
@@ -1072,14 +1072,14 @@ static void PM_Accelerate(vec3_t wishdir, float wishspeed, float accel)
 {
 	if (pm->gametype != GT_SIEGE
 		|| pm->ps->m_iVehicleNum
-		|| pm->ps->clientNum >= MAX_CLIENTS
+		|| pm->ps->client_num >= MAX_CLIENTS
 		|| pm->ps->pm_type != PM_NORMAL)
 	{ //standard method, allows "bunnyhopping" and whatnot
 		float accelspeed;
 
 		const float currentspeed = DotProduct(pm->ps->velocity, wishdir);
 		const float addspeed = wishspeed - currentspeed;
-		if (addspeed <= 0 && pm->ps->clientNum < MAX_CLIENTS) {
+		if (addspeed <= 0 && pm->ps->client_num < MAX_CLIENTS) {
 			return;
 		}
 
@@ -1315,7 +1315,7 @@ qboolean PM_AdjustAngleForWallRun(playerState_t* ps, usercmd_t* ucmd, qboolean d
 		}
 		VectorMA(ps->origin, dist, rt, traceTo);
 
-		pm->trace(&trace, ps->origin, mins, maxs, traceTo, ps->clientNum, MASK_PLAYERSOLID);
+		pm->trace(&trace, ps->origin, mins, maxs, traceTo, ps->client_num, MASK_PLAYERSOLID);
 
 		if (trace.fraction < 1.0f
 			&& (trace.plane.normal[2] >= 0.0f && trace.plane.normal[2] <= 0.4f))//&& ent->client->ps.groundEntityNum == ENTITYNUM_NONE )
@@ -1329,7 +1329,7 @@ qboolean PM_AdjustAngleForWallRun(playerState_t* ps, usercmd_t* ucmd, qboolean d
 			AngleVectors(wallRunAngles, wallRunFwd, NULL, NULL);
 
 			VectorMA(pm->ps->origin, 32, wallRunFwd, traceTo2);
-			pm->trace(&trace2, pm->ps->origin, mins, maxs, traceTo2, pm->ps->clientNum, MASK_PLAYERSOLID);
+			pm->trace(&trace2, pm->ps->origin, mins, maxs, traceTo2, pm->ps->client_num, MASK_PLAYERSOLID);
 			if (trace2.fraction < 1.0f && DotProduct(trace2.plane.normal, wallRunFwd) <= -0.999f)
 			{//wall we can't run on in front of us
 				trace.fraction = 1.0f;//just a way to get it to kick us off the wall below
@@ -1420,7 +1420,7 @@ qboolean PM_AdjustAngleForWallRunUp(playerState_t* ps, usercmd_t* ucmd, qboolean
 
 		AngleVectors(fwdAngles, fwd, NULL, NULL);
 		VectorMA(ps->origin, dist, fwd, traceTo);
-		pm->trace(&trace, ps->origin, mins, maxs, traceTo, ps->clientNum, MASK_PLAYERSOLID);
+		pm->trace(&trace, ps->origin, mins, maxs, traceTo, ps->client_num, MASK_PLAYERSOLID);
 		if (trace.fraction > 0.5f)
 		{//hmm, some room, see if there's a floor right here
 			trace_t	trace2;
@@ -1430,7 +1430,7 @@ qboolean PM_AdjustAngleForWallRunUp(playerState_t* ps, usercmd_t* ucmd, qboolean
 			top[2] += (pm->mins[2] * -1) + 4.0f;
 			VectorCopy(top, bottom);
 			bottom[2] -= 64.0f;
-			pm->trace(&trace2, top, pm->mins, pm->maxs, bottom, ps->clientNum, MASK_PLAYERSOLID);
+			pm->trace(&trace2, top, pm->mins, pm->maxs, bottom, ps->client_num, MASK_PLAYERSOLID);
 			if (!trace2.allsolid
 				&& !trace2.startsolid
 				&& trace2.fraction < 1.0f
@@ -1459,7 +1459,7 @@ qboolean PM_AdjustAngleForWallRunUp(playerState_t* ps, usercmd_t* ucmd, qboolean
 			trace_t	trace2;
 			VectorCopy(ps->origin, traceTo);
 			traceTo[2] += 64;
-			pm->trace(&trace2, ps->origin, mins, maxs, traceTo, ps->clientNum, MASK_PLAYERSOLID);
+			pm->trace(&trace2, ps->origin, mins, maxs, traceTo, ps->client_num, MASK_PLAYERSOLID);
 			if (trace2.fraction < 1.0f)
 			{//will hit a ceiling, so force jump-off right now
 				//NOTE: hits any entity or clip brush in the way, too, not just architecture!
@@ -1607,7 +1607,7 @@ qboolean PM_AdjustAngleForWallJump(playerState_t* ps, usercmd_t* ucmd, qboolean 
 			}
 		}
 		VectorMA(ps->origin, dist, checkDir, traceTo);
-		pm->trace(&trace, ps->origin, mins, maxs, traceTo, ps->clientNum, MASK_PLAYERSOLID);
+		pm->trace(&trace, ps->origin, mins, maxs, traceTo, ps->client_num, MASK_PLAYERSOLID);
 		if ( //ucmd->upmove <= 0 &&
 			ps->legsTimer > 100 &&
 			trace.fraction < 1.0f &&
@@ -1724,7 +1724,7 @@ static qboolean PM_CheckJump(void)
 {
 	qboolean allowFlips = qtrue;
 
-	if (pm->ps->clientNum >= MAX_CLIENTS)
+	if (pm->ps->client_num >= MAX_CLIENTS)
 	{
 		bgEntity_t* pEnt = pm_entSelf;
 
@@ -1759,8 +1759,8 @@ static qboolean PM_CheckJump(void)
 
 	if (pm->ps->weapon == WP_SABER)
 	{
-		saberInfo_t* saber1 = BG_MySaber(pm->ps->clientNum, 0);
-		saberInfo_t* saber2 = BG_MySaber(pm->ps->clientNum, 1);
+		saberInfo_t* saber1 = BG_MySaber(pm->ps->client_num, 0);
+		saberInfo_t* saber2 = BG_MySaber(pm->ps->client_num, 1);
 		if (saber1
 			&& (saber1->saberFlags & SFL_NO_FLIPS))
 		{
@@ -2040,7 +2040,7 @@ static qboolean PM_CheckJump(void)
 
 		AngleVectors(pm->ps->viewangles, forward, NULL, NULL);
 		VectorMA(pm->ps->origin, -8, forward, back);
-		pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, back, pm->ps->clientNum, pm->tracemask);
+		pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, back, pm->ps->client_num, pm->tracemask);
 
 		if (trace.fraction <= 1.0f)
 		{
@@ -2063,8 +2063,8 @@ static qboolean PM_CheckJump(void)
 		qboolean allowWallGrabs = qtrue;
 		if (pm->ps->weapon == WP_SABER)
 		{
-			saberInfo_t* saber1 = BG_MySaber(pm->ps->clientNum, 0);
-			saberInfo_t* saber2 = BG_MySaber(pm->ps->clientNum, 1);
+			saberInfo_t* saber1 = BG_MySaber(pm->ps->client_num, 0);
+			saberInfo_t* saber2 = BG_MySaber(pm->ps->client_num, 1);
 			if (saber1
 				&& (saber1->saberFlags & SFL_NO_WALL_RUNS))
 			{
@@ -2202,7 +2202,7 @@ static qboolean PM_CheckJump(void)
 
 				if (doTrace)
 				{
-					pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->clientNum, contents);
+					pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->client_num, contents);
 					VectorCopy(trace.plane.normal, wallNormal);
 					VectorNormalize(wallNormal);
 					VectorSubtract(pm->ps->origin, traceto, idealNormal);
@@ -2320,7 +2320,7 @@ static qboolean PM_CheckJump(void)
 				}
 				if (anim != -1)
 				{
-					pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->clientNum, CONTENTS_SOLID | CONTENTS_BODY);
+					pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->client_num, CONTENTS_SOLID | CONTENTS_BODY);
 					if (trace.fraction < 1.0f)
 					{//flip off wall
 						int parts = 0;
@@ -2374,7 +2374,7 @@ static qboolean PM_CheckJump(void)
 				}
 				if (anim != -1)
 				{
-					pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->clientNum, CONTENTS_SOLID | CONTENTS_BODY);
+					pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->client_num, CONTENTS_SOLID | CONTENTS_BODY);
 					if (trace.fraction < 1.0f)
 					{//flip off wall
 						int parts = SETANIM_LEGS;
@@ -2388,7 +2388,7 @@ static qboolean PM_CheckJump(void)
 							parts = SETANIM_BOTH;
 						}
 						PM_SetAnim(parts, anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
-						//FIXME: do damage to traceEnt, like above?
+						//FIXME: do damage to trace_ent, like above?
 						//pm->ps->pm_flags |= PMF_JUMPING|PMF_SLOW_MO_FALL;
 						//ha ha, so silly with your silly jumpy fally flags.
 						pm->cmd.upmove = 0;
@@ -2418,7 +2418,7 @@ static qboolean PM_CheckJump(void)
 				AngleVectors( fwdAngles, fwd, NULL, NULL );
 				VectorMA( pm->ps->origin, 32, fwd, traceto );
 
-				pm->trace( &trace, pm->ps->origin, mins, maxs, traceto, pm->ps->clientNum, MASK_PLAYERSOLID );//FIXME: clip brushes too?
+				pm->trace( &trace, pm->ps->origin, mins, maxs, traceto, pm->ps->client_num, MASK_PLAYERSOLID );//FIXME: clip brushes too?
 				VectorSubtract( pm->ps->origin, traceto, idealNormal );
 				VectorNormalize( idealNormal );
 
@@ -2483,7 +2483,7 @@ static qboolean PM_CheckJump(void)
 						vec3_t fwd, traceto, mins, maxs, fwdAngles;
 						trace_t	trace;
 						vec3_t	idealNormal;
-						bgEntity_t* traceEnt;
+						bgEntity_t* trace_ent;
 
 						VectorSet(mins, pm->mins[0], pm->mins[1], 0.0f);
 						VectorSet(maxs, pm->maxs[0], pm->maxs[1], 24.0f);
@@ -2492,13 +2492,13 @@ static qboolean PM_CheckJump(void)
 						AngleVectors(fwdAngles, fwd, NULL, NULL);
 						VectorMA(pm->ps->origin, 32, fwd, traceto);
 
-						pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->clientNum, contents);//FIXME: clip brushes too?
+						pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->client_num, contents);//FIXME: clip brushes too?
 						VectorSubtract(pm->ps->origin, traceto, idealNormal);
 						VectorNormalize(idealNormal);
-						traceEnt = PM_BGEntForNum(trace.entityNum);
+						trace_ent = PM_BGEntForNum(trace.entityNum);
 
 						if (trace.fraction < 1.0f
-							&& ((trace.entityNum < ENTITYNUM_WORLD && traceEnt && traceEnt->s.solid != SOLID_BMODEL) || DotProduct(trace.plane.normal, idealNormal) > 0.7))
+							&& ((trace.entityNum < ENTITYNUM_WORLD && trace_ent && trace_ent->s.solid != SOLID_BMODEL) || DotProduct(trace.plane.normal, idealNormal) > 0.7))
 						{//there is a wall there
 							pm->ps->velocity[0] = pm->ps->velocity[1] = 0;
 							if (wallWalkAnim == BOTH_FORCEWALLRUNFLIP_START)
@@ -2523,9 +2523,9 @@ static qboolean PM_CheckJump(void)
 
 							//kick if jumping off an ent
 							/*
-							if ( kick && traceEnt && (traceEnt->s.eType == ET_PLAYER || traceEnt->s.eType == ET_NPC) )
+							if ( kick && trace_ent && (trace_ent->s.eType == ET_PLAYER || trace_ent->s.eType == ET_NPC) )
 							{ //kick that thang!
-								pm->ps->forceKickFlip = traceEnt->s.number+1;
+								pm->ps->forceKickFlip = trace_ent->s.number+1;
 							}
 							*/
 							pm->cmd.rightmove = pm->cmd.forwardmove = 0;
@@ -2591,16 +2591,16 @@ static qboolean PM_CheckJump(void)
 					}
 					if (anim != -1)
 					{//trace in the dir we're pushing in and see if there's a vertical wall there
-						bgEntity_t* traceEnt;
+						bgEntity_t* trace_ent;
 
 						VectorMA(pm->ps->origin, 8, checkDir, traceto);
-						pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->clientNum, CONTENTS_SOLID);//FIXME: clip brushes too?
+						pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->client_num, CONTENTS_SOLID);//FIXME: clip brushes too?
 						VectorSubtract(pm->ps->origin, traceto, idealNormal);
 						VectorNormalize(idealNormal);
-						traceEnt = PM_BGEntForNum(trace.entityNum);
+						trace_ent = PM_BGEntForNum(trace.entityNum);
 						if (trace.fraction < 1.0f
 							&& fabs(trace.plane.normal[2]) <= 0.2f/*MAX_WALL_GRAB_SLOPE*/
-							&& ((trace.entityNum < ENTITYNUM_WORLD && traceEnt && traceEnt->s.solid != SOLID_BMODEL) || DotProduct(trace.plane.normal, idealNormal) > 0.7))
+							&& ((trace.entityNum < ENTITYNUM_WORLD && trace_ent && trace_ent->s.solid != SOLID_BMODEL) || DotProduct(trace.plane.normal, idealNormal) > 0.7))
 						{//there is a wall there
 							float dot = DotProduct(pm->ps->velocity, trace.plane.normal);
 							if (dot < 1.0f)
@@ -2733,13 +2733,13 @@ static qboolean	PM_CheckWaterJump(void) {
 
 	VectorMA(pm->ps->origin, 30, flatforward, spot);
 	spot[2] += 4;
-	int cont = pm->pointcontents(spot, pm->ps->clientNum);
+	int cont = pm->pointcontents(spot, pm->ps->client_num);
 	if (!(cont & CONTENTS_SOLID)) {
 		return qfalse;
 	}
 
 	spot[2] += 16;
-	cont = pm->pointcontents(spot, pm->ps->clientNum);
+	cont = pm->pointcontents(spot, pm->ps->client_num);
 	if (cont & (CONTENTS_SOLID | CONTENTS_PLAYERCLIP | CONTENTS_BODY)) {
 		return qfalse;
 	}
@@ -2888,7 +2888,7 @@ static void PM_FlyVehicleMove(void)
 
 	// Get The WishVel And WishSpeed
 	//-------------------------------
-	if (pm->ps->clientNum >= MAX_CLIENTS)
+	if (pm->ps->client_num >= MAX_CLIENTS)
 	{//NPC
 		// If The UCmds Were Set, But Never Converted Into A MoveDir, Then Make The WishDir From UCmds
 		//--------------------------------------------------------------------------------------------
@@ -2986,7 +2986,7 @@ static void PM_AirMove(void) {
 	usercmd_t	cmd;
 	Vehicle_t* pVeh = NULL;
 
-	if (pm->ps->clientNum >= MAX_CLIENTS)
+	if (pm->ps->client_num >= MAX_CLIENTS)
 	{
 		const bgEntity_t* pEnt = pm_entSelf;
 
@@ -3075,7 +3075,7 @@ static void PM_AirMove(void) {
 				}
 			}
 
-			if (pm->ps->clientNum < MAX_CLIENTS)
+			if (pm->ps->client_num < MAX_CLIENTS)
 			{//do normal adding to wishvel
 				VectorScale(vfwd, speed * controlMod * (fmove / 127.0f), wishvel);
 				//just add strafing
@@ -3104,7 +3104,7 @@ static void PM_AirMove(void) {
 			{
 				if (pVeh->m_pVehicleInfo->strafePerc)
 				{//we can strafe
-					if (pm->ps->clientNum)
+					if (pm->ps->client_num)
 					{//alternate control scheme: can strafe
 						if (smove)
 						{
@@ -3265,7 +3265,7 @@ static void PM_WalkMove(void) {
 
 	// Get The WishVel And WishSpeed
 	//-------------------------------
-	if (pm->ps->clientNum >= MAX_CLIENTS && !VectorCompare(pm->ps->moveDir, vec3_origin))
+	if (pm->ps->client_num >= MAX_CLIENTS && !VectorCompare(pm->ps->moveDir, vec3_origin))
 	{//NPC
 		const bgEntity_t* pEnt = pm_entSelf;
 
@@ -3351,7 +3351,7 @@ static void PM_WalkMove(void) {
 
 	PM_Accelerate(wishdir, wishspeed, accelerate);
 	/*
-	if (pm->ps->clientNum >= MAX_CLIENTS)
+	if (pm->ps->client_num >= MAX_CLIENTS)
 	{
 #ifdef _GAME
 		Com_Printf("^1S: %f, %f\n", wishspeed, pm->ps->speed);
@@ -3521,13 +3521,13 @@ static int PM_TryRoll(void)
 
 	if (pm->ps->weapon == WP_SABER)
 	{
-		const saberInfo_t* saber = BG_MySaber(pm->ps->clientNum, 0);
+		const saberInfo_t* saber = BG_MySaber(pm->ps->client_num, 0);
 		if (saber
 			&& (saber->saberFlags & SFL_NO_ROLLS))
 		{
 			return 0;
 		}
-		saber = BG_MySaber(pm->ps->clientNum, 1);
+		saber = BG_MySaber(pm->ps->client_num, 1);
 		if (saber
 			&& (saber->saberFlags & SFL_NO_ROLLS))
 		{
@@ -3568,7 +3568,7 @@ static int PM_TryRoll(void)
 
 	if (anim != -1)
 	{ //We want to roll. Perform a trace to see if we can, and if so, send us into one.
-		pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->clientNum, CONTENTS_SOLID);
+		pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->client_num, CONTENTS_SOLID);
 		if (trace.fraction >= 1.0f)
 		{
 			pm->ps->saberMove = LS_NONE;
@@ -3912,13 +3912,13 @@ static int PM_CorrectAllSolid(trace_t* trace) {
 				point[0] += (float)i;
 				point[1] += (float)j;
 				point[2] += (float)k;
-				pm->trace(trace, point, pm->mins, pm->maxs, point, pm->ps->clientNum, pm->tracemask);
+				pm->trace(trace, point, pm->mins, pm->maxs, point, pm->ps->client_num, pm->tracemask);
 				if (!trace->allsolid) {
 					point[0] = pm->ps->origin[0];
 					point[1] = pm->ps->origin[1];
 					point[2] = pm->ps->origin[2] - 0.25;
 
-					pm->trace(trace, pm->ps->origin, pm->mins, pm->maxs, point, pm->ps->clientNum, pm->tracemask);
+					pm->trace(trace, pm->ps->origin, pm->mins, pm->maxs, point, pm->ps->client_num, pm->tracemask);
 					pml.groundTrace = *trace;
 					return qtrue;
 				}
@@ -3974,7 +3974,7 @@ static void PM_GroundTraceMissed(void) {
 		VectorCopy(pm->ps->origin, point);
 		point[2] -= 64;
 
-		pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, point, pm->ps->clientNum, pm->tracemask);
+		pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, point, pm->ps->client_num, pm->tracemask);
 		if (trace.fraction == 1.0 || pm->ps->pm_type == PM_FLOAT) {
 			if (pm->ps->velocity[2] <= 0 && !(pm->ps->pm_flags & PMF_JUMP_HELD))
 			{
@@ -4003,7 +4003,7 @@ static void PM_GroundTraceMissed(void) {
 		VectorCopy(pm->ps->origin, point);
 		point[2] -= 64;
 
-		pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, point, pm->ps->clientNum, pm->tracemask);
+		pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, point, pm->ps->client_num, pm->tracemask);
 		if (trace.fraction == 1.0 || pm->ps->pm_type == PM_FLOAT)
 		{
 			pm->ps->inAirAnim = qtrue;
@@ -4032,7 +4032,7 @@ static void PM_GroundTrace(void) {
 	trace_t		trace;
 	float minNormal = (float)MIN_WALK_NORMAL;
 
-	if (pm->ps->clientNum >= MAX_CLIENTS)
+	if (pm->ps->client_num >= MAX_CLIENTS)
 	{
 		const bgEntity_t* pEnt = pm_entSelf;
 
@@ -4046,7 +4046,7 @@ static void PM_GroundTrace(void) {
 	point[1] = pm->ps->origin[1];
 	point[2] = pm->ps->origin[2] - 0.25;
 
-	pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, point, pm->ps->clientNum, pm->tracemask);
+	pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, point, pm->ps->client_num, pm->tracemask);
 	pml.groundTrace = trace;
 
 	// do something corrective if the trace starts in a solid...
@@ -4122,7 +4122,7 @@ static void PM_GroundTrace(void) {
 		PM_CrashLand();
 
 #ifdef _GAME
-		if (pm->ps->clientNum < MAX_CLIENTS &&
+		if (pm->ps->client_num < MAX_CLIENTS &&
 			!pm->ps->m_iVehicleNum &&
 			trace.entityNum < ENTITYNUM_WORLD &&
 			trace.entityNum >= MAX_CLIENTS &&
@@ -4183,7 +4183,7 @@ static void PM_SetWaterLevel(void) {
 	point[0] = pm->ps->origin[0];
 	point[1] = pm->ps->origin[1];
 	point[2] = pm->ps->origin[2] + MINS_Z + 1;
-	int cont = pm->pointcontents(point, pm->ps->clientNum);
+	int cont = pm->pointcontents(point, pm->ps->client_num);
 
 	if (cont & MASK_WATER) {
 		const int sample2 = pm->ps->viewheight - MINS_Z;
@@ -4192,11 +4192,11 @@ static void PM_SetWaterLevel(void) {
 		pm->watertype = cont;
 		pm->waterlevel = 1;
 		point[2] = pm->ps->origin[2] + MINS_Z + sample1;
-		cont = pm->pointcontents(point, pm->ps->clientNum);
+		cont = pm->pointcontents(point, pm->ps->client_num);
 		if (cont & MASK_WATER) {
 			pm->waterlevel = 2;
 			point[2] = pm->ps->origin[2] + MINS_Z + sample2;
-			cont = pm->pointcontents(point, pm->ps->clientNum);
+			cont = pm->pointcontents(point, pm->ps->client_num);
 			if (cont & MASK_WATER) {
 				pm->waterlevel = 3;
 			}
@@ -4235,7 +4235,7 @@ void PM_CheckFixMins(void)
 		VectorSet(curMins, pm->mins[0], pm->mins[1], 0);
 		VectorSet(curMaxs, pm->maxs[0], pm->maxs[1], pm->ps->standheight);
 
-		pm->trace(&trace, pm->ps->origin, curMins, curMaxs, end, pm->ps->clientNum, pm->tracemask);
+		pm->trace(&trace, pm->ps->origin, curMins, curMaxs, end, pm->ps->client_num, pm->tracemask);
 		if (!trace.allsolid && !trace.startsolid)
 		{//should never start in solid
 			if (trace.fraction >= 1.0f)
@@ -4249,7 +4249,7 @@ void PM_CheckFixMins(void)
 				//need to trace up, too
 				const float updist = ((1.0f - trace.fraction) * -MINS_Z);
 				end[2] = pm->ps->origin[2] + updist;
-				pm->trace(&trace, pm->ps->origin, curMins, curMaxs, end, pm->ps->clientNum, pm->tracemask);
+				pm->trace(&trace, pm->ps->origin, curMins, curMaxs, end, pm->ps->client_num, pm->tracemask);
 				if (!trace.allsolid && !trace.startsolid)
 				{//should never start in solid
 					if (trace.fraction >= 1.0f)
@@ -4304,7 +4304,7 @@ static qboolean PM_CanStand(void)
 			VectorAdd(start, pm->ps->origin, start);
 			VectorAdd(end, pm->ps->origin, end);
 
-			pm->trace(&trace, start, lineMins, lineMaxs, end, pm->ps->clientNum, pm->tracemask);
+			pm->trace(&trace, start, lineMins, lineMaxs, end, pm->ps->client_num, pm->tracemask);
 			if (trace.allsolid || trace.fraction < 1.0f)
 			{
 				canStand = qfalse;
@@ -4337,7 +4337,7 @@ static void PM_CheckDuck(void)
 		//the vehicle code may need it later... but, for riders,
 		//it should have already been copied over to the vehicle, right?
 
-		if (pm->ps->clientNum >= MAX_CLIENTS)
+		if (pm->ps->client_num >= MAX_CLIENTS)
 		{
 			return;
 		}
@@ -4363,7 +4363,7 @@ static void PM_CheckDuck(void)
 				VectorClear(pm->maxs);
 #ifdef _GAME
 				{
-					const gentity_t* me = &g_entities[pm->ps->clientNum];
+					const gentity_t* me = &g_entities[pm->ps->client_num];
 					if (me->inuse && me->client)
 					{ //yeah, this is a really terrible hack.
 						me->client->solidHack = level.time + 200;
@@ -4375,7 +4375,7 @@ static void PM_CheckDuck(void)
 	}
 	else
 	{
-		if (pm->ps->clientNum < MAX_CLIENTS)
+		if (pm->ps->client_num < MAX_CLIENTS)
 		{
 			pm->mins[0] = -15;
 			pm->mins[1] = -15;
@@ -4397,7 +4397,7 @@ static void PM_CheckDuck(void)
 			}
 		}
 
-		if (pm->ps->pm_type == PM_DEAD && pm->ps->clientNum < MAX_CLIENTS)
+		if (pm->ps->pm_type == PM_DEAD && pm->ps->client_num < MAX_CLIENTS)
 		{
 			pm->maxs[2] = -8;
 			pm->ps->viewheight = DEAD_VIEWHEIGHT;
@@ -4619,11 +4619,11 @@ void PM_FootSlopeTrace(float* pDiff, float* pInterval)
 	VectorSet(footMins, -3, -3, 0);
 	VectorSet(footMaxs, 3, 3, 1);
 
-	pm->trace(&trace, footLOrg, footMins, footMaxs, footLBot, pm->ps->clientNum, pm->tracemask);
+	pm->trace(&trace, footLOrg, footMins, footMaxs, footLBot, pm->ps->client_num, pm->tracemask);
 	VectorCopy(trace.endpos, footLBot);
 	VectorCopy(trace.plane.normal, footLSlope);
 
-	pm->trace(&trace, footROrg, footMins, footMaxs, footRBot, pm->ps->clientNum, pm->tracemask);
+	pm->trace(&trace, footROrg, footMins, footMaxs, footRBot, pm->ps->client_num, pm->tracemask);
 	VectorCopy(trace.endpos, footRBot);
 	VectorCopy(trace.plane.normal, footRSlope);
 
@@ -5117,7 +5117,7 @@ static void PM_Footsteps(void) {
 	else if (!pm->cmd.forwardmove && !pm->cmd.rightmove) {
 		if (pm->xyspeed < 5) {
 			pm->ps->bobCycle = 0;	// start at beginning of cycle again
-			if (pm->ps->clientNum >= MAX_CLIENTS &&
+			if (pm->ps->client_num >= MAX_CLIENTS &&
 				pm_entSelf &&
 				pm_entSelf->s.NPC_class == CLASS_RANCOR)
 			{
@@ -5137,7 +5137,7 @@ static void PM_Footsteps(void) {
 					//PM_SetAnim(pm,SETANIM_LEGS,BOTH_STAND1,SETANIM_FLAG_NORMAL);
 				}
 			}
-			else if (pm->ps->clientNum >= MAX_CLIENTS &&
+			else if (pm->ps->client_num >= MAX_CLIENTS &&
 				pm_entSelf &&
 				pm_entSelf->s.NPC_class == CLASS_WAMPA)
 			{
@@ -5293,7 +5293,7 @@ static void PM_Footsteps(void) {
 		else if (!(pm->cmd.buttons & BUTTON_WALKING))
 		{//running
 			bobmove = 0.4f;	// faster speeds bob faster
-			if (pm->ps->clientNum >= MAX_CLIENTS &&
+			if (pm->ps->client_num >= MAX_CLIENTS &&
 				pm_entSelf &&
 				pm_entSelf->s.NPC_class == CLASS_WAMPA)
 			{
@@ -5306,7 +5306,7 @@ static void PM_Footsteps(void) {
 					desiredAnim = BOTH_RUN2;
 				}
 			}
-			else if (pm->ps->clientNum >= MAX_CLIENTS &&
+			else if (pm->ps->client_num >= MAX_CLIENTS &&
 				pm_entSelf &&
 				pm_entSelf->s.NPC_class == CLASS_RANCOR)
 			{//no run anims
@@ -5320,7 +5320,7 @@ static void PM_Footsteps(void) {
 				}
 			}
 #ifdef _GAME
-			else if (pm->ps->clientNum >= MAX_CLIENTS &&
+			else if (pm->ps->client_num >= MAX_CLIENTS &&
 				pm_entSelf &&
 				pm_entSelf->s.NPC_class == CLASS_JAWA)
 			{
@@ -5652,7 +5652,7 @@ static void PM_WaterEvents(void) {		// FIXME?
 		start[2] += 10;
 		end[2] -= 40;
 
-		pm->trace(&tr, start, vec3_origin, vec3_origin, end, pm->ps->clientNum, MASK_WATER);
+		pm->trace(&tr, start, vec3_origin, vec3_origin, end, pm->ps->client_num, MASK_WATER);
 
 		if (tr.fraction < 1.0f)
 		{
@@ -5834,7 +5834,7 @@ void PM_RocketLock(float lockDist, qboolean vehicleLock)
 		ang[2] = muzzlePoint[2] + ang[2] * lockDist;
 	}
 
-	pm->trace(&tr, muzzlePoint, NULL, NULL, ang, pm->ps->clientNum, MASK_PLAYERSOLID);
+	pm->trace(&tr, muzzlePoint, NULL, NULL, ang, pm->ps->client_num, MASK_PLAYERSOLID);
 
 	if (vehicleLock)
 	{//vehicles also do a trace from the camera point if the main one misses
@@ -5842,14 +5842,14 @@ void PM_RocketLock(float lockDist, qboolean vehicleLock)
 		{
 			trace_t camTrace;
 			vec3_t newEnd, shotDir;
-			if (BG_VehTraceFromCamPos(&camTrace, PM_BGEntForNum(pm->ps->clientNum), pm->ps->origin, muzzlePoint, tr.endpos, newEnd, shotDir, (tr.fraction * lockDist)))
+			if (BG_VehTraceFromCamPos(&camTrace, PM_BGEntForNum(pm->ps->client_num), pm->ps->origin, muzzlePoint, tr.endpos, newEnd, shotDir, (tr.fraction * lockDist)))
 			{
 				memcpy(&tr, &camTrace, sizeof(tr));
 			}
 		}
 	}
 
-	if (tr.fraction != 1 && tr.entityNum < ENTITYNUM_NONE && tr.entityNum != pm->ps->clientNum)
+	if (tr.fraction != 1 && tr.entityNum < ENTITYNUM_NONE && tr.entityNum != pm->ps->client_num)
 	{
 		const bgEntity_t* bgEnt = PM_BGEntForNum(tr.entityNum);
 		if (bgEnt && (bgEnt->s.powerups & PW_CLOAKED))
@@ -6272,9 +6272,9 @@ int PM_ItemUsable(playerState_t* ps, int forcedUse)
 		trtest[1] = fwdorg[1] + fwd[1] * 16;
 		trtest[2] = fwdorg[2] + fwd[2] * 16;
 
-		pm->trace(&tr, ps->origin, mins, maxs, trtest, ps->clientNum, MASK_PLAYERSOLID);
+		pm->trace(&tr, ps->origin, mins, maxs, trtest, ps->client_num, MASK_PLAYERSOLID);
 
-		if ((tr.fraction != 1 && tr.entityNum != ps->clientNum) || tr.startsolid || tr.allsolid)
+		if ((tr.fraction != 1 && tr.entityNum != ps->client_num) || tr.startsolid || tr.allsolid)
 		{
 			PM_AddEventWithParm(EV_ITEMUSEFAIL, SENTRY_NOROOM);
 			return 0;
@@ -6293,12 +6293,12 @@ int PM_ItemUsable(playerState_t* ps, int forcedUse)
 		AngleVectors(ps->viewangles, fwd, NULL, NULL);
 		fwd[2] = 0;
 		VectorMA(ps->origin, 64, fwd, dest);
-		pm->trace(&tr, ps->origin, mins, maxs, dest, ps->clientNum, MASK_SHOT);
+		pm->trace(&tr, ps->origin, mins, maxs, dest, ps->client_num, MASK_SHOT);
 		if (tr.fraction > 0.9 && !tr.startsolid && !tr.allsolid)
 		{
 			VectorCopy(tr.endpos, pos);
 			VectorSet(dest, pos[0], pos[1], pos[2] - 4096);
-			pm->trace(&tr, pos, mins, maxs, dest, ps->clientNum, MASK_SOLID);
+			pm->trace(&tr, pos, mins, maxs, dest, ps->client_num, MASK_SOLID);
 			if (!tr.startsolid && !tr.allsolid)
 			{
 				return 1;
@@ -6343,7 +6343,7 @@ void PM_VehicleWeaponAnimate(void)
 		!veh->m_pVehicle ||
 		!veh->m_pVehicle->m_pPilot ||
 		!veh->m_pVehicle->m_pPilot->playerState ||
-		pm->ps->clientNum != veh->m_pVehicle->m_pPilot->playerState->clientNum)
+		pm->ps->client_num != veh->m_pVehicle->m_pPilot->playerState->client_num)
 	{ //make sure the vehicle exists, and its pilot is this player
 		return;
 	}
@@ -6568,7 +6568,7 @@ static void PM_Weapon(void)
 	qboolean vehicleRocketLock = qfalse;
 
 #ifdef _GAME
-	if (pm->ps->clientNum >= MAX_CLIENTS &&
+	if (pm->ps->client_num >= MAX_CLIENTS &&
 		pm->ps->weapon == WP_NONE &&
 		pm->cmd.weapon == WP_NONE &&
 		pm_entSelf)
@@ -6950,7 +6950,7 @@ static void PM_Weapon(void)
 	}
 
 	// ignore if spectator
-	if (pm->ps->clientNum < MAX_CLIENTS && pm->ps->persistant[PERS_TEAM] == TEAM_SPECTATOR) {
+	if (pm->ps->client_num < MAX_CLIENTS && pm->ps->persistant[PERS_TEAM] == TEAM_SPECTATOR) {
 		return;
 	}
 
@@ -7075,7 +7075,7 @@ static void PM_Weapon(void)
 		pm->ps->weapon == pm->cmd.weapon &&
 		(pm->ps->weaponTime <= 0 || pm->ps->weaponstate != WEAPON_FIRING))
 	{
-		if (pm->ps->clientNum < MAX_CLIENTS && pm->ps->ammo[weaponData[pm->ps->weapon].ammoIndex] != -1)
+		if (pm->ps->client_num < MAX_CLIENTS && pm->ps->ammo[weaponData[pm->ps->weapon].ammoIndex] != -1)
 		{
 			// enough energy to fire this weapon?
 			if (pm->ps->ammo[weaponData[pm->ps->weapon].ammoIndex] < weaponData[pm->ps->weapon].energyPerShot &&
@@ -7246,7 +7246,7 @@ static void PM_Weapon(void)
 		PM_StartTorsoAnim(TORSO_WEAPONREADY4);
 	}
 
-	if (pm->ps->clientNum >= MAX_CLIENTS &&
+	if (pm->ps->client_num >= MAX_CLIENTS &&
 		pm_entSelf &&
 		pm_entSelf->s.NPC_class == CLASS_VEHICLE)
 	{//we are a vehicle
@@ -7315,11 +7315,11 @@ static void PM_Weapon(void)
 #ifdef _GAME //hack, only do it game-side. vehicle weapons don't really need predicting I suppose.
 		if ((pm->cmd.buttons & BUTTON_ALT_ATTACK))
 		{
-			G_CheapWeaponFire(pm->ps->clientNum, EV_ALT_FIRE);
+			G_CheapWeaponFire(pm->ps->client_num, EV_ALT_FIRE);
 		}
 		else
 		{
-			G_CheapWeaponFire(pm->ps->clientNum, EV_FIRE_WEAPON);
+			G_CheapWeaponFire(pm->ps->client_num, EV_FIRE_WEAPON);
 		}
 #endif
 		/*
@@ -7515,7 +7515,7 @@ static void PM_Weapon(void)
 	pm->ps->weaponstate = WEAPON_FIRING;
 
 	// take an ammo away if not infinite
-	if (pm->ps->clientNum < MAX_CLIENTS && pm->ps->ammo[weaponData[pm->ps->weapon].ammoIndex] != -1)
+	if (pm->ps->client_num < MAX_CLIENTS && pm->ps->ammo[weaponData[pm->ps->weapon].ammoIndex] != -1)
 	{
 		// enough energy to fire this weapon?
 		if ((pm->ps->ammo[weaponData[pm->ps->weapon].ammoIndex] - amount) >= 0)
@@ -7700,7 +7700,7 @@ extern	vmCvar_t	bg_fighterAltControl;
 qboolean BG_UnrestrainedPitchRoll(playerState_t* ps, Vehicle_t* pVeh)
 {
 	if (bg_fighterAltControl.integer
-		&& ps->clientNum < MAX_CLIENTS //real client
+		&& ps->client_num < MAX_CLIENTS //real client
 		&& ps->m_iVehicleNum//in a vehicle
 		&& pVeh //valid vehicle data pointer
 		&& pVeh->m_pVehicleInfo//valid vehicle info
@@ -7820,13 +7820,13 @@ void PM_UpdateViewAngles( playerState_t *ps, const usercmd_t *cmd ) {
 	// If we're a vehicle, or we're riding a vehicle...?
 	if ( ps->m_iVehicleNum )
 	{
-		if ( ps->clientNum < MAX_CLIENTS )
+		if ( ps->client_num < MAX_CLIENTS )
 		{ //player riding vehicle
 			vehEnt = PM_BGEntForNum(ps->m_iVehicleNum);
 		}
 		else
 		{ //vehicle with player pilot
-			vehEnt = PM_BGEntForNum(ps->clientNum);
+			vehEnt = PM_BGEntForNum(ps->client_num);
 		}
 		if ( vehEnt )
 		{//there is a vehicle
@@ -8238,7 +8238,7 @@ qboolean PM_SaberInTransition(int move);
 
 void BG_AdjustClientSpeed(playerState_t* ps, usercmd_t* cmd, int svTime)
 {
-	if (ps->clientNum >= MAX_CLIENTS)
+	if (ps->client_num >= MAX_CLIENTS)
 	{
 		const bgEntity_t* bgEnt = pm_entSelf;
 
@@ -8393,13 +8393,13 @@ void BG_AdjustClientSpeed(playerState_t* ps, usercmd_t* cmd, int svTime)
 		//Automatically slow down as the roll ends.
 	}
 
-	const saberInfo_t* saber = BG_MySaber(ps->clientNum, 0);
+	const saberInfo_t* saber = BG_MySaber(ps->client_num, 0);
 	if (saber
 		&& saber->moveSpeedScale != 1.0f)
 	{
 		ps->speed *= saber->moveSpeedScale;
 	}
-	saber = BG_MySaber(ps->clientNum, 1);
+	saber = BG_MySaber(ps->client_num, 1);
 	if (saber
 		&& saber->moveSpeedScale != 1.0f)
 	{
@@ -9533,7 +9533,7 @@ void PM_VehicleViewAngles(playerState_t* ps, bgEntity_t* veh, usercmd_t* ucmd)
 	int i;
 
 	if (veh->m_pVehicle->m_pPilot
-		&& veh->m_pVehicle->m_pPilot->s.number == ps->clientNum)
+		&& veh->m_pVehicle->m_pPilot->s.number == ps->client_num)
 	{//set the pilot's viewangles to the vehicle's viewangles
 #ifdef VEH_CONTROL_SCHEME_4
 		if (1)
@@ -9864,7 +9864,7 @@ void PM_VehFaceHyperspacePoint(bgEntity_t* veh)
 #endif //VEH_CONTROL_SCHEME_4
 
 void BG_VehicleAdjustBBoxForOrientation(Vehicle_t* veh, vec3_t origin, vec3_t mins, vec3_t maxs,
-	int clientNum, int tracemask,
+	int client_num, int tracemask,
 	void (*localTrace)(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentMask))
 {
 	if (!veh
@@ -9929,7 +9929,7 @@ void BG_VehicleAdjustBBoxForOrientation(Vehicle_t* veh, vec3_t origin, vec3_t mi
 	//now see if that's a valid way to be
 	if (localTrace)
 	{
-		localTrace(&trace, origin, newMins, newMaxs, origin, clientNum, tracemask);
+		localTrace(&trace, origin, newMins, newMaxs, origin, client_num, tracemask);
 	}
 	else
 	{ //don't care about solid stuff then
@@ -10068,10 +10068,10 @@ void PmoveSingle(pmove_t* pmove) {
 	}
 
 	//set up these "global" bg ents
-	pm_entSelf = PM_BGEntForNum(pm->ps->clientNum);
+	pm_entSelf = PM_BGEntForNum(pm->ps->client_num);
 	if (pm->ps->m_iVehicleNum)
 	{
-		if (pm->ps->clientNum < MAX_CLIENTS)
+		if (pm->ps->client_num < MAX_CLIENTS)
 		{ //player riding vehicle
 			pm_entVeh = PM_BGEntForNum(pm->ps->m_iVehicleNum);
 		}
@@ -10422,12 +10422,12 @@ void PmoveSingle(pmove_t* pmove) {
 	}
 
 	/*
-	if (pm->ps->clientNum >= MAX_CLIENTS)
+	if (pm->ps->client_num >= MAX_CLIENTS)
 	{
 #ifdef _GAME
-		Com_Printf( S_C0LOR_RED" SERVER N%i msec %d\n", pm->ps->clientNum, pml.msec );
+		Com_Printf( S_C0LOR_RED" SERVER N%i msec %d\n", pm->ps->client_num, pml.msec );
 #else
-		Com_Printf( S_COLOR_GREEN" CLIENT N%i msec %d\n", pm->ps->clientNum, pml.msec );
+		Com_Printf( S_COLOR_GREEN" CLIENT N%i msec %d\n", pm->ps->client_num, pml.msec );
 #endif
 	}
 	*/
@@ -10442,7 +10442,7 @@ void PmoveSingle(pmove_t* pmove) {
 
 	pml.frametime = pml.msec * 0.001;
 
-	if (pm->ps->clientNum >= MAX_CLIENTS &&
+	if (pm->ps->client_num >= MAX_CLIENTS &&
 		pm_entSelf &&
 		pm_entSelf->s.NPC_class == CLASS_VEHICLE)
 	{ //we are a vehicle
@@ -10564,7 +10564,7 @@ void PmoveSingle(pmove_t* pmove) {
 	}
 
 	if (pm->ps->pm_type == PM_NOCLIP) {
-		if (pm->ps->clientNum < MAX_CLIENTS)
+		if (pm->ps->client_num < MAX_CLIENTS)
 		{
 			PM_NoclipMove();
 			PM_DropTimers();
@@ -10689,10 +10689,10 @@ void PmoveSingle(pmove_t* pmove) {
 		}
 	}
 
-	if (pm->ps->clientNum >= MAX_CLIENTS &&
+	if (pm->ps->client_num >= MAX_CLIENTS &&
 		pm_entSelf && pm_entSelf->m_pVehicle)
 	{ //Now update our mins/maxs to match our m_vOrientation based on our length, width & height
-		BG_VehicleAdjustBBoxForOrientation(pm_entSelf->m_pVehicle, pm->ps->origin, pm->mins, pm->maxs, pm->ps->clientNum, pm->tracemask, pm->trace);
+		BG_VehicleAdjustBBoxForOrientation(pm_entSelf->m_pVehicle, pm->ps->origin, pm->mins, pm->maxs, pm->ps->client_num, pm->tracemask, pm->trace);
 	}
 
 	// set groundentity
@@ -10708,7 +10708,7 @@ void PmoveSingle(pmove_t* pmove) {
 	}
 
 	if (pm->ps->pm_type == PM_DEAD) {
-		if (pm->ps->clientNum >= MAX_CLIENTS &&
+		if (pm->ps->client_num >= MAX_CLIENTS &&
 			pm_entSelf &&
 			pm_entSelf->s.NPC_class == CLASS_VEHICLE &&
 			pm_entSelf->m_pVehicle->m_pVehicleInfo->type != VH_ANIMAL)
@@ -10783,7 +10783,7 @@ void PmoveSingle(pmove_t* pmove) {
 #endif
 	}
 
-	if (pm->ps->clientNum >= MAX_CLIENTS &&
+	if (pm->ps->client_num >= MAX_CLIENTS &&
 		pm_entSelf &&
 		pm_entSelf->s.NPC_class == CLASS_VEHICLE)
 	{ //we are a vehicle
@@ -10961,7 +10961,7 @@ void PmoveSingle(pmove_t* pmove) {
 
 	if (pm->ps->m_iVehicleNum
 		/*&&pm_entSelf->s.NPC_class!=CLASS_VEHICLE*/
-		&& pm->ps->clientNum < MAX_CLIENTS)
+		&& pm->ps->client_num < MAX_CLIENTS)
 	{//a client riding a vehicle
 		if ((pm->ps->eFlags & EF_NODRAW))
 		{//inside the vehicle, do nothing
@@ -10996,7 +10996,7 @@ void PmoveSingle(pmove_t* pmove) {
 	PM_Use();
 
 	if (!pm->ps->m_iVehicleNum &&
-		(pm->ps->clientNum < MAX_CLIENTS ||
+		(pm->ps->client_num < MAX_CLIENTS ||
 			!pm_entSelf ||
 			pm_entSelf->s.NPC_class != CLASS_VEHICLE))
 	{ //don't do this if we're on a vehicle, or we are one
@@ -11017,7 +11017,7 @@ void PmoveSingle(pmove_t* pmove) {
 	}
 
 	if (//pm->ps->m_iVehicleNum &&
-		pm->ps->clientNum >= MAX_CLIENTS &&
+		pm->ps->client_num >= MAX_CLIENTS &&
 		pm_entSelf &&
 		pm_entSelf->s.NPC_class == CLASS_VEHICLE)
 	{ //a vehicle with passengers

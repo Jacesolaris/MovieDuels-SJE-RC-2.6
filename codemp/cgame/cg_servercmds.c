@@ -1169,7 +1169,7 @@ void CG_CheckSVStringEdRef(char* buf, const char* str)
 	buf[b] = 0;
 }
 
-static void CG_BodyQueueCopy(centity_t* cent, int clientNum, int knownWeapon)
+static void CG_BodyQueueCopy(centity_t* cent, int client_num, int knownWeapon)
 {
 	animation_t* anim;
 	float			animSpeed;
@@ -1180,12 +1180,12 @@ static void CG_BodyQueueCopy(centity_t* cent, int clientNum, int knownWeapon)
 		trap->G2API_CleanGhoul2Models(&cent->ghoul2);
 	}
 
-	if (clientNum < 0 || clientNum >= MAX_CLIENTS)
+	if (client_num < 0 || client_num >= MAX_CLIENTS)
 	{
 		return;
 	}
 
-	centity_t* source = &cg_entities[clientNum];
+	centity_t* source = &cg_entities[client_num];
 
 	if (!source)
 	{

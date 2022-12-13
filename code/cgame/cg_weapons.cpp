@@ -1331,7 +1331,7 @@ static void CG_DoMuzzleFlash(centity_t* cent, vec3_t org, vec3_t dir, const weap
 			else
 			{
 				// We got an effect and we're firing, so let 'er rip.
-				theFxScheduler.PlayEffect(effect, cent->currentState.clientNum);
+				theFxScheduler.PlayEffect(effect, cent->currentState.client_num);
 			}
 		}
 	}
@@ -1371,7 +1371,7 @@ void CG_AddViewWeapon(playerState_t* ps)
 		eFlags & EF2_DUAL_PISTOLS))
 	{
 		vec3_t origin;
-		cent = &cg_entities[ps->clientNum];
+		cent = &cg_entities[ps->client_num];
 		// special hack for lightning guns...
 		VectorCopy(cg.refdef.vieworg, origin);
 		VectorMA(origin, -10, cg.refdef.viewaxis[2], origin);
@@ -1412,7 +1412,7 @@ void CG_AddViewWeapon(playerState_t* ps)
 		return;
 	}
 
-	cent = &cg_entities[ps->clientNum];
+	cent = &cg_entities[ps->client_num];
 
 	if (ps->eFlags & EF_LOCKED_TO_WEAPON)
 	{
@@ -1633,7 +1633,7 @@ void CG_AddViewWeapon(playerState_t* ps)
 			hand.oldframe = CG_MapTorsoToWeaponFrame(ci, floor(current_frame), torso_anim);
 			hand.frame = CG_MapTorsoToWeaponFrame(ci, ceil(current_frame), torso_anim);
 			hand.backlerp = 1.0f - (current_frame - floor(current_frame));
-			if (cg_debugAnim.integer == 1 && cent->currentState.clientNum == 0)
+			if (cg_debugAnim.integer == 1 && cent->currentState.client_num == 0)
 			{
 				Com_Printf("Torso frame %d to %d makes Weapon frame %d to %d\n", cent->pe.torso.oldFrame,
 					cent->pe.torso.frame, hand.oldframe, hand.frame);
@@ -1850,7 +1850,7 @@ void CG_AddViewWeapon(playerState_t* ps)
 
 			for (int i = 0; i < ct; i++)
 			{
-				theFxScheduler.PlayEffect("repeater/muzzle_smoke", cent->currentState.clientNum);
+				theFxScheduler.PlayEffect("repeater/muzzle_smoke", cent->currentState.client_num);
 			}
 
 			cent->gent->client->ps.weaponShotCount = 0;
@@ -1907,7 +1907,7 @@ void CG_AddViewWeaponDuals(playerState_t* ps)
 		return;
 	}
 
-	cent = &cg_entities[ps->clientNum];
+	cent = &cg_entities[ps->client_num];
 
 	if (ps->eFlags & EF_LOCKED_TO_WEAPON)
 	{
@@ -2099,7 +2099,7 @@ void CG_AddViewWeaponDuals(playerState_t* ps)
 			hand.oldframe = CG_MapTorsoToWeaponFrame(ci, floor(currentFrame), torsoAnim);
 			hand.frame = CG_MapTorsoToWeaponFrame(ci, ceil(currentFrame), torsoAnim);
 			hand.backlerp = 1.0f - (currentFrame - floor(currentFrame));
-			if (cg_debugAnim.integer == 1 && cent->currentState.clientNum == 0)
+			if (cg_debugAnim.integer == 1 && cent->currentState.client_num == 0)
 			{
 				Com_Printf("Torso frame %d to %d makes Weapon frame %d to %d\n", cent->pe.torso.oldFrame,
 					cent->pe.torso.frame, hand.oldframe, hand.frame);
@@ -2119,7 +2119,7 @@ void CG_AddViewWeaponDuals(playerState_t* ps)
 	{
 		numSabers = 2;
 	}
-	for (int saberNum = 0; saberNum < numSabers; saberNum++)
+	for (int saber_num = 0; saber_num < numSabers; saber_num++)
 	{
 		refEntity_t gun = {};
 
@@ -2137,7 +2137,7 @@ void CG_AddViewWeaponDuals(playerState_t* ps)
 
 		if (cent->gent && cent->gent->client && cent->currentState.weapon == WP_SABER)
 		{
-			for (int bladeNum = 0; bladeNum < cent->gent->client->ps.saber[saberNum].numBlades; bladeNum++)
+			for (int blade_num = 0; blade_num < cent->gent->client->ps.saber[saber_num].numBlades; blade_num++)
 			{
 				vec3_t axis_[3];
 				vec3_t org_;
@@ -2154,16 +2154,16 @@ void CG_AddViewWeaponDuals(playerState_t* ps)
 							lengthMax;
 					}
 				}
-				if (saberNum == 0 && bladeNum == 0)
+				if (saber_num == 0 && blade_num == 0)
 				{
 					VectorCopy(axis_[0], cent->gent->client->renderInfo.muzzleDir);
 				}
 				else
 				{
 					//need these points stored here when in 1st person saber
-					VectorCopy(org_, cent->gent->client->ps.saber[saberNum].blade[bladeNum].muzzlePoint);
+					VectorCopy(org_, cent->gent->client->ps.saber[saber_num].blade[blade_num].muzzlePoint);
 				}
-				VectorCopy(axis_[0], cent->gent->client->ps.saber[saberNum].blade[bladeNum].muzzleDir);
+				VectorCopy(axis_[0], cent->gent->client->ps.saber[saber_num].blade[blade_num].muzzleDir);
 			}
 		}
 		//---------
@@ -2217,7 +2217,7 @@ void CG_AddViewWeaponDuals(playerState_t* ps)
 
 		if (cent->gent && cent->gent->client)
 		{
-			if (saberNum == 0)
+			if (saber_num == 0)
 			{
 				VectorCopy(flash.origin, cent->gent->client->renderInfo.muzzlePointOld);
 				VectorCopy(flash.axis[0], cent->gent->client->renderInfo.muzzleDirOld);
@@ -2321,7 +2321,7 @@ void CG_AddViewWeaponDuals(playerState_t* ps)
 
 			for (int i = 0; i < ct; i++)
 			{
-				theFxScheduler.PlayEffect("repeater/muzzle_smoke", cent->currentState.clientNum);
+				theFxScheduler.PlayEffect("repeater/muzzle_smoke", cent->currentState.client_num);
 			}
 
 			cent->gent->client->ps.weaponShotCount = 0;
@@ -2360,7 +2360,7 @@ WEAPON SELECTION
 CG_WeaponCheck
 ===================
 */
-int CG_WeaponCheck(int weaponIndex)
+int CG_WeaponCheck(const int weaponIndex)
 {
 	if (weaponIndex == WP_SABER)
 	{
@@ -2704,7 +2704,7 @@ CG_DrawDataPadIconBackground
 Draw the proper background graphic for the icons being displayed on the datapad
 ===================
 */
-void CG_DrawDataPadIconBackground(int backgroundType)
+void CG_DrawDataPadIconBackground(const int backgroundType)
 {
 	qhandle_t background;
 
@@ -3325,7 +3325,7 @@ void CG_DrawWeaponSelect_text()
 CG_WeaponSelectable
 ===============
 */
-qboolean CG_WeaponSelectable(int i, int original, qboolean dpMode)
+qboolean CG_WeaponSelectable(int i, const int original, const qboolean dpMode)
 {
 	if (i >= WP_NUM_WEAPONS || !playerUsableWeapons[i])
 	{
@@ -3421,7 +3421,7 @@ void CG_ToggleATSTWeapon()
 
 extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
 
-void CG_PlayerLockedWeaponSpeech(int jumping)
+void CG_PlayerLockedWeaponSpeech(const int jumping)
 {
 	if (!in_camera)
 	{
@@ -3812,7 +3812,7 @@ void CG_ChangeWeapon( int num )
 
   Meant to be called from the normal game, so checks the game-side weapon inventory data
 */
-void CG_ChangeWeapon(int num)
+void CG_ChangeWeapon(const int num)
 {
 	const gentity_t* player = &g_entities[0];
 
@@ -4038,7 +4038,7 @@ void CG_Weapon_f()
 						}
 						else
 						{
-							cgi_S_StartSound(nullptr, cg.snap->ps.clientNum, CHAN_AUTO,
+							cgi_S_StartSound(nullptr, cg.snap->ps.client_num, CHAN_AUTO,
 								cgs.sound_precache[cg_entities[0].gent->client->ps.saber[0].soundOff]);
 						}
 					}
@@ -4214,7 +4214,7 @@ CG_FireWeapon
 Caused by an EV_FIRE_WEAPON event
 ================
 */
-void CG_FireWeapon(centity_t* cent, qboolean alt_fire)
+void CG_FireWeapon(centity_t* cent, const qboolean alt_fire)
 {
 	const entityState_t* ent = &cent->currentState;
 
@@ -4269,7 +4269,7 @@ CG_BounceEffect
 Caused by an EV_BOUNCE | EV_BOUNCE_HALF event
 =================
 */
-void CG_BounceEffect(centity_t* cent, int weapon, vec3_t origin, vec3_t normal)
+void CG_BounceEffect(centity_t* cent, const int weapon, vec3_t origin, vec3_t normal)
 {
 	switch (weapon)
 	{
@@ -4306,7 +4306,7 @@ void CG_BounceEffect(centity_t* cent, int weapon, vec3_t origin, vec3_t normal)
 }
 
 //----------------------------------------------------------------------
-void CG_MissileStick(const centity_t* cent, int weapon, vec3_t position)
+void CG_MissileStick(const centity_t* cent, const int weapon, vec3_t position)
 //----------------------------------------------------------------------
 {
 	sfxHandle_t snd = 0;
@@ -4354,7 +4354,7 @@ CG_MissileHitWall
 Caused by an EV_MISSILE_MISS event, or directly by local bullet tracing
 =================
 */
-void CG_MissileHitWall(const centity_t* cent, int weapon, vec3_t origin, vec3_t dir, qboolean altFire)
+void CG_MissileHitWall(const centity_t* cent, const int weapon, vec3_t origin, vec3_t dir, const qboolean altFire)
 {
 	int parm;
 
@@ -4587,7 +4587,7 @@ CG_MissileHitPlayer
 -------------------------
 */
 
-void CG_MissileHitPlayer(const centity_t* cent, int weapon, vec3_t origin, vec3_t dir, qboolean altFire)
+void CG_MissileHitPlayer(const centity_t* cent, const int weapon, vec3_t origin, vec3_t dir, const qboolean altFire)
 {
 	gentity_t* other = nullptr;
 	qboolean humanoid = qtrue;

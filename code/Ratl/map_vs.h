@@ -85,20 +85,20 @@ namespace ratl
 		{
 			return !!(mParent & RED_BIT);
 		}
-		void set_left(int l)
+		void set_left(const int l)
 		{
 			mLeft = l;
 		}
-		void set_right(int r)
+		void set_right(const int r)
 		{
 			mRight = r;
 		}
-		void set_parent(int p)
+		void set_parent(const int p)
 		{
 			mParent &= RED_BIT;
 			mParent |= p;
 		}
-		void set_red(bool isRed)
+		void set_red(const bool isRed)
 		{
 			if (isRed)
 			{
@@ -181,7 +181,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// This is the map internal recursive find function - do not use externally
 		////////////////////////////////////////////////////////////////////////////////////
-		int			find_internal(const TTValue& key, int target, int at, int& parent) const
+		int			find_internal(const TTValue& key, const int target, int at, int& parent) const
 		{
 			// FAIL TO FIND?
 			//---------------
@@ -476,7 +476,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// HELPER: Change the color of a node and children
 		////////////////////////////////////////////////////////////////////////////////////
-		void		set_colors(tree_node& at, bool red, bool childRed)
+		void		set_colors(tree_node& at, const bool red, bool childRed)
 		{
 			at.set_red(red);
 			if (at.left() != tree_node::NULL_NODE)
@@ -492,7 +492,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// HELPER: Rotate node located at (at) either left or right
 		////////////////////////////////////////////////////////////////////////////////////
-		void		rotate(int& at, bool left)
+		void		rotate(int& at, const bool left)
 		{
 			int	t;
 			if (left)
@@ -897,7 +897,7 @@ namespace ratl
 			set_base<TStorageTraits, IS_MULTI>* mOwner;
 
 		public:
-			iterator(set_base<TStorageTraits, IS_MULTI>* owner = nullptr, int loc = tree_node::NULL_NODE) :
+			iterator(set_base<TStorageTraits, IS_MULTI>* owner = nullptr, const int loc = tree_node::NULL_NODE) :
 				mLoc(loc),
 				mOwner(owner)
 			{
@@ -967,7 +967,7 @@ namespace ratl
 			const set_base<TStorageTraits, IS_MULTI>* mOwner;
 
 		public:
-			const_iterator(const set_base<TStorageTraits, IS_MULTI>* owner = nullptr, int loc = tree_node::NULL_NODE) :
+			const_iterator(const set_base<TStorageTraits, IS_MULTI>* owner = nullptr, const int loc = tree_node::NULL_NODE) :
 				mLoc(loc),
 				mOwner(owner)
 			{
@@ -1286,7 +1286,7 @@ namespace ratl
 			map_base<K, V, IS_MULTI>* mOwner;
 
 		public:
-			iterator(map_base<K, V, IS_MULTI>* owner = nullptr, int loc = tree_node::NULL_NODE) :
+			iterator(map_base<K, V, IS_MULTI>* owner = nullptr, const int loc = tree_node::NULL_NODE) :
 				mLoc(loc),
 				mOwner(owner)
 			{
@@ -1367,7 +1367,7 @@ namespace ratl
 			const map_base<K, V, IS_MULTI>* mOwner;
 
 		public:
-			const_iterator(const map_base<K, V, IS_MULTI>* owner = nullptr, int loc = tree_node::NULL_NODE) :
+			const_iterator(const map_base<K, V, IS_MULTI>* owner = nullptr, const int loc = tree_node::NULL_NODE) :
 				mLoc(loc),
 				mOwner(owner)
 			{

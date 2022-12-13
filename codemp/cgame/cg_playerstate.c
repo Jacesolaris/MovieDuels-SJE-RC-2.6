@@ -220,13 +220,13 @@ void CG_CheckPlayerstateEvents(playerState_t* ps, playerState_t* ops) {
 	centity_t* cent;
 
 	if (ps->externalEvent && ps->externalEvent != ops->externalEvent) {
-		cent = &cg_entities[ps->clientNum];
+		cent = &cg_entities[ps->client_num];
 		cent->currentState.event = ps->externalEvent;
 		cent->currentState.eventParm = ps->externalEventParm;
 		CG_EntityEvent(cent, cent->lerpOrigin);
 	}
 
-	cent = &cg_entities[ps->clientNum];
+	cent = &cg_entities[ps->client_num];
 	// go through the predictable events buffer
 	for (int i = ps->eventSequence - MAX_PS_EVENTS; i < ps->eventSequence; i++) {
 		// if we have a new predictable event
@@ -254,7 +254,7 @@ CG_CheckChangedPredictableEvents
 ==================
 */
 void CG_CheckChangedPredictableEvents(playerState_t* ps) {
-	centity_t* cent = &cg_entities[ps->clientNum];
+	centity_t* cent = &cg_entities[ps->client_num];
 	for (int i = ps->eventSequence - MAX_PS_EVENTS; i < ps->eventSequence; i++) {
 		//
 		if (i >= cg.eventSequence) {
@@ -349,7 +349,7 @@ void CG_CheckLocalSounds(playerState_t* ps, playerState_t* ops) {
 		{
 			if (ps->stats[STAT_HEALTH] > 0)
 			{
-				CG_PainEvent(&cg_entities[cg.predictedPlayerState.clientNum], ps->stats[STAT_HEALTH]);
+				CG_PainEvent(&cg_entities[cg.predictedPlayerState.client_num], ps->stats[STAT_HEALTH]);
 			}
 		}
 	}
@@ -490,7 +490,7 @@ CG_TransitionPlayerState
 */
 void CG_TransitionPlayerState(playerState_t* ps, playerState_t* ops) {
 	// check for changing follow mode
-	if (ps->clientNum != ops->clientNum) {
+	if (ps->client_num != ops->client_num) {
 		cg.thisFrameTeleport = qtrue;
 		// make sure we don't get any unwanted transition effects
 		*ops = *ps;

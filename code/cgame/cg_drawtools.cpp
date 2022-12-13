@@ -32,14 +32,14 @@ CG_DrawSides
 Coords are virtual 640x480
 ================
 */
-void CG_DrawSides(float x, float y, float w, float h, float size)
+void CG_DrawSides(const float x, const float y, const float w, const float h, const float size)
 {
 	//size *= cgs.screenXScale;
 	cgi_R_DrawStretchPic(x, y, size, h, 0, 0, 0, 0, cgs.media.whiteShader);
 	cgi_R_DrawStretchPic(x + w - size, y, size, h, 0, 0, 0, 0, cgs.media.whiteShader);
 }
 
-void CG_DrawTopBottom(float x, float y, float w, float h, float size)
+void CG_DrawTopBottom(const float x, const float y, const float w, const float h, const float size)
 {
 	//size *= cgs.screenYScale;
 	cgi_R_DrawStretchPic(x, y, w, size, 0, 0, 0, 0, cgs.media.whiteShader);
@@ -53,7 +53,7 @@ CG_DrawRect
 Coordinates are 640*480 virtual values
 =================
 */
-void CG_DrawRect(float x, float y, float width, float height, float size, const float* color)
+void CG_DrawRect(const float x, const float y, const float width, const float height, const float size, const float* color)
 {
 	cgi_R_SetColor(color);
 
@@ -70,7 +70,7 @@ CG_FillRect
 Coordinates are 640*480 virtual values
 =================
 */
-void CG_FillRect(float x, float y, float width, float height, const float* color)
+void CG_FillRect(const float x, const float y, const float width, const float height, const float* color)
 {
 	cgi_R_SetColor(color);
 	cgi_R_DrawStretchPic(x, y, width, height, 0, 0, 0, 0, cgs.media.whiteShader);
@@ -84,7 +84,7 @@ CG_Scissor
 Coordinates are 640*480 virtual values
 =================
 */
-void CG_Scissor(float x, float y, float width, float height)
+void CG_Scissor(const float x, const float y, const float width, const float height)
 {
 	cgi_R_Scissor(x, y, width, height);
 }
@@ -97,7 +97,7 @@ Coordinates are 640*480 virtual values
 A width of 0 will draw with the original image width
 =================
 */
-void CG_DrawPic(float x, float y, float width, float height, qhandle_t hShader)
+void CG_DrawPic(const float x, const float y, const float width, const float height, const qhandle_t hShader)
 {
 	cgi_R_DrawStretchPic(x, y, width, height, 0, 0, 1, 1, hShader);
 }
@@ -111,7 +111,7 @@ A width of 0 will draw with the original image width
 Can also specify the exact texture coordinates
 =================
 */
-void CG_DrawPic2(float x, float y, float width, float height, float s1, float t1, float s2, float t2, qhandle_t hShader)
+void CG_DrawPic2(const float x, const float y, const float width, const float height, const float s1, const float t1, const float s2, const float t2, const qhandle_t hShader)
 {
 	cgi_R_DrawStretchPic(x, y, width, height, s1, t1, s2, t2, hShader);
 }
@@ -125,8 +125,8 @@ A width of 0 will draw with the original image width
 rotates around the upper right corner of the passed in point
 =================
 */
-void CG_DrawRotatePic(float x, float y, float width, float height, float angle, qhandle_t hShader,
-	float aspectCorrection)
+void CG_DrawRotatePic(const float x, const float y, const float width, const float height, const float angle, const qhandle_t hShader,
+                      const float aspectCorrection)
 {
 	cgi_R_DrawRotatePic(x, y, width, height, 0, 0, 1, 1, angle, hShader, aspectCorrection);
 }
@@ -140,8 +140,8 @@ A width of 0 will draw with the original image width
 Actually rotates around the center point of the passed in coordinates
 =================
 */
-void CG_DrawRotatePic2(float x, float y, float width, float height, float angle, qhandle_t hShader,
-	float aspectCorrection)
+void CG_DrawRotatePic2(const float x, const float y, const float width, const float height, const float angle, const qhandle_t hShader,
+                       const float aspectCorrection)
 {
 	cgi_R_DrawRotatePic2(x, y, width, height, 0, 0, 1, 1, angle, hShader, aspectCorrection);
 }
@@ -153,7 +153,7 @@ CG_DrawChar
 Coordinates and size in 640*480 virtual screen size
 ===============
 */
-void CG_DrawChar(int x, int y, int width, int height, int ch)
+void CG_DrawChar(const int x, const int y, const int width, const int height, int ch)
 {
 	ch &= 255;
 
@@ -199,8 +199,8 @@ to a fixed color.
 Coordinates are at 640 by 480 virtual resolution
 ==================
 */
-void CG_DrawStringExt(int x, int y, const char* string, const float* setColor,
-	qboolean forceColor, qboolean shadow, int charWidth, int charHeight)
+void CG_DrawStringExt(const int x, const int y, const char* string, const float* setColor,
+                      const qboolean forceColor, const qboolean shadow, const int charWidth, const int charHeight)
 {
 	vec4_t color;
 	const char* s;
@@ -251,7 +251,7 @@ void CG_DrawStringExt(int x, int y, const char* string, const float* setColor,
 	cgi_R_SetColor(nullptr);
 }
 
-void CG_DrawSmallStringColor(int x, int y, const char* s, vec4_t color)
+void CG_DrawSmallStringColor(const int x, const int y, const char* s, vec4_t color)
 {
 	CG_DrawStringExt(x, y, s, color, qtrue, qfalse, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT);
 }
@@ -292,7 +292,7 @@ This repeats a 64*64 tile graphic to fill the screen around a sized down
 refresh window.
 =============
 */
-static void CG_TileClearBox(int x, int y, int w, int h, qhandle_t hShader)
+static void CG_TileClearBox(const int x, const int y, const int w, const int h, const qhandle_t hShader)
 {
 	const float s1 = x / 64.0;
 	const float t1 = y / 64.0;
@@ -380,7 +380,7 @@ Take x,y positions as if 640 x 480 and scales them to the proper resolution
 
 ==============
 */
-void CG_DrawNumField(int x, int y, int width, int value, int charWidth, int charHeight, int style, qboolean zeroFill)
+void CG_DrawNumField(int x, const int y, int width, int value, const int charWidth, const int charHeight, const int style, const qboolean zeroFill)
 {
 	char num[16];
 	int frame;
@@ -497,7 +497,7 @@ void CG_DrawNumField(int x, int y, int width, int value, int charWidth, int char
 CG_DrawProportionalString
 =================
 */
-void CG_DrawProportionalString(int x, int y, const char* str, int style, vec4_t color)
+void CG_DrawProportionalString(const int x, const int y, const char* str, int style, vec4_t color)
 {
 	//assert(!style);//call this directly if you need style (OR it into the font handle)
 	cgi_R_Font_DrawString(x, y, str, color, cgs.media.qhFontMedium, -1, 1.0f);

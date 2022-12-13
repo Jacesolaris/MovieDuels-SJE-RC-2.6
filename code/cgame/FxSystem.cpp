@@ -87,38 +87,38 @@ int SFxHelper::OpenFile(const char* file, fileHandle_t* fh, int mode)
 }
 
 //------------------------------------------------------
-int SFxHelper::ReadFile(void* data, int len, fileHandle_t fh)
+int SFxHelper::ReadFile(void* data, const int len, const fileHandle_t fh)
 {
 	return cgi_FS_Read(data, len, fh);
 }
 
 //------------------------------------------------------
-void SFxHelper::CloseFile(fileHandle_t fh)
+void SFxHelper::CloseFile(const fileHandle_t fh)
 {
 	cgi_FS_FCloseFile(fh);
 }
 
 //------------------------------------------------------
-void SFxHelper::PlaySound(const vec3_t org, int entityNum, const int entchannel, int sfxHandle)
+void SFxHelper::PlaySound(const vec3_t org, const int entityNum, const int entchannel, const int sfxHandle)
 {
 	cgi_S_StartSound(org, entityNum, entchannel, sfxHandle);
 }
 
 //------------------------------------------------------
-void SFxHelper::PlayLocalSound(int sfxHandle, int channelNum)
+void SFxHelper::PlayLocalSound(const int sfxHandle, const int channelNum)
 {
 	cgi_S_StartLocalSound(sfxHandle, channelNum);
 }
 
 //------------------------------------------------------
 void SFxHelper::Trace(trace_t* tr, vec3_t start, vec3_t min, vec3_t max,
-	vec3_t end, int skipEntNum, int flags)
+	vec3_t end, const int skipEntNum, const int flags)
 {
 	CG_Trace(tr, start, min, max, end, skipEntNum, flags);
 }
 
 void SFxHelper::G2Trace(trace_t* tr, vec3_t start, vec3_t min, vec3_t max,
-	vec3_t end, int skipEntNum, int flags)
+	vec3_t end, const int skipEntNum, const int flags)
 {
 	//CG_Trace( tr, start, min, max, end, skipEntNum, flags, G2_COLLIDE );
 	gi.trace(tr, start, nullptr, nullptr, end, skipEntNum, flags, G2_COLLIDE, 0);
@@ -151,25 +151,25 @@ int SFxHelper::RegisterModel(const gsl::cstring_view& model)
 }
 
 //------------------------------------------------------
-void SFxHelper::AddLightToScene(vec3_t org, float radius, float red, float green, float blue)
+void SFxHelper::AddLightToScene(vec3_t org, const float radius, const float red, const float green, const float blue)
 {
 	cgi_R_AddLightToScene(org, radius, red, green, blue);
 }
 
 //------------------------------------------------------
-void SFxHelper::AddPolyToScene(int shader, int count, const polyVert_t* verts)
+void SFxHelper::AddPolyToScene(const int shader, const int count, const polyVert_t* verts)
 {
 	cgi_R_AddPolyToScene(shader, count, verts);
 }
 
 //------------------------------------------------------
-void SFxHelper::CameraShake(vec3_t origin, float intensity, int radius, int time)
+void SFxHelper::CameraShake(vec3_t origin, const float intensity, const int radius, const int time)
 {
 	CG_ExplosionEffects(origin, intensity, radius, time);
 }
 
 //------------------------------------------------------
-int SFxHelper::GetOriginAxisFromBolt(const centity_t& cent, int modelNum, int boltNum, vec3_t /*out*/origin,
+int SFxHelper::GetOriginAxisFromBolt(const centity_t& cent, const int modelNum, const int boltNum, vec3_t /*out*/origin,
 	vec3_t /*out*/axis[3])
 {
 	if (cg.time - cent.snapShotTime > 200)

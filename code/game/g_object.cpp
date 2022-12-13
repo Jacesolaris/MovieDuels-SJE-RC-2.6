@@ -24,7 +24,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "g_functions.h"
 #include "b_local.h"
 
-extern void G_MoverTouchPushTriggers(gentity_t* ent, vec3_t oldOrg);
+extern void G_MoverTouchPushTriggers(gentity_t* ent, vec3_t old_org);
 void G_StopObjectMoving(gentity_t* object);
 
 /*
@@ -83,7 +83,7 @@ void G_BounceObject(gentity_t* ent, const trace_t* trace)
 G_RunObject
 ================
 */
-extern void DoImpact(gentity_t* self, gentity_t* other, qboolean damageSelf, const trace_t* trace);
+extern void DoImpact(gentity_t* self, gentity_t* other, qboolean damage_self, const trace_t* trace);
 
 void G_RunObject(gentity_t* ent)
 {
@@ -166,13 +166,13 @@ void G_RunObject(gentity_t* ent)
 	//hit something
 
 	//Do impact damage
-	gentity_t* traceEnt = &g_entities[tr.entityNum];
-	if (tr.fraction || traceEnt && traceEnt->takedamage)
+	gentity_t* trace_ent = &g_entities[tr.entityNum];
+	if (tr.fraction || trace_ent && trace_ent->takedamage)
 	{
 		if (!VectorCompare(ent->currentOrigin, oldOrg))
 		{
 			//moved and impacted
-			if (traceEnt && traceEnt->takedamage)
+			if (trace_ent && trace_ent->takedamage)
 			{
 				//hurt someone
 				vec3_t fxDir;
@@ -194,7 +194,7 @@ void G_RunObject(gentity_t* ent)
 				G_Sound(ent, G_SoundIndex("sound/movers/objects/objectHit.wav"));
 			}
 		}
-		DoImpact(ent, traceEnt, static_cast<qboolean>(!(tr.surfaceFlags & SURF_NODAMAGE)), &tr);
+		DoImpact(ent, trace_ent, static_cast<qboolean>(!(tr.surfaceFlags & SURF_NODAMAGE)), &tr);
 	}
 
 	if (!ent || ent->takedamage && ent->health <= 0)
@@ -265,7 +265,7 @@ void G_StopObjectMoving(gentity_t* object)
 	VectorClear(object->s.pos.trDelta);
 }
 
-void G_StartObjectMoving(gentity_t* object, vec3_t dir, float speed, trType_t trType)
+void G_StartObjectMoving(gentity_t* object, vec3_t dir, const float speed, const trType_t trType)
 {
 	VectorNormalize(dir);
 
@@ -287,8 +287,8 @@ void G_StartObjectMoving(gentity_t* object, vec3_t dir, float speed, trType_t tr
 	}
 }
 
-gentity_t* G_CreateObject(gentity_t* owner, vec3_t origin, vec3_t angles, int modelIndex, int frame, trType_t trType,
-	int effectID = 0)
+gentity_t* G_CreateObject(gentity_t* owner, vec3_t origin, vec3_t angles, const int modelIndex, const int frame, const trType_t trType,
+                          const int effectID = 0)
 {
 	gentity_t* object = G_Spawn();
 

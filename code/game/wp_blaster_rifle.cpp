@@ -32,7 +32,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern cvar_t* g_SerenityJediEngineMode;
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
 //---------------------------------------------------------
-void WP_FireBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean altFire)
+void WP_FireBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean altFire)
 //---------------------------------------------------------
 {
 	int velocity = BLASTER_VELOCITY;
@@ -46,7 +46,7 @@ void WP_FireBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean al
 	else
 	{
 		// If an enemy is shooting at us, lower the velocity so you have a chance to evade
-		if (ent->client && ent->client->ps.clientNum != 0
+		if (ent->client && ent->client->ps.client_num != 0
 			&& ent->client->NPC_class != CLASS_BOBAFETT
 			&& ent->client->NPC_class != CLASS_MANDALORIAN
 			&& ent->client->NPC_class != CLASS_JANGO
@@ -121,7 +121,7 @@ extern qboolean WalkCheck(const gentity_t* self);
 extern qboolean PM_CrouchAnim(int anim);
 
 //---------------------------------------------------------
-void WP_FireBlaster(gentity_t* ent, qboolean alt_fire)
+void WP_FireBlaster(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	vec3_t dir, angs;
@@ -229,7 +229,7 @@ void WP_FireBlaster(gentity_t* ent, qboolean alt_fire)
 //---------------
 
 //---------------------------------------------------------
-void WP_FireBattleDroidMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean altFire)
+void WP_FireBattleDroidMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean altFire)
 //---------------------------------------------------------
 {
 	int velocity = BLASTER_VELOCITY;
@@ -243,7 +243,7 @@ void WP_FireBattleDroidMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolea
 	else
 	{
 		// If an enemy is shooting at us, lower the velocity so you have a chance to evade
-		if (ent->client && ent->client->ps.clientNum != 0
+		if (ent->client && ent->client->ps.client_num != 0
 			&& ent->client->NPC_class != CLASS_BOBAFETT
 			&& ent->client->NPC_class != CLASS_MANDALORIAN
 			&& ent->client->NPC_class != CLASS_JANGO
@@ -328,7 +328,7 @@ extern qboolean WalkCheck(const gentity_t* self);
 extern qboolean PM_CrouchAnim(int anim);
 
 //---------------------------------------------------------
-void WP_FireBattleDroid(gentity_t* ent, qboolean alt_fire)
+void WP_FireBattleDroid(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	vec3_t dir, angs;
@@ -436,7 +436,7 @@ void WP_FireBattleDroid(gentity_t* ent, qboolean alt_fire)
 //---------------
 
 //---------------------------------------------------------
-void WP_FireFirstOrderMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean altFire)
+void WP_FireFirstOrderMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean altFire)
 //---------------------------------------------------------
 {
 	int velocity = BLASTER_VELOCITY;
@@ -450,7 +450,7 @@ void WP_FireFirstOrderMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean
 	else
 	{
 		// If an enemy is shooting at us, lower the velocity so you have a chance to evade
-		if (ent->client && ent->client->ps.clientNum != 0
+		if (ent->client && ent->client->ps.client_num != 0
 			&& ent->client->NPC_class != CLASS_BOBAFETT
 			&& ent->client->NPC_class != CLASS_MANDALORIAN
 			&& ent->client->NPC_class != CLASS_JANGO
@@ -532,7 +532,7 @@ void WP_FireFirstOrderMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean
 }
 
 //---------------------------------------------------------
-void WP_FireFirstOrder(gentity_t* ent, qboolean alt_fire)
+void WP_FireFirstOrder(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	vec3_t dir, angs;
@@ -640,7 +640,7 @@ void WP_FireFirstOrder(gentity_t* ent, qboolean alt_fire)
 //---------------
 
 //---------------------------------------------------------
-void WP_FireRebelBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean altFire)
+void WP_FireRebelBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean altFire)
 //---------------------------------------------------------
 {
 	int velocity = REBELBLASTER_VELOCITY;
@@ -654,7 +654,7 @@ void WP_FireRebelBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboole
 	else
 	{
 		// If an enemy is shooting at us, lower the velocity so you have a chance to evade
-		if (ent->client && ent->client->ps.clientNum != 0
+		if (ent->client && ent->client->ps.client_num != 0
 			&& ent->client->NPC_class != CLASS_BOBAFETT
 			&& ent->client->NPC_class != CLASS_MANDALORIAN
 			&& ent->client->NPC_class != CLASS_JANGO
@@ -732,7 +732,7 @@ void WP_FireRebelBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboole
 }
 
 //---------------------------------------------------------
-void WP_FireRebelBlaster(gentity_t* ent, qboolean alt_fire)
+void WP_FireRebelBlaster(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	vec3_t dir, angs;
@@ -836,7 +836,7 @@ void WP_FireRebelBlaster(gentity_t* ent, qboolean alt_fire)
 }
 
 //---------------------------------------------------------
-void WP_FireRebelBlasterDuals(gentity_t* ent, qboolean alt_fire, qboolean secondPistol)
+void WP_FireRebelBlasterDuals(gentity_t* ent, const qboolean alt_fire, const qboolean secondPistol)
 //---------------------------------------------------------
 {
 	vec3_t dir, angs;
@@ -948,7 +948,7 @@ void WP_FireRebelBlasterDuals(gentity_t* ent, qboolean alt_fire, qboolean second
 //---------------
 
 //---------------------------------------------------------
-void WP_FireRebelRifleMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean altFire)
+void WP_FireRebelRifleMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean altFire)
 //---------------------------------------------------------
 {
 	int velocity = REBELRIFLE_VELOCITY;
@@ -962,7 +962,7 @@ void WP_FireRebelRifleMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean
 	else
 	{
 		// If an enemy is shooting at us, lower the velocity so you have a chance to evade
-		if (ent->client && ent->client->ps.clientNum != 0
+		if (ent->client && ent->client->ps.client_num != 0
 			&& ent->client->NPC_class != CLASS_BOBAFETT
 			&& ent->client->NPC_class != CLASS_MANDALORIAN
 			&& ent->client->NPC_class != CLASS_JANGO
@@ -1044,7 +1044,7 @@ void WP_FireRebelRifleMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean
 }
 
 //---------------------------------------------------------
-void WP_FireRebelRifle(gentity_t* ent, qboolean alt_fire)
+void WP_FireRebelRifle(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	vec3_t dir, angs;
@@ -1152,7 +1152,7 @@ void WP_FireRebelRifle(gentity_t* ent, qboolean alt_fire)
 //---------------
 
 //---------------------------------------------------------
-void WP_FireJangoPistolMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean altFire)
+void WP_FireJangoPistolMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean altFire)
 //---------------------------------------------------------
 {
 	int velocity = JANGO_VELOCITY;
@@ -1166,7 +1166,7 @@ void WP_FireJangoPistolMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolea
 	else
 	{
 		// If an enemy is shooting at us, lower the velocity so you have a chance to evade
-		if (ent->client && ent->client->ps.clientNum != 0
+		if (ent->client && ent->client->ps.client_num != 0
 			&& ent->client->NPC_class != CLASS_BOBAFETT
 			&& ent->client->NPC_class != CLASS_MANDALORIAN
 			&& ent->client->NPC_class != CLASS_JANGO
@@ -1244,7 +1244,7 @@ void WP_FireJangoPistolMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolea
 }
 
 //---------------------------------------------------------
-void WP_FireJangoWristMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean altFire)
+void WP_FireJangoWristMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean altFire)
 //---------------------------------------------------------
 {
 	int velocity = CLONECOMMANDO_VELOCITY;
@@ -1258,7 +1258,7 @@ void WP_FireJangoWristMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean
 	else
 	{
 		// If an enemy is shooting at us, lower the velocity so you have a chance to evade
-		if (ent->client && ent->client->ps.clientNum != 0
+		if (ent->client && ent->client->ps.client_num != 0
 			&& ent->client->NPC_class != CLASS_BOBAFETT
 			&& ent->client->NPC_class != CLASS_JANGO
 			&& ent->client->NPC_class != CLASS_JANGODUAL)
@@ -1328,7 +1328,7 @@ void WP_FireJangoWristMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean
 }
 
 //---------------------------------------------------------
-void WP_FireJangoDualPistolMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean altFire)
+void WP_FireJangoDualPistolMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean altFire)
 //---------------------------------------------------------
 {
 	int velocity = JANGO_VELOCITY;
@@ -1342,7 +1342,7 @@ void WP_FireJangoDualPistolMissile(gentity_t* ent, vec3_t start, vec3_t dir, qbo
 	else
 	{
 		// If an enemy is shooting at us, lower the velocity so you have a chance to evade
-		if (ent->client && ent->client->ps.clientNum != 0
+		if (ent->client && ent->client->ps.client_num != 0
 			&& ent->client->NPC_class != CLASS_BOBAFETT
 			&& ent->client->NPC_class != CLASS_MANDALORIAN
 			&& ent->client->NPC_class != CLASS_JANGO
@@ -1421,7 +1421,7 @@ void WP_FireJangoDualPistolMissile(gentity_t* ent, vec3_t start, vec3_t dir, qbo
 }
 
 //---------------------------------------------------------
-void WP_FireJangoDualPistolMissileDuals(gentity_t* ent, vec3_t start, vec3_t dir, qboolean altFire)
+void WP_FireJangoDualPistolMissileDuals(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean altFire)
 //---------------------------------------------------------
 {
 	int velocity = JANGO_VELOCITY;
@@ -1435,7 +1435,7 @@ void WP_FireJangoDualPistolMissileDuals(gentity_t* ent, vec3_t start, vec3_t dir
 	else
 	{
 		// If an enemy is shooting at us, lower the velocity so you have a chance to evade
-		if (ent->client && ent->client->ps.clientNum != 0
+		if (ent->client && ent->client->ps.client_num != 0
 			&& ent->client->NPC_class != CLASS_BOBAFETT
 			&& ent->client->NPC_class != CLASS_MANDALORIAN
 			&& ent->client->NPC_class != CLASS_JANGO
@@ -1514,7 +1514,7 @@ void WP_FireJangoDualPistolMissileDuals(gentity_t* ent, vec3_t start, vec3_t dir
 }
 
 //---------------------------------------------------------
-void WP_FireJangoPistol(gentity_t* ent, qboolean alt_fire, qboolean secondPistol)
+void WP_FireJangoPistol(gentity_t* ent, const qboolean alt_fire, const qboolean secondPistol)
 //---------------------------------------------------------
 {
 	vec3_t dir, angs;
@@ -1629,7 +1629,7 @@ void WP_FireJangoPistol(gentity_t* ent, qboolean alt_fire, qboolean secondPistol
 }
 
 //---------------------------------------------------------
-void WP_FireWristPistol(gentity_t* ent, qboolean alt_fire)
+void WP_FireWristPistol(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	vec3_t dir, angs;
@@ -1737,7 +1737,7 @@ void WP_FireWristPistol(gentity_t* ent, qboolean alt_fire)
 }
 
 //---------------------------------------------------------
-void WP_FireJangoDualPistol(gentity_t* ent, qboolean alt_fire)
+void WP_FireJangoDualPistol(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	vec3_t dir, angs;
@@ -1845,7 +1845,7 @@ void WP_FireJangoDualPistol(gentity_t* ent, qboolean alt_fire)
 }
 
 //---------------------------------------------------------
-void WP_FireJangoFPPistolDuals(gentity_t* ent, qboolean alt_fire, qboolean secondPistol)
+void WP_FireJangoFPPistolDuals(gentity_t* ent, const qboolean alt_fire, const qboolean secondPistol)
 //---------------------------------------------------------
 {
 	vec3_t dir, angs;
@@ -1964,7 +1964,7 @@ void WP_FireJangoFPPistolDuals(gentity_t* ent, qboolean alt_fire, qboolean secon
 //---------------
 
 //---------------------------------------------------------
-void WP_FireBobaRifleMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean altFire)
+void WP_FireBobaRifleMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean altFire)
 //---------------------------------------------------------
 {
 	int velocity = BOBA_VELOCITY;
@@ -1983,7 +1983,7 @@ void WP_FireBobaRifleMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean 
 	else
 	{
 		// If an enemy is shooting at us, lower the velocity so you have a chance to evade
-		if (ent->client && ent->client->ps.clientNum != 0
+		if (ent->client && ent->client->ps.client_num != 0
 			&& ent->client->NPC_class != CLASS_BOBAFETT
 			&& ent->client->NPC_class != CLASS_MANDALORIAN
 			&& ent->client->NPC_class != CLASS_JANGO
@@ -2057,7 +2057,7 @@ void WP_FireBobaRifleMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean 
 }
 
 //---------------------------------------------------------
-void WP_FireBobaRifle(gentity_t* ent, qboolean alt_fire)
+void WP_FireBobaRifle(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	vec3_t dir, angs;

@@ -90,7 +90,7 @@ namespace ratl
 			return *this;
 		}
 
-		void		set_size(int xSize, int ySize)
+		void		set_size(const int xSize, const int ySize)
 		{
 			if (xSize < XSIZE_MAX)
 			{
@@ -198,7 +198,7 @@ namespace ratl
 		//
 		// NOTE:  This MUST be at least a 2 dimensional point
 		////////////////////////////////////////////////////////////////////////////////////
-		void		expand_bounds(float xReal, float yReal)
+		void		expand_bounds(const float xReal, const float yReal)
 		{
 			const float	point[2] = { xReal, yReal };
 			for (int i = 0; i < 2; i++)
@@ -244,19 +244,19 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		void		get_cell_position(int x, int y, float& xReal, float& yReal) const
+		void		get_cell_position(const int x, const int y, float& xReal, float& yReal) const
 		{
 			//	assert(mScale[0]!=0.0f && mScale[1]!=0.0f);
 			xReal = x * mScale[0] + mMins[0] + mScale[0] * 0.5f;
 			yReal = y * mScale[1] + mMins[1] + mScale[1] * 0.5f;
 		}
-		void		get_cell_upperleft(int x, int y, float& xReal, float& yReal) const
+		void		get_cell_upperleft(const int x, const int y, float& xReal, float& yReal) const
 		{
 			//	assert(mScale[0]!=0.0f && mScale[1]!=0.0f);
 			xReal = x * mScale[0] + mMins[0];
 			yReal = y * mScale[1] + mMins[1];
 		}
-		void		get_cell_lowerright(int x, int y, float& xReal, float& yReal) const
+		void		get_cell_lowerright(const int x, const int y, float& xReal, float& yReal) const
 		{
 			//	assert(mScale[0]!=0.0f && mScale[1]!=0.0f);
 			xReal = x * mScale[0] + mMins[0] + mScale[0];
@@ -306,7 +306,7 @@ namespace ratl
 			// Constructors
 			//--------------
 			iterator() {}
-			iterator(grid2_vs* p, int t) : mLoc(t), mOwner(p) {}
+			iterator(grid2_vs* p, const int t) : mLoc(t), mOwner(p) {}
 
 			// Assignment Operator
 			//---------------------
@@ -327,8 +327,8 @@ namespace ratl
 
 			// Row & Col Offsets
 			//-------------------
-			void		offsetRows(int num) { mLoc += YSIZE_MAX * num; }
-			void		offsetCols(int num) { mLoc += num; }
+			void		offsetRows(const int num) { mLoc += YSIZE_MAX * num; }
+			void		offsetCols(const int num) { mLoc += num; }
 
 			// Return True If On Frist Column Of A Row
 			//-----------------------------------------
@@ -353,7 +353,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Iterator Begin
 		////////////////////////////////////////////////////////////////////////////////////
-		iterator	begin(int x = 0, int y = 0)
+		iterator	begin(const int x = 0, const int y = 0)
 		{
 			assert(x >= 0 && y >= 0 && x < mSize[0] && y < mSize[1]);
 
@@ -393,7 +393,7 @@ namespace ratl
 			//--------------
 			riterator()
 			{}
-			riterator(grid2_vs* p, int Range, int SX, int SY) :
+			riterator(grid2_vs* p, const int Range, const int SX, const int SY) :
 				mOwner(p)
 			{
 				const int		Start[2] = { SX, SY };

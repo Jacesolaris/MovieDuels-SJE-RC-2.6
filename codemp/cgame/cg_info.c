@@ -70,10 +70,10 @@ void CG_LoadingItem(int itemNum) {
 CG_LoadingClient
 ===================
 */
-void CG_LoadingClient(int clientNum) {
+void CG_LoadingClient(int client_num) {
 	char			personality[MAX_QPATH];
 
-	const char* info = CG_ConfigString(CS_PLAYERS + clientNum);
+	const char* info = CG_ConfigString(CS_PLAYERS + client_num);
 
 	/*
 		char			model[MAX_QPATH];

@@ -71,7 +71,7 @@ void NPC_Mark2_Precache(void)
 NPC_Mark2_Part_Explode
 -------------------------
 */
-void NPC_Mark2_Part_Explode(gentity_t* self, int bolt)
+void NPC_Mark2_Part_Explode(gentity_t* self, const int bolt)
 {
 	if (bolt >= 0)
 	{
@@ -99,8 +99,8 @@ NPC_Mark2_Pain
 - look at what was hit and see if it should be removed from the model.
 -------------------------
 */
-void NPC_Mark2_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
-	int hitLoc)
+void NPC_Mark2_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage, const int mod,
+                    const int hitLoc)
 {
 	NPC_Pain(self, inflictor, other, point, damage, mod);
 
@@ -202,7 +202,7 @@ void Mark2_FireBlaster(qboolean advance)
 Mark2_BlasterAttack
 -------------------------
 */
-void Mark2_BlasterAttack(qboolean advance)
+void Mark2_BlasterAttack(const qboolean advance)
 {
 	if (TIMER_Done(NPC, "attackDelay")) // Attack?
 	{

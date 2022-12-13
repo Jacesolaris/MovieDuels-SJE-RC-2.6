@@ -162,7 +162,7 @@ static int GetStringNum(const char* psString)
 	return strlen(psString) + 1;	// this gives us the chunk length for the reader later
 }
 
-static char* GetStringPtr(int iStrlen, char* psOriginal/*may be NULL*/)
+static char* GetStringPtr(const int iStrlen, char* psOriginal/*may be NULL*/)
 {
 	if (iStrlen != -1)
 	{
@@ -223,7 +223,7 @@ static intptr_t GetGEntityNum(const gentity_t* ent)
 	return iReturnIndex;
 }
 
-static gentity_t* GetGEntityPtr(intptr_t iEntNum)
+static gentity_t* GetGEntityPtr(const intptr_t iEntNum)
 {
 	if (iEntNum == -1)
 	{
@@ -254,7 +254,7 @@ static intptr_t GetGroupNumber(const AIGroupInfo_t* pGroup)
 	return iReturnIndex;
 }
 
-static AIGroupInfo_t* GetGroupPtr(intptr_t iGroupNum)
+static AIGroupInfo_t* GetGroupPtr(const intptr_t iGroupNum)
 {
 	if (iGroupNum == -1)
 	{
@@ -268,7 +268,7 @@ static AIGroupInfo_t* GetGroupPtr(intptr_t iGroupNum)
 /////////// gclient_t * ////////
 //
 //
-static intptr_t GetGClientNum(const gclient_t* c, const gentity_t* ent)
+static intptr_t GetGclient_num(const gclient_t* c, const gentity_t* ent)
 {
 	// unfortunately, I now need to see if this is a INT_ID('r','e','a','l') client (and therefore resolve to an enum), or
 	//	whether it's one of the NPC or SP_misc_weapon_shooter
@@ -288,7 +288,7 @@ static intptr_t GetGClientNum(const gclient_t* c, const gentity_t* ent)
 	return -2;	// yeuch, but distinguishes it from a valid 0 index, or -1 for client==NULL
 }
 
-static gclient_t* GetGClientPtr(intptr_t c)
+static gclient_t* GetGClientPtr(const intptr_t c)
 {
 	if (c == -1)
 	{
@@ -322,7 +322,7 @@ static int GetGItemNum(const gitem_t* pItem)
 	return pItem - bg_itemlist;
 }
 
-static gitem_t* GetGItemPtr(int iItem)
+static gitem_t* GetGItemPtr(const int iItem)
 {
 	if (iItem == -1)
 	{
@@ -352,7 +352,7 @@ static int GetVehicleInfoNum(const vehicleInfo_t* pVehicleInfo)
 	return pVehicleInfo - g_vehicleInfo;
 }
 
-static vehicleInfo_t* GetVehicleInfoPtr(int iVehicleIndex)
+static vehicleInfo_t* GetVehicleInfoPtr(const int iVehicleIndex)
 {
 	if (iVehicleIndex == -1)
 	{
@@ -386,7 +386,7 @@ static void EnumerateField(const save_field_t* pField, const byte* pbBase)
 		break;
 
 	case F_GCLIENT:
-		*static_cast<intptr_t*>(pv) = GetGClientNum(*static_cast<gclient_t**>(pv), (gentity_t*)pbBase);
+		*static_cast<intptr_t*>(pv) = GetGclient_num(*static_cast<gclient_t**>(pv), (gentity_t*)pbBase);
 		break;
 
 	case F_ITEM:
@@ -482,7 +482,7 @@ template<typename T>
 static void EnumerateFields(
 	const save_field_t* pFields,
 	const T* src_instance,
-	unsigned int ulChid)
+	const unsigned int ulChid)
 {
 	strList.clear();
 
@@ -630,7 +630,7 @@ static void EvaluateField(const save_field_t* pField, byte* pbBase, byte* pbOrig
 }
 
 // copy of function in sv_savegame
-static const char* SG_GetChidText(unsigned int chid) {
+static const char* SG_GetChidText(const unsigned int chid) {
 	static char	chidtext[5];
 
 	byteAlias_t* ba = reinterpret_cast<byteAlias_t*>(&chidtext);
@@ -851,7 +851,7 @@ static void ReadLevelLocals()
 	gi.Free(temp);
 }
 
-static void WriteGEntities(qboolean qbAutosave)
+static void WriteGEntities(const qboolean qbAutosave)
 {
 	int iCount = 0;
 	int i;
@@ -954,7 +954,7 @@ static void WriteGEntities(qboolean qbAutosave)
 	}
 }
 
-static void ReadGEntities(qboolean qbAutosave)
+static void ReadGEntities(const qboolean qbAutosave)
 {
 	int		iCount = 0;
 	int		i;
@@ -1207,7 +1207,7 @@ static void ReadGEntities(qboolean qbAutosave)
 	}
 }
 
-void WriteLevel(qboolean qbAutosave)
+void WriteLevel(const qboolean qbAutosave)
 {
 	if (!qbAutosave) //-always save the client
 	{
@@ -1244,7 +1244,7 @@ void WriteLevel(qboolean qbAutosave)
 		iDONE);
 }
 
-void ReadLevel(qboolean qbAutosave, qboolean qbLoadTransition)
+void ReadLevel(const qboolean qbAutosave, const qboolean qbLoadTransition)
 {
 	ojk::SavedGameHelper saved_game(
 		::gi.saved_game);

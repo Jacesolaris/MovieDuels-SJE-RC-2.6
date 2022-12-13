@@ -104,9 +104,9 @@ void thermal_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int
 }
 
 //---------------------------------------------------------
-qboolean WP_LobFire(const gentity_t* self, vec3_t start, vec3_t target, vec3_t mins, vec3_t maxs, int clipmask,
-	vec3_t velocity, qboolean tracePath, int ignoreEntNum, int enemyNum,
-	float minSpeed, float maxSpeed, float idealSpeed, qboolean mustHit)
+qboolean WP_LobFire(const gentity_t* self, vec3_t start, vec3_t target, vec3_t mins, vec3_t maxs, const int clipmask,
+	vec3_t velocity, const qboolean tracePath, const int ignoreEntNum, const int enemyNum,
+	float minSpeed, float maxSpeed, float idealSpeed, const qboolean mustHit)
 	//---------------------------------------------------------
 {
 	constexpr float speedInc = 100;
@@ -213,8 +213,8 @@ qboolean WP_LobFire(const gentity_t* self, vec3_t start, vec3_t target, vec3_t m
 					if (trace.entityNum < ENTITYNUM_WORLD)
 					{
 						//hit an ent
-						const gentity_t* traceEnt = &g_entities[trace.entityNum];
-						if (traceEnt && traceEnt->takedamage && !OnSameTeam(self, traceEnt))
+						const gentity_t* trace_ent = &g_entities[trace.entityNum];
+						if (trace_ent && trace_ent->takedamage && !OnSameTeam(self, trace_ent))
 						{
 							//hit something breakable, so that's okay
 							//we haven't found a clear shot yet so use this as the failcase
@@ -341,7 +341,7 @@ void WP_ThermalThink(gentity_t* ent)
 }
 
 //---------------------------------------------------------
-gentity_t* WP_FireThermalDetonator(gentity_t* ent, qboolean alt_fire)
+gentity_t* WP_FireThermalDetonator(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	vec3_t dir, start;

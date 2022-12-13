@@ -197,7 +197,7 @@ CFxScheduler::CFxScheduler()
 	memset(&mLoopedEffectArray, 0, sizeof mLoopedEffectArray);
 }
 
-int CFxScheduler::ScheduleLoopedEffect(int id, int boltInfo, bool isPortal, int iLoopTime, bool isRelative)
+int CFxScheduler::ScheduleLoopedEffect(const int id, const int boltInfo, const bool isPortal, const int iLoopTime, const bool isRelative)
 {
 	int i;
 
@@ -246,7 +246,7 @@ int CFxScheduler::ScheduleLoopedEffect(int id, int boltInfo, bool isPortal, int 
 	return i;
 }
 
-void CFxScheduler::StopEffect(const char* file, int boltInfo, bool isPortal)
+void CFxScheduler::StopEffect(const char* file, const int boltInfo, const bool isPortal)
 {
 	char sfile[MAX_QPATH];
 
@@ -340,7 +340,7 @@ void SEffectTemplate::operator=(const SEffectTemplate& that)
 //	None
 //
 //------------------------------------------------------
-void CFxScheduler::Clean(bool bRemoveTemplates /*= true*/, int idToPreserve /*= 0*/)
+void CFxScheduler::Clean(const bool bRemoveTemplates /*= true*/, const int idToPreserve /*= 0*/)
 {
 	// Ditch any scheduled effects
 	auto itr = mFxSchedule.begin();
@@ -415,7 +415,7 @@ void CFxScheduler::Clean(bool bRemoveTemplates /*= true*/, int idToPreserve /*= 
 // Return:
 //	int handle to the effect
 //------------------------------------------------------
-int CFxScheduler::RegisterEffect(const char* path, bool bHasCorrectPath /*= false*/)
+int CFxScheduler::RegisterEffect(const char* path, const bool bHasCorrectPath /*= false*/)
 {
 	// Dealing with file names:
 	// File names can come from two places - the editor, in which case we should use the given
@@ -646,7 +646,7 @@ SEffectTemplate* CFxScheduler::GetEffectCopy(const char* file, int* newHandle)
 // Return:
 //	the pointer to the copy
 //------------------------------------------------------
-SEffectTemplate* CFxScheduler::GetEffectCopy(int fxHandle, int* newHandle)
+SEffectTemplate* CFxScheduler::GetEffectCopy(const int fxHandle, int* newHandle)
 {
 	if (fxHandle < 1 || fxHandle >= FX_MAX_EFFECTS || !mEffectTemplates[fxHandle].mInUse)
 	{
@@ -713,7 +713,7 @@ CPrimitiveTemplate* CFxScheduler::GetPrimitiveCopy(const SEffectTemplate* effect
 }
 
 //------------------------------------------------------
-static void ReportPlayEffectError(int id)
+static void ReportPlayEffectError(const int id)
 {
 #ifdef _DEBUG
 	theFxHelper.Print("CFxScheduler::PlayEffect called with invalid effect ID: %i\n", id);
@@ -732,7 +732,7 @@ static void ReportPlayEffectError(int id)
 // Return:
 //	none
 //------------------------------------------------------
-void CFxScheduler::PlayEffect(int id, vec3_t origin, bool isPortal)
+void CFxScheduler::PlayEffect(const int id, vec3_t origin, const bool isPortal)
 {
 	vec3_t axis[3];
 
@@ -755,7 +755,7 @@ void CFxScheduler::PlayEffect(int id, vec3_t origin, bool isPortal)
 // Return:
 //	none
 //------------------------------------------------------
-void CFxScheduler::PlayEffect(int id, vec3_t origin, vec3_t forward, bool isPortal)
+void CFxScheduler::PlayEffect(const int id, vec3_t origin, vec3_t forward, const bool isPortal)
 {
 	vec3_t axis[3];
 
@@ -780,7 +780,7 @@ void CFxScheduler::PlayEffect(int id, vec3_t origin, vec3_t forward, bool isPort
 //	none
 //------------------------------------------------------
 void CFxScheduler::PlayEffect(const char* file, vec3_t origin, vec3_t axis[3], const int boltInfo, const int entNum,
-	bool isPortal, int iLoopTime, bool isRelative)
+                              const bool isPortal, const int iLoopTime, const bool isRelative)
 {
 	char sfile[MAX_QPATH];
 
@@ -818,7 +818,7 @@ void CFxScheduler::PlayEffect(const char* file, vec3_t origin, vec3_t axis[3], c
 // Return:
 //	none
 //------------------------------------------------------
-void CFxScheduler::PlayEffect(const char* file, int clientID, bool isPortal)
+void CFxScheduler::PlayEffect(const char* file, const int clientID, const bool isPortal)
 {
 	char sfile[MAX_QPATH];
 
@@ -935,7 +935,7 @@ bool gEffectsInPortal = false;
 // Return:
 //	none
 //------------------------------------------------------
-void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, int clientID, int delay) const
+void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const int clientID, int delay) const
 {
 	vec3_t sRGB, eRGB;
 	vec3_t vel, accel;
@@ -1100,8 +1100,8 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, int clientID, int delay)
 // Return:
 //	none
 //------------------------------------------------------
-void CFxScheduler::PlayEffect(int id, vec3_t origin, vec3_t axis[3], const int boltInfo, const int entNum,
-	bool isPortal, int iLoopTime, bool isRelative)
+void CFxScheduler::PlayEffect(const int id, vec3_t origin, vec3_t axis[3], const int boltInfo, const int entNum,
+                              const bool isPortal, const int iLoopTime, const bool isRelative)
 {
 	int delay;
 	float factor = 0.0f;
@@ -1276,7 +1276,7 @@ void CFxScheduler::PlayEffect(int id, vec3_t origin, vec3_t axis[3], const int b
 // Return:
 //	none
 //------------------------------------------------------
-void CFxScheduler::PlayEffect(const char* file, vec3_t origin, bool isPortal)
+void CFxScheduler::PlayEffect(const char* file, vec3_t origin, const bool isPortal)
 {
 	char sfile[MAX_QPATH];
 
@@ -1305,7 +1305,7 @@ void CFxScheduler::PlayEffect(const char* file, vec3_t origin, bool isPortal)
 // Return:
 //	none
 //------------------------------------------------------
-void CFxScheduler::PlayEffect(const char* file, vec3_t origin, vec3_t forward, bool isPortal)
+void CFxScheduler::PlayEffect(const char* file, vec3_t origin, vec3_t forward, const bool isPortal)
 {
 	char sfile[MAX_QPATH];
 
@@ -1334,7 +1334,7 @@ void CFxScheduler::PlayEffect(const char* file, vec3_t origin, vec3_t forward, b
 // Return:
 //	none
 //------------------------------------------------------
-void CFxScheduler::AddScheduledEffects(bool portal)
+void CFxScheduler::AddScheduledEffects(const bool portal)
 {
 	int oldEntNum = -1, oldBoltIndex = -1, oldModelNum = -1;
 	qboolean doesBoltExist = qfalse;
@@ -1449,8 +1449,8 @@ void CFxScheduler::AddScheduledEffects(bool portal)
 // Return:
 //	none
 //------------------------------------------------------
-void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec3_t axis[3], int lateTime, int clientID,
-	int modelNum, int boltNum)
+void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec3_t axis[3], const int lateTime, const int clientID,
+                                const int modelNum, const int boltNum)
 {
 	vec3_t org, org2, temp,
 		vel, accel,

@@ -118,7 +118,7 @@ extern qboolean IsRespecting(const gentity_t* self);
 extern qboolean IsCowering(const gentity_t* self);
 extern qboolean is_anim_requires_responce(const gentity_t* self);
 extern void ForceDashAnimDash(gentity_t* self);
-extern qboolean WP_AbsorbKick(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir);
+extern qboolean WP_AbsorbKick(gentity_t* self, const gentity_t* pusher, const vec3_t push_dir);
 extern qboolean BG_InKnockDown(int anim);
 extern void ForceGrasp(gentity_t* ent);
 extern qboolean BG_SaberInNonIdleDamageMove(const playerState_t* ps);
@@ -142,7 +142,6 @@ qboolean jedi_forbidden_kicker(const gentity_t* self);
 
 static qboolean enemy_in_striking_range = qfalse;
 static int jediSpeechDebounceTime[TEAM_NUM_TEAMS]; //used to stop several jedi from speaking all at once
-extern int IsPressingDashButton(const gentity_t* self);
 
 int in_field_of_vision(vec3_t viewangles, const float fov, vec3_t angles)
 {
@@ -1107,7 +1106,7 @@ void jedi_cloak(gentity_t* self)
 			self->client->ps.powerups[PW_UNCLOAKING] = level.time + 2000;
 			G_SoundOnEnt(self, CHAN_ITEM, "sound/chars/shadowtrooper/cloak.wav");
 
-			if (self->s.clientNum >= MAX_CLIENTS && !self->client->ps.SaberActive())
+			if (self->s.client_num >= MAX_CLIENTS && !self->client->ps.SaberActive())
 			{
 				NPC_SetAnim(self, SETANIM_TORSO, BOTH_FORCE_PROTECT_FAST, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 			}
@@ -4144,7 +4143,7 @@ qboolean jedi_dodge_evasion(gentity_t* self, gentity_t* shooter, trace_t* tr, in
 	return qfalse;
 }
 
-evasionType_t jedi_check_flip_evasions(gentity_t* self, float rightdot)
+evasionType_t jedi_check_flip_evasions(gentity_t* self, const float rightdot)
 {
 	if (self->NPC && self->NPC->scriptFlags & SCF_NO_ACROBATICS)
 	{
@@ -5223,9 +5222,6 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 							{
 								dodge_anim = BOTH_DASH_L;
 								self->client->pers.cmd.rightmove = -127;
-								AngleVectors(self->client->ps.viewangles, hitdir, nullptr, nullptr);
-								self->client->ps.velocity[0] = self->client->ps.velocity[0] * 5;
-								self->client->ps.velocity[1] = self->client->ps.velocity[1] * 5;
 								G_SoundOnEnt(self, CHAN_BODY, "sound/weapons/force/dash.wav");
 								evasion_type = EVASION_DODGE;
 								if (d_JediAI->integer)
@@ -5292,9 +5288,6 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 							{
 								dodge_anim = BOTH_DASH_R;
 								self->client->pers.cmd.rightmove = 127;
-								AngleVectors(self->client->ps.viewangles, hitdir, nullptr, nullptr);
-								self->client->ps.velocity[0] = self->client->ps.velocity[0] * 5;
-								self->client->ps.velocity[1] = self->client->ps.velocity[1] * 5;
 								G_SoundOnEnt(self, CHAN_BODY, "sound/weapons/force/dash.wav");
 								evasion_type = EVASION_DODGE;
 								if (d_JediAI->integer)
@@ -7195,11 +7188,11 @@ static void jedi_combat_timers_update(const int enemy_dist)
 				if (!NPC->enemy->client->ps.SaberActive())
 				{
 					//fool!  Standing around unarmed, charge!
-					jedi_aggression(NPC, 2);
+					jedi_aggression(NPC, 3);
 				}
 				else
 				{
-					jedi_aggression(NPC, 1);
+					jedi_aggression(NPC, 2);
 				}
 				break;
 			case WP_BLASTER:
@@ -7232,12 +7225,12 @@ static void jedi_combat_timers_update(const int enemy_dist)
 				if (NPC->enemy->attackDebounceTime < level.time)
 				{
 					//does this apply to players?
-					jedi_aggression(NPC, 1);
+					jedi_aggression(NPC, 2);
 				}
 				//He's closer than a dist that gives us time to deflect
 				if (enemy_dist < 256)
 				{
-					jedi_aggression(NPC, 1);
+					jedi_aggression(NPC, 2);
 				}
 				break;
 			default:
@@ -7278,7 +7271,7 @@ static void jedi_combat_timers_update(const int enemy_dist)
 			if (NPC->enemy && (!NPC->enemy->client || PM_SaberInKnockaway(NPC->enemy->client->ps.saberMove)))
 			{
 				//advance!
-				jedi_aggression(NPC, 1);
+				jedi_aggression(NPC, 2);
 
 				if (NPC->client->ps.saberAnimLevel == SS_STRONG
 					|| NPC->client->ps.saberAnimLevel == SS_MEDIUM
@@ -8424,7 +8417,7 @@ void npc_jedi_pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, c
 	else
 	{
 		//attack
-		jedi_aggression(self, 1);
+		jedi_aggression(self, 2);
 	}
 
 	self->NPC->enemyCheckDebounceTime = 0;
@@ -9174,7 +9167,7 @@ static void jedi_attack()
 
 			if (NPC->client->ps.SaberActive() || NPC->client->ps.saberInFlight)
 			{//saber is still on (or we're trying to pull it back), count down erosion and keep facing the enemy
-				jedi_aggression_erosion(-3);
+				jedi_aggression_erosion(-2);
 
 				if (!NPC->client->ps.SaberActive() && !NPC->client->ps.saberInFlight)
 				{//turned off saber (in hand), gloat

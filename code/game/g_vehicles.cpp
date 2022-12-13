@@ -103,7 +103,7 @@ extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torsoAnimTimer, int time);
 extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legs_anim_timer, int time);
 #endif
 
-extern qboolean BG_UnrestrainedPitchRoll(const playerState_t* ps, const Vehicle_t* pVeh);
+extern qboolean BG_UnrestrainedPitchRoll(const playerState_t* ps, const Vehicle_t* p_veh);
 
 void Vehicle_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags, int iBlend)
 {
@@ -313,7 +313,7 @@ void G_AttachToVehicle(gentity_t* pEnt, usercmd_t** ucmd)
 #endif
 }
 
-void G_KnockOffVehicle(gentity_t* pRider, const gentity_t* self, qboolean bPull)
+void G_KnockOffVehicle(gentity_t* pRider, const gentity_t* self, const qboolean bPull)
 {
 	vec3_t riderAngles, fDir, rDir, dir2Me;
 
@@ -795,7 +795,7 @@ bool Board(Vehicle_t* pVeh, bgEntity_t* pEnt)
 bool VEH_TryEject(const Vehicle_t* pVeh,
 	gentity_t* parent,
 	gentity_t* ent,
-	int ejectDir,
+	const int ejectDir,
 	vec3_t vExitPos)
 {
 	float fEntDiag;
@@ -927,7 +927,7 @@ void G_EjectDroidUnit(Vehicle_t* pVeh, qboolean kill)
 }
 
 // Eject the pilot from the vehicle.
-bool Eject(Vehicle_t* pVeh, bgEntity_t* pEnt, qboolean forceEject)
+bool Eject(Vehicle_t* pVeh, bgEntity_t* pEnt, const qboolean forceEject)
 {
 	gentity_t* parent;
 	vec3_t vExitPos;
@@ -1303,7 +1303,7 @@ bool EjectAll(Vehicle_t* pVeh)
 }
 
 // Start a delay until the vehicle explodes.
-static void StartDeathDelay(Vehicle_t* pVeh, int iDelayTimeOverride)
+static void StartDeathDelay(Vehicle_t* pVeh, const int iDelayTimeOverride)
 {
 	auto parent = pVeh->m_pParentEntity;
 

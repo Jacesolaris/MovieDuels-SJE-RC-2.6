@@ -98,17 +98,17 @@ FIXME: Also called by map_restart?
 void CG_SetInitialSnapshot(snapshot_t* snap) {
 	cg.snap = snap;
 
-	if ((cg_entities[snap->ps.clientNum].ghoul2 == NULL) && trap->G2_HaveWeGhoul2Models(cgs.clientinfo[snap->ps.clientNum].ghoul2Model))
+	if ((cg_entities[snap->ps.client_num].ghoul2 == NULL) && trap->G2_HaveWeGhoul2Models(cgs.clientinfo[snap->ps.client_num].ghoul2Model))
 	{
-		trap->G2API_DuplicateGhoul2Instance(cgs.clientinfo[snap->ps.clientNum].ghoul2Model, &cg_entities[snap->ps.clientNum].ghoul2);
-		CG_CopyG2WeaponInstance(&cg_entities[snap->ps.clientNum], FIRST_WEAPON, cg_entities[snap->ps.clientNum].ghoul2);
+		trap->G2API_DuplicateGhoul2Instance(cgs.clientinfo[snap->ps.client_num].ghoul2Model, &cg_entities[snap->ps.client_num].ghoul2);
+		CG_CopyG2WeaponInstance(&cg_entities[snap->ps.client_num], FIRST_WEAPON, cg_entities[snap->ps.client_num].ghoul2);
 
-		if (trap->G2API_AddBolt(cg_entities[snap->ps.clientNum].ghoul2, 0, "face") == -1)
+		if (trap->G2API_AddBolt(cg_entities[snap->ps.client_num].ghoul2, 0, "face") == -1)
 		{ //check now to see if we have this bone for setting anims and such
-			cg_entities[snap->ps.clientNum].noFace = qtrue;
+			cg_entities[snap->ps.client_num].noFace = qtrue;
 		}
 	}
-	BG_PlayerStateToEntityState(&snap->ps, &cg_entities[snap->ps.clientNum].currentState, qfalse);
+	BG_PlayerStateToEntityState(&snap->ps, &cg_entities[snap->ps.client_num].currentState, qfalse);
 
 	// sort out solid entities
 	CG_BuildSolidList();
@@ -171,10 +171,10 @@ static void CG_TransitionSnapshot(void) {
 	snapshot_t* oldFrame = cg.snap;
 	cg.snap = cg.nextSnap;
 
-	//CG_CheckPlayerG2Weapons(&cg.snap->ps, &cg_entities[cg.snap->ps.clientNum]);
+	//CG_CheckPlayerG2Weapons(&cg.snap->ps, &cg_entities[cg.snap->ps.client_num]);
 	//CG_CheckPlayerG2Weapons(&cg.snap->ps, &cg.predictedPlayerEntity);
-	BG_PlayerStateToEntityState(&cg.snap->ps, &cg_entities[cg.snap->ps.clientNum].currentState, qfalse);
-	cg_entities[cg.snap->ps.clientNum].interpolate = qfalse;
+	BG_PlayerStateToEntityState(&cg.snap->ps, &cg_entities[cg.snap->ps.client_num].currentState, qfalse);
+	cg_entities[cg.snap->ps.client_num].interpolate = qfalse;
 
 	for (i = 0; i < cg.snap->numEntities; i++) {
 		cent = &cg_entities[cg.snap->entities[i].number];
@@ -214,10 +214,10 @@ A new snapshot has just been read in from the client system.
 static void CG_SetNextSnap(snapshot_t* snap) {
 	cg.nextSnap = snap;
 
-	//CG_CheckPlayerG2Weapons(&cg.snap->ps, &cg_entities[cg.snap->ps.clientNum]);
+	//CG_CheckPlayerG2Weapons(&cg.snap->ps, &cg_entities[cg.snap->ps.client_num]);
 	//CG_CheckPlayerG2Weapons(&cg.snap->ps, &cg.predictedPlayerEntity);
-	BG_PlayerStateToEntityState(&snap->ps, &cg_entities[snap->ps.clientNum].nextState, qfalse);
-	//cg_entities[ cg.snap->ps.clientNum ].interpolate = qtrue;
+	BG_PlayerStateToEntityState(&snap->ps, &cg_entities[snap->ps.client_num].nextState, qfalse);
+	//cg_entities[ cg.snap->ps.client_num ].interpolate = qtrue;
 	//No longer want to do this, as the cg_entities[clnum] and cg.predictedPlayerEntity are one in the same.
 
 	// check for extrapolation errors
@@ -249,7 +249,7 @@ static void CG_SetNextSnap(snapshot_t* snap) {
 	}
 
 	// if changing follow mode, don't interpolate
-	if (cg.nextSnap->ps.clientNum != cg.snap->ps.clientNum) {
+	if (cg.nextSnap->ps.client_num != cg.snap->ps.client_num) {
 		cg.nextFrameTeleport = qtrue;
 	}
 

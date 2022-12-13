@@ -73,7 +73,7 @@ public:
 	void Itentity() { v[0].Set(1, 0, 0, 0);	v[1].Set(0, 1, 0, 0);	v[2].Set(0, 0, 1, 0);	v[3].Set(0, 0, 0, 1); }
 	void Translate(const float x, const float y, const float z) { v[0].Set(1, 0, 0, 0);	v[1].Set(0, 1, 0, 0);	v[2].Set(0, 0, 1, 0);	v[3].Set(x, y, z, 1); }
 	void Scale(const float x, const float y, const float z) { v[0].Set(x, 0, 0, 0);	v[1].Set(0, y, 0, 0);	v[2].Set(0, 0, z, 0);	v[3].Set(0, 0, 0, 1); }
-	void Rotate(int axis, const float s/*sin(angle)*/, const float c/*cos(angle)*/)
+	void Rotate(const int axis, const float s/*sin(angle)*/, const float c/*cos(angle)*/)
 	{
 		switch (axis)
 		{
@@ -99,8 +99,8 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	// Member Accessors
 	////////////////////////////////////////////////////////////////////////////////////
-	const CVec4& operator[](int i) const { return v[i]; }
-	CVec4& operator[](int i) { return v[i]; }
+	const CVec4& operator[](const int i) const { return v[i]; }
+	CVec4& operator[](const int i) { return v[i]; }
 
 	CVec4& up() { return v[0]; }
 	CVec4& left() { return v[1]; }

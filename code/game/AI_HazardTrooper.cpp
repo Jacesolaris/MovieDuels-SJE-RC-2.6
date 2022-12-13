@@ -86,7 +86,7 @@ enum
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern void CG_DrawEdge(vec3_t start, vec3_t end, int type);
 
-static void HT_Speech(const gentity_t* self, int speechType, float failChance)
+static void HT_Speech(const gentity_t* self, const int speechType, const float failChance)
 {
 	if (Q_flrand(0.0f, 1.0f) < failChance)
 	{
@@ -206,7 +206,7 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	// Initialize - Clear out all data, all actors, reset all variables
 	////////////////////////////////////////////////////////////////////////////////////
-	void Initialize(int TroopHandle = 0)
+	void Initialize(const int TroopHandle = 0)
 	{
 		mActors.clear();
 		mTarget = nullptr;
@@ -240,7 +240,7 @@ private:
 	////////////////////////////////////////////////////////////////////////////////////
 	// MakeActorLeader - Move A Given Index To A Leader Position
 	////////////////////////////////////////////////////////////////////////////////////
-	void MakeActorLeader(int index)
+	void MakeActorLeader(const int index)
 	{
 		if (index != 0)
 		{
@@ -343,7 +343,7 @@ private:
 	////////////////////////////////////////////////////////////////////////////////////
 	// RegisterTarget - Records That the target is seen, when and where
 	////////////////////////////////////////////////////////////////////////////////////
-	void RegisterTarget(gentity_t* target, int index, const bool visable)
+	void RegisterTarget(gentity_t* target, const int index, const bool visable)
 	{
 		if (!mTarget)
 		{
@@ -432,7 +432,7 @@ private:
 	////////////////////////////////////////////////////////////////////////////////////
 	// Scan For Enemies
 	////////////////////////////////////////////////////////////////////////////////////
-	void ScanForTarget(int scannerIndex)
+	void ScanForTarget(const int scannerIndex)
 	{
 		int targetIndex = 0;
 		int targetStop = ENTITYNUM_WORLD;
@@ -583,7 +583,7 @@ private:
 	////////////////////////////////////////////////////////////////////////////////////
 	// LeaderIssueAndUpdateOrders - Tell Everyone Where To Go
 	////////////////////////////////////////////////////////////////////////////////////
-	void LeaderIssueAndUpdateOrders(ETroopState NextState)
+	void LeaderIssueAndUpdateOrders(const ETroopState NextState)
 	{
 		int actorIndex;
 		const int actorCount = mActors.size();
@@ -1252,7 +1252,7 @@ void Trooper_KneelDown(gentity_t* actor)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void Trooper_StandUp(gentity_t* actor, bool always = false)
+void Trooper_StandUp(gentity_t* actor, const bool always = false)
 {
 	assert(actor && actor->NPC);
 	if (Trooper_Kneeling(actor) && (always || level.time > actor->NPC->kneelTime))
@@ -1477,7 +1477,7 @@ NPC_BehaviorSet_Trooper
 -------------------------
 */
 ////////////////////////////////////////////////////////////////////////////////////////
-void NPC_BehaviorSet_Trooper(int bState)
+void NPC_BehaviorSet_Trooper(const int bState)
 {
 	Trooper_UpdateTroop(NPC);
 	switch (bState)

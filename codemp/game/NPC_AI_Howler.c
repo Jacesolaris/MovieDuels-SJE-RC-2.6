@@ -75,7 +75,7 @@ void Howler_Patrol(void)
 	}
 
 	//rwwFIXMEFIXME: Care about all clients, not just client 0
-	//OJK: clientnum 0
+	//OJK: client_num 0
 	VectorSubtract(g_entities[0].r.currentOrigin, NPCS.NPC->r.currentOrigin, dif);
 
 	if (VectorLengthSquared(dif) < 256 * 256)

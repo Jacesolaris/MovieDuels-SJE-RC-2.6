@@ -64,7 +64,7 @@ void AddSpawnField(const char* field, const char* value)
 	numSpawnVars++;
 }
 
-qboolean G_SpawnField(unsigned int uiField, char** ppKey, char** ppValue)
+qboolean G_SpawnField(const unsigned int uiField, char** ppKey, char** ppValue)
 {
 	if (static_cast<int>(uiField) >= numSpawnVars)
 		return qfalse;
@@ -132,7 +132,7 @@ qboolean G_SpawnVector4(const char* key, const char* defaultString, float* out)
 	return present;
 }
 
-qboolean G_SpawnFlag(const char* key, int flag, int* out)
+qboolean G_SpawnFlag(const char* key, const int flag, int* out)
 {
 	//find that key
 	for (int i = 0; i < numSpawnVars; i++)

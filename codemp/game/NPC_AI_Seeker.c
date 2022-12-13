@@ -543,7 +543,7 @@ void NPC_BSSeeker_Default(void)
 	//N/A for MP.
 	if (NPCS.NPC->r.ownerNum < ENTITYNUM_NONE)
 	{
-		//OJKFIXME: clientnum 0
+		//OJKFIXME: client_num 0
 		const gentity_t* owner = &g_entities[0];
 		if (owner->health <= 0
 			|| (owner->client && owner->client->pers.connected == CON_DISCONNECTED))
@@ -562,7 +562,7 @@ void NPC_BSSeeker_Default(void)
 
 	if (NPCS.NPC->enemy && NPCS.NPC->enemy->health && NPCS.NPC->enemy->inuse)
 	{
-		//OJKFIXME: clientnum 0
+		//OJKFIXME: client_num 0
 		if (NPCS.NPC->client->NPC_class != CLASS_BOBAFETT && (NPCS.NPC->enemy->s.number == 0 || (NPCS.NPC->enemy->client && NPCS.NPC->enemy->client->NPC_class == CLASS_SEEKER)))
 		{
 			//hacked to never take the player as an enemy, even if the player shoots at it

@@ -11,14 +11,14 @@
 
 #include "q_color.h"
 
-int Q_isprint(int c)
+int Q_isprint(const int c)
 {
 	if (c >= 0x20 && c <= 0x7E)
 		return 1;
 	return 0;
 }
 
-int Q_isprintext(int c)
+int Q_isprintext(const int c)
 {
 	if (c >= 0x20 && c <= 0x7E)
 		return 1;
@@ -27,7 +27,7 @@ int Q_isprintext(int c)
 	return 0;
 }
 
-int Q_isgraph(int c)
+int Q_isgraph(const int c)
 {
 	if (c >= 0x21 && c <= 0x7E)
 		return 1;
@@ -36,21 +36,21 @@ int Q_isgraph(int c)
 	return 0;
 }
 
-int Q_islower(int c)
+int Q_islower(const int c)
 {
 	if (c >= 'a' && c <= 'z')
 		return 1;
 	return 0;
 }
 
-int Q_isupper(int c)
+int Q_isupper(const int c)
 {
 	if (c >= 'A' && c <= 'Z')
 		return 1;
 	return 0;
 }
 
-int Q_isalpha(int c)
+int Q_isalpha(const int c)
 {
 	if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z')
 		return 1;
@@ -72,12 +72,12 @@ qboolean Q_isanumber(const char* s)
 	return *p == '\0';
 }
 
-qboolean Q_isintegral(float f)
+qboolean Q_isintegral(const float f)
 {
 	return (int)f == f;
 }
 
-char* Q_strrchr(const char* string, int c)
+char* Q_strrchr(const char* string, const int c)
 {
 	const char cc = c;
 	char* sp = 0;
@@ -103,7 +103,7 @@ Q_strncpyz
 Safe strncpy that ensures a trailing zero
 =============
 */
-void Q_strncpyz(char* dest, const char* src, int destsize)
+void Q_strncpyz(char* dest, const char* src, const int destsize)
 {
 	assert(src);
 	assert(dest);
@@ -207,7 +207,7 @@ char* Q_strupr(char* s1)
 }
 
 // never goes past bounds or leaves without a terminating 0
-void Q_strcat(char* dest, int size, const char* src)
+void Q_strcat(char* dest, const int size, const char* src)
 {
 	const int l1 = strlen(dest);
 	if (l1 >= size)
@@ -422,7 +422,7 @@ MinGW comes with its own snprintf() which is not broken.
 =============
 */
 
-int Q_vsnprintf(char* str, size_t size, const char* format, va_list ap)
+int Q_vsnprintf(char* str, const size_t size, const char* format, const va_list ap)
 {
 	const int retval = _vsnprintf(str, size, format, ap);
 

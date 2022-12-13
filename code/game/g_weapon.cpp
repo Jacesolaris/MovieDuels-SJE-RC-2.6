@@ -93,7 +93,7 @@ float weaponSpeed[WP_NUM_WEAPONS][2] =
 	{CLONEPISTOL_VEL,CLONEPISTOL_VEL}, //WP_CLONEPISTOL,
 };
 
-float WP_SpeedOfMissileForWeapon(int wp, qboolean alt_fire)
+float WP_SpeedOfMissileForWeapon(const int wp, const qboolean alt_fire)
 {
 	if (alt_fire)
 	{
@@ -139,7 +139,7 @@ void WP_TraceSetStart(const gentity_t* ent, vec3_t start, const vec3_t mins, con
 
 extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 //-----------------------------------------------------------------------------
-gentity_t* CreateMissile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner, qboolean altFire)
+gentity_t* CreateMissile(vec3_t org, vec3_t dir, const float vel, const int life, gentity_t* owner, const qboolean altFire)
 //-----------------------------------------------------------------------------
 {
 	gentity_t* missile = G_Spawn();
@@ -171,7 +171,7 @@ gentity_t* CreateMissile(vec3_t org, vec3_t dir, float vel, int life, gentity_t*
 }
 
 //-----------------------------------------------------------------------------
-void WP_Stick(gentity_t* missile, const trace_t* trace, float fudge_distance)
+void WP_Stick(gentity_t* missile, const trace_t* trace, const float fudge_distance)
 //-----------------------------------------------------------------------------
 {
 	vec3_t org, ang;
@@ -268,7 +268,7 @@ bool WP_MissileTargetHint(gentity_t* shooter, vec3_t start, vec3_t out)
 	return false;
 }
 
-int G_GetHitLocFromTrace(trace_t* trace, int mod)
+int G_GetHitLocFromTrace(trace_t* trace, const int mod)
 {
 	int hitLoc = HL_NONE;
 	for (auto& i : trace->G2CollisionMap)
@@ -354,7 +354,7 @@ void ViewHeightFix(const gentity_t* const ent)
 	}
 }
 
-qboolean W_AccuracyLoggableWeapon(int weapon, qboolean alt_fire, int mod)
+qboolean W_AccuracyLoggableWeapon(const int weapon, const qboolean alt_fire, const int mod)
 {
 	if (mod != MOD_UNKNOWN)
 	{
@@ -499,7 +499,7 @@ qboolean LogAccuracyHit(const gentity_t* target, const gentity_t* attacker)
 }
 
 void CalcMuzzlePoint2(const gentity_t* const ent, vec3_t forwardVec, vec3_t right, vec3_t up, vec3_t muzzlePoint,
-	float lead_in)
+                      const float lead_in)
 {
 	if (!lead_in) //&& ent->s.number != 0
 	{
@@ -779,7 +779,7 @@ vec3_t WP_MuzzlePoint[WP_NUM_WEAPONS] =
 	{12, 6, -6}, // WP_CLONEPISTOL,
 };
 
-void WP_RocketLock(const gentity_t* ent, float lockDist)
+void WP_RocketLock(const gentity_t* ent, const float lockDist)
 {
 	// Not really a charge weapon, but we still want to delay fire until the button comes up so that we can
 	//	implement our alt-fire locking stuff
@@ -803,10 +803,10 @@ void WP_RocketLock(const gentity_t* ent, float lockDist)
 	ang[1] = muzzlePoint[1] + ang[1] * lockDist;
 	ang[2] = muzzlePoint[2] + ang[2] * lockDist;
 
-	gi.trace(&tr, muzzlePoint, nullptr, nullptr, ang, ent->client->ps.clientNum, MASK_PLAYERSOLID,
+	gi.trace(&tr, muzzlePoint, nullptr, nullptr, ang, ent->client->ps.client_num, MASK_PLAYERSOLID,
 		static_cast<EG2_Collision>(0), 0);
 
-	if (tr.fraction != 1 && tr.entityNum < ENTITYNUM_NONE && tr.entityNum != ent->client->ps.clientNum)
+	if (tr.fraction != 1 && tr.entityNum < ENTITYNUM_NONE && tr.entityNum != ent->client->ps.client_num)
 	{
 		const gentity_t* bgEnt = &g_entities[tr.entityNum];
 		if (bgEnt && bgEnt->s.powerups & PW_CLOAKED)
@@ -1051,7 +1051,7 @@ void WP_FireVehicleWeapon(gentity_t* ent, vec3_t start, vec3_t dir, const vehWea
 	}
 }
 
-void WP_VehLeadCrosshairVeh(gentity_t* camTraceEnt, vec3_t newEnd, const vec3_t dir, const vec3_t shotStart,
+void WP_VehLeadCrosshairVeh(gentity_t* camtrace_ent, vec3_t newEnd, const vec3_t dir, const vec3_t shotStart,
 	vec3_t shotDir)
 {
 	//FIXME: implement from MP?
@@ -1064,7 +1064,7 @@ qboolean WP_VehCheckTraceFromCamPos(gentity_t* ent, const vec3_t shotStart, vec3
 }
 
 //---------------------------------------------------------
-void FireVehicleWeapon(gentity_t* ent, qboolean alt_fire)
+void FireVehicleWeapon(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	Vehicle_t* pVeh = ent->m_pVehicle;
@@ -1382,7 +1382,7 @@ void WP_FireScepter(gentity_t* ent, qboolean alt_fire)
 	VectorMA(start, shot_range, forwardVec, end);
 
 	gi.trace(&tr, start, nullptr, nullptr, end, ent->s.number, MASK_SHOT, G2_RETURNONHIT, 10);
-	gentity_t* traceEnt = &g_entities[tr.entityNum];
+	gentity_t* trace_ent = &g_entities[tr.entityNum];
 
 	if (tr.surfaceFlags & SURF_NOIMPACT)
 	{
@@ -1396,14 +1396,14 @@ void WP_FireScepter(gentity_t* ent, qboolean alt_fire)
 
 	if (render_impact)
 	{
-		if (tr.entityNum < ENTITYNUM_WORLD && traceEnt->takedamage)
+		if (tr.entityNum < ENTITYNUM_WORLD && trace_ent->takedamage)
 		{
 			constexpr int damage = 1;
 			// Create a simple impact type mark that doesn't last long in the world
 			G_PlayEffect(G_EffectIndex("disruptor/flesh_impact"), tr.endpos, tr.plane.normal);
 
 			const int hitLoc = G_GetHitLocFromTrace(&tr, MOD_DISRUPTOR);
-			G_Damage(traceEnt, ent, ent, forwardVec, tr.endpos, damage, DAMAGE_EXTRA_KNOCKBACK, MOD_DISRUPTOR, hitLoc);
+			G_Damage(trace_ent, ent, ent, forwardVec, tr.endpos, damage, DAMAGE_EXTRA_KNOCKBACK, MOD_DISRUPTOR, hitLoc);
 		}
 		else
 		{
@@ -1465,7 +1465,7 @@ void G_AddMercBalance(const gentity_t* ent, int amount)
 		return;
 	}
 
-	if (ent->s.clientNum >= MAX_CLIENTS && !G_ControlledByPlayer(ent))
+	if (ent->s.client_num >= MAX_CLIENTS && !G_ControlledByPlayer(ent))
 	{
 		return;
 	}
@@ -1499,7 +1499,7 @@ extern qboolean PM_ReloadAnim(int anim);
 extern qboolean PM_WeponRestAnim(int anim);
 extern qboolean PM_CrouchAnim(int anim);
 //---------------------------------------------------------
-void FireWeapon(gentity_t* ent, qboolean alt_fire)
+void FireWeapon(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	float alert = 256;

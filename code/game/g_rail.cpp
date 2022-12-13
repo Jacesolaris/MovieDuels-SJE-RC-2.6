@@ -892,7 +892,7 @@ void CRailTrack::Update()
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void CRailTrack::RandomizeTestCols(int startCol, int stopCol)
+void CRailTrack::RandomizeTestCols(const int startCol, const int stopCol)
 {
 	const int numCols = stopCol - startCol;
 
@@ -910,7 +910,7 @@ void CRailTrack::RandomizeTestCols(int startCol, int stopCol)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool CRailTrack::TestMoverInCells(const CRailMover* mover, int atCol)
+bool CRailTrack::TestMoverInCells(const CRailMover* mover, const int atCol)
 {
 	//for (int moverRow=0; (moverRow<mover->mRows); moverRow++)
 	//{
@@ -928,7 +928,7 @@ bool CRailTrack::TestMoverInCells(const CRailMover* mover, int atCol)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void CRailTrack::InsertMoverInCells(CRailMover* mover, int atCol)
+void CRailTrack::InsertMoverInCells(CRailMover* mover, const int atCol)
 {
 	for (int moverCol = 0; moverCol < mover->mCols; moverCol++)
 	{

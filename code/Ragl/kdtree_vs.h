@@ -224,7 +224,7 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		// This Private Function Of The Class Does A Standard Binary Tree Search
 		////////////////////////////////////////////////////////////////////////////////////
-		int			find_index(const T& data, int curNode, int curDimension, bool returnClosest, bool markTarget)
+		int			find_index(const T& data, int curNode, int curDimension, const bool returnClosest, const bool markTarget)
 		{
 			// Did We Just Go Off The End Of The Tree Or Find The Data We Were Looking For?
 			//------------------------------------------------------------------------------

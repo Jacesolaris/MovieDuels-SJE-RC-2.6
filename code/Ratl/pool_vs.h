@@ -276,7 +276,7 @@ namespace ratl
 			{
 			}
 
-			iterator(pool_root<T>* p, int index) : mIndex(index), mOwner(p)
+			iterator(pool_root<T>* p, const int index) : mIndex(index), mOwner(p)
 			{}
 			iterator(const iterator& t) : mIndex(t.mIndex), mOwner(t.mOwner)
 			{}
@@ -343,7 +343,7 @@ namespace ratl
 			{
 			}
 
-			const_iterator(const pool_root<T>* p, int index) : mIndex(index), mOwner(p)
+			const_iterator(const pool_root<T>* p, const int index) : mIndex(index), mOwner(p)
 			{}
 			const_iterator(const iterator& t) : mIndex(t.mIndex), mOwner(t.mOwner)
 			{}

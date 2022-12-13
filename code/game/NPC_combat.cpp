@@ -1444,7 +1444,7 @@ void NPC_ApplyWeaponFireDelay()
 		break;
 
 	case WP_THERMAL:
-		if (client->ps.clientNum)
+		if (client->ps.client_num)
 		{
 			//NPCs delay...
 			//FIXME: player should, too, but would feel weird in 1st person, even though it
@@ -3299,7 +3299,7 @@ int NPC_FindCombatPointRetry(const vec3_t position,
 	const vec3_t avoidPosition,
 	vec3_t destPosition,
 	int* cpFlags,
-	float avoidDist,
+	const float avoidDist,
 	const int ignorePoint)
 {
 	int cp = NPC_FindCombatPoint(position,

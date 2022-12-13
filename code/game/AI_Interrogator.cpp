@@ -289,7 +289,7 @@ Interrogator_Hunt
 constexpr auto HUNTER_FORWARD_BASE_SPEED = 10;
 constexpr auto HUNTER_FORWARD_MULTIPLIER = 2;
 
-void Interrogator_Hunt(qboolean visible, qboolean advance)
+void Interrogator_Hunt(const qboolean visible, const qboolean advance)
 {
 	vec3_t forward;
 
@@ -340,7 +340,7 @@ constexpr auto MIN_DISTANCE = 64;
 Interrogator_Melee
 -------------------------
 */
-void Interrogator_Melee(qboolean visible, qboolean advance)
+void Interrogator_Melee(const qboolean visible, const qboolean advance)
 {
 	if (TIMER_Done(NPC, "attackDelay")) // Attack?
 	{

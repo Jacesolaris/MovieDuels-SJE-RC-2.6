@@ -58,7 +58,7 @@ void ClampVec(vec3_t dat, byte* res)
 	}
 }
 
-void GetOrigin(int clientID, vec3_t org)
+void GetOrigin(const int clientID, vec3_t org)
 {
 	if (clientID >= 0)
 	{
@@ -71,7 +71,7 @@ void GetOrigin(int clientID, vec3_t org)
 	}
 }
 
-void GetDir(int clientID, vec3_t org)
+void GetDir(const int clientID, vec3_t org)
 {
 	if (clientID >= 0)
 	{
@@ -2102,7 +2102,7 @@ bool CBezier::Update(void)
 }
 
 //----------------------------
-void CBezier::DrawSegment(vec3_t start, vec3_t end, const float texcoord1, float texcoord2)
+void CBezier::DrawSegment(vec3_t start, vec3_t end, const float texcoord1, const float texcoord2)
 {
 	vec3_t lineDir, cross, viewDir;
 	static vec3_t lastEnd[2];

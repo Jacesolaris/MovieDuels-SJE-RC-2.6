@@ -119,7 +119,7 @@ void Wampa_Patrol(void)
 Wampa_Move
 -------------------------
 */
-void Wampa_Move(qboolean visible)
+void Wampa_Move(const qboolean visible)
 {
 	if (NPCInfo->localState != LSTATE_WAITING)
 	{
@@ -193,7 +193,7 @@ extern qboolean G_DoDismemberment(gentity_t* self, vec3_t point, int mod, int da
 	qboolean force = qfalse);
 extern int NPC_GetEntsNearBolt(gentity_t** radiusEnts, float radius, int boltIndex, vec3_t boltOrg);
 
-void Wampa_Slash(int boltIndex, qboolean backhand)
+void Wampa_Slash(const int boltIndex, const qboolean backhand)
 {
 	gentity_t* radiusEnts[128];
 	constexpr float radius = 88;
@@ -296,7 +296,7 @@ void Wampa_Slash(int boltIndex, qboolean backhand)
 }
 
 //------------------------------
-void Wampa_Attack(float distance, qboolean doCharge)
+void Wampa_Attack(const float distance, const qboolean doCharge)
 {
 	if (!TIMER_Exists(NPC, "attacking"))
 	{
@@ -474,7 +474,7 @@ void Wampa_Combat()
 NPC_Wampa_Pain
 -------------------------
 */
-void NPC_Wampa_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
+void NPC_Wampa_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage, int mod,
 	int hitLoc)
 {
 	qboolean hitByWampa = qfalse;
@@ -610,7 +610,7 @@ void Wampa_DropVictim(gentity_t* self)
 	self->count = 0; //drop him
 }
 
-qboolean Wampa_CheckDropVictim(gentity_t* self, qboolean excludeMe)
+qboolean Wampa_CheckDropVictim(gentity_t* self, const qboolean excludeMe)
 {
 	if (!self
 		|| !self->activator)

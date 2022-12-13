@@ -49,7 +49,7 @@ namespace ojk
 	}
 
 	inline void SavedGameHelper::skip(
-		int count) const
+		const int count) const
 	{
 		if (!saved_game_->skip(
 			count))
@@ -521,7 +521,7 @@ namespace ojk
 	template <typename TSrc, typename TDst>
 	bool SavedGameHelper::try_read(
 		TDst* dst_values,
-		int dst_count,
+		const int dst_count,
 		InplaceTag)
 	{
 		const int dst_size = dst_count * static_cast<int>(sizeof(TDst));
@@ -542,7 +542,7 @@ namespace ojk
 	template <typename TSrc, typename TDst>
 	bool SavedGameHelper::try_read(
 		TDst* dst_values,
-		int dst_count,
+		const int dst_count,
 		CastTag)
 	{
 		using Tag = std::conditional_t<
@@ -773,7 +773,7 @@ namespace ojk
 	template <typename TDst, typename TSrc>
 	void SavedGameHelper::write(
 		const TSrc* src_values,
-		int src_count,
+		const int src_count,
 		InplaceTag)
 	{
 		const int src_size = src_count * static_cast<int>(sizeof(TSrc));
@@ -789,7 +789,7 @@ namespace ojk
 	template <typename TDst, typename TSrc>
 	void SavedGameHelper::write(
 		const TSrc* src_values,
-		int src_count,
+		const int src_count,
 		CastTag)
 	{
 		using Tag = std::conditional_t<

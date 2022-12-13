@@ -32,7 +32,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "g_vehicles.h"
 
 extern qboolean G_CheckInSolid(gentity_t* self, qboolean fix);
-extern void ClientUserinfoChanged(int clientNum);
+extern void ClientUserinfoChanged(int client_num);
 extern qboolean SpotWouldTelefrag2(const gentity_t* mover, vec3_t dest);
 extern void jedi_cloak(gentity_t* self);
 extern void Saboteur_Cloak(gentity_t* self);
@@ -939,7 +939,7 @@ NPC_WeaponsForTeam
 -------------------------
 */
 
-int NPC_WeaponsForTeam(team_t team, int spawnflags, const char* NPC_type)
+int NPC_WeaponsForTeam(const team_t team, const int spawnflags, const char* NPC_type)
 {
 	//*** not sure how to handle this, should I pass in class instead of team and go from there? - dmv
 	switch (team)
@@ -1277,7 +1277,7 @@ void NPC_Begin(gentity_t* ent)
 
 	client->airOutTime = level.time + 12000;
 
-	client->ps.clientNum = ent->s.number;
+	client->ps.client_num = ent->s.number;
 	// clear entity values
 
 	if (ent->health) // Was health supplied in map
@@ -1598,7 +1598,7 @@ void NPC_DefaultScriptFlags(const gentity_t* ent)
 
 constexpr auto MAX_SAFESPAWN_ENTS = 4;
 
-bool NPC_SafeSpawn(const gentity_t* ent, float safeRadius)
+bool NPC_SafeSpawn(const gentity_t* ent, const float safeRadius)
 {
 	gentity_t* radiusEnts[MAX_SAFESPAWN_ENTS];
 	vec3_t safeMins, safeMaxs;
@@ -1644,7 +1644,7 @@ bool NPC_SafeSpawn(const gentity_t* ent, float safeRadius)
 }
 
 //----------------------------------------------------------------------------------
-qboolean PickProjectionSpawnPoint_close(vec3_t org, vec3_t fwd, vec3_t right, int skip, vec3_t spot)
+qboolean PickProjectionSpawnPoint_close(vec3_t org, vec3_t fwd, vec3_t right, const int skip, vec3_t spot)
 {
 	vec3_t mins, maxs, forward, end;
 	trace_t tr;
@@ -1702,7 +1702,7 @@ qboolean PickProjectionSpawnPoint_close(vec3_t org, vec3_t fwd, vec3_t right, in
 }
 
 //----------------------------------------------------------------------------------
-qboolean PickProjectionSpawnPoint_near(vec3_t org, vec3_t fwd, vec3_t right, int skip, vec3_t spot)
+qboolean PickProjectionSpawnPoint_near(vec3_t org, vec3_t fwd, vec3_t right, const int skip, vec3_t spot)
 {
 	vec3_t mins, maxs, forward, end;
 	trace_t tr;
@@ -1760,7 +1760,7 @@ qboolean PickProjectionSpawnPoint_near(vec3_t org, vec3_t fwd, vec3_t right, int
 }
 
 //----------------------------------------------------------------------------------
-qboolean PickProjectionSpawnPoint_far(vec3_t org, vec3_t fwd, vec3_t right, int skip, vec3_t spot)
+qboolean PickProjectionSpawnPoint_far(vec3_t org, vec3_t fwd, vec3_t right, const int skip, vec3_t spot)
 {
 	vec3_t mins, maxs, forward, end;
 	trace_t tr;
@@ -1958,7 +1958,7 @@ void Cmd_UseProjection_f(gentity_t* ent)
 	}
 }
 
-gentity_t* NPC_Spawn_Do(gentity_t* ent, qboolean fullSpawnNow)
+gentity_t* NPC_Spawn_Do(gentity_t* ent, const qboolean fullSpawnNow)
 {
 	vec3_t saveOrg;
 

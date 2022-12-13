@@ -205,11 +205,11 @@ void ClientEndPowerUps(const gentity_t* ent);
 
 int G_FindLookItem(gentity_t* self)
 {
-	int bestEntNum = ENTITYNUM_NONE;
-	gentity_t* entityList[MAX_GENTITIES];
+	int best_ent_num = ENTITYNUM_NONE;
+	gentity_t* entity_list[MAX_GENTITIES];
 	vec3_t center, mins, maxs, fwdangles, forward;
 	constexpr float radius = 256;
-	float bestRating = 0.0f;
+	float best_rating = 0.0f;
 
 	//FIXME: no need to do this in 1st person?
 	fwdangles[1] = self->client->ps.viewangles[1];
@@ -222,17 +222,17 @@ int G_FindLookItem(gentity_t* self)
 		mins[i] = center[i] - radius;
 		maxs[i] = center[i] + radius;
 	}
-	const int numListedEntities = gi.EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+	const int num_listed_entities = gi.EntitiesInBox(mins, maxs, entity_list, MAX_GENTITIES);
 
-	if (!numListedEntities)
+	if (!num_listed_entities)
 	{
 		return ENTITYNUM_NONE;
 	}
 
-	for (int e = 0; e < numListedEntities; e++)
+	for (int e = 0; e < num_listed_entities; e++)
 	{
 		vec3_t dir;
-		const gentity_t* ent = entityList[e];
+		const gentity_t* ent = entity_list[e];
 
 		if (!ent->item)
 		{
@@ -283,13 +283,13 @@ int G_FindLookItem(gentity_t* self)
 			//security keys are of the highest importance
 			rating *= 2.0f;
 		}
-		if (rating > bestRating)
+		if (rating > best_rating)
 		{
-			bestEntNum = ent->s.number;
-			bestRating = rating;
+			best_ent_num = ent->s.number;
+			best_rating = rating;
 		}
 	}
-	return bestEntNum;
+	return best_ent_num;
 }
 
 extern void CG_SetClientViewAngles(vec3_t angles, qboolean overrideViewEnt);
@@ -324,9 +324,9 @@ qboolean G_ClearViewEntity(gentity_t* ent)
 	return qtrue;
 }
 
-void G_SetViewEntity(gentity_t* self, gentity_t* viewEntity)
+void G_SetViewEntity(gentity_t* self, gentity_t* view_entity)
 {
-	if (!self || !self->client || !viewEntity)
+	if (!self || !self->client || !view_entity)
 	{
 		return;
 	}
@@ -336,21 +336,21 @@ void G_SetViewEntity(gentity_t* self, gentity_t* viewEntity)
 		// yeah, it should really toggle them so it plays the end sound....
 		cg.zoomMode = 0;
 	}
-	if (viewEntity->s.number == self->client->ps.viewEntity)
+	if (view_entity->s.number == self->client->ps.viewEntity)
 	{
 		return;
 	}
 	//clear old one first
 	G_ClearViewEntity(self);
 	//set new one
-	self->client->ps.viewEntity = viewEntity->s.number;
-	viewEntity->svFlags |= SVF_BROADCAST;
+	self->client->ps.viewEntity = view_entity->s.number;
+	view_entity->svFlags |= SVF_BROADCAST;
 	//remember current angles
 	VectorCopy(self->client->ps.viewangles, self->pos4);
-	if (viewEntity->client)
+	if (view_entity->client)
 	{
 		//vec3_t	clear = {0,0,0};
-		CG_SetClientViewAngles(viewEntity->client->ps.viewangles, qtrue);
+		CG_SetClientViewAngles(view_entity->client->ps.viewangles, qtrue);
 	}
 	if (!self->s.number)
 	{
@@ -430,8 +430,8 @@ qboolean G_ValidateLookEnemy(gentity_t* self, gentity_t* enemy)
 			return qfalse;
 		}
 
-		const Vehicle_t* pVeh = G_IsRidingVehicle(self);
-		if (pVeh && pVeh == enemy->m_pVehicle)
+		const Vehicle_t* p_veh = G_IsRidingVehicle(self);
+		if (p_veh && p_veh == enemy->m_pVehicle)
 		{
 			return qfalse;
 		}
@@ -466,11 +466,11 @@ void G_ChooseLookEnemy(gentity_t* self, const usercmd_t* ucmd)
 {
 	//FIXME: should be a more intelligent way of doing this, like auto aim?
 	//closest, most in front... did damage to... took damage from?  How do we know who the player is focusing on?
-	gentity_t* bestEnt = nullptr;
-	gentity_t* entityList[MAX_GENTITIES];
+	gentity_t* best_ent = nullptr;
+	gentity_t* entity_list[MAX_GENTITIES];
 	vec3_t center, mins, maxs, fwdangles, forward;
 	constexpr float radius = 256;
-	float bestRating = 0.0f;
+	float best_rating = 0.0f;
 
 	//FIXME: no need to do this in 1st person?
 	fwdangles[0] = 0; //Must initialize data!
@@ -485,18 +485,18 @@ void G_ChooseLookEnemy(gentity_t* self, const usercmd_t* ucmd)
 		mins[i] = center[i] - radius;
 		maxs[i] = center[i] + radius;
 	}
-	const int numListedEntities = gi.EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+	const int num_listed_entities = gi.EntitiesInBox(mins, maxs, entity_list, MAX_GENTITIES);
 
-	if (!numListedEntities)
+	if (!num_listed_entities)
 	{
 		//should we clear the enemy?
 		return;
 	}
 
-	for (int e = 0; e < numListedEntities; e++)
+	for (int e = 0; e < num_listed_entities; e++)
 	{
 		vec3_t dir;
-		gentity_t* ent = entityList[e];
+		gentity_t* ent = entity_list[e];
 
 		if (!gi.inPVS(self->currentOrigin, ent->currentOrigin))
 		{
@@ -567,15 +567,15 @@ void G_ChooseLookEnemy(gentity_t* self, const usercmd_t* ucmd)
 			rading *= 2.0f;
 		}
 		*/
-		if (rating > bestRating)
+		if (rating > best_rating)
 		{
-			bestEnt = ent;
-			bestRating = rating;
+			best_ent = ent;
+			best_rating = rating;
 		}
 	}
-	if (bestEnt)
+	if (best_ent)
 	{
-		self->enemy = bestEnt;
+		self->enemy = best_ent;
 	}
 }
 
@@ -649,7 +649,7 @@ extern void WP_ForcePowerStart(gentity_t* self, forcePowers_t force_power, int o
 
 void P_WorldEffects(gentity_t* ent)
 {
-	int mouthContents = 0;
+	int mouth_contents = 0;
 
 	if (ent->client->noclip)
 	{
@@ -661,14 +661,14 @@ void P_WorldEffects(gentity_t* ent)
 	{
 		if (gi.totalMapContents() & (CONTENTS_WATER | CONTENTS_SLIME))
 		{
-			mouthContents = gi.pointcontents(ent->client->renderInfo.eyePoint, ent->s.number);
+			mouth_contents = gi.pointcontents(ent->client->renderInfo.eyePoint, ent->s.number);
 		}
 	}
 	//
 	// check for drowning
 	//
 
-	if (mouthContents & (CONTENTS_WATER | CONTENTS_SLIME))
+	if (mouth_contents & (CONTENTS_WATER | CONTENTS_SLIME))
 	{
 		if (ent->client->NPC_class == CLASS_SWAMPTROOPER)
 		{
@@ -865,20 +865,6 @@ void P_WorldEffects(gentity_t* ent)
 	}
 }
 
-/*
-===============
-G_SetClientSound
-===============
-*/
-void G_SetClientSound(gentity_t* ent)
-{
-	//	if (ent->waterlevel && (ent->watertype&(CONTENTS_LAVA|CONTENTS_SLIME)) )
-	//		ent->s.loopSound = G_SoundIndex("sound/weapons/stasis/electricloop.wav");
-
-	//	else
-	//		ent->s.loopSound = 0;
-}
-
 //==============================================================
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
 	qboolean breakSaberLock);
@@ -916,7 +902,7 @@ void G_GetMassAndVelocityForEnt(const gentity_t* ent, float* mass, vec3_t veloci
 
 extern cvar_t* com_outcast;
 
-void DoImpact(gentity_t* self, gentity_t* other, qboolean damageSelf, const trace_t* trace)
+void DoImpact(gentity_t* self, gentity_t* other, const qboolean damage_self, const trace_t* trace)
 {
 	float magnitude, my_mass;
 	bool thrown = false;
@@ -924,24 +910,24 @@ void DoImpact(gentity_t* self, gentity_t* other, qboolean damageSelf, const trac
 	const char* info = CG_ConfigString(CS_SERVERINFO);
 	const char* s = Info_ValueForKey(info, "mapname");
 
-	Vehicle_t* pSelfVeh = nullptr;
-	const Vehicle_t* pOtherVeh = nullptr;
+	Vehicle_t* p_self_veh = nullptr;
+	const Vehicle_t* p_other_veh = nullptr;
 
 	// See if either of these guys are vehicles, if so, keep a pointer to the vehicle npc.
 	if (self->client && self->client->NPC_class == CLASS_VEHICLE)
 	{
-		pSelfVeh = self->m_pVehicle;
+		p_self_veh = self->m_pVehicle;
 	}
 	if (other->client && other->client->NPC_class == CLASS_VEHICLE)
 	{
-		pOtherVeh = other->m_pVehicle;
+		p_other_veh = other->m_pVehicle;
 	}
 
 	G_GetMassAndVelocityForEnt(self, &my_mass, velocity);
 
-	if (pSelfVeh)
+	if (p_self_veh)
 	{
-		magnitude = VectorLength(velocity) * pSelfVeh->m_pVehicleInfo->mass / 50.0f;
+		magnitude = VectorLength(velocity) * p_self_veh->m_pVehicleInfo->mass / 50.0f;
 	}
 	else
 	{
@@ -950,31 +936,31 @@ void DoImpact(gentity_t* self, gentity_t* other, qboolean damageSelf, const trac
 
 	// Check For Vehicle On Vehicle Impact (Ramming)
 	//-----------------------------------------------
-	if (pSelfVeh &&
-		pSelfVeh->m_pVehicleInfo->type != VH_ANIMAL &&
-		pSelfVeh->m_pVehicleInfo->type != VH_FIGHTER &&
-		pOtherVeh &&
-		pSelfVeh->m_pVehicleInfo == pOtherVeh->m_pVehicleInfo)
+	if (p_self_veh &&
+		p_self_veh->m_pVehicleInfo->type != VH_ANIMAL &&
+		p_self_veh->m_pVehicleInfo->type != VH_FIGHTER &&
+		p_other_veh &&
+		p_self_veh->m_pVehicleInfo == p_other_veh->m_pVehicleInfo)
 	{
 		const gentity_t* attacker = self;
-		const Vehicle_t* attackerVeh = pSelfVeh;
+		const Vehicle_t* attacker_veh = p_self_veh;
 		gentity_t* victim = other;
-		const Vehicle_t* victimVeh = pOtherVeh;
+		const Vehicle_t* victim_veh = p_other_veh;
 
 		// Is The Attacker Actually Not Attacking?
 		//-----------------------------------------
-		if (!(attackerVeh->m_ulFlags & VEH_STRAFERAM))
+		if (!(attacker_veh->m_ulFlags & VEH_STRAFERAM))
 		{
 			// Ok, So Is The Victim Actually Attacking?
 			//------------------------------------------
-			if (victimVeh->m_ulFlags & VEH_STRAFERAM)
+			if (victim_veh->m_ulFlags & VEH_STRAFERAM)
 			{
 				// Ah, Ok.  Swap Who Is The Attacker Then
 				//----------------------------------------
 				attacker = other;
-				attackerVeh = pOtherVeh;
+				attacker_veh = p_other_veh;
 				victim = self;
-				victimVeh = pSelfVeh;
+				victim_veh = p_self_veh;
 			}
 			else
 			{
@@ -989,39 +975,34 @@ void DoImpact(gentity_t* self, gentity_t* other, qboolean damageSelf, const trac
 			//	float		maxMoveSpeed	= pSelfVeh->m_pVehicleInfo->speedMax;
 			//	float		minLockingSpeed = maxMoveSpeed * 0.75;
 
-			vec3_t attackerMoveDir;
+			vec3_t attacker_move_dir;
 
-			vec3_t victimMoveDir;
-			vec3_t victimTowardAttacker;
-			vec3_t victimRight;
+			vec3_t victim_move_dir;
+			vec3_t victim_toward_attacker;
+			vec3_t victim_right;
 
-			VectorCopy(attacker->client->ps.velocity, attackerMoveDir);
-			VectorCopy(victim->client->ps.velocity, victimMoveDir);
+			VectorCopy(attacker->client->ps.velocity, attacker_move_dir);
+			VectorCopy(victim->client->ps.velocity, victim_move_dir);
 
-			AngleVectors(victim->currentAngles, nullptr, victimRight, nullptr);
+			AngleVectors(victim->currentAngles, nullptr, victim_right, nullptr);
 
-			VectorSubtract(victim->currentOrigin, attacker->currentOrigin, victimTowardAttacker);
+			VectorSubtract(victim->currentOrigin, attacker->currentOrigin, victim_toward_attacker);
 			/*victimTowardAttackerDistance = */
-			VectorNormalize(victimTowardAttacker);
+			VectorNormalize(victim_toward_attacker);
 
-			const float victimRightAccuracy = DotProduct(victimTowardAttacker, victimRight);
+			const float victim_right_accuracy = DotProduct(victim_toward_attacker, victim_right);
 
-			if (
-				fabsf(victimRightAccuracy) > 0.25 // Must Be Exactly Right Or Left
-				//	&& victimTowardAttackerDistance<100.0f 					// Must Be Close Enough
-				//	&& attackerMoveSpeed>minLockingSpeed					// Must be moving fast enough
-				//	&& fabsf(attackerMoveSpeed - victimMoveSpeed)<100	 	// Both must be going about the same speed
-				)
+			if (fabsf(victim_right_accuracy) > 0.25)
 			{
 				thrown = true;
 
 				vec3_t vec_out;
-				vec3_t victimAngles;
-				VectorCopy(victim->currentAngles, victimAngles);
-				victimAngles[2] = 0;
-				AngleVectors(victimAngles, nullptr, vec_out, nullptr);
+				vec3_t victim_angles;
+				VectorCopy(victim->currentAngles, victim_angles);
+				victim_angles[2] = 0;
+				AngleVectors(victim_angles, nullptr, vec_out, nullptr);
 
-				if (attackerVeh->m_fStrafeTime < 0)
+				if (attacker_veh->m_fStrafeTime < 0)
 				{
 					VectorScale(vec_out, -1.0f, vec_out);
 				}
@@ -1029,14 +1010,9 @@ void DoImpact(gentity_t* self, gentity_t* other, qboolean damageSelf, const trac
 				{
 					G_Throw(victim, vec_out, 250);
 				}
-				//				if (false)
-				//				{
-				//					VectorMA(victim->currentOrigin, 250.0f, victimRight, victimRight);
-				//					CG_DrawEdge(victim->currentOrigin, victimRight, EDGE_IMPACT_POSSIBLE);
-				//				}
-				if (victimVeh->m_pVehicleInfo->iImpactFX)
+				if (victim_veh->m_pVehicleInfo->iImpactFX)
 				{
-					G_PlayEffect(victimVeh->m_pVehicleInfo->iImpactFX, victim->currentOrigin, trace->plane.normal);
+					G_PlayEffect(victim_veh->m_pVehicleInfo->iImpactFX, victim->currentOrigin, trace->plane.normal);
 				}
 			}
 		}
@@ -1046,7 +1022,7 @@ void DoImpact(gentity_t* self, gentity_t* other, qboolean damageSelf, const trac
 		level.time)
 	{
 		float force = 0;
-		qboolean vehicleHitOwner = qfalse;
+		qboolean vehicle_hit_owner = qfalse;
 
 		if (other->material == MAT_GLASS || other->material == MAT_GLASS_METAL || other->material == MAT_GRATE1 || other->svFlags & SVF_BBRUSH && other->spawnflags & 8/*THIN*/)
 			//(other->absmax[0]-other->absmin[0]<=32||other->absmax[1]-other->absmin[1]<=32||other->absmax[2]-other->absmin[2]<=32)) )
@@ -1056,47 +1032,47 @@ void DoImpact(gentity_t* self, gentity_t* other, qboolean damageSelf, const trac
 		}
 
 		// See if the vehicle has crashed into the ground.
-		if (pSelfVeh && pSelfVeh->m_pVehicleInfo->type != VH_ANIMAL)
+		if (p_self_veh && p_self_veh->m_pVehicleInfo->type != VH_ANIMAL)
 		{
 			if (magnitude >= 80 && self->painDebounceTime < level.time)
 			{
 				// Setup Some Variables
 				//----------------------
-				vec3_t vehFwd;
-				VectorCopy(velocity, vehFwd);
-				const float vehSpeed = VectorNormalize(vehFwd);
-				float vehToughnessAgainstOther = pSelfVeh->m_pVehicleInfo->toughness;
-				const float vehHitPercent = fabsf(DotProduct(vehFwd, trace->plane.normal));
-				int vehDFlags = DAMAGE_NO_ARMOR;
-				const bool vehPilotedByPlayer = pSelfVeh->m_pPilot && pSelfVeh->m_pPilot->s.number < MAX_CLIENTS;
-				const bool vehInTurbo = pSelfVeh->m_iTurboTime > level.time;
+				vec3_t veh_fwd;
+				VectorCopy(velocity, veh_fwd);
+				const float veh_speed = VectorNormalize(veh_fwd);
+				float veh_toughness_against_other = p_self_veh->m_pVehicleInfo->toughness;
+				const float veh_hit_percent = fabsf(DotProduct(veh_fwd, trace->plane.normal));
+				int veh_d_flags = DAMAGE_NO_ARMOR;
+				const bool veh_piloted_by_player = p_self_veh->m_pPilot && p_self_veh->m_pPilot->s.number < MAX_CLIENTS;
+				const bool veh_in_turbo = p_self_veh->m_iTurboTime > level.time;
 
 				self->painDebounceTime = level.time + 200;
 
 				// Modify Magnitude By Hit Percent And Toughness Against Other
 				//-------------------------------------------------------------
-				if (pSelfVeh->m_ulFlags & VEH_OUTOFCONTROL)
+				if (p_self_veh->m_ulFlags & VEH_OUTOFCONTROL)
 				{
-					vehToughnessAgainstOther *= 0.01f; // If Out Of Control, No Damage Resistance
+					veh_toughness_against_other *= 0.01f; // If Out Of Control, No Damage Resistance
 				}
 				else
 				{
-					if (vehPilotedByPlayer)
+					if (veh_piloted_by_player)
 					{
-						vehToughnessAgainstOther *= 1.5f;
+						veh_toughness_against_other *= 1.5f;
 					}
 					if (other && other->client)
 					{
-						vehToughnessAgainstOther *= 15.0f; // Very Tough against other clients (NPCS, Player, etc)
+						veh_toughness_against_other *= 15.0f; // Very Tough against other clients (NPCS, Player, etc)
 					}
 				}
-				if (vehToughnessAgainstOther > 0.0f)
+				if (veh_toughness_against_other > 0.0f)
 				{
-					magnitude *= vehHitPercent / vehToughnessAgainstOther;
+					magnitude *= veh_hit_percent / veh_toughness_against_other;
 				}
 				else
 				{
-					magnitude *= vehHitPercent;
+					magnitude *= veh_hit_percent;
 				}
 
 				// If We Hit Architecture
@@ -1105,58 +1081,58 @@ void DoImpact(gentity_t* self, gentity_t* other, qboolean damageSelf, const trac
 				{
 					// Turbo Hurts
 					//-------------
-					if (vehInTurbo)
+					if (veh_in_turbo)
 					{
 						magnitude *= 5.0f;
 					}
 
-					else if (trace->plane.normal[2] > 0.75f && vehHitPercent < 0.2f)
+					else if (trace->plane.normal[2] > 0.75f && veh_hit_percent < 0.2f)
 					{
 						magnitude /= 10.0f;
 					}
 
 					// If No Pilot, Blow This Thing Now
 					//----------------------------------
-					if (vehHitPercent > 0.9f && !pSelfVeh->m_pPilot && vehSpeed > 1000.0f)
+					if (veh_hit_percent > 0.9f && !p_self_veh->m_pPilot && veh_speed > 1000.0f)
 					{
-						vehDFlags |= DAMAGE_IMPACT_DIE;
+						veh_d_flags |= DAMAGE_IMPACT_DIE;
 					}
 
 					// If Out Of Control, And We Hit A Wall Or Landed Or Head On
 					//------------------------------------------------------------
-					if (pSelfVeh->m_ulFlags & VEH_OUTOFCONTROL && (vehHitPercent > 0.5f || trace->plane.normal[2] <
+					if (p_self_veh->m_ulFlags & VEH_OUTOFCONTROL && (veh_hit_percent > 0.5f || trace->plane.normal[2] <
 						0.5f || velocity[2] < -50.0f))
 					{
-						vehDFlags |= DAMAGE_IMPACT_DIE;
+						veh_d_flags |= DAMAGE_IMPACT_DIE;
 					}
 
 					// If This Is A Direct Impact (Debounced By 4 Seconds)
 					//-----------------------------------------------------
-					if (vehHitPercent > 0.9f && level.time - self->lastImpact > 2000 && vehSpeed > 300.0f)
+					if (veh_hit_percent > 0.9f && level.time - self->lastImpact > 2000 && veh_speed > 300.0f)
 					{
 						self->lastImpact = level.time;
 
 						// The Player Has Harder Requirements to Explode
 						//-----------------------------------------------
-						if (vehPilotedByPlayer)
+						if (veh_piloted_by_player)
 						{
-							if (vehHitPercent > 0.99f && vehSpeed > 1000.0f && !Q_irand(0, 30) ||
-								vehHitPercent > 0.999f && vehInTurbo)
+							if (veh_hit_percent > 0.99f && veh_speed > 1000.0f && !Q_irand(0, 30) ||
+								veh_hit_percent > 0.999f && veh_in_turbo)
 							{
-								vehDFlags |= DAMAGE_IMPACT_DIE;
+								veh_d_flags |= DAMAGE_IMPACT_DIE;
 							}
 						}
 						else if (player && G_IsRidingVehicle(player) &&
 							Distance(self->currentOrigin, player->currentOrigin) < 800.0f &&
-							(vehInTurbo || !Q_irand(0, 1) || vehHitPercent > 0.999f))
+							(veh_in_turbo || !Q_irand(0, 1) || veh_hit_percent > 0.999f))
 						{
-							vehDFlags |= DAMAGE_IMPACT_DIE;
+							veh_d_flags |= DAMAGE_IMPACT_DIE;
 						}
 					}
 
 					// Make Sure He Dies This Time.  I will accept no excuses.
 					//---------------------------------------------------------
-					if (vehDFlags & DAMAGE_IMPACT_DIE)
+					if (veh_d_flags & DAMAGE_IMPACT_DIE)
 					{
 						// If close enough To The PLayer
 						if (player &&
@@ -1176,14 +1152,14 @@ void DoImpact(gentity_t* self, gentity_t* other, qboolean damageSelf, const trac
 				{
 					// Play The Impact Effect
 					//------------------------
-					if (pSelfVeh->m_pVehicleInfo->iImpactFX && vehSpeed > 100.0f)
+					if (p_self_veh->m_pVehicleInfo->iImpactFX && veh_speed > 100.0f)
 					{
-						G_PlayEffect(pSelfVeh->m_pVehicleInfo->iImpactFX, self->currentOrigin, trace->plane.normal);
+						G_PlayEffect(p_self_veh->m_pVehicleInfo->iImpactFX, self->currentOrigin, trace->plane.normal);
 					}
 
 					// Set The Crashing Flag And Pain Debounce Time
 					//----------------------------------------------
-					pSelfVeh->m_ulFlags |= VEH_CRASHING;
+					p_self_veh->m_ulFlags |= VEH_CRASHING;
 				}
 
 				if (PM_InForceFall())
@@ -1192,7 +1168,7 @@ void DoImpact(gentity_t* self, gentity_t* other, qboolean damageSelf, const trac
 				}
 				else
 				{
-					G_Damage(self, player, player, nullptr, self->currentOrigin, magnitude, vehDFlags, MOD_FALLING);
+					G_Damage(self, player, player, nullptr, self->currentOrigin, magnitude, veh_d_flags, MOD_FALLING);
 				}
 			}
 
@@ -1206,13 +1182,13 @@ void DoImpact(gentity_t* self, gentity_t* other, qboolean damageSelf, const trac
 					{
 						//just spawned in a second ago
 						//don't actually damage or throw him...
-						vehicleHitOwner = qtrue;
+						vehicle_hit_owner = qtrue;
 					}
 				}
 			}
 			//if 2 vehicles on same side hit each other, tone it down
 			//NOTE: we do this here because we still want the impact effect
-			if (pOtherVeh)
+			if (p_other_veh)
 			{
 				if (self->client->playerTeam == other->client->playerTeam)
 				{
@@ -1298,23 +1274,23 @@ void DoImpact(gentity_t* self, gentity_t* other, qboolean damageSelf, const trac
 			}
 
 			//FIXME: certain NPCs/entities should be TOUGH - like Ion Cannons, AT-STs, Mark1 droids, etc.
-			if (pOtherVeh)
+			if (p_other_veh)
 			{
 				//if hit another vehicle, take their toughness into account, too
-				force /= pOtherVeh->m_pVehicleInfo->toughness;
+				force /= p_other_veh->m_pVehicleInfo->toughness;
 			}
 
-			if ((force >= 1 || pSelfVeh) && other->s.number >= MAX_CLIENTS || force >= 10)
+			if ((force >= 1 || p_self_veh) && other->s.number >= MAX_CLIENTS || force >= 10)
 			{
 				if (other->svFlags & SVF_GLASS_BRUSH)
 				{
 					other->splashRadius = (self->maxs[0] - self->mins[0]) / 4.0f;
 				}
 
-				if (pSelfVeh)
+				if (p_self_veh)
 				{
 					//if in a vehicle when land on someone, always knockdown, throw, damage
-					if (!vehicleHitOwner)
+					if (!vehicle_hit_owner)
 					{
 						//didn't hit owner
 						// If the player was hit don't make the damage so bad...
@@ -1415,9 +1391,9 @@ void DoImpact(gentity_t* self, gentity_t* other, qboolean damageSelf, const trac
 			}
 		}
 
-		if (damageSelf && self->takedamage && !(self->flags & FL_NO_IMPACT_DMG))
+		if (damage_self && self->takedamage && !(self->flags & FL_NO_IMPACT_DMG))
 		{
-			if (pSelfVeh && self->client->ps.forceJumpZStart)
+			if (p_self_veh && self->client->ps.forceJumpZStart)
 			{
 				//we were force-jumping
 				if (self->currentOrigin[2] >= self->client->ps.forceJumpZStart)
@@ -1508,14 +1484,14 @@ void DoImpact(gentity_t* self, gentity_t* other, qboolean damageSelf, const trac
 						magnitude = magnitude - force / 2;
 					}
 
-					if (pSelfVeh)
+					if (p_self_veh)
 					{
-						magnitude /= pSelfVeh->m_pVehicleInfo->toughness * 1000.0f;
+						magnitude /= p_self_veh->m_pVehicleInfo->toughness * 1000.0f;
 						if (other->bmodel && other->material != MAT_GLASS)
 						{
 							//broke through some architecture, take a good amount of damage
 						}
-						else if (pOtherVeh)
+						else if (p_other_veh)
 						{
 							//they're tougher
 						}
@@ -1648,20 +1624,20 @@ void G_TouchTriggersLerped(gentity_t* ent)
 	}
 	memset(touched, qfalse, sizeof touched);
 
-	for (float curDist = 0; !done && ent->maxs[1] > 0; curDist += ent->maxs[1] / 2.0f)
+	for (float cur_dist = 0; !done && ent->maxs[1] > 0; cur_dist += ent->maxs[1] / 2.0f)
 	{
 		vec3_t maxs;
 		vec3_t mins;
 		vec3_t end;
 		gentity_t* touch[MAX_GENTITIES];
-		if (curDist >= dist)
+		if (cur_dist >= dist)
 		{
 			VectorCopy(ent->currentOrigin, end);
 			done = qtrue;
 		}
 		else
 		{
-			VectorMA(ent->lastOrigin, curDist, diff, end);
+			VectorMA(ent->lastOrigin, cur_dist, diff, end);
 		}
 		VectorSubtract(end, range, mins);
 		VectorAdd(end, range, maxs);
@@ -1816,7 +1792,7 @@ Find all trigger entities that ent's current position touches.
 Spectators will only interact with teleporters.
 ============
 */
-void G_MoverTouchPushTriggers(gentity_t* ent, vec3_t oldOrg)
+void G_MoverTouchPushTriggers(gentity_t* ent, vec3_t old_org)
 {
 	trace_t trace;
 	vec3_t dir;
@@ -1830,29 +1806,29 @@ void G_MoverTouchPushTriggers(gentity_t* ent, vec3_t oldOrg)
 	}
 
 	VectorSubtract(ent->mins, ent->maxs, size);
-	float stepSize = VectorLength(size);
-	if (stepSize < 1)
+	float step_size = VectorLength(size);
+	if (step_size < 1)
 	{
-		stepSize = 1;
+		step_size = 1;
 	}
 
-	VectorSubtract(ent->currentOrigin, oldOrg, dir);
+	VectorSubtract(ent->currentOrigin, old_org, dir);
 	const float dist = VectorNormalize(dir);
-	for (float step = 0; step <= dist; step += stepSize)
+	for (float step = 0; step <= dist; step += step_size)
 	{
-		vec3_t checkSpot;
+		vec3_t check_spot;
 		vec3_t maxs;
 		vec3_t mins;
 		gentity_t* touch[MAX_GENTITIES];
-		VectorMA(ent->currentOrigin, step, dir, checkSpot);
-		VectorSubtract(checkSpot, range, mins);
-		VectorAdd(checkSpot, range, maxs);
+		VectorMA(ent->currentOrigin, step, dir, check_spot);
+		VectorSubtract(check_spot, range, mins);
+		VectorAdd(check_spot, range, maxs);
 
 		const int num = gi.EntitiesInBox(mins, maxs, touch, MAX_GENTITIES);
 
 		// can't use ent->absmin, because that has a one unit pad
-		VectorAdd(checkSpot, ent->mins, mins);
-		VectorAdd(checkSpot, ent->maxs, maxs);
+		VectorAdd(check_spot, ent->mins, mins);
+		VectorAdd(check_spot, ent->maxs, maxs);
 
 		for (int i = 0; i < num; i++)
 		{
@@ -1969,7 +1945,7 @@ extern void BG_ReduceBlasterMishapLevelAdvanced(playerState_t* ps);
 extern void WP_SaberFatigueRegenerate(int overrideAmt);
 extern void WP_BlasterFatigueRegenerate(int overrideAmt);
 
-void ClientTimerActions(gentity_t* ent, int msec)
+void ClientTimerActions(gentity_t* ent, const int msec)
 {
 	gclient_t* client = ent->client;
 	client->timeResidual += msec;
@@ -2062,7 +2038,7 @@ void ClientTimerActions(gentity_t* ent, int msec)
 				}
 			}
 			else if (ent->client->ps.saberFatigueChainCount > MISHAPLEVEL_NONE
-				&& (ent->s.clientNum >= MAX_CLIENTS && !G_ControlledByPlayer(ent)) //npc
+				&& (ent->s.client_num >= MAX_CLIENTS && !G_ControlledByPlayer(ent)) //npc
 				&& !BG_InSlowBounce(&ent->client->ps)
 				&& !PM_SaberInBrokenParry(ent->client->ps.saberMove)
 				&& !PM_SaberInAttackPure(ent->client->ps.saberMove)
@@ -2094,7 +2070,7 @@ void ClientTimerActions(gentity_t* ent, int msec)
 				}
 			}
 
-			if (ent->s.clientNum >= MAX_CLIENTS && !G_ControlledByPlayer(ent) //this is for NPC,s
+			if (ent->s.client_num >= MAX_CLIENTS && !G_ControlledByPlayer(ent) //this is for NPC,s
 				&& g_SerenityJediEngineMode->integer == 2 && ent->client->ps.blockPoints < BLOCK_POINTS_MAX)
 			{
 				if (ent->flags & FL_BLOCKPOINTMODE)
@@ -2114,7 +2090,7 @@ void ClientTimerActions(gentity_t* ent, int msec)
 				}
 			}
 
-			if (ent->s.clientNum >= MAX_CLIENTS && !G_ControlledByPlayer(ent) //this is for NPC,s
+			if (ent->s.client_num >= MAX_CLIENTS && !G_ControlledByPlayer(ent) //this is for NPC,s
 				&& g_SerenityJediEngineMode->integer == 1
 				&& ent->client->ps.forcePower < ent->client->ps.forcePowerMax
 				&& ent->client->ps.weapon == WP_SABER
@@ -2143,9 +2119,9 @@ void ClientTimerActions(gentity_t* ent, int msec)
 	}
 }
 
-void ClientTimerProjectionLifeDrain(gentity_t* ent, int msec)
+void ClientTimerProjectionLifeDrain(gentity_t* ent, const int msec)
 {
-	const qboolean DoingProjection = ent->client->ps.communicatingflags & 1 << PROJECTING ? qtrue : qfalse;
+	const qboolean doing_projection = ent->client->ps.communicatingflags & 1 << PROJECTING ? qtrue : qfalse;
 
 	gclient_t* client = ent->client;
 	client->timeResidual += msec;
@@ -2164,7 +2140,7 @@ void ClientTimerProjectionLifeDrain(gentity_t* ent, int msec)
 			G_Damage(ent, nullptr, nullptr, nullptr, ent->currentOrigin, 100000, DAMAGE_NO_PROTECTION,
 				MOD_PROJECTION_END);
 		}
-		else if (!DoingProjection)
+		else if (!doing_projection)
 		{
 			G_Damage(ent, nullptr, nullptr, nullptr, ent->currentOrigin, 100000, DAMAGE_NO_PROTECTION,
 				MOD_PROJECTION_END);
@@ -2207,7 +2183,7 @@ but any server game effects are handled here
 extern void WP_SabersDamageTrace(gentity_t* ent, qboolean no_effects = qfalse);
 extern void WP_SaberUpdateOldBladeData(gentity_t* ent);
 
-void ClientEvents(gentity_t* ent, int oldEventSequence)
+void ClientEvents(gentity_t* ent, const int old_event_sequence)
 {
 	int event;
 	gclient_t* client;
@@ -2217,7 +2193,7 @@ void ClientEvents(gentity_t* ent, int oldEventSequence)
 
 	client = ent->client;
 
-	for (int i = oldEventSequence; i < client->ps.eventSequence; i++)
+	for (int i = old_event_sequence; i < client->ps.eventSequence; i++)
 	{
 		event = client->ps.events[i & MAX_PS_EVENTS - 1];
 
@@ -2277,14 +2253,14 @@ void ClientEvents(gentity_t* ent, int oldEventSequence)
 	}
 }
 
-void G_ThrownDeathAnimForDeathAnim(gentity_t* hitEnt, vec3_t impactPoint)
+void G_ThrownDeathAnimForDeathAnim(gentity_t* hit_ent, vec3_t impact_point)
 {
 	int anim = -1;
-	if (!hitEnt || !hitEnt->client)
+	if (!hit_ent || !hit_ent->client)
 	{
 		return;
 	}
-	switch (hitEnt->client->ps.legsAnim)
+	switch (hit_ent->client->ps.legsAnim)
 	{
 	case BOTH_DEATH9: //fall to knees, fall over
 	case BOTH_DEATH10: //fall to knees, fall over
@@ -2298,13 +2274,13 @@ void G_ThrownDeathAnimForDeathAnim(gentity_t* hitEnt, vec3_t impactPoint)
 	case BOTH_DEATH3: //knee collapse, twist & fall forward
 	case BOTH_DEATH7: //knee collapse, twist & fall forward
 	{
-		vec3_t dir2Impact, fwdAngles, facing;
-		VectorSubtract(impactPoint, hitEnt->currentOrigin, dir2Impact);
-		dir2Impact[2] = 0;
-		VectorNormalize(dir2Impact);
-		VectorSet(fwdAngles, 0, hitEnt->client->ps.viewangles[YAW], 0);
+		vec3_t dir2_impact, fwdAngles, facing;
+		VectorSubtract(impact_point, hit_ent->currentOrigin, dir2_impact);
+		dir2_impact[2] = 0;
+		VectorNormalize(dir2_impact);
+		VectorSet(fwdAngles, 0, hit_ent->client->ps.viewangles[YAW], 0);
 		AngleVectors(fwdAngles, facing, nullptr, nullptr);
-		const float dot = DotProduct(facing, dir2Impact); //-1 = hit in front, 0 = hit on side, 1 = hit in back
+		const float dot = DotProduct(facing, dir2_impact); //-1 = hit in front, 0 = hit on side, 1 = hit in back
 		if (dot > 0.5f)
 		{
 			//kicked in chest, fly backward
@@ -2386,7 +2362,7 @@ void G_ThrownDeathAnimForDeathAnim(gentity_t* hitEnt, vec3_t impactPoint)
 	}
 	if (anim != -1)
 	{
-		NPC_SetAnim(hitEnt, SETANIM_BOTH, anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+		NPC_SetAnim(hit_ent, SETANIM_BOTH, anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 	}
 }
 
@@ -2407,9 +2383,9 @@ qboolean G_CanBeEnemy(const gentity_t* self, const gentity_t* enemy)
 	return qtrue;
 }
 
-qboolean WP_AbsorbKick(gentity_t* hitEnt, const gentity_t* pusher, const vec3_t pushDir)
+qboolean WP_AbsorbKick(gentity_t* hit_ent, const gentity_t* pusher, const vec3_t push_dir)
 {
-	const qboolean NPCBlocking = hitEnt->client->ps.ManualBlockingFlags & 1 << MBF_NPCKICKBLOCK ? qtrue : qfalse;
+	const qboolean npc_blocking = hit_ent->client->ps.ManualBlockingFlags & 1 << MBF_NPCKICKBLOCK ? qtrue : qfalse;
 	//NPC Blocking
 
 	if (in_camera)
@@ -2417,23 +2393,23 @@ qboolean WP_AbsorbKick(gentity_t* hitEnt, const gentity_t* pusher, const vec3_t 
 		return qfalse;
 	}
 
-	if (G_InScriptedCinematicSaberAnim(hitEnt))
+	if (G_InScriptedCinematicSaberAnim(hit_ent))
 	{
 		return qfalse;
 	}
 
-	if (hitEnt->client->NPC_class == CLASS_ROCKETTROOPER)
+	if (hit_ent->client->NPC_class == CLASS_ROCKETTROOPER)
 	{
 		return qfalse;
 	}
 
-	if (hitEnt->client->moveType == MT_FLYSWIM)
+	if (hit_ent->client->moveType == MT_FLYSWIM)
 	{
 		//can't knock me down when I'm flying
 		return qfalse;
 	}
 
-	if (PlayerCanAbsorbKick(hitEnt, pushDir) && (hitEnt->s.number < MAX_CLIENTS || G_ControlledByPlayer(hitEnt)))
+	if (PlayerCanAbsorbKick(hit_ent, push_dir) && (hit_ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(hit_ent)))
 		//player only in MD/AMD MODE
 	{
 		if (g_SerenityJediEngineMode->integer)
@@ -2442,116 +2418,116 @@ qboolean WP_AbsorbKick(gentity_t* hitEnt, const gentity_t* pusher, const vec3_t 
 			if (g_SerenityJediEngineMode->integer == 2)
 			{
 				//AMD Mode
-				if (hitEnt->client->ps.blockPoints > 50)
+				if (hit_ent->client->ps.blockPoints > 50)
 				{
-					G_Stagger(hitEnt);
-					WP_BlockPointsDrain(hitEnt, FATIGUE_BP_ABSORB);
+					G_Stagger(hit_ent);
+					WP_BlockPointsDrain(hit_ent, FATIGUE_BP_ABSORB);
 				}
 				else
 				{
-					G_Stumble(hitEnt);
-					WP_BlockPointsDrain(hitEnt, FATIGUE_BP_ABSORB);
+					G_Stumble(hit_ent);
+					WP_BlockPointsDrain(hit_ent, FATIGUE_BP_ABSORB);
 				}
 			}
 			else
 			{
 				// MD mode
-				if (hitEnt->client->ps.forcePower > 50)
+				if (hit_ent->client->ps.forcePower > 50)
 				{
-					G_Stagger(hitEnt);
-					WP_ForcePowerDrain(hitEnt, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
+					G_Stagger(hit_ent);
+					WP_ForcePowerDrain(hit_ent, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
 				}
 				else
 				{
-					G_Stumble(hitEnt);
-					WP_ForcePowerDrain(hitEnt, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
+					G_Stumble(hit_ent);
+					WP_ForcePowerDrain(hit_ent, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
 				}
 			}
 		}
 		else
 		{
 			//jka mode
-			if (hitEnt->client->ps.forcePower > 75)
+			if (hit_ent->client->ps.forcePower > 75)
 			{
-				G_Stagger(hitEnt);
-				WP_ForcePowerDrain(hitEnt, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
+				G_Stagger(hit_ent);
+				WP_ForcePowerDrain(hit_ent, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
 			}
 		}
-		G_Sound(hitEnt, G_SoundIndex(va("sound/weapons/melee/punch%d", Q_irand(1, 4))));
+		G_Sound(hit_ent, G_SoundIndex(va("sound/weapons/melee/punch%d", Q_irand(1, 4))));
 	}
-	else if (BotCanAbsorbKick(hitEnt, pushDir) && NPCBlocking
-		&& hitEnt->s.clientNum >= MAX_CLIENTS && !G_ControlledByPlayer(hitEnt)) //NPC only any mode
+	else if (BotCanAbsorbKick(hit_ent, push_dir) && npc_blocking
+		&& hit_ent->s.client_num >= MAX_CLIENTS && !G_ControlledByPlayer(hit_ent)) //NPC only any mode
 	{
 		if (g_SerenityJediEngineMode->integer)
 		{
 			if (g_SerenityJediEngineMode->integer == 2)
 			{
 				//Advanced MD Mode
-				if (hitEnt->client->ps.blockPoints > 50 || jedi_is_kick_resistant(hitEnt))
+				if (hit_ent->client->ps.blockPoints > 50 || jedi_is_kick_resistant(hit_ent))
 				{
-					G_Stagger(hitEnt);
-					WP_BlockPointsDrain(hitEnt, FATIGUE_BP_ABSORB);
+					G_Stagger(hit_ent);
+					WP_BlockPointsDrain(hit_ent, FATIGUE_BP_ABSORB);
 					if (!Q_irand(0, 4))
 					{//20% chance
-						WP_DeactivateSaber(hitEnt, qtrue);
+						WP_DeactivateSaber(hit_ent, qtrue);
 					}
-					if (jedi_is_kick_resistant(hitEnt))
+					if (jedi_is_kick_resistant(hit_ent))
 					{
-						jedi_play_blocked_push_sound(hitEnt);
+						jedi_play_blocked_push_sound(hit_ent);
 					}
 				}
 				else
 				{
-					NPC_SetAnim(hitEnt, SETANIM_BOTH, Q_irand(BOTH_FLIP_BACK1, BOTH_FLIP_BACK2), SETANIM_AFLAG_PACE);
-					WP_BlockPointsDrain(hitEnt, FATIGUE_BP_ABSORB);
+					NPC_SetAnim(hit_ent, SETANIM_BOTH, Q_irand(BOTH_FLIP_BACK1, BOTH_FLIP_BACK2), SETANIM_AFLAG_PACE);
+					WP_BlockPointsDrain(hit_ent, FATIGUE_BP_ABSORB);
 				}
 			}
 			else
 			{
 				//MD MODE
-				if (hitEnt->client->ps.forcePower > 50 || jedi_is_kick_resistant(hitEnt))
+				if (hit_ent->client->ps.forcePower > 50 || jedi_is_kick_resistant(hit_ent))
 				{
-					G_Stagger(hitEnt);
-					WP_ForcePowerDrain(hitEnt, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
+					G_Stagger(hit_ent);
+					WP_ForcePowerDrain(hit_ent, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
 					if (!Q_irand(0, 4))
 					{//20% chance
-						WP_DeactivateSaber(hitEnt, qtrue);
+						WP_DeactivateSaber(hit_ent, qtrue);
 					}
-					if (jedi_is_kick_resistant(hitEnt))
+					if (jedi_is_kick_resistant(hit_ent))
 					{
-						jedi_play_blocked_push_sound(hitEnt);
+						jedi_play_blocked_push_sound(hit_ent);
 					}
 				}
 				else
 				{
-					NPC_SetAnim(hitEnt, SETANIM_BOTH, Q_irand(BOTH_FLIP_BACK1, BOTH_FLIP_BACK2), SETANIM_AFLAG_PACE);
-					WP_ForcePowerDrain(hitEnt, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
+					NPC_SetAnim(hit_ent, SETANIM_BOTH, Q_irand(BOTH_FLIP_BACK1, BOTH_FLIP_BACK2), SETANIM_AFLAG_PACE);
+					WP_ForcePowerDrain(hit_ent, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
 				}
 			}
 		}
 		else
 		{
 			//JKA Mode
-			if (hitEnt->client->ps.forcePower > 50 || jedi_is_kick_resistant(hitEnt))
+			if (hit_ent->client->ps.forcePower > 50 || jedi_is_kick_resistant(hit_ent))
 			{
-				G_Stagger(hitEnt);
-				WP_ForcePowerDrain(hitEnt, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
+				G_Stagger(hit_ent);
+				WP_ForcePowerDrain(hit_ent, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
 				if (!Q_irand(0, 4))
 				{//20% chance
-					WP_DeactivateSaber(hitEnt, qtrue);
+					WP_DeactivateSaber(hit_ent, qtrue);
 				}
-				if (jedi_is_kick_resistant(hitEnt))
+				if (jedi_is_kick_resistant(hit_ent))
 				{
-					jedi_play_blocked_push_sound(hitEnt);
+					jedi_play_blocked_push_sound(hit_ent);
 				}
 			}
 			else
 			{
-				NPC_SetAnim(hitEnt, SETANIM_BOTH, Q_irand(BOTH_FLIP_BACK1, BOTH_FLIP_BACK2), SETANIM_AFLAG_PACE);
-				WP_ForcePowerDrain(hitEnt, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
+				NPC_SetAnim(hit_ent, SETANIM_BOTH, Q_irand(BOTH_FLIP_BACK1, BOTH_FLIP_BACK2), SETANIM_AFLAG_PACE);
+				WP_ForcePowerDrain(hit_ent, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
 			}
 		}
-		G_Sound(hitEnt, G_SoundIndex(va("sound/weapons/melee/punch%d", Q_irand(1, 4))));
+		G_Sound(hit_ent, G_SoundIndex(va("sound/weapons/melee/punch%d", Q_irand(1, 4))));
 	}
 	else
 	{
@@ -2561,28 +2537,28 @@ qboolean WP_AbsorbKick(gentity_t* hitEnt, const gentity_t* pusher, const vec3_t 
 			|| pusher->client->ps.torsoAnim == BOTH_TUSKENATTACK2
 			|| pusher->client->ps.torsoAnim == BOTH_TUSKENATTACK3)
 		{
-			if (jedi_is_kick_resistant(hitEnt))
+			if (jedi_is_kick_resistant(hit_ent))
 			{
-				G_MawStagger(hitEnt);
+				G_MawStagger(hit_ent);
 				if (!Q_irand(0, 4))
 				{//20% chance
-					WP_DeactivateSaber(hitEnt, qtrue);
+					WP_DeactivateSaber(hit_ent, qtrue);
 				}
 				else
 				{
-					jedi_play_blocked_push_sound(hitEnt);
+					jedi_play_blocked_push_sound(hit_ent);
 				}
 			}
 			else
 			{
-				NPC_SetAnim(hitEnt, SETANIM_BOTH, Q_irand(BOTH_KNOCKDOWN1, BOTH_KNOCKDOWN2), SETANIM_AFLAG_PACE);
+				NPC_SetAnim(hit_ent, SETANIM_BOTH, Q_irand(BOTH_KNOCKDOWN1, BOTH_KNOCKDOWN2), SETANIM_AFLAG_PACE);
 			}
 
 			if (g_SerenityJediEngineMode->integer == 2)
 			{
-				WP_BlockPointsDrain(hitEnt, FATIGUE_BLOCKPOINTDRAIN);
+				WP_BlockPointsDrain(hit_ent, FATIGUE_BLOCKPOINTDRAIN);
 
-				if (d_slowmoaction->integer && hitEnt->health >= 10 && hitEnt->client->ps.blockPoints < BLOCKPOINTS_HALF
+				if (d_slowmoaction->integer && hit_ent->health >= 10 && hit_ent->client->ps.blockPoints < BLOCKPOINTS_HALF
 					&& (pusher->s.number < MAX_CLIENTS || G_ControlledByPlayer(pusher)))
 				{
 					G_StartStasisEffect_FORCE_LEVEL_1(pusher, MEF_NO_SPIN, 300, 0.3f, 0);
@@ -2590,74 +2566,74 @@ qboolean WP_AbsorbKick(gentity_t* hitEnt, const gentity_t* pusher, const vec3_t 
 			}
 			else
 			{
-				WP_ForcePowerDrain(hitEnt, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
+				WP_ForcePowerDrain(hit_ent, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
 			}
 			if (pusher->client->ps.torsoAnim == BOTH_TUSKENATTACK1
 				|| pusher->client->ps.torsoAnim == BOTH_TUSKENATTACK2
 				|| pusher->client->ps.torsoAnim == BOTH_TUSKENATTACK3)
 			{
-				G_Sound(hitEnt, G_SoundIndex("sound/movers/objects/saber_slam"));
+				G_Sound(hit_ent, G_SoundIndex("sound/movers/objects/saber_slam"));
 			}
 			else
 			{
-				G_Sound(hitEnt, G_SoundIndex(va("sound/weapons/melee/punch%d", Q_irand(1, 4))));
+				G_Sound(hit_ent, G_SoundIndex(va("sound/weapons/melee/punch%d", Q_irand(1, 4))));
 			}
-			hitEnt->client->ps.saberMove = LS_NONE;
-			AddFatigueMeleeBonus(pusher, hitEnt);
+			hit_ent->client->ps.saberMove = LS_NONE;
+			AddFatigueMeleeBonus(pusher, hit_ent);
 		}
 		else if (pusher->client->ps.legsAnim == BOTH_A7_KICK_B)
 		{
-			if (jedi_is_kick_resistant(hitEnt))
+			if (jedi_is_kick_resistant(hit_ent))
 			{
-				G_MawStagger(hitEnt);
+				G_MawStagger(hit_ent);
 				if (!Q_irand(0, 4))
 				{//20% chance
-					WP_DeactivateSaber(hitEnt, qtrue);
+					WP_DeactivateSaber(hit_ent, qtrue);
 				}
-				if (jedi_is_kick_resistant(hitEnt))
+				if (jedi_is_kick_resistant(hit_ent))
 				{
-					jedi_play_blocked_push_sound(hitEnt);
+					jedi_play_blocked_push_sound(hit_ent);
 				}
 			}
 			else
 			{
-				NPC_SetAnim(hitEnt, SETANIM_BOTH, Q_irand(BOTH_KNOCKDOWN1, BOTH_KNOCKDOWN5), SETANIM_AFLAG_PACE);
+				NPC_SetAnim(hit_ent, SETANIM_BOTH, Q_irand(BOTH_KNOCKDOWN1, BOTH_KNOCKDOWN5), SETANIM_AFLAG_PACE);
 			}
 
 			if (g_SerenityJediEngineMode->integer == 2)
 			{
-				WP_BlockPointsDrain(hitEnt, FATIGUE_BLOCKPOINTDRAIN);
+				WP_BlockPointsDrain(hit_ent, FATIGUE_BLOCKPOINTDRAIN);
 			}
 			else
 			{
-				WP_ForcePowerDrain(hitEnt, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
+				WP_ForcePowerDrain(hit_ent, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
 			}
 
-			G_Sound(hitEnt, G_SoundIndex(va("sound/weapons/melee/punch%d", Q_irand(1, 4))));
-			hitEnt->client->ps.saberMove = LS_NONE;
-			AddFatigueMeleeBonus(pusher, hitEnt);
+			G_Sound(hit_ent, G_SoundIndex(va("sound/weapons/melee/punch%d", Q_irand(1, 4))));
+			hit_ent->client->ps.saberMove = LS_NONE;
+			AddFatigueMeleeBonus(pusher, hit_ent);
 		}
 		else if (pusher->client->ps.legsAnim == BOTH_SWEEP_KICK)
 		{
-			if (jedi_is_kick_resistant(hitEnt))
+			if (jedi_is_kick_resistant(hit_ent))
 			{
-				G_MawStagger(hitEnt);
-				WP_DeactivateSaber(hitEnt, qtrue);
-				if (jedi_is_kick_resistant(hitEnt))
+				G_MawStagger(hit_ent);
+				WP_DeactivateSaber(hit_ent, qtrue);
+				if (jedi_is_kick_resistant(hit_ent))
 				{
-					jedi_play_blocked_push_sound(hitEnt);
+					jedi_play_blocked_push_sound(hit_ent);
 				}
 			}
 			else
 			{
-				NPC_SetAnim(hitEnt, SETANIM_BOTH, BOTH_KNOCKDOWN3, SETANIM_AFLAG_PACE);
+				NPC_SetAnim(hit_ent, SETANIM_BOTH, BOTH_KNOCKDOWN3, SETANIM_AFLAG_PACE);
 			}
 
 			if (g_SerenityJediEngineMode->integer == 2)
 			{
-				WP_BlockPointsDrain(hitEnt, FATIGUE_BLOCKPOINTDRAIN);
+				WP_BlockPointsDrain(hit_ent, FATIGUE_BLOCKPOINTDRAIN);
 
-				if (d_slowmoaction->integer && hitEnt->health >= 10 && (pusher->s.number < MAX_CLIENTS ||
+				if (d_slowmoaction->integer && hit_ent->health >= 10 && (pusher->s.number < MAX_CLIENTS ||
 					G_ControlledByPlayer(pusher)))
 				{
 					G_StartStasisEffect_FORCE_LEVEL_1(pusher, MEF_NO_SPIN, 300, 0.3f, 0);
@@ -2665,39 +2641,39 @@ qboolean WP_AbsorbKick(gentity_t* hitEnt, const gentity_t* pusher, const vec3_t 
 			}
 			else
 			{
-				WP_ForcePowerDrain(hitEnt, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
+				WP_ForcePowerDrain(hit_ent, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
 			}
-			AddFatigueMeleeBonus(pusher, hitEnt);
-			G_Sound(hitEnt, G_SoundIndex(va("sound/weapons/melee/punch%d", Q_irand(1, 4))));
+			AddFatigueMeleeBonus(pusher, hit_ent);
+			G_Sound(hit_ent, G_SoundIndex(va("sound/weapons/melee/punch%d", Q_irand(1, 4))));
 			G_Sound(pusher, G_SoundIndex(va("sound/weapons/melee/swing%d", Q_irand(1, 4))));
-			hitEnt->client->ps.saberMove = LS_NONE;
+			hit_ent->client->ps.saberMove = LS_NONE;
 		}
 		else if (pusher->client->ps.legsAnim == BOTH_A7_KICK_R
 			|| pusher->client->ps.torsoAnim == BOTH_A7_SLAP_R
 			|| pusher->client->ps.torsoAnim == BOTH_SLAP_R)
 		{
-			if (jedi_is_kick_resistant(hitEnt))
+			if (jedi_is_kick_resistant(hit_ent))
 			{
-				G_MawStagger(hitEnt);
+				G_MawStagger(hit_ent);
 				if (!Q_irand(0, 4))
 				{//20% chance
-					WP_DeactivateSaber(hitEnt, qtrue);
+					WP_DeactivateSaber(hit_ent, qtrue);
 				}
-				if (jedi_is_kick_resistant(hitEnt))
+				if (jedi_is_kick_resistant(hit_ent))
 				{
-					jedi_play_blocked_push_sound(hitEnt);
+					jedi_play_blocked_push_sound(hit_ent);
 				}
 			}
 			else
 			{
-				NPC_SetAnim(hitEnt, SETANIM_BOTH, BOTH_SLAPDOWNRIGHT, SETANIM_AFLAG_PACE);
+				NPC_SetAnim(hit_ent, SETANIM_BOTH, BOTH_SLAPDOWNRIGHT, SETANIM_AFLAG_PACE);
 			}
 
 			if (g_SerenityJediEngineMode->integer == 2)
 			{
-				WP_BlockPointsDrain(hitEnt, FATIGUE_BLOCKPOINTDRAIN);
+				WP_BlockPointsDrain(hit_ent, FATIGUE_BLOCKPOINTDRAIN);
 
-				if (d_slowmoaction->integer && hitEnt->health >= 10 && (pusher->s.number < MAX_CLIENTS ||
+				if (d_slowmoaction->integer && hit_ent->health >= 10 && (pusher->s.number < MAX_CLIENTS ||
 					G_ControlledByPlayer(pusher)))
 				{
 					G_StartStasisEffect_FORCE_LEVEL_1(pusher, MEF_NO_SPIN, 300, 0.3f, 0);
@@ -2705,39 +2681,39 @@ qboolean WP_AbsorbKick(gentity_t* hitEnt, const gentity_t* pusher, const vec3_t 
 			}
 			else
 			{
-				WP_ForcePowerDrain(hitEnt, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
+				WP_ForcePowerDrain(hit_ent, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
 			}
-			G_Sound(hitEnt, G_SoundIndex(va("sound/weapons/melee/punch%d", Q_irand(1, 4))));
+			G_Sound(hit_ent, G_SoundIndex(va("sound/weapons/melee/punch%d", Q_irand(1, 4))));
 			G_Sound(pusher, G_SoundIndex(va("sound/weapons/melee/swing%d", Q_irand(1, 4))));
-			hitEnt->client->ps.saberMove = LS_NONE;
-			AddFatigueMeleeBonus(pusher, hitEnt);
+			hit_ent->client->ps.saberMove = LS_NONE;
+			AddFatigueMeleeBonus(pusher, hit_ent);
 		}
 		else if (pusher->client->ps.legsAnim == BOTH_A7_KICK_L
 			|| pusher->client->ps.torsoAnim == BOTH_A7_SLAP_L
 			|| pusher->client->ps.torsoAnim == BOTH_SLAP_L)
 		{
-			if (jedi_is_kick_resistant(hitEnt))
+			if (jedi_is_kick_resistant(hit_ent))
 			{
-				G_MawStagger(hitEnt);
+				G_MawStagger(hit_ent);
 				if (!Q_irand(0, 4))
 				{//20% chance
-					WP_DeactivateSaber(hitEnt, qtrue);
+					WP_DeactivateSaber(hit_ent, qtrue);
 				}
-				if (jedi_is_kick_resistant(hitEnt))
+				if (jedi_is_kick_resistant(hit_ent))
 				{
-					jedi_play_blocked_push_sound(hitEnt);
+					jedi_play_blocked_push_sound(hit_ent);
 				}
 			}
 			else
 			{
-				NPC_SetAnim(hitEnt, SETANIM_BOTH, BOTH_SLAPDOWNLEFT, SETANIM_AFLAG_PACE);
+				NPC_SetAnim(hit_ent, SETANIM_BOTH, BOTH_SLAPDOWNLEFT, SETANIM_AFLAG_PACE);
 			}
 
 			if (g_SerenityJediEngineMode->integer == 2)
 			{
-				WP_BlockPointsDrain(hitEnt, FATIGUE_BLOCKPOINTDRAIN);
+				WP_BlockPointsDrain(hit_ent, FATIGUE_BLOCKPOINTDRAIN);
 
-				if (d_slowmoaction->integer && hitEnt->health >= 10 && (pusher->s.number < MAX_CLIENTS ||
+				if (d_slowmoaction->integer && hit_ent->health >= 10 && (pusher->s.number < MAX_CLIENTS ||
 					G_ControlledByPlayer(pusher)))
 				{
 					G_StartStasisEffect_FORCE_LEVEL_1(pusher, MEF_NO_SPIN, 300, 0.3f, 0);
@@ -2745,90 +2721,90 @@ qboolean WP_AbsorbKick(gentity_t* hitEnt, const gentity_t* pusher, const vec3_t 
 			}
 			else
 			{
-				WP_ForcePowerDrain(hitEnt, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
+				WP_ForcePowerDrain(hit_ent, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
 			}
-			G_Sound(hitEnt, G_SoundIndex(va("sound/weapons/melee/punch%d", Q_irand(1, 4))));
+			G_Sound(hit_ent, G_SoundIndex(va("sound/weapons/melee/punch%d", Q_irand(1, 4))));
 			G_Sound(pusher, G_SoundIndex(va("sound/weapons/melee/swing%d", Q_irand(1, 4))));
-			hitEnt->client->ps.saberMove = LS_NONE;
-			AddFatigueMeleeBonus(pusher, hitEnt);
+			hit_ent->client->ps.saberMove = LS_NONE;
+			AddFatigueMeleeBonus(pusher, hit_ent);
 		}
 		else if (pusher->client->ps.torsoAnim == BOTH_TUSKENLUNGE1)
 		{
-			if (jedi_is_kick_resistant(hitEnt))
+			if (jedi_is_kick_resistant(hit_ent))
 			{
-				G_MawStagger(hitEnt);
-				WP_DeactivateSaber(hitEnt, qtrue);
-				if (jedi_is_kick_resistant(hitEnt))
+				G_MawStagger(hit_ent);
+				WP_DeactivateSaber(hit_ent, qtrue);
+				if (jedi_is_kick_resistant(hit_ent))
 				{
-					jedi_play_blocked_push_sound(hitEnt);
+					jedi_play_blocked_push_sound(hit_ent);
 				}
 			}
 			else
 			{
-				NPC_SetAnim(hitEnt, SETANIM_BOTH, Q_irand(BOTH_SLAPDOWNRIGHT, BOTH_SLAPDOWNLEFT), SETANIM_AFLAG_PACE);
+				NPC_SetAnim(hit_ent, SETANIM_BOTH, Q_irand(BOTH_SLAPDOWNRIGHT, BOTH_SLAPDOWNLEFT), SETANIM_AFLAG_PACE);
 			}
 
 			if (g_SerenityJediEngineMode->integer == 2)
 			{
-				WP_BlockPointsDrain(hitEnt, FATIGUE_BLOCKPOINTDRAIN);
+				WP_BlockPointsDrain(hit_ent, FATIGUE_BLOCKPOINTDRAIN);
 			}
 			else
 			{
-				WP_ForcePowerDrain(hitEnt, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
+				WP_ForcePowerDrain(hit_ent, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
 			}
-			G_Sound(hitEnt, G_SoundIndex(va("sound/weapons/melee/punch%d", Q_irand(1, 4))));
+			G_Sound(hit_ent, G_SoundIndex(va("sound/weapons/melee/punch%d", Q_irand(1, 4))));
 			G_Sound(pusher, G_SoundIndex(va("sound/weapons/melee/swing%d", Q_irand(1, 4))));
-			hitEnt->client->ps.saberMove = LS_NONE;
-			AddFatigueMeleeBonus(pusher, hitEnt);
+			hit_ent->client->ps.saberMove = LS_NONE;
+			AddFatigueMeleeBonus(pusher, hit_ent);
 		}
 		else if (pusher->client->ps.torsoAnim == BOTH_A7_HILT) //for the hiltbash
 		{
-			NPC_SetAnim(hitEnt, SETANIM_BOTH, BOTH_BASHED1, SETANIM_AFLAG_PACE);
+			NPC_SetAnim(hit_ent, SETANIM_BOTH, BOTH_BASHED1, SETANIM_AFLAG_PACE);
 
 			if (g_SerenityJediEngineMode->integer == 2)
 			{
-				WP_BlockPointsDrain(hitEnt, FATIGUE_BLOCKPOINTDRAIN);
+				WP_BlockPointsDrain(hit_ent, FATIGUE_BLOCKPOINTDRAIN);
 			}
 			else
 			{
-				WP_ForcePowerDrain(hitEnt, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
+				WP_ForcePowerDrain(hit_ent, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
 			}
-			G_Sound(hitEnt, G_SoundIndex("sound/movers/objects/saber_slam"));
+			G_Sound(hit_ent, G_SoundIndex("sound/movers/objects/saber_slam"));
 			G_Sound(pusher, G_SoundIndex(va("sound/weapons/melee/swing%d", Q_irand(1, 4))));
-			hitEnt->client->ps.saberMove = LS_NONE;
-			AddFatigueMeleeBonus(pusher, hitEnt);
+			hit_ent->client->ps.saberMove = LS_NONE;
+			AddFatigueMeleeBonus(pusher, hit_ent);
 		}
 		else
 		{
-			if (jedi_is_kick_resistant(hitEnt))
+			if (jedi_is_kick_resistant(hit_ent))
 			{
-				G_MawStagger(hitEnt);
+				G_MawStagger(hit_ent);
 				if (!Q_irand(0, 4))
 				{//20% chance
-					WP_DeactivateSaber(hitEnt, qtrue);
+					WP_DeactivateSaber(hit_ent, qtrue);
 				}
-				if (jedi_is_kick_resistant(hitEnt))
+				if (jedi_is_kick_resistant(hit_ent))
 				{
-					jedi_play_blocked_push_sound(hitEnt);
+					jedi_play_blocked_push_sound(hit_ent);
 				}
 			}
 			else
 			{
-				NPC_SetAnim(hitEnt, SETANIM_BOTH, Q_irand(BOTH_KNOCKDOWN1, BOTH_KNOCKDOWN2), SETANIM_AFLAG_PACE);
+				NPC_SetAnim(hit_ent, SETANIM_BOTH, Q_irand(BOTH_KNOCKDOWN1, BOTH_KNOCKDOWN2), SETANIM_AFLAG_PACE);
 			}
 
 			if (g_SerenityJediEngineMode->integer == 2)
 			{
-				WP_BlockPointsDrain(hitEnt, FATIGUE_BLOCKPOINTDRAIN);
+				WP_BlockPointsDrain(hit_ent, FATIGUE_BLOCKPOINTDRAIN);
 			}
 			else
 			{
-				WP_ForcePowerDrain(hitEnt, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
+				WP_ForcePowerDrain(hit_ent, FP_SABER_DEFENSE, FATIGUE_KICKHIT);
 			}
-			G_Sound(hitEnt, G_SoundIndex(va("sound/weapons/melee/punch%d", Q_irand(1, 4))));
+			G_Sound(hit_ent, G_SoundIndex(va("sound/weapons/melee/punch%d", Q_irand(1, 4))));
 			G_Sound(pusher, G_SoundIndex(va("sound/weapons/melee/swing%d", Q_irand(1, 4))));
-			hitEnt->client->ps.saberMove = LS_NONE;
-			AddFatigueMeleeBonus(pusher, hitEnt);
+			hit_ent->client->ps.saberMove = LS_NONE;
+			AddFatigueMeleeBonus(pusher, hit_ent);
 		}
 	}
 
@@ -2837,35 +2813,34 @@ qboolean WP_AbsorbKick(gentity_t* hitEnt, const gentity_t* pusher, const vec3_t 
 
 extern void G_Kick_Throw(gentity_t* targ, const vec3_t new_dir, float push);
 
-gentity_t* G_KickTrace(gentity_t* ent, vec3_t kickDir, float kickDist, vec3_t kickEnd, int kickDamage, float kickPush,
-	qboolean doSoundOnWalls)
+gentity_t* G_KickTrace(gentity_t* ent, vec3_t kick_dir, const float kick_dist, vec3_t kick_end, const int kick_damage, const float kick_push, const qboolean do_sound_on_walls)
 {
-	vec3_t traceOrg, traceEnd;
-	constexpr vec3_t kickMaxs = { 4, 4, 4 };
-	constexpr vec3_t kickMins = { -2, -2, -2 };
+	vec3_t traceOrg, trace_end;
+	constexpr vec3_t kick_maxs = { 8, 8, 8 };
+	constexpr vec3_t kick_mins = { -4, -4, -4 };
 	trace_t trace;
-	gentity_t* hitEnt = nullptr;
+	gentity_t* hit_ent = nullptr;
 
-	if (kickEnd && !VectorCompare(kickEnd, vec3_origin))
+	if (kick_end && !VectorCompare(kick_end, vec3_origin))
 	{
 		//they passed us the end point of the trace, just use that
 		//this makes the trace flat
-		VectorSet(traceOrg, ent->currentOrigin[0], ent->currentOrigin[1], kickEnd[2]);
-		VectorCopy(kickEnd, traceEnd);
+		VectorSet(traceOrg, ent->currentOrigin[0], ent->currentOrigin[1], kick_end[2]);
+		VectorCopy(kick_end, trace_end);
 	}
 	else
 	{
 		//extrude
 		VectorSet(traceOrg, ent->currentOrigin[0], ent->currentOrigin[1], ent->currentOrigin[2] + ent->maxs[2] * 0.5f);
-		VectorMA(traceOrg, kickDist, kickDir, traceEnd);
+		VectorMA(traceOrg, kick_dist, kick_dir, trace_end);
 	}
 
-	gi.trace(&trace, traceOrg, kickMins, kickMaxs, traceEnd, ent->s.number, MASK_SHOT, static_cast<EG2_Collision>(0),
+	gi.trace(&trace, traceOrg, kick_mins, kick_maxs, trace_end, ent->s.number, MASK_SHOT, static_cast<EG2_Collision>(0),
 		0);
 
 	if (trace.fraction < 1.0f || trace.startsolid && trace.entityNum < ENTITYNUM_NONE)
 	{
-		hitEnt = &g_entities[trace.entityNum];
+		hit_ent = &g_entities[trace.entityNum];
 
 		if (ent->client->ps.lastKickedEntNum != trace.entityNum)
 		{
@@ -2873,55 +2848,55 @@ gentity_t* G_KickTrace(gentity_t* ent, vec3_t kickDir, float kickDist, vec3_t ki
 			ent->client->ps.lastKickedEntNum = trace.entityNum;
 		}
 
-		if (hitEnt)
+		if (hit_ent)
 		{
 			//we hit an entity
-			if (hitEnt->client)
+			if (hit_ent->client)
 			{
-				if (!(hitEnt->client->ps.pm_flags & PMF_TIME_KNOCKBACK)
-					&& TIMER_Done(hitEnt, "kickedDebounce") && G_CanBeEnemy(ent, hitEnt))
+				if (!(hit_ent->client->ps.pm_flags & PMF_TIME_KNOCKBACK)
+					&& TIMER_Done(hit_ent, "kickedDebounce") && G_CanBeEnemy(ent, hit_ent))
 				{
-					if (PM_InKnockDown(&hitEnt->client->ps) && !PM_InGetUp(&hitEnt->client->ps))
+					if (PM_InKnockDown(&hit_ent->client->ps) && !PM_InGetUp(&hit_ent->client->ps))
 					{
 						//don't hit people who are knocked down or being knocked down (okay to hit people getting up, though)
 						return nullptr;
 					}
-					if (PM_Dyinganim(&hitEnt->client->ps))
+					if (PM_Dyinganim(&hit_ent->client->ps))
 					{
 						//don't hit people who are in a death anim
 						return nullptr;
 					}
-					if (PM_InRoll(&hitEnt->client->ps))
+					if (PM_InRoll(&hit_ent->client->ps))
 					{
 						//can't hit people who are rolling
 						return nullptr;
 					}
 					//don't hit same ent more than once per kick
-					if (hitEnt->takedamage)
+					if (hit_ent->takedamage)
 					{
 						//hurt it
 						if (!in_camera)
 						{
-							if (WP_AbsorbKick(hitEnt, ent, kickDir))
+							if (WP_AbsorbKick(hit_ent, ent, kick_dir))
 							{
 								//but the lucky devil absorbed it by backflipping
 								//toss them back a bit and make sure that the kicker gets the kill if the
 								//player falls off a cliff or something.
-								if (hitEnt->client)
+								if (hit_ent->client)
 								{
-									hitEnt->client->ps.otherKiller = ent->s.number;
-									hitEnt->client->ps.otherKillerDebounceTime = level.time + 10000;
-									hitEnt->client->ps.otherKillerTime = level.time + 10000;
-									hitEnt->client->otherKillerMOD = MOD_MELEE;
-									hitEnt->client->otherKillerVehWeapon = 0;
-									hitEnt->client->otherKillerWeaponType = WP_NONE;
-									hitEnt->client->ps.saberMove = LS_READY;
+									hit_ent->client->ps.otherKiller = ent->s.number;
+									hit_ent->client->ps.otherKillerDebounceTime = level.time + 10000;
+									hit_ent->client->ps.otherKillerTime = level.time + 10000;
+									hit_ent->client->otherKillerMOD = MOD_MELEE;
+									hit_ent->client->otherKillerVehWeapon = 0;
+									hit_ent->client->otherKillerWeaponType = WP_NONE;
+									hit_ent->client->ps.saberMove = LS_READY;
 								}
-								G_Kick_Throw(hitEnt, kickDir, 75);
-								return hitEnt;
+								G_Kick_Throw(hit_ent, kick_dir, 75);
+								return hit_ent;
 							}
 						}
-						G_Damage(hitEnt, ent, ent, kickDir, trace.endpos, kickDamage * 0.2f, DAMAGE_NO_KNOCKBACK,
+						G_Damage(hit_ent, ent, ent, kick_dir, trace.endpos, kick_damage * 0.2f, DAMAGE_NO_KNOCKBACK,
 							MOD_MELEE);
 					}
 					//do kick hit sound and impact effect
@@ -2934,7 +2909,7 @@ gentity_t* G_KickTrace(gentity_t* ent, vec3_t kickDir, float kickDist, vec3_t ki
 						else
 						{
 							vec3_t fxOrg, fxDir;
-							VectorCopy(kickDir, fxDir);
+							VectorCopy(kick_dir, fxDir);
 							VectorMA(trace.endpos, Q_flrand(5.0f, 10.0f), fxDir, fxOrg);
 							VectorScale(fxDir, -1, fxDir);
 							G_PlayEffect(G_EffectIndex("melee/kick_impact.efx"), fxOrg, fxDir);
@@ -2942,7 +2917,7 @@ gentity_t* G_KickTrace(gentity_t* ent, vec3_t kickDir, float kickDist, vec3_t ki
 						}
 						TIMER_Set(ent, "kickSoundDebounce", 1000);
 					}
-					TIMER_Set(hitEnt, "kickedDebounce", 500);
+					TIMER_Set(hit_ent, "kickedDebounce", 500);
 
 					if (ent->client->ps.torsoAnim == BOTH_A7_HILT ||
 						ent->client->ps.torsoAnim == BOTH_SLAP_L ||
@@ -2951,42 +2926,42 @@ gentity_t* G_KickTrace(gentity_t* ent, vec3_t kickDir, float kickDist, vec3_t ki
 						ent->client->ps.torsoAnim == BOTH_A7_SLAP_L)
 					{
 						//hit in head
-						if (hitEnt->health > 0)
+						if (hit_ent->health > 0)
 						{
 							//knock down
-							if (kickPush >= 150.0f && !Q_irand(0, 1))
+							if (kick_push >= 150.0f && !Q_irand(0, 1))
 							{
 								//knock them down
-								if (!(hitEnt->flags & FL_NO_KNOCKBACK))
+								if (!(hit_ent->flags & FL_NO_KNOCKBACK))
 								{
-									G_Kick_Throw(hitEnt, kickDir, 80);
+									G_Kick_Throw(hit_ent, kick_dir, 80);
 								}
-								G_Slapdown(hitEnt, ent, kickDir, 80, qtrue);
+								G_Slapdown(hit_ent, ent, kick_dir, 80, qtrue);
 							}
 							else
 							{
 								//force them to play a pain anim
-								if (hitEnt->s.number < MAX_CLIENTS)
+								if (hit_ent->s.number < MAX_CLIENTS)
 								{
-									NPC_SetPainEvent(hitEnt);
+									NPC_SetPainEvent(hit_ent);
 								}
 								else
 								{
-									GEntity_PainFunc(hitEnt, ent, ent, hitEnt->currentOrigin, 0, MOD_MELEE);
+									GEntity_PainFunc(hit_ent, ent, ent, hit_ent->currentOrigin, 0, MOD_MELEE);
 								}
 							}
 							//just so we don't hit him again...
-							hitEnt->client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
-							hitEnt->client->ps.pm_time = 100;
+							hit_ent->client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
+							hit_ent->client->ps.pm_time = 100;
 						}
 						else
 						{
-							if (!(hitEnt->flags & FL_NO_KNOCKBACK))
+							if (!(hit_ent->flags & FL_NO_KNOCKBACK))
 							{
-								G_Kick_Throw(hitEnt, kickDir, 80);
+								G_Kick_Throw(hit_ent, kick_dir, 80);
 							}
 							//see if we should play a better looking death on them
-							G_ThrownDeathAnimForDeathAnim(hitEnt, trace.endpos);
+							G_ThrownDeathAnimForDeathAnim(hit_ent, trace.endpos);
 						}
 					}
 					else if (ent->client->ps.legsAnim == BOTH_GETUP_BROLL_B
@@ -2994,100 +2969,100 @@ gentity_t* G_KickTrace(gentity_t* ent, vec3_t kickDir, float kickDist, vec3_t ki
 						|| ent->client->ps.legsAnim == BOTH_GETUP_FROLL_B
 						|| ent->client->ps.legsAnim == BOTH_GETUP_FROLL_F)
 					{
-						if (hitEnt->health > 0)
+						if (hit_ent->health > 0)
 						{
 							//knock down
-							if (hitEnt->client->ps.groundEntityNum == ENTITYNUM_NONE)
+							if (hit_ent->client->ps.groundEntityNum == ENTITYNUM_NONE)
 							{
 								//he's in the air?  Send him flying back
-								if (!(hitEnt->flags & FL_NO_KNOCKBACK))
+								if (!(hit_ent->flags & FL_NO_KNOCKBACK))
 								{
-									G_Kick_Throw(hitEnt, kickDir, 80);
+									G_Kick_Throw(hit_ent, kick_dir, 80);
 								}
 							}
 							else
 							{
 								//just so we don't hit him again...
-								hitEnt->client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
-								hitEnt->client->ps.pm_time = 100;
+								hit_ent->client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
+								hit_ent->client->ps.pm_time = 100;
 							}
 							//knock them down
-							G_Slapdown(hitEnt, ent, kickDir, 80, qtrue);
+							G_Slapdown(hit_ent, ent, kick_dir, 80, qtrue);
 						}
 						else
 						{
-							if (!(hitEnt->flags & FL_NO_KNOCKBACK))
+							if (!(hit_ent->flags & FL_NO_KNOCKBACK))
 							{
-								G_Kick_Throw(hitEnt, kickDir, 80);
+								G_Kick_Throw(hit_ent, kick_dir, 80);
 							}
 							//see if we should play a better looking death on them
-							G_ThrownDeathAnimForDeathAnim(hitEnt, trace.endpos);
+							G_ThrownDeathAnimForDeathAnim(hit_ent, trace.endpos);
 						}
 					}
-					else if (hitEnt->health <= 0)
+					else if (hit_ent->health <= 0)
 					{
 						//we kicked a dead guy
-						if (!(hitEnt->flags & FL_NO_KNOCKBACK))
+						if (!(hit_ent->flags & FL_NO_KNOCKBACK))
 						{
-							G_Kick_Throw(hitEnt, kickDir, kickPush * 2);
+							G_Kick_Throw(hit_ent, kick_dir, kick_push * 2);
 						}
-						G_ThrownDeathAnimForDeathAnim(hitEnt, trace.endpos);
+						G_ThrownDeathAnimForDeathAnim(hit_ent, trace.endpos);
 					}
 					else
 					{
-						if (!(hitEnt->flags & FL_NO_KNOCKBACK))
+						if (!(hit_ent->flags & FL_NO_KNOCKBACK))
 						{
-							G_Kick_Throw(hitEnt, kickDir, 80);
+							G_Kick_Throw(hit_ent, kick_dir, 80);
 						}
-						if ((hitEnt->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HEAVY ||
-							hitEnt->client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_HEAVY)
-							&& !(hitEnt->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING))
+						if ((hit_ent->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HEAVY ||
+							hit_ent->client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_HEAVY)
+							&& !(hit_ent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING))
 						{
 							//knockdown
-							if (hitEnt->client->ps.saberAnimLevel == SS_STAFF)
+							if (hit_ent->client->ps.saberAnimLevel == SS_STAFF)
 							{
-								SabBeh_AnimateSlowBounce(hitEnt);
+								SabBeh_AnimateSlowBounce(hit_ent);
 							}
 							else
 							{
-								if (kickPush >= 150.0f && !Q_irand(0, 2))
+								if (kick_push >= 150.0f && !Q_irand(0, 2))
 								{
-									G_Slapdown(hitEnt, ent, kickDir, 90, qtrue);
+									G_Slapdown(hit_ent, ent, kick_dir, 90, qtrue);
 								}
 								else
 								{
-									G_Slapdown(hitEnt, ent, kickDir, 80, qtrue);
+									G_Slapdown(hit_ent, ent, kick_dir, 80, qtrue);
 								}
 							}
 						}
 						else if (ent->client->ps.saberAnimLevel == SS_DESANN
-							&& (hitEnt->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HEAVY ||
-								hitEnt->client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_HEAVY)
-							&& !(hitEnt->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING))
+							&& (hit_ent->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HEAVY ||
+								hit_ent->client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_HEAVY)
+							&& !(hit_ent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING))
 						{
 							//knockdown
-							if (kickPush >= 150.0f && !Q_irand(0, 2))
+							if (kick_push >= 150.0f && !Q_irand(0, 2))
 							{
-								G_Slapdown(hitEnt, ent, kickDir, 90, qtrue);
+								G_Slapdown(hit_ent, ent, kick_dir, 90, qtrue);
 							}
 							else
 							{
-								G_Slapdown(hitEnt, ent, kickDir, 80, qtrue);
+								G_Slapdown(hit_ent, ent, kick_dir, 80, qtrue);
 							}
 						}
-						else if (kickPush >= 150.0f && !Q_irand(0, 2))
+						else if (kick_push >= 150.0f && !Q_irand(0, 2))
 						{
-							G_Knockdown(hitEnt, ent, kickDir, 80, qtrue);
+							G_Knockdown(hit_ent, ent, kick_dir, 80, qtrue);
 						}
 						else
 						{
 							if (g_SerenityJediEngineMode->integer)
 							{
-								AnimateStun(hitEnt, ent);
+								AnimateStun(hit_ent, ent);
 							}
 							else
 							{
-								G_Knockdown(hitEnt, ent, kickDir, 80, qtrue);
+								G_Knockdown(hit_ent, ent, kick_dir, 80, qtrue);
 							}
 						}
 					}
@@ -3095,7 +3070,7 @@ gentity_t* G_KickTrace(gentity_t* ent, vec3_t kickDir, float kickDist, vec3_t ki
 			}
 			else
 			{
-				if (doSoundOnWalls)
+				if (do_sound_on_walls)
 				{
 					//do kick hit sound and impact effect
 					if (TIMER_Done(ent, "kickSoundDebounce"))
@@ -3123,12 +3098,12 @@ gentity_t* G_KickTrace(gentity_t* ent, vec3_t kickDir, float kickDist, vec3_t ki
 			}
 		}
 	}
-	return hitEnt;
+	return hit_ent;
 }
 
-qboolean G_CheckRollSafety(const gentity_t* self, int anim, float testDist)
+qboolean G_CheckRollSafety(const gentity_t* self, const int anim, const float test_dist)
 {
-	vec3_t forward, right, testPos, angles;
+	vec3_t forward, right, test_pos, angles;
 	trace_t trace;
 	int contents = CONTENTS_SOLID | CONTENTS_BOTCLIP;
 
@@ -3160,25 +3135,25 @@ qboolean G_CheckRollSafety(const gentity_t* self, int anim, float testDist)
 	{
 	case BOTH_GETUP_BROLL_R:
 	case BOTH_GETUP_FROLL_R:
-		VectorMA(self->currentOrigin, testDist, right, testPos);
+		VectorMA(self->currentOrigin, test_dist, right, test_pos);
 		break;
 	case BOTH_GETUP_BROLL_L:
 	case BOTH_GETUP_FROLL_L:
-		VectorMA(self->currentOrigin, -testDist, right, testPos);
+		VectorMA(self->currentOrigin, -test_dist, right, test_pos);
 		break;
 	case BOTH_GETUP_BROLL_F:
 	case BOTH_GETUP_FROLL_F:
-		VectorMA(self->currentOrigin, testDist, forward, testPos);
+		VectorMA(self->currentOrigin, test_dist, forward, test_pos);
 		break;
 	case BOTH_GETUP_BROLL_B:
 	case BOTH_GETUP_FROLL_B:
-		VectorMA(self->currentOrigin, -testDist, forward, testPos);
+		VectorMA(self->currentOrigin, -test_dist, forward, test_pos);
 		break;
 	default: //FIXME: add normal rolls?  Make generic for any forced-movement anim?
 		return qtrue;
 	}
 
-	gi.trace(&trace, self->currentOrigin, self->mins, self->maxs, testPos, self->s.number, contents,
+	gi.trace(&trace, self->currentOrigin, self->mins, self->maxs, test_pos, self->s.number, contents,
 		static_cast<EG2_Collision>(0), 0);
 	if (trace.fraction < 1.0f
 		|| trace.allsolid
@@ -3190,30 +3165,30 @@ qboolean G_CheckRollSafety(const gentity_t* self, int anim, float testDist)
 	return qtrue;
 }
 
-void G_CamPullBackForLegsAnim(const gentity_t* ent, qboolean useTorso = qfalse)
+void G_CamPullBackForLegsAnim(const gentity_t* ent, const qboolean use_torso = qfalse)
 {
 	if (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent))
 	{
-		const float animLength = PM_AnimLength(ent->client->clientInfo.animFileIndex,
-			useTorso
+		const float anim_length = PM_AnimLength(ent->client->clientInfo.animFileIndex,
+			use_torso
 			? static_cast<animNumber_t>(ent->client->ps.torsoAnim)
 			: static_cast<animNumber_t>(ent->client->ps.legsAnim));
-		const float elapsedTime = animLength - (useTorso
+		const float elapsed_time = anim_length - (use_torso
 			? ent->client->ps.torsoAnimTimer
 			: ent->client->ps.legsAnimTimer);
-		float backDist;
-		if (elapsedTime < animLength / 2.0f)
+		float back_dist;
+		if (elapsed_time < anim_length / 2.0f)
 		{
 			//starting anim
-			backDist = elapsedTime / animLength * 120.0f;
+			back_dist = elapsed_time / anim_length * 120.0f;
 		}
 		else
 		{
 			//ending anim
-			backDist = (animLength - elapsedTime) / animLength * 120.0f;
+			back_dist = (anim_length - elapsed_time) / anim_length * 120.0f;
 		}
 		cg.overrides.active |= CG_OVERRIDE_3RD_PERSON_RNG;
-		cg.overrides.thirdPersonRange = cg_thirdPersonRange.value + backDist;
+		cg.overrides.thirdPersonRange = cg_thirdPersonRange.value + back_dist;
 	}
 }
 
@@ -3221,10 +3196,10 @@ void G_CamCircleForLegsAnim(const gentity_t* ent)
 {
 	if (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent))
 	{
-		const float animLength = PM_AnimLength(ent->client->clientInfo.animFileIndex,
+		const float anim_length = PM_AnimLength(ent->client->clientInfo.animFileIndex,
 			static_cast<animNumber_t>(ent->client->ps.legsAnim));
-		const float elapsedTime = animLength - ent->client->ps.legsAnimTimer;
-		const float angle = elapsedTime / animLength * 360.0f;
+		const float elapsed_time = anim_length - ent->client->ps.legsAnimTimer;
+		const float angle = elapsed_time / anim_length * 360.0f;
 		cg.overrides.active |= CG_OVERRIDE_3RD_PERSON_ANG;
 		cg.overrides.thirdPersonAngle = cg_thirdPersonAngle.value + angle;
 	}
@@ -3232,97 +3207,97 @@ void G_CamCircleForLegsAnim(const gentity_t* ent)
 
 qboolean G_GrabClient(gentity_t* ent, const usercmd_t* ucmd)
 {
-	gentity_t* bestEnt = nullptr, * radiusEnts[128];
+	gentity_t* best_ent = nullptr, * radius_ents[128];
 	constexpr float radius = 100.0f;
-	constexpr float radiusSquared = radius * radius;
-	float bestDistSq = radiusSquared + 1.0f;
-	vec3_t boltOrg;
+	constexpr float radius_squared = radius * radius;
+	float best_dist_sq = radius_squared + 1.0f;
+	vec3_t bolt_org;
 
-	const int numEnts = G_GetEntsNearBolt(ent, radiusEnts, radius, ent->handRBolt, boltOrg);
+	const int num_ents = G_GetEntsNearBolt(ent, radius_ents, radius, ent->handRBolt, bolt_org);
 
-	for (int i = 0; i < numEnts; i++)
+	for (int i = 0; i < num_ents; i++)
 	{
-		if (!radiusEnts[i]->inuse)
+		if (!radius_ents[i]->inuse)
 		{
 			continue;
 		}
 
-		if (radiusEnts[i] == ent)
+		if (radius_ents[i] == ent)
 		{
 			//Skip the rancor ent
 			continue;
 		}
 
-		if (!radiusEnts[i]->inuse || radiusEnts[i]->health <= 0)
+		if (!radius_ents[i]->inuse || radius_ents[i]->health <= 0)
 		{
 			//must be alive
 			continue;
 		}
 
-		if (radiusEnts[i]->client == nullptr)
+		if (radius_ents[i]->client == nullptr)
 		{
 			//must be a client
 			continue;
 		}
 
-		if (radiusEnts[i]->client->ps.eFlags & EF_HELD_BY_RANCOR
-			|| radiusEnts[i]->client->ps.eFlags & EF_HELD_BY_WAMPA
-			|| radiusEnts[i]->client->ps.eFlags & EF_HELD_BY_SAND_CREATURE)
+		if (radius_ents[i]->client->ps.eFlags & EF_HELD_BY_RANCOR
+			|| radius_ents[i]->client->ps.eFlags & EF_HELD_BY_WAMPA
+			|| radius_ents[i]->client->ps.eFlags & EF_HELD_BY_SAND_CREATURE)
 		{
 			//can't be one being held
 			continue;
 		}
 
-		if (PM_LockedAnim(radiusEnts[i]->client->ps.torsoAnim)
-			|| PM_LockedAnim(radiusEnts[i]->client->ps.legsAnim))
+		if (PM_LockedAnim(radius_ents[i]->client->ps.torsoAnim)
+			|| PM_LockedAnim(radius_ents[i]->client->ps.legsAnim))
 		{
 			//don't interrupt
 			continue;
 		}
-		if (radiusEnts[i]->client->ps.groundEntityNum == ENTITYNUM_NONE)
+		if (radius_ents[i]->client->ps.groundEntityNum == ENTITYNUM_NONE)
 		{
 			//must be on ground
 			continue;
 		}
 
-		if (PM_InOnGroundAnim(&radiusEnts[i]->client->ps))
+		if (PM_InOnGroundAnim(&radius_ents[i]->client->ps))
 		{
 			//must be standing up
 			continue;
 		}
 
-		if (fabs(radiusEnts[i]->currentOrigin[2] - ent->currentOrigin[2]) > 8.0f)
+		if (fabs(radius_ents[i]->currentOrigin[2] - ent->currentOrigin[2]) > 8.0f)
 		{
 			//have to be close in Z
 			continue;
 		}
 
-		if (!PM_HasAnimation(radiusEnts[i], BOTH_PLAYER_PA_1))
+		if (!PM_HasAnimation(radius_ents[i], BOTH_PLAYER_PA_1))
 		{
 			//doesn't have matching anims
 			continue;
 		}
 
-		const float distSq = DistanceSquared(radiusEnts[i]->currentOrigin, boltOrg);
-		if (distSq < bestDistSq)
+		const float dist_sq = DistanceSquared(radius_ents[i]->currentOrigin, bolt_org);
+		if (dist_sq < best_dist_sq)
 		{
-			bestDistSq = distSq;
-			bestEnt = radiusEnts[i];
+			best_dist_sq = dist_sq;
+			best_ent = radius_ents[i];
 		}
 	}
 
-	if (bestEnt != nullptr)
+	if (best_ent != nullptr)
 	{
-		int lockType = LOCK_KYLE_GRAB1;
+		int lock_type = LOCK_KYLE_GRAB1;
 		if (ucmd->forwardmove > 0)
 		{
-			lockType = LOCK_KYLE_GRAB3;
+			lock_type = LOCK_KYLE_GRAB3;
 		}
 		else if (ucmd->forwardmove < 0)
 		{
-			lockType = LOCK_KYLE_GRAB2;
+			lock_type = LOCK_KYLE_GRAB2;
 		}
-		WP_SabersCheckLock2(ent, bestEnt, static_cast<sabersLockMode_t>(lockType));
+		WP_SabersCheckLock2(ent, best_ent, static_cast<sabersLockMode_t>(lock_type));
 		return qtrue;
 	}
 	return qfalse;
@@ -3330,7 +3305,7 @@ qboolean G_GrabClient(gentity_t* ent, const usercmd_t* ucmd)
 
 qboolean G_PullAttack(gentity_t* ent, usercmd_t* ucmd)
 {
-	qboolean overridAngles = qfalse;
+	qboolean overrid_angles = qfalse;
 	if (ent->client->ps.torsoAnim == BOTH_PULL_IMPALE_STAB
 		|| ent->client->ps.torsoAnim == BOTH_PULL_IMPALE_SWING)
 	{
@@ -3339,7 +3314,7 @@ qboolean G_PullAttack(gentity_t* ent, usercmd_t* ucmd)
 		{
 			VectorClear(ent->client->ps.moveDir);
 		}
-		overridAngles = PM_LockAngles(ent, ucmd) ? qtrue : overridAngles;
+		overrid_angles = PM_LockAngles(ent, ucmd) ? qtrue : overrid_angles;
 		ucmd->forwardmove = ucmd->rightmove = ucmd->upmove = 0;
 	}
 	else if (ent->client->ps.torsoAnim == BOTH_PULLED_INAIR_B
@@ -3353,32 +3328,32 @@ qboolean G_PullAttack(gentity_t* ent, usercmd_t* ucmd)
 			&& (puller->client->ps.torsoAnim == BOTH_PULL_IMPALE_STAB
 				|| puller->client->ps.torsoAnim == BOTH_PULL_IMPALE_SWING))
 		{
-			vec3_t pullDir;
-			vec3_t pullPos;
+			vec3_t pull_dir;
+			vec3_t pull_pos;
 			//calc where to pull me to
 			/*
 			VectorCopy( puller->client->ps.saber[0].blade[0].muzzlePoint, pullPos );
 			VectorMA( pullPos, puller->client->ps.saber[0].blade[0].length*0.5f, puller->client->ps.saber[0].blade[0].muzzleDir, pullPos );
 			*/
-			vec3_t pullerFwd;
-			AngleVectors(puller->client->ps.viewangles, pullerFwd, nullptr, nullptr);
-			VectorMA(puller->currentOrigin, puller->maxs[0] * 1.5f + 16.0f, pullerFwd, pullPos);
+			vec3_t puller_fwd;
+			AngleVectors(puller->client->ps.viewangles, puller_fwd, nullptr, nullptr);
+			VectorMA(puller->currentOrigin, puller->maxs[0] * 1.5f + 16.0f, puller_fwd, pull_pos);
 			//pull me towards that pos
-			VectorSubtract(pullPos, ent->currentOrigin, pullDir);
-			const float pullDist = VectorNormalize(pullDir);
-			const int sweetSpotTime = puller->client->ps.torsoAnim == BOTH_PULL_IMPALE_STAB ? 1250 : 1350;
-			float pullLength = PM_AnimLength(puller->client->clientInfo.animFileIndex,
-				static_cast<animNumber_t>(puller->client->ps.torsoAnim)) - sweetSpotTime;
-			if (pullLength <= 0.25f)
+			VectorSubtract(pull_pos, ent->currentOrigin, pull_dir);
+			const float pull_dist = VectorNormalize(pull_dir);
+			const int sweet_spot_time = puller->client->ps.torsoAnim == BOTH_PULL_IMPALE_STAB ? 1250 : 1350;
+			float pull_length = PM_AnimLength(puller->client->clientInfo.animFileIndex,
+				static_cast<animNumber_t>(puller->client->ps.torsoAnim)) - sweet_spot_time;
+			if (pull_length <= 0.25f)
 			{
-				pullLength = 0.25f;
+				pull_length = 0.25f;
 			}
 			//float pullTimeRemaining = ent->client->ps.pullAttackTime - level.time;
 
 			//float pullSpeed = pullDist * (pullTimeRemaining/pullLength);
-			const float pullSpeed = pullDist * 1000.0f / pullLength;
+			const float pull_speed = pull_dist * 1000.0f / pull_length;
 
-			VectorScale(pullDir, pullSpeed, ent->client->ps.velocity);
+			VectorScale(pull_dir, pull_speed, ent->client->ps.velocity);
 			//slide, if necessary
 			ent->client->ps.pm_flags |= PMF_TIME_NOFRICTION;
 			ent->client->ps.pm_time = 100;
@@ -3388,7 +3363,7 @@ qboolean G_PullAttack(gentity_t* ent, usercmd_t* ucmd)
 			//look at him
 			PM_AdjustAnglesToPuller(ent, puller, ucmd,
 				static_cast<qboolean>(ent->client->ps.legsAnim == BOTH_PULLED_INAIR_B));
-			overridAngles = qtrue;
+			overrid_angles = qtrue;
 			//don't move
 			if (ent->NPC)
 			{
@@ -3397,7 +3372,7 @@ qboolean G_PullAttack(gentity_t* ent, usercmd_t* ucmd)
 			ucmd->forwardmove = ucmd->rightmove = ucmd->upmove = 0;
 		}
 	}
-	return overridAngles;
+	return overrid_angles;
 }
 
 void G_FixMins(gentity_t* ent)
@@ -3477,7 +3452,7 @@ extern void Noghri_StickTracennew(gentity_t* self);
 
 qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 {
-	qboolean overridAngles = qfalse;
+	qboolean overrid_angles = qfalse;
 
 	if (ent->client->NPC_class == CLASS_PROTOCOL
 		|| ent->client->NPC_class == CLASS_R2D2
@@ -3538,7 +3513,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 		}
 	}
 
-	overridAngles = PM_AdjustAnglesForKnockdown(ent, ucmd, qfalse) ? qtrue : overridAngles;
+	overrid_angles = PM_AdjustAnglesForKnockdown(ent, ucmd, qfalse) ? qtrue : overrid_angles;
 	if (PM_GetupAnimNoMove(ent->client->ps.legsAnim))
 	{
 		ucmd->forwardmove = ucmd->rightmove = 0; //ucmd->upmove = ?
@@ -3557,7 +3532,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 		{
 			ucmd->buttons &= ~(ucmd->buttons & ~BUTTON_ATTACK);
 		}
-		overridAngles = PM_AdjustAnglesForSaberLock(ent, ucmd) ? qtrue : overridAngles;
+		overrid_angles = PM_AdjustAnglesForSaberLock(ent, ucmd) ? qtrue : overrid_angles;
 		if (ent->NPC)
 		{
 			VectorClear(ent->client->ps.moveDir);
@@ -3597,16 +3572,16 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 	if (ent->client->ps.legsAnim == BOTH_FORCEWALLRUNFLIP_ALT
 		&& ent->client->ps.legsAnimTimer)
 	{
-		vec3_t vFwd, fwdAng = { 0, ent->currentAngles[YAW], 0 };
-		AngleVectors(fwdAng, vFwd, nullptr, nullptr);
+		vec3_t v_fwd, fwd_ang = { 0, ent->currentAngles[YAW], 0 };
+		AngleVectors(fwd_ang, v_fwd, nullptr, nullptr);
 		if (ent->client->ps.groundEntityNum == ENTITYNUM_NONE)
 		{
-			float savZ = ent->client->ps.velocity[2];
-			VectorScale(vFwd, 100, ent->client->ps.velocity);
-			ent->client->ps.velocity[2] = savZ;
+			float sav_z = ent->client->ps.velocity[2];
+			VectorScale(v_fwd, 100, ent->client->ps.velocity);
+			ent->client->ps.velocity[2] = sav_z;
 		}
 		ucmd->forwardmove = ucmd->rightmove = ucmd->upmove = 0;
-		overridAngles = PM_AdjustAnglesForWallRunUpFlipAlt(ent, ucmd) ? qtrue : overridAngles;
+		overrid_angles = PM_AdjustAnglesForWallRunUpFlipAlt(ent, ucmd) ? qtrue : overrid_angles;
 	}
 
 	if (ent->client->ps.saberMove == LS_A_JUMP_T__B_)
@@ -3638,12 +3613,12 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 			if (ent->client->ps.groundEntityNum != ENTITYNUM_NONE)
 			{
 				//still on ground?
-				vec3_t yawAngles, backDir;
+				vec3_t yaw_angles, back_dir;
 
 				//push backwards some?
-				VectorSet(yawAngles, 0, ent->client->ps.viewangles[YAW] + 180, 0);
-				AngleVectors(yawAngles, backDir, nullptr, nullptr);
-				VectorScale(backDir, 100, ent->client->ps.velocity);
+				VectorSet(yaw_angles, 0, ent->client->ps.viewangles[YAW] + 180, 0);
+				AngleVectors(yaw_angles, back_dir, nullptr, nullptr);
+				VectorScale(back_dir, 100, ent->client->ps.velocity);
 
 				//jump!
 				ent->client->ps.velocity[2] = 180;
@@ -3897,7 +3872,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 		{
 			VectorClear(ent->client->ps.moveDir);
 		}
-		overridAngles = PM_LockAngles(ent, ucmd) ? qtrue : overridAngles;
+		overrid_angles = PM_LockAngles(ent, ucmd) ? qtrue : overrid_angles;
 		ucmd->forwardmove = ucmd->rightmove = ucmd->upmove = 0;
 	}
 	else if (ent->client->ps.legsAnim == BOTH_ROLL_STAB)
@@ -3906,7 +3881,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 		{
 			VectorClear(ent->client->ps.moveDir);
 		}
-		overridAngles = PM_LockAngles(ent, ucmd) ? qtrue : overridAngles;
+		overrid_angles = PM_LockAngles(ent, ucmd) ? qtrue : overrid_angles;
 		ucmd->forwardmove = ucmd->rightmove = ucmd->upmove = 0;
 		if (ent->client->ps.legsAnimTimer)
 		{
@@ -3924,7 +3899,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 		{
 			VectorClear(ent->client->ps.moveDir);
 		}
-		overridAngles = PM_LockAngles(ent, ucmd) ? qtrue : overridAngles;
+		overrid_angles = PM_LockAngles(ent, ucmd) ? qtrue : overrid_angles;
 		ucmd->forwardmove = ucmd->rightmove = ucmd->upmove = 0;
 		if (ent->client->ps.legsAnim == BOTH_LK_DL_ST_T_SB_1_L)
 		{
@@ -3946,14 +3921,14 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 		if (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent))
 		{
 			//player
-			float forceDrainAngle = 90.0f;
+			float force_drain_angle = 90.0f;
 			if (ent->client->ps.torsoAnim == BOTH_FORCE_DRAIN_GRAB_START)
 			{
 				//starting drain
-				float animLength = PM_AnimLength(ent->client->clientInfo.animFileIndex,
+				float anim_length = PM_AnimLength(ent->client->clientInfo.animFileIndex,
 					static_cast<animNumber_t>(ent->client->ps.torsoAnim));
-				float elapsedTime = animLength - ent->client->ps.legsAnimTimer;
-				float angle = elapsedTime / animLength * forceDrainAngle;
+				float elapsed_time = anim_length - ent->client->ps.legsAnimTimer;
+				float angle = elapsed_time / anim_length * force_drain_angle;
 				cg.overrides.active |= CG_OVERRIDE_3RD_PERSON_ANG;
 				cg.overrides.thirdPersonAngle = cg_thirdPersonAngle.value + angle;
 			}
@@ -3961,15 +3936,15 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 			{
 				//draining
 				cg.overrides.active |= CG_OVERRIDE_3RD_PERSON_ANG;
-				cg.overrides.thirdPersonAngle = cg_thirdPersonAngle.value + forceDrainAngle;
+				cg.overrides.thirdPersonAngle = cg_thirdPersonAngle.value + force_drain_angle;
 			}
 			else if (ent->client->ps.torsoAnim == BOTH_FORCE_DRAIN_GRAB_END)
 			{
 				//ending drain
-				float animLength = PM_AnimLength(ent->client->clientInfo.animFileIndex,
+				float anim_length = PM_AnimLength(ent->client->clientInfo.animFileIndex,
 					static_cast<animNumber_t>(ent->client->ps.torsoAnim));
-				float elapsedTime = animLength - ent->client->ps.legsAnimTimer;
-				float angle = forceDrainAngle - elapsedTime / animLength * forceDrainAngle;
+				float elapsed_time = anim_length - ent->client->ps.legsAnimTimer;
+				float angle = force_drain_angle - elapsed_time / anim_length * force_drain_angle;
 				cg.overrides.active |= CG_OVERRIDE_3RD_PERSON_ANG;
 				cg.overrides.thirdPersonAngle = cg_thirdPersonAngle.value + angle;
 			}
@@ -3980,7 +3955,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 			VectorClear(ent->client->ps.moveDir);
 		}
 		ucmd->forwardmove = ucmd->rightmove = ucmd->upmove = 0;
-		overridAngles = PM_LockAngles(ent, ucmd) ? qtrue : overridAngles;
+		overrid_angles = PM_LockAngles(ent, ucmd) ? qtrue : overrid_angles;
 	}
 	else if (ent->client->ps.legsAnim == BOTH_PLAYER_PA_1
 		|| ent->client->ps.legsAnim == BOTH_PLAYER_PA_2
@@ -3995,7 +3970,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 		{
 			VectorClear(ent->client->ps.moveDir);
 		}
-		overridAngles = PM_AdjustAnglesForGrapple(ent, ucmd) ? qtrue : overridAngles;
+		overrid_angles = PM_AdjustAnglesForGrapple(ent, ucmd) ? qtrue : overrid_angles;
 		{
 			//actually do some damage during sequence
 			int dflags = DAMAGE_NO_KNOCKBACK | DAMAGE_NO_ARMOR | DAMAGE_NO_KILL;
@@ -4167,24 +4142,24 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 				}
 			}
 		}
-		qboolean clearMove = qtrue;
-		int endOfAnimTime = 100;
+		qboolean clear_move = qtrue;
+		int end_of_anim_time = 100;
 		if (ent->s.number < MAX_CLIENTS
 			&& ent->client->ps.legsAnim == BOTH_PLAYER_PA_3_FLY)
 		{
 			//player holds extra long so you have more time to decide to do the quick getup
 			//endOfAnimTime += PLAYER_KNOCKDOWN_HOLD_EXTRA_TIME;
-			if (ent->client->ps.legsAnimTimer <= endOfAnimTime) //PLAYER_KNOCKDOWN_HOLD_EXTRA_TIME )
+			if (ent->client->ps.legsAnimTimer <= end_of_anim_time) //PLAYER_KNOCKDOWN_HOLD_EXTRA_TIME )
 			{
-				clearMove = qfalse;
+				clear_move = qfalse;
 			}
 		}
-		if (clearMove)
+		if (clear_move)
 		{
 			ucmd->forwardmove = ucmd->rightmove = ucmd->upmove = 0;
 		}
 
-		if (ent->client->ps.legsAnimTimer <= endOfAnimTime)
+		if (ent->client->ps.legsAnimTimer <= end_of_anim_time)
 		{
 			//pretty much done with the anim, so get up now
 			if (ent->client->ps.legsAnim == BOTH_PLAYER_PA_3)
@@ -4204,11 +4179,11 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 			else if (ent->client->ps.legsAnim == BOTH_PLAYER_PA_1)
 			{
 				vec3_t ang = { 10, ent->currentAngles[YAW], 0 };
-				vec3_t throwDir;
-				AngleVectors(ang, throwDir, nullptr, nullptr);
+				vec3_t throw_dir;
+				AngleVectors(ang, throw_dir, nullptr, nullptr);
 				if (!(ent->flags & FL_NO_KNOCKBACK))
 				{
-					G_Throw(ent, throwDir, -100);
+					G_Throw(ent, throw_dir, -100);
 				}
 				ent->client->ps.legsAnimTimer = ent->client->ps.torsoAnimTimer = 0;
 				NPC_SetAnim(ent, SETANIM_BOTH, BOTH_KNOCKDOWN2, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
@@ -4238,7 +4213,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 		{
 			VectorClear(ent->client->ps.moveDir);
 		}
-		overridAngles = PM_AdjustAnglesForLongJump(ent, ucmd) ? qtrue : overridAngles;
+		overrid_angles = PM_AdjustAnglesForLongJump(ent, ucmd) ? qtrue : overrid_angles;
 	}
 	else if (ent->s.number < MAX_CLIENTS && G_TuskenAttackAnimDamage(ent) &&
 		(ent->s.weapon == WP_NOGHRI_STICK || ent->s.weapon == WP_TUSKEN_RIFLE || ent->s.weapon == WP_TUSKEN_STAFF))
@@ -4286,43 +4261,42 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 				VectorClear(ent->client->ps.moveDir);
 			}
 		}
-		vec3_t kickDir = { 0, 0, 0 }, kickDir2 = { 0, 0, 0 }, kickEnd = { 0, 0, 0 }, kickEnd2 = { 0, 0, 0 }, fwdAngs = {
-				   0, ent->client->ps.viewangles[YAW], 0
-		};
-		float animLength = PM_AnimLength(ent->client->clientInfo.animFileIndex,
+		vec3_t kick_dir = { 0, 0, 0 }, kick_dir2 = { 0, 0, 0 }, kick_end = { 0, 0, 0 }, kick_end2 = { 0, 0, 0 },
+			fwd_angs = { 0, ent->client->ps.viewangles[YAW], 0 };
+		float anim_length = PM_AnimLength(ent->client->clientInfo.animFileIndex,
 			static_cast<animNumber_t>(ent->client->ps.legsAnim));
-		float elapsedTime = animLength - ent->client->ps.legsAnimTimer;
-		float remainingTime = animLength - elapsedTime;
-		float kickDist = ent->maxs[0] * 1.5f + STAFF_KICK_RANGE + 8.0f; //fudge factor of 8
-		float kickDist2 = kickDist;
-		int kickDamage = Q_irand(3, 8);
-		int kickDamage2 = Q_irand(3, 8);
-		int kickPush = Q_flrand(50.0f, 100.0f);
-		int kickPush2 = Q_flrand(50.0f, 100.0f);
-		qboolean doKick = qfalse;
-		qboolean doKick2 = qfalse;
-		qboolean kickSoundOnWalls = qfalse;
+		float elapsed_time = anim_length - ent->client->ps.legsAnimTimer;
+		float remaining_time = anim_length - elapsed_time;
+		float kick_dist = ent->maxs[0] * 1.5f + STAFF_KICK_RANGE + 8.0f; //fudge factor of 8
+		float kick_dist2 = kick_dist;
+		int kick_damage = Q_irand(3, 8);
+		int kick_damage2 = Q_irand(3, 8);
+		int kick_push = Q_flrand(50.0f, 100.0f);
+		int kick_push2 = Q_flrand(50.0f, 100.0f);
+		qboolean do_kick = qfalse;
+		qboolean do_kick2 = qfalse;
+		qboolean kick_sound_on_walls = qfalse;
 
 		if (ent->client->ps.torsoAnim == BOTH_A7_HILT)
 		{
-			if (elapsedTime >= 250 && remainingTime >= 250)
+			if (elapsed_time >= 250 && remaining_time >= 250)
 			{
 				//front
-				doKick = qtrue;
+				do_kick = qtrue;
 				if (ent->handRBolt != -1)
 				{
 					//actually trace to a bolt
-					G_GetBoltPosition(ent, ent->handRBolt, kickEnd);
-					VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-					kickDir[2] = 0; //ah, flatten it, I guess...
-					VectorNormalize(kickDir);
+					G_GetBoltPosition(ent, ent->handRBolt, kick_end);
+					VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+					kick_dir[2] = 0; //ah, flatten it, I guess...
+					VectorNormalize(kick_dir);
 					//NOTE: have to fudge this a little because it's not getting enough range with the anim as-is
-					VectorMA(kickEnd, 8.0f, kickDir, kickEnd);
+					VectorMA(kick_end, 8.0f, kick_dir, kick_end);
 				}
 				else
 				{
 					//guess
-					AngleVectors(fwdAngs, kickDir, nullptr, nullptr);
+					AngleVectors(fwd_angs, kick_dir, nullptr, nullptr);
 				}
 			}
 		}
@@ -4331,285 +4305,285 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 			switch (ent->client->ps.legsAnim)
 			{
 			case BOTH_A7_SOULCAL:
-				kickPush = Q_flrand(150.0f, 250.0f);
-				if (elapsedTime >= 1400 && elapsedTime <= 1500)
+				kick_push = Q_flrand(150.0f, 250.0f);
+				if (elapsed_time >= 1400 && elapsed_time <= 1500)
 				{
 					//right leg
-					doKick = qtrue;
+					do_kick = qtrue;
 					if (ent->footRBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->footRBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 8.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->footRBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 8.0f, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, kickDir, nullptr, nullptr);
+						AngleVectors(fwd_angs, kick_dir, nullptr, nullptr);
 					}
 				}
 				break;
 			case BOTH_ARIAL_F1:
-				if (elapsedTime >= 550 && elapsedTime <= 1000)
+				if (elapsed_time >= 550 && elapsed_time <= 1000)
 				{
 					//right leg
-					doKick = qtrue;
+					do_kick = qtrue;
 					if (ent->footRBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->footRBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 8.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->footRBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 8.0f, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, kickDir, nullptr, nullptr);
+						AngleVectors(fwd_angs, kick_dir, nullptr, nullptr);
 					}
 				}
-				if (elapsedTime >= 800 && elapsedTime <= 1200)
+				if (elapsed_time >= 800 && elapsed_time <= 1200)
 				{
 					//left leg
-					doKick2 = qtrue;
+					do_kick2 = qtrue;
 					if (ent->footLBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->footLBolt, kickEnd2);
-						VectorSubtract(kickEnd2, ent->currentOrigin, kickDir2);
-						kickDir2[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir2);
-						VectorMA(kickEnd2, 8.0f, kickDir2, kickEnd2);
+						G_GetBoltPosition(ent, ent->footLBolt, kick_end2);
+						VectorSubtract(kick_end2, ent->currentOrigin, kick_dir2);
+						kick_dir2[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir2);
+						VectorMA(kick_end2, 8.0f, kick_dir2, kick_end2);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, kickDir2, nullptr, nullptr);
+						AngleVectors(fwd_angs, kick_dir2, nullptr, nullptr);
 					}
 				}
 				break;
 			case BOTH_ARIAL_LEFT:
 			case BOTH_ARIAL_RIGHT:
-				if (elapsedTime >= 200 && elapsedTime <= 600)
+				if (elapsed_time >= 200 && elapsed_time <= 600)
 				{
 					//lead leg
-					int footBolt = ent->client->ps.legsAnim == BOTH_ARIAL_LEFT ? ent->footRBolt : ent->footLBolt;
+					int foot_bolt = ent->client->ps.legsAnim == BOTH_ARIAL_LEFT ? ent->footRBolt : ent->footLBolt;
 					//mirrored anims
-					doKick = qtrue;
-					if (footBolt != -1)
+					do_kick = qtrue;
+					if (foot_bolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, footBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 8.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, foot_bolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 8.0f, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, kickDir, nullptr, nullptr);
+						AngleVectors(fwd_angs, kick_dir, nullptr, nullptr);
 					}
 				}
-				if (elapsedTime >= 400 && elapsedTime <= 850)
+				if (elapsed_time >= 400 && elapsed_time <= 850)
 				{
 					//trailing leg
-					int footBolt = ent->client->ps.legsAnim == BOTH_ARIAL_LEFT ? ent->footLBolt : ent->footRBolt;
+					int foot_bolt = ent->client->ps.legsAnim == BOTH_ARIAL_LEFT ? ent->footLBolt : ent->footRBolt;
 					//mirrored anims
-					doKick2 = qtrue;
-					if (footBolt != -1)
+					do_kick2 = qtrue;
+					if (foot_bolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, footBolt, kickEnd2);
-						VectorSubtract(kickEnd2, ent->currentOrigin, kickDir2);
-						kickDir2[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir2);
-						VectorMA(kickEnd2, 8.0f, kickDir2, kickEnd2);
+						G_GetBoltPosition(ent, foot_bolt, kick_end2);
+						VectorSubtract(kick_end2, ent->currentOrigin, kick_dir2);
+						kick_dir2[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir2);
+						VectorMA(kick_end2, 8.0f, kick_dir2, kick_end2);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, kickDir2, nullptr, nullptr);
+						AngleVectors(fwd_angs, kick_dir2, nullptr, nullptr);
 					}
 				}
 				break;
 			case BOTH_CARTWHEEL_LEFT:
 			case BOTH_CARTWHEEL_RIGHT:
-				if (elapsedTime >= 200 && elapsedTime <= 600)
+				if (elapsed_time >= 200 && elapsed_time <= 600)
 				{
 					//lead leg
-					int footBolt = ent->client->ps.legsAnim == BOTH_CARTWHEEL_LEFT ? ent->footRBolt : ent->footLBolt;
+					int foot_bolt = ent->client->ps.legsAnim == BOTH_CARTWHEEL_LEFT ? ent->footRBolt : ent->footLBolt;
 					//mirrored anims
-					doKick = qtrue;
-					if (footBolt != -1)
+					do_kick = qtrue;
+					if (foot_bolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, footBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 8.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, foot_bolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 8.0f, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, kickDir, nullptr, nullptr);
+						AngleVectors(fwd_angs, kick_dir, nullptr, nullptr);
 					}
 				}
-				if (elapsedTime >= 350 && elapsedTime <= 650)
+				if (elapsed_time >= 350 && elapsed_time <= 650)
 				{
 					//trailing leg
-					int footBolt = ent->client->ps.legsAnim == BOTH_CARTWHEEL_LEFT ? ent->footLBolt : ent->footRBolt;
+					int foot_bolt = ent->client->ps.legsAnim == BOTH_CARTWHEEL_LEFT ? ent->footLBolt : ent->footRBolt;
 					//mirrored anims
-					doKick2 = qtrue;
-					if (footBolt != -1)
+					do_kick2 = qtrue;
+					if (foot_bolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, footBolt, kickEnd2);
-						VectorSubtract(kickEnd2, ent->currentOrigin, kickDir2);
-						kickDir2[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir2);
-						VectorMA(kickEnd2, 8.0f, kickDir2, kickEnd2);
+						G_GetBoltPosition(ent, foot_bolt, kick_end2);
+						VectorSubtract(kick_end2, ent->currentOrigin, kick_dir2);
+						kick_dir2[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir2);
+						VectorMA(kick_end2, 8.0f, kick_dir2, kick_end2);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, kickDir2, nullptr, nullptr);
+						AngleVectors(fwd_angs, kick_dir2, nullptr, nullptr);
 					}
 				}
 				break;
 			case BOTH_JUMPATTACK7:
-				if (elapsedTime >= 300 && elapsedTime <= 900)
+				if (elapsed_time >= 300 && elapsed_time <= 900)
 				{
 					//right knee
-					doKick = qtrue;
+					do_kick = qtrue;
 					if (ent->kneeRBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->kneeRBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 8.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->kneeRBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 8.0f, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, kickDir, nullptr, nullptr);
+						AngleVectors(fwd_angs, kick_dir, nullptr, nullptr);
 					}
 				}
-				if (elapsedTime >= 600 && elapsedTime <= 900)
+				if (elapsed_time >= 600 && elapsed_time <= 900)
 				{
 					//left leg
-					doKick2 = qtrue;
+					do_kick2 = qtrue;
 					if (ent->footLBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->footLBolt, kickEnd2);
-						VectorSubtract(kickEnd2, ent->currentOrigin, kickDir2);
-						kickDir2[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir2);
-						VectorMA(kickEnd2, 8.0f, kickDir2, kickEnd2);
+						G_GetBoltPosition(ent, ent->footLBolt, kick_end2);
+						VectorSubtract(kick_end2, ent->currentOrigin, kick_dir2);
+						kick_dir2[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir2);
+						VectorMA(kick_end2, 8.0f, kick_dir2, kick_end2);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, kickDir2, nullptr, nullptr);
+						AngleVectors(fwd_angs, kick_dir2, nullptr, nullptr);
 					}
 				}
 				break;
 			case BOTH_BUTTERFLY_FL1:
 			case BOTH_BUTTERFLY_FR1:
-				if (elapsedTime >= 950 && elapsedTime <= 1300)
+				if (elapsed_time >= 950 && elapsed_time <= 1300)
 				{
 					//lead leg
-					int footBolt = ent->client->ps.legsAnim == BOTH_BUTTERFLY_FL1 ? ent->footRBolt : ent->footLBolt;
+					int foot_bolt = ent->client->ps.legsAnim == BOTH_BUTTERFLY_FL1 ? ent->footRBolt : ent->footLBolt;
 					//mirrored anims
-					doKick = qtrue;
-					if (footBolt != -1)
+					do_kick = qtrue;
+					if (foot_bolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, footBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 8.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, foot_bolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 8.0f, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, kickDir, nullptr, nullptr);
+						AngleVectors(fwd_angs, kick_dir, nullptr, nullptr);
 					}
 				}
-				if (elapsedTime >= 1150 && elapsedTime <= 1600)
+				if (elapsed_time >= 1150 && elapsed_time <= 1600)
 				{
 					//trailing leg
-					int footBolt = ent->client->ps.legsAnim == BOTH_BUTTERFLY_FL1 ? ent->footLBolt : ent->footRBolt;
+					int foot_bolt = ent->client->ps.legsAnim == BOTH_BUTTERFLY_FL1 ? ent->footLBolt : ent->footRBolt;
 					//mirrored anims
-					doKick2 = qtrue;
-					if (footBolt != -1)
+					do_kick2 = qtrue;
+					if (foot_bolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, footBolt, kickEnd2);
-						VectorSubtract(kickEnd2, ent->currentOrigin, kickDir2);
-						kickDir2[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir2);
-						VectorMA(kickEnd2, 8.0f, kickDir2, kickEnd2);
+						G_GetBoltPosition(ent, foot_bolt, kick_end2);
+						VectorSubtract(kick_end2, ent->currentOrigin, kick_dir2);
+						kick_dir2[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir2);
+						VectorMA(kick_end2, 8.0f, kick_dir2, kick_end2);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, kickDir2, nullptr, nullptr);
+						AngleVectors(fwd_angs, kick_dir2, nullptr, nullptr);
 					}
 				}
 				break;
 			case BOTH_BUTTERFLY_LEFT:
 			case BOTH_BUTTERFLY_RIGHT:
-				if (elapsedTime >= 100 && elapsedTime <= 450
-					|| elapsedTime >= 1100 && elapsedTime <= 1350)
+				if (elapsed_time >= 100 && elapsed_time <= 450
+					|| elapsed_time >= 1100 && elapsed_time <= 1350)
 				{
 					//lead leg
-					int footBolt = ent->client->ps.legsAnim == BOTH_BUTTERFLY_LEFT ? ent->footLBolt : ent->footRBolt;
+					int foot_bolt = ent->client->ps.legsAnim == BOTH_BUTTERFLY_LEFT ? ent->footLBolt : ent->footRBolt;
 					//mirrored anims
-					doKick = qtrue;
-					if (footBolt != -1)
+					do_kick = qtrue;
+					if (foot_bolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, footBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 8.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, foot_bolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 8.0f, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, kickDir, nullptr, nullptr);
+						AngleVectors(fwd_angs, kick_dir, nullptr, nullptr);
 					}
 				}
-				if (elapsedTime >= 900 && elapsedTime <= 1600)
+				if (elapsed_time >= 900 && elapsed_time <= 1600)
 				{
 					//trailing leg
-					int footBolt = ent->client->ps.legsAnim == BOTH_BUTTERFLY_LEFT ? ent->footRBolt : ent->footLBolt;
+					int foot_bolt = ent->client->ps.legsAnim == BOTH_BUTTERFLY_LEFT ? ent->footRBolt : ent->footLBolt;
 					//mirrored anims
-					doKick2 = qtrue;
-					if (footBolt != -1)
+					do_kick2 = qtrue;
+					if (foot_bolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, footBolt, kickEnd2);
-						VectorSubtract(kickEnd2, ent->currentOrigin, kickDir2);
-						kickDir2[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir2);
-						VectorMA(kickEnd2, 8.0f, kickDir2, kickEnd2);
+						G_GetBoltPosition(ent, foot_bolt, kick_end2);
+						VectorSubtract(kick_end2, ent->currentOrigin, kick_dir2);
+						kick_dir2[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir2);
+						VectorMA(kick_end2, 8.0f, kick_dir2, kick_end2);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, kickDir2, nullptr, nullptr);
+						AngleVectors(fwd_angs, kick_dir2, nullptr, nullptr);
 					}
 				}
 				break;
@@ -4617,24 +4591,24 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 			case BOTH_GETUP_BROLL_F:
 			case BOTH_GETUP_FROLL_B:
 			case BOTH_GETUP_FROLL_F:
-				kickPush = Q_flrand(150.0f, 250.0f); //Q_flrand( 75.0f, 125.0f );
-				if (elapsedTime >= 250 && remainingTime >= 250)
+				kick_push = Q_flrand(150.0f, 250.0f); //Q_flrand( 75.0f, 125.0f );
+				if (elapsed_time >= 250 && remaining_time >= 250)
 				{
 					//front
-					doKick = qtrue;
+					do_kick = qtrue;
 					if (ent->footRBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->footRBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 8.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->footRBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 8.0f, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, kickDir, nullptr, nullptr);
+						AngleVectors(fwd_angs, kick_dir, nullptr, nullptr);
 					}
 				}
 				if (ent->client->ps.legsAnim == BOTH_GETUP_BROLL_B
@@ -4646,188 +4620,188 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 				break;
 			case BOTH_FLYING_KICK:
 			case BOTH_A7_KICK_F_AIR:
-				kickPush = Q_flrand(150.0f, 250.0f);
-				kickSoundOnWalls = qtrue;
-				if (elapsedTime >= 100 && remainingTime >= 500)
+				kick_push = Q_flrand(150.0f, 250.0f);
+				kick_sound_on_walls = qtrue;
+				if (elapsed_time >= 100 && remaining_time >= 500)
 				{
 					//front
-					doKick = qtrue;
+					do_kick = qtrue;
 					if (ent->footRBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->footRBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 16.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->footRBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 16.0f, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, kickDir, nullptr, nullptr);
+						AngleVectors(fwd_angs, kick_dir, nullptr, nullptr);
 					}
 				}
 				break;
 			case BOTH_A7_KICK_F:
-				kickSoundOnWalls = qtrue;
+				kick_sound_on_walls = qtrue;
 				//FIXME: push forward?
-				if (elapsedTime >= 250 && remainingTime >= 250)
+				if (elapsed_time >= 250 && remaining_time >= 250)
 				{
 					//front
-					doKick = qtrue;
+					do_kick = qtrue;
 					if (ent->footRBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->footRBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 8.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->footRBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 8.0f, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, kickDir, nullptr, nullptr);
+						AngleVectors(fwd_angs, kick_dir, nullptr, nullptr);
 					}
 				}
 				break;
 			case BOTH_KICK_F_MD:
-				kickSoundOnWalls = qtrue;
+				kick_sound_on_walls = qtrue;
 				//FIXME: push forward?
-				if (elapsedTime >= 250 && remainingTime >= 250)
+				if (elapsed_time >= 250 && remaining_time >= 250)
 				{
 					//front
-					doKick = qtrue;
+					do_kick = qtrue;
 					if (ent->footRBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->footRBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 16.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->footRBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 16.0f, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, kickDir, nullptr, nullptr);
+						AngleVectors(fwd_angs, kick_dir, nullptr, nullptr);
 					}
 				}
 				break;
 			case BOTH_A7_KICK_B_AIR:
-				kickPush = Q_flrand(150.0f, 250.0f); //Q_flrand( 75.0f, 125.0f );
-				kickSoundOnWalls = qtrue;
-				if (elapsedTime >= 100 && remainingTime >= 400)
+				kick_push = Q_flrand(150.0f, 250.0f); //Q_flrand( 75.0f, 125.0f );
+				kick_sound_on_walls = qtrue;
+				if (elapsed_time >= 100 && remaining_time >= 400)
 				{
 					//back
-					doKick = qtrue;
+					do_kick = qtrue;
 					if (ent->footRBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->footRBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 8.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->footRBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 8.0f, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, kickDir, nullptr, nullptr);
-						VectorScale(kickDir, -1, kickDir);
+						AngleVectors(fwd_angs, kick_dir, nullptr, nullptr);
+						VectorScale(kick_dir, -1, kick_dir);
 					}
 				}
 				break;
 			case BOTH_A7_KICK_B:
-				kickSoundOnWalls = qtrue;
-				if (elapsedTime >= 250 && remainingTime >= 250)
+				kick_sound_on_walls = qtrue;
+				if (elapsed_time >= 250 && remaining_time >= 250)
 				{
 					//back
-					doKick = qtrue;
+					do_kick = qtrue;
 					if (ent->footRBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->footRBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 8.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->footRBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 8.0f, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, kickDir, nullptr, nullptr);
-						VectorScale(kickDir, -1, kickDir);
+						AngleVectors(fwd_angs, kick_dir, nullptr, nullptr);
+						VectorScale(kick_dir, -1, kick_dir);
 					}
 				}
 				break;
 			case BOTH_SWEEP_KICK:
-				kickSoundOnWalls = qtrue;
-				if (elapsedTime >= 250 && remainingTime >= 250)
+				kick_sound_on_walls = qtrue;
+				if (elapsed_time >= 250 && remaining_time >= 250)
 				{
 					//back
-					doKick = qtrue;
+					do_kick = qtrue;
 					if (ent->footRBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->footRBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 16.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->footRBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 16.0f, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, kickDir, nullptr, nullptr);
-						VectorScale(kickDir, -1, kickDir);
+						AngleVectors(fwd_angs, kick_dir, nullptr, nullptr);
+						VectorScale(kick_dir, -1, kick_dir);
 					}
 				}
 				break;
 			case BOTH_A7_KICK_R_AIR:
-				kickPush = Q_flrand(150.0f, 250.0f); //Q_flrand( 75.0f, 125.0f );
-				kickSoundOnWalls = qtrue;
-				if (elapsedTime >= 150 && remainingTime >= 300)
+				kick_push = Q_flrand(150.0f, 250.0f); //Q_flrand( 75.0f, 125.0f );
+				kick_sound_on_walls = qtrue;
+				if (elapsed_time >= 150 && remaining_time >= 300)
 				{
 					//left
-					doKick = qtrue;
+					do_kick = qtrue;
 					if (ent->footLBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->footLBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 8.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->footLBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 8.0f, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, nullptr, kickDir, nullptr);
-						VectorScale(kickDir, -1, kickDir);
+						AngleVectors(fwd_angs, nullptr, kick_dir, nullptr);
+						VectorScale(kick_dir, -1, kick_dir);
 					}
 				}
 				break;
 			case BOTH_A7_KICK_R:
-				kickSoundOnWalls = qtrue;
+				kick_sound_on_walls = qtrue;
 				//FIXME: push right?
-				if (elapsedTime >= 250 && remainingTime >= 250)
+				if (elapsed_time >= 250 && remaining_time >= 250)
 				{
 					//right
-					doKick = qtrue;
+					do_kick = qtrue;
 					if (ent->footRBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->footRBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 8.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->footRBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 8.0f, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, nullptr, kickDir, nullptr);
+						AngleVectors(fwd_angs, nullptr, kick_dir, nullptr);
 					}
 				}
 				break;
@@ -4882,34 +4856,34 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 				//	break;
 			case BOTH_SLAP_R:
 			case BOTH_A7_SLAP_R:
-				kickSoundOnWalls = qtrue;
+				kick_sound_on_walls = qtrue;
 
 				if (level.framenum & 1)
 				{
 					//right
-					doKick = qtrue;
+					do_kick = qtrue;
 					if (ent->handRBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->handRBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 20.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->handRBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 20.0f, kick_dir, kick_end);
 					}
 					else if (ent->elbowRBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->elbowRBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 20.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->elbowRBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 20.0f, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, nullptr, kickDir, nullptr);
+						AngleVectors(fwd_angs, nullptr, kick_dir, nullptr);
 					}
 				}
 				break;
@@ -4922,141 +4896,141 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 				//case BOTH_MELEEUP://right slap
 				//case BOTH_WOOKIE_SLAP:
 			case BOTH_FJSS_TL_BR:
-				kickSoundOnWalls = qtrue;
+				kick_sound_on_walls = qtrue;
 				//FIXME: push right?
 				if (level.framenum & 1)
 				{
 					//right
-					doKick = qtrue;
+					do_kick = qtrue;
 					if (ent->handRBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->handRBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 20.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->handRBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 20.0f, kick_dir, kick_end);
 					}
 					else if (ent->handLBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->handLBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 20.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->handLBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 20.0f, kick_dir, kick_end);
 					}
 					else if (ent->elbowRBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->elbowRBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 20.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->elbowRBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 20.0f, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, nullptr, kickDir, nullptr);
+						AngleVectors(fwd_angs, nullptr, kick_dir, nullptr);
 					}
 				}
 				break;
 			case BOTH_TUSKENLUNGE1:
 			case BOTH_TUSKENATTACK2:
-				kickSoundOnWalls = qtrue;
+				kick_sound_on_walls = qtrue;
 				if (level.framenum & 1)
 				{
 					//right
-					doKick = qtrue;
+					do_kick = qtrue;
 					if (ent->handRBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->handRBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 20.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->handRBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 20.0f, kick_dir, kick_end);
 					}
 					else if (ent->handLBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->handLBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 20.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->handLBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 20.0f, kick_dir, kick_end);
 					}
 					else if (ent->elbowRBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->elbowRBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 20.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->elbowRBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 20.0f, kick_dir, kick_end);
 					}
 					else if (ent->elbowLBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->elbowLBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 20.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->elbowLBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 20.0f, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, nullptr, kickDir, nullptr);
+						AngleVectors(fwd_angs, nullptr, kick_dir, nullptr);
 					}
 				}
 				break;
 			case BOTH_A7_KICK_L_AIR:
-				kickPush = Q_flrand(150.0f, 250.0f); //Q_flrand( 75.0f, 125.0f );
-				kickSoundOnWalls = qtrue;
-				if (elapsedTime >= 150 && remainingTime >= 300)
+				kick_push = Q_flrand(150.0f, 250.0f); //Q_flrand( 75.0f, 125.0f );
+				kick_sound_on_walls = qtrue;
+				if (elapsed_time >= 150 && remaining_time >= 300)
 				{
 					//left
-					doKick = qtrue;
+					do_kick = qtrue;
 					if (ent->footLBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->footLBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 8.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->footLBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 8.0f, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, nullptr, kickDir, nullptr);
-						VectorScale(kickDir, -1, kickDir);
+						AngleVectors(fwd_angs, nullptr, kick_dir, nullptr);
+						VectorScale(kick_dir, -1, kick_dir);
 					}
 				}
 				break;
 			case BOTH_A7_KICK_L:
-				kickSoundOnWalls = qtrue;
+				kick_sound_on_walls = qtrue;
 				//FIXME: push left?
-				if (elapsedTime >= 250 && remainingTime >= 250)
+				if (elapsed_time >= 250 && remaining_time >= 250)
 				{
 					//left
-					doKick = qtrue;
+					do_kick = qtrue;
 					if (ent->footLBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->footLBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 8.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->footLBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 8.0f, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, nullptr, kickDir, nullptr);
-						VectorScale(kickDir, -1, kickDir);
+						AngleVectors(fwd_angs, nullptr, kick_dir, nullptr);
+						VectorScale(kick_dir, -1, kick_dir);
 					}
 				}
 				break;
@@ -5064,80 +5038,80 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 				if (level.framenum & 1)
 				{
 					//back
-					int handBolt = ent->client->ps.torsoAnim == BOTH_A7_SLAP_L ? ent->handRBolt : ent->handLBolt;
+					int hand_bolt = ent->client->ps.torsoAnim == BOTH_A7_SLAP_L ? ent->handRBolt : ent->handLBolt;
 					//mirrored anims
-					doKick = qtrue;
-					kickDist = 80;
-					if (handBolt != -1) //changed to accommodate teh new hand hand anim
+					do_kick = qtrue;
+					kick_dist = 80;
+					if (hand_bolt != -1) //changed to accommodate teh new hand hand anim
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, handBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 20.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, hand_bolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 20.0f, kick_dir, kick_end);
 					}
 				}
 				else if (ent->handLBolt != -1) //for hand slap
 				{
 					//actually trace to a bolt
-					if (elapsedTime >= 250 && remainingTime >= 250)
+					if (elapsed_time >= 250 && remaining_time >= 250)
 					{
 						//right, though either would do
-						doKick = qtrue;
-						kickDist = 80;
-						G_GetBoltPosition(ent, ent->handLBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0;
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 20.0f, kickDir, kickEnd);
+						do_kick = qtrue;
+						kick_dist = 80;
+						G_GetBoltPosition(ent, ent->handLBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0;
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 20.0f, kick_dir, kick_end);
 					}
 				}
 				else if (ent->elbowLBolt != -1) //for hand slap
 				{
 					//actually trace to a bolt
-					if (elapsedTime >= 250 && remainingTime >= 250)
+					if (elapsed_time >= 250 && remaining_time >= 250)
 					{
 						//right, though either would do
-						doKick = qtrue;
-						kickDist = 80;
-						G_GetBoltPosition(ent, ent->elbowLBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0;
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 20.0f, kickDir, kickEnd);
+						do_kick = qtrue;
+						kick_dist = 80;
+						G_GetBoltPosition(ent, ent->elbowLBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0;
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 20.0f, kick_dir, kick_end);
 					}
 				}
 				break;
 			case BOTH_SLAP_L:
-				kickSoundOnWalls = qtrue;
+				kick_sound_on_walls = qtrue;
 				if (level.framenum & 1)
 				{
 					//right
-					doKick = qtrue;
+					do_kick = qtrue;
 					if (ent->handLBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->handLBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 20.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->handLBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 20.0f, kick_dir, kick_end);
 					}
 					else if (ent->elbowLBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->elbowLBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 20.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->elbowLBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 20.0f, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, nullptr, kickDir, nullptr);
-						VectorScale(kickDir, -1, kickDir);
+						AngleVectors(fwd_angs, nullptr, kick_dir, nullptr);
+						VectorScale(kick_dir, -1, kick_dir);
 					}
 				}
 				break;
@@ -5148,266 +5122,266 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 			case BOTH_MELEE1: //left slap
 				//case BOTH_MELEE3://left slap
 			case BOTH_FJSS_TR_BL:
-				kickSoundOnWalls = qtrue;
+				kick_sound_on_walls = qtrue;
 				//FIXME: push left?
 				if (level.framenum & 1)
 				{
 					//right
-					doKick = qtrue;
+					do_kick = qtrue;
 					if (ent->handLBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->handLBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 20.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->handLBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 20.0f, kick_dir, kick_end);
 					}
 					else if (ent->handRBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->handRBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 20.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->handRBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 20.0f, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, nullptr, kickDir, nullptr);
-						VectorScale(kickDir, -1, kickDir);
+						AngleVectors(fwd_angs, nullptr, kick_dir, nullptr);
+						VectorScale(kick_dir, -1, kick_dir);
 					}
 				}
 				break;
 			case BOTH_TUSKENATTACK1:
 			case BOTH_TUSKENATTACK3:
-				kickSoundOnWalls = qtrue;
+				kick_sound_on_walls = qtrue;
 				//FIXME: push left?
 				if (level.framenum & 1)
 				{
 					//right
-					doKick = qtrue;
+					do_kick = qtrue;
 					if (ent->handLBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->handLBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 20.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->handLBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 20.0f, kick_dir, kick_end);
 					}
 					else if (ent->handRBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->handRBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 20.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->handRBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 20.0f, kick_dir, kick_end);
 					}
 					else if (ent->elbowLBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->elbowLBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 20.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->elbowLBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 20.0f, kick_dir, kick_end);
 					}
 					else if (ent->elbowRBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->elbowRBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
-						VectorMA(kickEnd, 20.0f, kickDir, kickEnd);
+						G_GetBoltPosition(ent, ent->elbowRBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
+						VectorMA(kick_end, 20.0f, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, nullptr, kickDir, nullptr);
-						VectorScale(kickDir, -1, kickDir);
+						AngleVectors(fwd_angs, nullptr, kick_dir, nullptr);
+						VectorScale(kick_dir, -1, kick_dir);
 					}
 				}
 				break;
 			case BOTH_A7_KICK_S:
-				kickPush = Q_flrand(150.0f, 250.0f);
+				kick_push = Q_flrand(150.0f, 250.0f);
 				if (ent->footRBolt != -1)
 				{
 					//actually trace to a bolt
-					if (elapsedTime >= 550
-						&& elapsedTime <= 1050)
+					if (elapsed_time >= 550
+						&& elapsed_time <= 1050)
 					{
-						doKick = qtrue;
-						G_GetBoltPosition(ent, ent->footRBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
+						do_kick = qtrue;
+						G_GetBoltPosition(ent, ent->footRBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
 						//NOTE: have to fudge this a little because it's not getting enough range with the anim as-is
-						VectorMA(kickEnd, 8.0f, kickDir, kickEnd);
+						VectorMA(kick_end, 8.0f, kick_dir, kick_end);
 					}
 				}
 				else
 				{
 					//guess
-					if (elapsedTime >= 400 && elapsedTime < 500)
+					if (elapsed_time >= 400 && elapsed_time < 500)
 					{
 						//front
-						doKick = qtrue;
-						AngleVectors(fwdAngs, kickDir, nullptr, nullptr);
+						do_kick = qtrue;
+						AngleVectors(fwd_angs, kick_dir, nullptr, nullptr);
 					}
-					else if (elapsedTime >= 500 && elapsedTime < 600)
+					else if (elapsed_time >= 500 && elapsed_time < 600)
 					{
 						//front-right?
-						doKick = qtrue;
-						fwdAngs[YAW] += 45;
-						AngleVectors(fwdAngs, kickDir, nullptr, nullptr);
+						do_kick = qtrue;
+						fwd_angs[YAW] += 45;
+						AngleVectors(fwd_angs, kick_dir, nullptr, nullptr);
 					}
-					else if (elapsedTime >= 600 && elapsedTime < 700)
+					else if (elapsed_time >= 600 && elapsed_time < 700)
 					{
 						//right
-						doKick = qtrue;
-						AngleVectors(fwdAngs, nullptr, kickDir, nullptr);
+						do_kick = qtrue;
+						AngleVectors(fwd_angs, nullptr, kick_dir, nullptr);
 					}
-					else if (elapsedTime >= 700 && elapsedTime < 800)
+					else if (elapsed_time >= 700 && elapsed_time < 800)
 					{
 						//back-right?
-						doKick = qtrue;
-						fwdAngs[YAW] += 45;
-						AngleVectors(fwdAngs, nullptr, kickDir, nullptr);
+						do_kick = qtrue;
+						fwd_angs[YAW] += 45;
+						AngleVectors(fwd_angs, nullptr, kick_dir, nullptr);
 					}
-					else if (elapsedTime >= 800 && elapsedTime < 900)
+					else if (elapsed_time >= 800 && elapsed_time < 900)
 					{
 						//back
-						doKick = qtrue;
-						AngleVectors(fwdAngs, kickDir, nullptr, nullptr);
-						VectorScale(kickDir, -1, kickDir);
+						do_kick = qtrue;
+						AngleVectors(fwd_angs, kick_dir, nullptr, nullptr);
+						VectorScale(kick_dir, -1, kick_dir);
 					}
-					else if (elapsedTime >= 900 && elapsedTime < 1000)
+					else if (elapsed_time >= 900 && elapsed_time < 1000)
 					{
 						//back-left?
-						doKick = qtrue;
-						fwdAngs[YAW] += 45;
-						AngleVectors(fwdAngs, kickDir, nullptr, nullptr);
+						do_kick = qtrue;
+						fwd_angs[YAW] += 45;
+						AngleVectors(fwd_angs, kick_dir, nullptr, nullptr);
 					}
-					else if (elapsedTime >= 1000 && elapsedTime < 1100)
+					else if (elapsed_time >= 1000 && elapsed_time < 1100)
 					{
 						//left
-						doKick = qtrue;
-						AngleVectors(fwdAngs, nullptr, kickDir, nullptr);
-						VectorScale(kickDir, -1, kickDir);
+						do_kick = qtrue;
+						AngleVectors(fwd_angs, nullptr, kick_dir, nullptr);
+						VectorScale(kick_dir, -1, kick_dir);
 					}
-					else if (elapsedTime >= 1100 && elapsedTime < 1200)
+					else if (elapsed_time >= 1100 && elapsed_time < 1200)
 					{
 						//front-left?
-						doKick = qtrue;
-						fwdAngs[YAW] += 45;
-						AngleVectors(fwdAngs, nullptr, kickDir, nullptr);
-						VectorScale(kickDir, -1, kickDir);
+						do_kick = qtrue;
+						fwd_angs[YAW] += 45;
+						AngleVectors(fwd_angs, nullptr, kick_dir, nullptr);
+						VectorScale(kick_dir, -1, kick_dir);
 					}
 				}
 				break;
 			case BOTH_A7_KICK_BF:
-				kickPush = Q_flrand(150.0f, 250.0f); //Q_flrand( 75.0f, 125.0f );
-				if (elapsedTime < 1500)
+				kick_push = Q_flrand(150.0f, 250.0f); //Q_flrand( 75.0f, 125.0f );
+				if (elapsed_time < 1500)
 				{
 					//auto-aim!
-					overridAngles = PM_AdjustAnglesForBFKick(ent, ucmd, fwdAngs,
-						static_cast<qboolean>(elapsedTime < 850))
+					overrid_angles = PM_AdjustAnglesForBFKick(ent, ucmd, fwd_angs,
+						static_cast<qboolean>(elapsed_time < 850))
 						? qtrue
-						: overridAngles;
+						: overrid_angles;
 				}
 				if (ent->footRBolt != -1)
 				{
 					//actually trace to a bolt
-					if (elapsedTime >= 750 && elapsedTime < 850
-						|| elapsedTime >= 1400 && elapsedTime < 1500)
+					if (elapsed_time >= 750 && elapsed_time < 850
+						|| elapsed_time >= 1400 && elapsed_time < 1500)
 					{
 						//right, though either would do
-						doKick = qtrue;
-						G_GetBoltPosition(ent, ent->footRBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
+						do_kick = qtrue;
+						G_GetBoltPosition(ent, ent->footRBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
 						//NOTE: have to fudge this a little because it's not getting enough range with the anim as-is
-						VectorMA(kickEnd, 8, kickDir, kickEnd);
+						VectorMA(kick_end, 8, kick_dir, kick_end);
 					}
 				}
 				else
 				{
 					//guess
-					if (elapsedTime >= 250 && elapsedTime < 350)
+					if (elapsed_time >= 250 && elapsed_time < 350)
 					{
 						//front
-						doKick = qtrue;
-						AngleVectors(fwdAngs, kickDir, nullptr, nullptr);
+						do_kick = qtrue;
+						AngleVectors(fwd_angs, kick_dir, nullptr, nullptr);
 					}
-					else if (elapsedTime >= 350 && elapsedTime < 450)
+					else if (elapsed_time >= 350 && elapsed_time < 450)
 					{
 						//back
-						doKick = qtrue;
-						AngleVectors(fwdAngs, kickDir, nullptr, nullptr);
-						VectorScale(kickDir, -1, kickDir);
+						do_kick = qtrue;
+						AngleVectors(fwd_angs, kick_dir, nullptr, nullptr);
+						VectorScale(kick_dir, -1, kick_dir);
 					}
 				}
 				break;
 			case BOTH_A7_KICK_RL:
-				kickSoundOnWalls = qtrue;
-				kickPush = Q_flrand(150.0f, 250.0f);
-				if (elapsedTime >= 250 && elapsedTime < 350)
+				kick_sound_on_walls = qtrue;
+				kick_push = Q_flrand(150.0f, 250.0f);
+				if (elapsed_time >= 250 && elapsed_time < 350)
 				{
 					//right
-					doKick = qtrue;
+					do_kick = qtrue;
 					if (ent->footRBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->footRBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
+						G_GetBoltPosition(ent, ent->footRBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
 						//NOTE: have to fudge this a little because it's not getting enough range with the anim as-is
-						VectorMA(kickEnd, 8, kickDir, kickEnd);
+						VectorMA(kick_end, 8, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, nullptr, kickDir, nullptr);
+						AngleVectors(fwd_angs, nullptr, kick_dir, nullptr);
 					}
 				}
-				else if (elapsedTime >= 350 && elapsedTime < 450)
+				else if (elapsed_time >= 350 && elapsed_time < 450)
 				{
 					//left
-					doKick = qtrue;
+					do_kick = qtrue;
 					if (ent->footLBolt != -1)
 					{
 						//actually trace to a bolt
-						G_GetBoltPosition(ent, ent->footLBolt, kickEnd);
-						VectorSubtract(kickEnd, ent->currentOrigin, kickDir);
-						kickDir[2] = 0; //ah, flatten it, I guess...
-						VectorNormalize(kickDir);
+						G_GetBoltPosition(ent, ent->footLBolt, kick_end);
+						VectorSubtract(kick_end, ent->currentOrigin, kick_dir);
+						kick_dir[2] = 0; //ah, flatten it, I guess...
+						VectorNormalize(kick_dir);
 						//NOTE: have to fudge this a little because it's not getting enough range with the anim as-is
-						VectorMA(kickEnd, 8, kickDir, kickEnd);
+						VectorMA(kick_end, 8, kick_dir, kick_end);
 					}
 					else
 					{
 						//guess
-						AngleVectors(fwdAngs, nullptr, kickDir, nullptr);
-						VectorScale(kickDir, -1, kickDir);
+						AngleVectors(fwd_angs, nullptr, kick_dir, nullptr);
+						VectorScale(kick_dir, -1, kick_dir);
 					}
 				}
 				break;
 			default:;
 			}
 		}
-		if (doKick)
+		if (do_kick)
 		{
-			G_KickTrace(ent, kickDir, kickDist, kickEnd, kickDamage, kickPush, kickSoundOnWalls);
+			G_KickTrace(ent, kick_dir, kick_dist, kick_end, kick_damage, kick_push, kick_sound_on_walls);
 		}
-		if (doKick2)
+		if (do_kick2)
 		{
-			G_KickTrace(ent, kickDir2, kickDist2, kickEnd2, kickDamage2, kickPush2, kickSoundOnWalls);
+			G_KickTrace(ent, kick_dir2, kick_dist2, kick_end2, kick_damage2, kick_push2, kick_sound_on_walls);
 		}
 	}
 	else if (ent->client->ps.saberMove == LS_DUAL_FB)
@@ -5424,7 +5398,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 		{
 			VectorClear(ent->client->ps.moveDir);
 		}
-		if ((overridAngles = PM_AdjustAnglesForBackAttack(ent, ucmd) ? qtrue : overridAngles) == qtrue)
+		if ((overrid_angles = PM_AdjustAnglesForBackAttack(ent, ucmd) ? qtrue : overrid_angles) == qtrue)
 		{
 			//pull back the view
 			G_CamPullBackForLegsAnim(ent);
@@ -5448,41 +5422,41 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 		}
 		if (!ent->s.number)
 		{
-			float animLength = PM_AnimLength(ent->client->clientInfo.animFileIndex,
+			float anim_length = PM_AnimLength(ent->client->clientInfo.animFileIndex,
 				static_cast<animNumber_t>(ent->client->ps.torsoAnim));
-			float elapsedTime = animLength - ent->client->ps.torsoAnimTimer;
-			float backDist = 0;
-			if (elapsedTime <= 300.0f)
+			float elapsed_time = anim_length - ent->client->ps.torsoAnimTimer;
+			float back_dist = 0;
+			if (elapsed_time <= 300.0f)
 			{
 				//starting anim
-				backDist = elapsedTime / 300.0f * 90.0f;
+				back_dist = elapsed_time / 300.0f * 90.0f;
 			}
 			else if (ent->client->ps.torsoAnimTimer <= 300.0f)
 			{
 				//ending anim
-				backDist = ent->client->ps.torsoAnimTimer / 300.0f * 90.0f;
+				back_dist = ent->client->ps.torsoAnimTimer / 300.0f * 90.0f;
 			}
 			else
 			{
 				//in middle of anim
-				backDist = 90.0f;
+				back_dist = 90.0f;
 			}
 			//back off and look down
 			cg.overrides.active |= CG_OVERRIDE_3RD_PERSON_RNG | CG_OVERRIDE_3RD_PERSON_POF;
-			cg.overrides.thirdPersonRange = cg_thirdPersonRange.value + backDist;
-			cg.overrides.thirdPersonPitchOffset = cg_thirdPersonPitchOffset.value + backDist / 2.0f;
+			cg.overrides.thirdPersonRange = cg_thirdPersonRange.value + back_dist;
+			cg.overrides.thirdPersonPitchOffset = cg_thirdPersonPitchOffset.value + back_dist / 2.0f;
 		}
-		overridAngles = PM_AdjustAnglesForSpinProtect(ent, ucmd) ? qtrue : overridAngles;
+		overrid_angles = PM_AdjustAnglesForSpinProtect(ent, ucmd) ? qtrue : overrid_angles;
 	}
 	else if (ent->client->ps.legsAnim == BOTH_A3_SPECIAL)
 	{
 		//push forward
-		float animLength = PM_AnimLength(ent->client->clientInfo.animFileIndex,
+		float anim_length = PM_AnimLength(ent->client->clientInfo.animFileIndex,
 			static_cast<animNumber_t>(ent->client->ps.torsoAnim));
-		float elapsedTime = animLength - ent->client->ps.torsoAnimTimer;
+		float elapsed_time = anim_length - ent->client->ps.torsoAnimTimer;
 		ucmd->upmove = ucmd->rightmove = 0;
 		ucmd->forwardmove = 0;
-		if (elapsedTime >= 350 && elapsedTime < 1500)
+		if (elapsed_time >= 350 && elapsed_time < 1500)
 		{
 			//push forward
 			ucmd->forwardmove = 64;
@@ -5496,11 +5470,11 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 		ucmd->forwardmove = 0;
 		if (ent->client->ps.legsAnimTimer > 200.0f)
 		{
-			float animLength = PM_AnimLength(ent->client->clientInfo.animFileIndex,
+			float anim_length = PM_AnimLength(ent->client->clientInfo.animFileIndex,
 				static_cast<animNumber_t>(ent->client->ps.torsoAnim));
-			float elapsedTime = animLength - ent->client->ps.torsoAnimTimer;
-			if (elapsedTime < 750
-				|| elapsedTime >= 1650 && elapsedTime < 2400)
+			float elapsed_time = anim_length - ent->client->ps.torsoAnimTimer;
+			if (elapsed_time < 750
+				|| elapsed_time >= 1650 && elapsed_time < 2400)
 			{
 				//push forward
 				ucmd->forwardmove = 64;
@@ -5519,11 +5493,11 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 	else if (ent->client->ps.legsAnim == BOTH_FLIP_LAND)
 	{
 		//moving during full-body fast special
-		float animLength = PM_AnimLength(ent->client->clientInfo.animFileIndex,
+		float anim_length = PM_AnimLength(ent->client->clientInfo.animFileIndex,
 			static_cast<animNumber_t>(ent->client->ps.torsoAnim));
-		float elapsedTime = animLength - ent->client->ps.torsoAnimTimer;
+		float elapsed_time = anim_length - ent->client->ps.torsoAnimTimer;
 		ucmd->upmove = ucmd->rightmove = ucmd->forwardmove = 0;
-		if (elapsedTime > 600 && elapsedTime < 800
+		if (elapsed_time > 600 && elapsed_time < 800
 			&& ent->client->ps.groundEntityNum != ENTITYNUM_NONE)
 		{
 			//jump - FIXME: how do we stop double-jumps?
@@ -5545,7 +5519,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 			VectorClear(ent->client->ps.moveDir);
 			ent->client->ps.forceJumpCharge = 0;
 		}
-		overridAngles = PM_LockAngles(ent, ucmd) ? qtrue : overridAngles;
+		overrid_angles = PM_LockAngles(ent, ucmd) ? qtrue : overrid_angles;
 	}
 	else if (ent->client->ps.legsAnim == BOTH_DODGE_HOLD_BL ||
 		ent->client->ps.legsAnim == BOTH_DODGE_HOLD_BR ||
@@ -5647,7 +5621,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 					VectorClear(ent->client->ps.moveDir);
 					ent->client->ps.forceJumpCharge = 0;
 				}
-				overridAngles = PM_LockAngles(ent, ucmd) ? qtrue : overridAngles;
+				overrid_angles = PM_LockAngles(ent, ucmd) ? qtrue : overrid_angles;
 			}
 		}
 	}
@@ -5662,7 +5636,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 			VectorClear(ent->client->ps.moveDir);
 			ent->client->ps.forceJumpCharge = 0;
 		}
-		overridAngles = PM_LockAngles(ent, ucmd) ? qtrue : overridAngles;
+		overrid_angles = PM_LockAngles(ent, ucmd) ? qtrue : overrid_angles;
 	}
 	else if (ent->client->ps.legsAnim == BOTH_MEDITATE_SABER_END && ent->client->ps.legsAnimTimer > 0)
 	{
@@ -5675,7 +5649,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 			VectorClear(ent->client->ps.moveDir);
 			ent->client->ps.forceJumpCharge = 0;
 		}
-		overridAngles = PM_LockAngles(ent, ucmd) ? qtrue : overridAngles;
+		overrid_angles = PM_LockAngles(ent, ucmd) ? qtrue : overrid_angles;
 	}
 	//EMOTE SYSTEM
 	else if (BG_FullBodyEmoteAnim(ent->client->ps.torsoAnim))
@@ -5726,7 +5700,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 					VectorClear(ent->client->ps.moveDir);
 					ent->client->ps.forceJumpCharge = 0;
 				}
-				overridAngles = PM_LockAngles(ent, ucmd) ? qtrue : overridAngles;
+				overrid_angles = PM_LockAngles(ent, ucmd) ? qtrue : overrid_angles;
 			}
 		}
 	}
@@ -5741,7 +5715,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 			VectorClear(ent->client->ps.moveDir);
 			ent->client->ps.forceJumpCharge = 0;
 		}
-		overridAngles = PM_LockAngles(ent, ucmd) ? qtrue : overridAngles;
+		overrid_angles = PM_LockAngles(ent, ucmd) ? qtrue : overrid_angles;
 	}
 	else if (BG_FullBodyCowerAnim(ent->client->ps.torsoAnim))
 	{
@@ -5791,7 +5765,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 					VectorClear(ent->client->ps.moveDir);
 					ent->client->ps.forceJumpCharge = 0;
 				}
-				overridAngles = PM_LockAngles(ent, ucmd) ? qtrue : overridAngles;
+				overrid_angles = PM_LockAngles(ent, ucmd) ? qtrue : overrid_angles;
 			}
 		}
 	}
@@ -5806,11 +5780,11 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 			VectorClear(ent->client->ps.moveDir);
 			ent->client->ps.forceJumpCharge = 0;
 		}
-		overridAngles = PM_LockAngles(ent, ucmd) ? qtrue : overridAngles;
+		overrid_angles = PM_LockAngles(ent, ucmd) ? qtrue : overrid_angles;
 	} //stiffened up
 	else if (g_SerenityJediEngineMode->integer == 2
 		&& !in_camera
-		&& (ent->s.clientNum >= MAX_CLIENTS && !G_ControlledByPlayer(ent))
+		&& (ent->s.client_num >= MAX_CLIENTS && !G_ControlledByPlayer(ent))
 		&& PM_SaberInMassiveBounce(ent->client->ps.torsoAnim)
 		&& ent->client->ps.torsoAnimTimer)
 	{
@@ -5821,7 +5795,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 			VectorClear(ent->client->ps.moveDir);
 			ent->client->ps.forceJumpCharge = 0;
 		}
-		overridAngles = PM_LockAngles(ent, ucmd) ? qtrue : overridAngles;
+		overrid_angles = PM_LockAngles(ent, ucmd) ? qtrue : overrid_angles;
 	}
 	else if ((ent->client->ps.legsAnim == BOTH_HOP_R ||
 		ent->client->ps.legsAnim == BOTH_HOP_L ||
@@ -5836,7 +5810,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 	}
 	else if (In_LedgeIdle(ent->client->ps.torsoAnim))
 	{
-		overridAngles = PM_LockAngles(ent, ucmd) ? qtrue : overridAngles;
+		overrid_angles = PM_LockAngles(ent, ucmd) ? qtrue : overrid_angles;
 		//ucmd->forwardmove = ucmd->rightmove = ucmd->upmove = 0;
 	}
 	else if (ent->client->ps.forcePowersActive & 1 << FP_REPULSE && (ent->client->ps.torsoAnim ==
@@ -5850,7 +5824,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 			VectorClear(ent->client->ps.moveDir);
 			ent->client->ps.forceJumpCharge = 0;
 		}
-		overridAngles = PM_LockAngles(ent, ucmd) ? qtrue : overridAngles;
+		overrid_angles = PM_LockAngles(ent, ucmd) ? qtrue : overrid_angles;
 	}
 	else if (ent->client->ps.repulseChargeStart)
 	{
@@ -5862,7 +5836,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 			VectorClear(ent->client->ps.moveDir);
 			ent->client->ps.forceJumpCharge = 0;
 		}
-		overridAngles = PM_LockAngles(ent, ucmd) ? qtrue : overridAngles;
+		overrid_angles = PM_LockAngles(ent, ucmd) ? qtrue : overrid_angles;
 	}
 	else if (ent->client->ps.torsoAnim == BOTH_FORCE_REPULSE)
 	{
@@ -5874,7 +5848,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 			VectorClear(ent->client->ps.moveDir);
 			ent->client->ps.forceJumpCharge = 0;
 		}
-		overridAngles = PM_LockAngles(ent, ucmd) ? qtrue : overridAngles;
+		overrid_angles = PM_LockAngles(ent, ucmd) ? qtrue : overrid_angles;
 	}
 	//END EMOTE
 	//////////////////////////////////////////////////////////////////////
@@ -5991,42 +5965,42 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 		}
 	}
 
-	overridAngles = PM_AdjustAnglesForStabDown(ent, ucmd) ? qtrue : overridAngles;
-	overridAngles = PM_AdjustAngleForWallJump(ent, ucmd, qtrue) ? qtrue : overridAngles;
-	overridAngles = PM_AdjustAngleForWallRunUp(ent, ucmd, qtrue) ? qtrue : overridAngles;
-	overridAngles = PM_AdjustAngleForWallRun(ent, ucmd, qtrue) ? qtrue : overridAngles;
+	overrid_angles = PM_AdjustAnglesForStabDown(ent, ucmd) ? qtrue : overrid_angles;
+	overrid_angles = PM_AdjustAngleForWallJump(ent, ucmd, qtrue) ? qtrue : overrid_angles;
+	overrid_angles = PM_AdjustAngleForWallRunUp(ent, ucmd, qtrue) ? qtrue : overrid_angles;
+	overrid_angles = PM_AdjustAngleForWallRun(ent, ucmd, qtrue) ? qtrue : overrid_angles;
 
-	return overridAngles;
+	return overrid_angles;
 }
 
 void BG_AddPushVecToUcmd(const gentity_t* self, usercmd_t* ucmd)
 {
-	vec3_t forward, right, moveDir;
+	vec3_t forward, right, move_dir;
 
 	if (!self->client)
 	{
 		return;
 	}
-	const float pushSpeed = VectorLengthSquared(self->client->pushVec);
-	if (!pushSpeed)
+	const float push_speed = VectorLengthSquared(self->client->pushVec);
+	if (!push_speed)
 	{
 		//not being pushed
 		return;
 	}
 
 	AngleVectors(self->client->ps.viewangles, forward, right, nullptr);
-	VectorScale(forward, ucmd->forwardmove / 127.0f * self->client->ps.speed, moveDir);
-	VectorMA(moveDir, ucmd->rightmove / 127.0f * self->client->ps.speed, right, moveDir);
+	VectorScale(forward, ucmd->forwardmove / 127.0f * self->client->ps.speed, move_dir);
+	VectorMA(move_dir, ucmd->rightmove / 127.0f * self->client->ps.speed, right, move_dir);
 	//moveDir is now our intended move velocity
 
-	VectorAdd(moveDir, self->client->pushVec, moveDir);
-	self->client->ps.speed = VectorNormalize(moveDir);
+	VectorAdd(move_dir, self->client->pushVec, move_dir);
+	self->client->ps.speed = VectorNormalize(move_dir);
 	//moveDir is now our intended move velocity plus our push Vector
 
-	const float fMove = 127.0 * DotProduct(forward, moveDir);
-	const float rMove = 127.0 * DotProduct(right, moveDir);
-	ucmd->forwardmove = floor(fMove); //If in the same dir , will be positive
-	ucmd->rightmove = floor(rMove); //If in the same dir , will be positive
+	const float f_move = 127.0 * DotProduct(forward, move_dir);
+	const float r_move = 127.0 * DotProduct(right, move_dir);
+	ucmd->forwardmove = floor(f_move); //If in the same dir , will be positive
+	ucmd->rightmove = floor(r_move); //If in the same dir , will be positive
 
 	if (self->client->pushVecTime < level.time)
 	{
@@ -6034,7 +6008,7 @@ void BG_AddPushVecToUcmd(const gentity_t* self, usercmd_t* ucmd)
 	}
 }
 
-void NPC_Accelerate(const gentity_t* ent, qboolean fullWalkAcc, qboolean fullRunAcc)
+void NPC_Accelerate(const gentity_t* ent, const qboolean full_walk_acc, const qboolean full_run_acc)
 {
 	if (!ent->client || !ent->NPC)
 	{
@@ -6060,7 +6034,7 @@ void NPC_Accelerate(const gentity_t* ent, qboolean fullWalkAcc, qboolean fullRun
 			//ent->client->ps.friction = 0;
 			ent->NPC->currentSpeed = ent->NPC->desiredSpeed;
 		}
-		else if (fullWalkAcc && ent->NPC->desiredSpeed < ent->NPC->currentSpeed - ent->NPC->stats.acceleration)
+		else if (full_walk_acc && ent->NPC->desiredSpeed < ent->NPC->currentSpeed - ent->NPC->stats.acceleration)
 		{
 			//decelerate even when walking
 			ent->NPC->currentSpeed -= ent->NPC->stats.acceleration;
@@ -6074,7 +6048,7 @@ void NPC_Accelerate(const gentity_t* ent, qboolean fullWalkAcc, qboolean fullRun
 	else //  if ( ent->NPC->desiredSpeed > ent->NPC->stats.walkSpeed )
 	{
 		//Only decelerate if at runSpeeds
-		if (fullRunAcc && ent->NPC->desiredSpeed > ent->NPC->currentSpeed + ent->NPC->stats.acceleration)
+		if (full_run_acc && ent->NPC->desiredSpeed > ent->NPC->currentSpeed + ent->NPC->stats.acceleration)
 		{
 			//Accelerate to runspeed
 			//ent->client->ps.friction = 0;
@@ -6086,7 +6060,7 @@ void NPC_Accelerate(const gentity_t* ent, qboolean fullWalkAcc, qboolean fullRun
 			//ent->client->ps.friction = 0;
 			ent->NPC->currentSpeed = ent->NPC->desiredSpeed;
 		}
-		else if (fullRunAcc && ent->NPC->desiredSpeed < ent->NPC->currentSpeed - ent->NPC->stats.acceleration)
+		else if (full_run_acc && ent->NPC->desiredSpeed < ent->NPC->currentSpeed - ent->NPC->stats.acceleration)
 		{
 			ent->NPC->currentSpeed -= ent->NPC->stats.acceleration;
 		}
@@ -6105,7 +6079,7 @@ NPC_GetWalkSpeed
 
 static int NPC_GetWalkSpeed(const gentity_t* ent)
 {
-	int walkSpeed;
+	int walk_speed;
 
 	if (ent->client == nullptr || ent->NPC == nullptr)
 		return 0;
@@ -6114,11 +6088,11 @@ static int NPC_GetWalkSpeed(const gentity_t* ent)
 	{
 	case TEAM_PLAYER: //To shutup compiler, will add entries later (this is stub code)
 	default:
-		walkSpeed = ent->NPC->stats.walkSpeed;
+		walk_speed = ent->NPC->stats.walkSpeed;
 		break;
 	}
 
-	return walkSpeed;
+	return walk_speed;
 }
 
 /*
@@ -6129,7 +6103,7 @@ NPC_GetRunSpeed
 
 static int NPC_GetRunSpeed(const gentity_t* ent)
 {
-	int runSpeed;
+	int run_speed;
 
 	if (ent->client == nullptr || ent->NPC == nullptr)
 		return 0;
@@ -6148,15 +6122,15 @@ static int NPC_GetRunSpeed(const gentity_t* ent)
 	case CLASS_MOUSE:
 	case CLASS_SEEKER:
 	case CLASS_REMOTE:
-		runSpeed = ent->NPC->stats.runSpeed;
+		run_speed = ent->NPC->stats.runSpeed;
 		break;
 
 	default:
-		runSpeed = ent->NPC->stats.runSpeed;
+		run_speed = ent->NPC->stats.runSpeed;
 		break;
 	}
 
-	return runSpeed;
+	return run_speed;
 }
 
 void G_HeldByMonster(gentity_t* ent, usercmd_t** ucmd)
@@ -6168,22 +6142,22 @@ void G_HeldByMonster(gentity_t* ent, usercmd_t** ucmd)
 		ent->waypoint = monster->waypoint;
 
 		//update the actual origin of the victim
-		mdxaBone_t boltMatrix;
+		mdxaBone_t bolt_matrix;
 
 		// Getting the bolt here
-		int boltIndex = monster->gutBolt; //default to being held in his mouth
+		int bolt_index = monster->gutBolt; //default to being held in his mouth
 		if (monster->count == 1)
 		{
 			//being held in hand rather than the mouth, so use *that* bolt
-			boltIndex = monster->handRBolt;
+			bolt_index = monster->handRBolt;
 		}
-		vec3_t monAngles = { 0 };
-		monAngles[YAW] = monster->currentAngles[YAW]; //only use YAW when passing angles to G2
-		gi.G2API_GetBoltMatrix(monster->ghoul2, monster->playerModel, boltIndex,
-			&boltMatrix, monAngles, monster->currentOrigin, cg.time ? cg.time : level.time,
+		vec3_t mon_angles = { 0 };
+		mon_angles[YAW] = monster->currentAngles[YAW]; //only use YAW when passing angles to G2
+		gi.G2API_GetBoltMatrix(monster->ghoul2, monster->playerModel, bolt_index,
+			&bolt_matrix, mon_angles, monster->currentOrigin, cg.time ? cg.time : level.time,
 			nullptr, monster->s.modelScale);
 		// Storing ent position, bolt position, and bolt axis
-		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, ent->client->ps.origin);
+		gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, ent->client->ps.origin);
 		gi.linkentity(ent);
 		//lock view angles
 		PM_AdjustAnglesForHeldByMonster(ent, monster, *ucmd);
@@ -6209,13 +6183,13 @@ void G_HeldByMonster(gentity_t* ent, usercmd_t** ucmd)
 }
 
 // yes...   so stop skipping...
-void G_StopCinematicSkip(void)
+void G_StopCinematicSkip()
 {
 	gi.cvar_set("skippingCinematic", "0");
 	gi.cvar_set("timescale", "1");
 }
 
-void G_StartCinematicSkip(void)
+void G_StartCinematicSkip()
 {
 	if (cinematicSkipScript[0])
 	{
@@ -6310,16 +6284,16 @@ void G_CheckClientIdleSabers(gentity_t* ent, const usercmd_t* ucmd)
 	else if (g_SerenityJediEngineMode->integer == 2 && level.time - ent->client->idleTime > 2000)
 	{
 		//been idle for 2 seconds
-		int idleAnim = -1;
+		int idle_anim = -1;
 
 		switch (ent->client->ps.legsAnim)
 		{
 		case BOTH_STAND1:
 		case BOTH_STAND6:
-			idleAnim = BOTH_STAND1IDLE1;
+			idle_anim = BOTH_STAND1IDLE1;
 			break;
 		case BOTH_STAND9:
-			idleAnim = BOTH_STAND9IDLE1;
+			idle_anim = BOTH_STAND9IDLE1;
 			break;
 		case BOTH_SABERTAVION_STANCE:
 		case BOTH_SABERTAVION_STANCE_JKA:
@@ -6331,129 +6305,129 @@ void G_CheckClientIdleSabers(gentity_t* ent, const usercmd_t* ucmd)
 		case BOTH_SABERSLOW_STANCE_JKA:
 		case BOTH_SABERSINGLECROUCH:
 		case BOTH_STAND_SABER_ON:
-			idleAnim = BOTH_STAND_SABER_ON_IDLE;
+			idle_anim = BOTH_STAND_SABER_ON_IDLE;
 			break;
 		case BOTH_SABERDUAL_STANCE:
 		case BOTH_SABERDUAL_STANCE_JKA:
 		case BOTH_SABERDUALCROUCH:
 		case BOTH_STAND_SABER_ON_DUELS:
-			idleAnim = BOTH_STAND_SABER_ON_IDLE_DUELS;
+			idle_anim = BOTH_STAND_SABER_ON_IDLE_DUELS;
 			break;
 		case BOTH_SABERSTAFF_STANCE:
 		case BOTH_SABERSTAFF_STANCE_JKA:
 		case BOTH_SABERSTAFFCROUCH:
 		case BOTH_STAND_SABER_ON_STAFF:
-			idleAnim = BOTH_STAND_SABER_ON_IDLE_STAFF;
+			idle_anim = BOTH_STAND_SABER_ON_IDLE_STAFF;
 			break;
 		case BOTH_STAND2:
 		case BOTH_STAND2_JKA:
-			idleAnim = BOTH_STAND2IDLE2;
+			idle_anim = BOTH_STAND2IDLE2;
 			break;
 		case BOTH_STAND3:
-			idleAnim = BOTH_STAND3IDLE1;
+			idle_anim = BOTH_STAND3IDLE1;
 			break;
 		case BOTH_STAND5:
-			idleAnim = BOTH_STAND5IDLE1;
+			idle_anim = BOTH_STAND5IDLE1;
 			break;
 		case BOTH_STANDYODA_STICK:
-			idleAnim = BOTH_STANDYODAIDLE_STICK;
+			idle_anim = BOTH_STANDYODAIDLE_STICK;
 			break;
 		case BOTH_MENUIDLE1:
-			idleAnim = BOTH_MENUIDLE1;
+			idle_anim = BOTH_MENUIDLE1;
 			break;
 		default:;
 		}
-		if (idleAnim != -1 && PM_HasAnimation(ent, idleAnim))
+		if (idle_anim != -1 && PM_HasAnimation(ent, idle_anim))
 		{
-			NPC_SetAnim(ent, SETANIM_BOTH, idleAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+			NPC_SetAnim(ent, SETANIM_BOTH, idle_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 			//don't idle again after this anim for a while
-			ent->client->idleTime = level.time + PM_AnimLength(ent->client->clientInfo.animFileIndex, static_cast<animNumber_t>(idleAnim)) + Q_irand(0, 4000);
+			ent->client->idleTime = level.time + PM_AnimLength(ent->client->clientInfo.animFileIndex, static_cast<animNumber_t>(idle_anim)) + Q_irand(0, 4000);
 		}
 	}
 	else if (g_SerenityJediEngineMode->integer < 2 && level.time - ent->client->idleTime > 4000)
 	{
 		//been idle for 5 seconds
-		int idleAnim = -1;
+		int idle_anim = -1;
 
 		switch (ent->client->ps.legsAnim)
 		{
 		case BOTH_STAND1:
 		case BOTH_STAND6:
-			idleAnim = BOTH_STAND1IDLE1;
+			idle_anim = BOTH_STAND1IDLE1;
 			break;
 		case BOTH_STAND9:
-			idleAnim = BOTH_STAND9IDLE1;
+			idle_anim = BOTH_STAND9IDLE1;
 			break;
 		case BOTH_STAND_SABER_ON:
-			idleAnim = BOTH_STAND_SABER_ON_IDLE;
+			idle_anim = BOTH_STAND_SABER_ON_IDLE;
 			break;
 		case BOTH_STAND_SABER_ON_DUELS:
-			idleAnim = BOTH_STAND_SABER_ON_IDLE_DUELS;
+			idle_anim = BOTH_STAND_SABER_ON_IDLE_DUELS;
 			break;
 		case BOTH_STAND_SABER_ON_STAFF:
-			idleAnim = BOTH_STAND_SABER_ON_IDLE_STAFF;
+			idle_anim = BOTH_STAND_SABER_ON_IDLE_STAFF;
 			break;
 		case BOTH_STAND2:
 		case BOTH_STAND2_JKA:
-			idleAnim = BOTH_STAND2IDLE2;
+			idle_anim = BOTH_STAND2IDLE2;
 			break;
 		case BOTH_STAND3:
-			idleAnim = BOTH_STAND3IDLE1;
+			idle_anim = BOTH_STAND3IDLE1;
 			break;
 		case BOTH_STAND5:
-			idleAnim = BOTH_STAND5IDLE1;
+			idle_anim = BOTH_STAND5IDLE1;
 			break;
 		case BOTH_STANDYODA_STICK:
-			idleAnim = BOTH_STANDYODAIDLE_STICK;
+			idle_anim = BOTH_STANDYODAIDLE_STICK;
 			break;
 		case BOTH_MENUIDLE1:
-			idleAnim = BOTH_MENUIDLE1;
+			idle_anim = BOTH_MENUIDLE1;
 			break;
 			//
 		case BOTH_SABERTAVION_STANCE:
-			idleAnim = BOTH_SABERTAVION_STANCE;
+			idle_anim = BOTH_SABERTAVION_STANCE;
 			break;
 		case BOTH_SABERDESANN_STANCE:
-			idleAnim = BOTH_SABERDESANN_STANCE;
+			idle_anim = BOTH_SABERDESANN_STANCE;
 			break;
 		case BOTH_SABERSTAFF_STANCE:
-			idleAnim = BOTH_SABERSTAFF_STANCE;
+			idle_anim = BOTH_SABERSTAFF_STANCE;
 			break;
 		case BOTH_SABERDUAL_STANCE:
-			idleAnim = BOTH_SABERDUAL_STANCE;
+			idle_anim = BOTH_SABERDUAL_STANCE;
 			break;
 		case BOTH_SABERFAST_STANCE:
-			idleAnim = BOTH_SABERFAST_STANCE;
+			idle_anim = BOTH_SABERFAST_STANCE;
 			break;
 		case BOTH_SABERSLOW_STANCE:
-			idleAnim = BOTH_SABERSLOW_STANCE;
+			idle_anim = BOTH_SABERSLOW_STANCE;
 			break;
 			//
 		case BOTH_SABERTAVION_STANCE_JKA:
-			idleAnim = BOTH_SABERTAVION_STANCE_JKA;
+			idle_anim = BOTH_SABERTAVION_STANCE_JKA;
 			break;
 		case BOTH_SABERDESANN_STANCE_JKA:
-			idleAnim = BOTH_SABERDESANN_STANCE_JKA;
+			idle_anim = BOTH_SABERDESANN_STANCE_JKA;
 			break;
 		case BOTH_SABERSTAFF_STANCE_JKA:
-			idleAnim = BOTH_SABERSTAFF_STANCE_JKA;
+			idle_anim = BOTH_SABERSTAFF_STANCE_JKA;
 			break;
 		case BOTH_SABERDUAL_STANCE_JKA:
-			idleAnim = BOTH_SABERDUAL_STANCE_JKA;
+			idle_anim = BOTH_SABERDUAL_STANCE_JKA;
 			break;
 		case BOTH_SABERFAST_STANCE_JKA:
-			idleAnim = BOTH_SABERFAST_STANCE_JKA;
+			idle_anim = BOTH_SABERFAST_STANCE_JKA;
 			break;
 		case BOTH_SABERSLOW_STANCE_JKA:
-			idleAnim = BOTH_SABERSLOW_STANCE_JKA;
+			idle_anim = BOTH_SABERSLOW_STANCE_JKA;
 			break;
 		default:;
 		}
-		if (idleAnim != -1 && PM_HasAnimation(ent, idleAnim))
+		if (idle_anim != -1 && PM_HasAnimation(ent, idle_anim))
 		{
-			NPC_SetAnim(ent, SETANIM_BOTH, idleAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+			NPC_SetAnim(ent, SETANIM_BOTH, idle_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 			//don't idle again after this anim for a while
-			ent->client->idleTime = level.time + PM_AnimLength(ent->client->clientInfo.animFileIndex, static_cast<animNumber_t>(idleAnim)) + Q_irand(0, 2000);
+			ent->client->idleTime = level.time + PM_AnimLength(ent->client->clientInfo.animFileIndex, static_cast<animNumber_t>(idle_anim)) + Q_irand(0, 2000);
 		}
 	}
 }
@@ -6631,76 +6605,76 @@ void G_CheckClientIdleGuns(gentity_t* ent, const usercmd_t* ucmd)
 	{
 		//been idle for 2 seconds
 
-		constexpr int idleAnim = BOTH_STAND1IDLE1;
+		constexpr int idle_anim = BOTH_STAND1IDLE1;
 
-		if (PM_HasAnimation(ent, idleAnim))
+		if (PM_HasAnimation(ent, idle_anim))
 		{
-			NPC_SetAnim(ent, SETANIM_BOTH, idleAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+			NPC_SetAnim(ent, SETANIM_BOTH, idle_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 		}
 	}
 	else if (GunisSbd(ent) && level.time - ent->client->idleTime > 5000)
 	{
 		//been idle for 2 seconds
 
-		constexpr int idleAnim = TORSO_WEAPONIDLE2;
+		constexpr int idle_anim = TORSO_WEAPONIDLE2;
 
-		if (PM_HasAnimation(ent, idleAnim))
+		if (PM_HasAnimation(ent, idle_anim))
 		{
-			NPC_SetAnim(ent, SETANIM_TORSO, idleAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+			NPC_SetAnim(ent, SETANIM_TORSO, idle_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 		}
 	}
 	else if (GunisShort(ent) && level.time - ent->client->idleTime > 3000)
 	{
 		//been idle for 2 seconds
-		int idleAnim;
+		int idle_anim;
 
 		if (ent->weaponModel[1] > 0)
 		{
 			//dual pistols
-			idleAnim = BOTH_WEAPONREST2P;
+			idle_anim = BOTH_WEAPONREST2P;
 		}
 		else
 		{
 			//single pistol
-			idleAnim = TORSO_WEAPONREST2;
+			idle_anim = TORSO_WEAPONREST2;
 		}
 
-		if (idleAnim != -1 && PM_HasAnimation(ent, idleAnim))
+		if (idle_anim != -1 && PM_HasAnimation(ent, idle_anim))
 		{
-			NPC_SetAnim(ent, SETANIM_TORSO, idleAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+			NPC_SetAnim(ent, SETANIM_TORSO, idle_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 		}
 	}
 	else if (GunisLong(ent) && level.time - ent->client->idleTime > 5000)
 	{
 		//been idle for 2 seconds
 
-		constexpr int idleAnim = TORSO_WEAPONREST3;
+		constexpr int idle_anim = TORSO_WEAPONREST3;
 
-		if (PM_HasAnimation(ent, idleAnim))
+		if (PM_HasAnimation(ent, idle_anim))
 		{
-			NPC_SetAnim(ent, SETANIM_TORSO, idleAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+			NPC_SetAnim(ent, SETANIM_TORSO, idle_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 		}
 	}
 	else if (GunisMassive(ent) && level.time - ent->client->idleTime > 5000)
 	{
 		//been idle for 2 seconds
 
-		constexpr int idleAnim = TORSO_WEAPONREST4;
+		constexpr int idle_anim = TORSO_WEAPONREST4;
 
-		if (PM_HasAnimation(ent, idleAnim))
+		if (PM_HasAnimation(ent, idle_anim))
 		{
-			NPC_SetAnim(ent, SETANIM_TORSO, idleAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+			NPC_SetAnim(ent, SETANIM_TORSO, idle_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 		}
 	}
 	else if (GunisBomb(ent) && level.time - ent->client->idleTime > 5000)
 	{
 		//been idle for 2 seconds
 
-		constexpr int idleAnim = BOTH_STAND9IDLE1;
+		constexpr int idle_anim = BOTH_STAND9IDLE1;
 
-		if (PM_HasAnimation(ent, idleAnim))
+		if (PM_HasAnimation(ent, idle_anim))
 		{
-			NPC_SetAnim(ent, SETANIM_TORSO, idleAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+			NPC_SetAnim(ent, SETANIM_TORSO, idle_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 		}
 	}
 	else
@@ -6709,11 +6683,11 @@ void G_CheckClientIdleGuns(gentity_t* ent, const usercmd_t* ucmd)
 		{
 			//been idle for 2 seconds
 
-			constexpr int idleAnim = BOTH_STAND1IDLE1;
+			constexpr int idle_anim = BOTH_STAND1IDLE1;
 
-			if (PM_HasAnimation(ent, idleAnim))
+			if (PM_HasAnimation(ent, idle_anim))
 			{
-				NPC_SetAnim(ent, SETANIM_BOTH, idleAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+				NPC_SetAnim(ent, SETANIM_BOTH, idle_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 			}
 		}
 	}
@@ -6771,18 +6745,18 @@ This will mark an enemy. If our friend is an NPC, order them to attack.
 ==============
 */
 
-void DoCallout(gentity_t* caller, gentity_t* ourFriend)
+void DoCallout(gentity_t* caller, gentity_t* our_friend)
 {
 	trace_t tr;
-	vec3_t endTrace, forward;
+	vec3_t end_trace, forward;
 	vec3_t eyes;
 	gentity_t* player = &g_entities[0];
 
 	VectorCopy(caller->currentOrigin, eyes);
 	eyes[2] += 20.0f;
 	AngleVectors(caller->client->ps.viewangles, forward, nullptr, nullptr);
-	VectorMA(eyes, 16384, forward, endTrace);
-	gi.trace(&tr, eyes, vec3_origin, vec3_origin, endTrace, caller->s.number, MASK_SHOT, G2_NOCOLLIDE, 0);
+	VectorMA(eyes, 16384, forward, end_trace);
+	gi.trace(&tr, eyes, vec3_origin, vec3_origin, end_trace, caller->s.number, MASK_SHOT, G2_NOCOLLIDE, 0);
 
 	if (tr.fraction >= 1.0f)
 	{
@@ -6815,7 +6789,7 @@ void DoCallout(gentity_t* caller, gentity_t* ourFriend)
 		return;
 	}
 
-	if (tracedEnemy->client->playerTeam == ourFriend->client->playerTeam)
+	if (tracedEnemy->client->playerTeam == our_friend->client->playerTeam)
 	{
 		// They're on the same team. Whoops.
 		return;
@@ -6824,31 +6798,31 @@ void DoCallout(gentity_t* caller, gentity_t* ourFriend)
 	if (caller->s.number == 0)
 	{
 		// Sic 'em!
-		G_SetEnemy(ourFriend, tracedEnemy);
+		G_SetEnemy(our_friend, tracedEnemy);
 	}
 
 	NPC_SetAnim(player, SETANIM_TORSO, BOTH_ATTACK_COMMAND, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 
-	if (Distance(ourFriend->currentOrigin, tracedEnemy->currentOrigin) >= 512)
+	if (Distance(our_friend->currentOrigin, tracedEnemy->currentOrigin) >= 512)
 	{
 		G_AddEvent(caller, Q_irand(EV_ESCAPING1, EV_ESCAPING3), 0);
-		NPC_SetAnim(ourFriend, SETANIM_TORSO, BOTH_ORDER_RECIVED, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+		NPC_SetAnim(our_friend, SETANIM_TORSO, BOTH_ORDER_RECIVED, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 	}
 	else
 	{
 		vec3_t dir;
-		VectorSubtract(ourFriend->currentOrigin, tracedEnemy->currentOrigin, dir);
-		const vec_t angle = DotProduct(ourFriend->currentAngles, dir);
+		VectorSubtract(our_friend->currentOrigin, tracedEnemy->currentOrigin, dir);
+		const vec_t angle = DotProduct(our_friend->currentAngles, dir);
 
 		if (angle >= 0.2 && angle <= 1.0)
 		{
 			G_AddEvent(caller, Q_irand(EV_CONFUSE1, EV_CONFUSE3), 0);
-			NPC_SetAnim(ourFriend, SETANIM_TORSO, BOTH_ORDER_RECIVED, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+			NPC_SetAnim(our_friend, SETANIM_TORSO, BOTH_ORDER_RECIVED, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 		}
 		else
 		{
 			G_AddEvent(caller, Q_irand(EV_SIGHT1, EV_SIGHT3), 0);
-			NPC_SetAnim(ourFriend, SETANIM_TORSO, BOTH_ORDER_RECIVED, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+			NPC_SetAnim(our_friend, SETANIM_TORSO, BOTH_ORDER_RECIVED, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 		}
 	}
 	tracedEnemy->markTime = level.time + 5000;
@@ -6864,14 +6838,14 @@ This function is called ONLY from ClientThinkReal, and is responsible for settin
 */
 extern qboolean g_standard_humanoid(gentity_t* self);
 
-void ClientAlterSpeed(gentity_t* ent, usercmd_t* ucmd, qboolean controlledByPlayer, float vehicleFrameTimeModifier)
+void ClientAlterSpeed(gentity_t* ent, usercmd_t* ucmd, const qboolean controlled_by_player)
 {
 	gclient_t* client = ent->client;
-	const Vehicle_t* pVeh = nullptr;
+	const Vehicle_t* p_veh = nullptr;
 
 	if (ent->client && ent->client->NPC_class == CLASS_VEHICLE)
 	{
-		pVeh = ent->m_pVehicle;
+		p_veh = ent->m_pVehicle;
 	}
 
 	// set speed
@@ -6885,12 +6859,12 @@ void ClientAlterSpeed(gentity_t* ent, usercmd_t* ucmd, qboolean controlledByPlay
 			if (!(ucmd->buttons & BUTTON_USE))
 			{
 				//Not leaning
-				const auto Flying = static_cast<qboolean>(ucmd->upmove && ent->client->moveType == MT_FLYSWIM);
-				const auto Climbing = static_cast<qboolean>(ucmd->upmove && ent->watertype & CONTENTS_LADDER);
+				const auto flying = static_cast<qboolean>(ucmd->upmove && ent->client->moveType == MT_FLYSWIM);
+				const auto climbing = static_cast<qboolean>(ucmd->upmove && ent->watertype & CONTENTS_LADDER);
 
 				client->ps.friction = 6;
 
-				if (ucmd->forwardmove || ucmd->rightmove || Flying)
+				if (ucmd->forwardmove || ucmd->rightmove || flying)
 				{
 					//if ( ent->NPC->behaviorState != BS_FORMATION )
 					{
@@ -6904,7 +6878,7 @@ void ClientAlterSpeed(gentity_t* ent, usercmd_t* ucmd, qboolean controlledByPlay
 							ent->NPC->desiredSpeed = NPC_GetRunSpeed(ent); //ent->NPC->stats.runSpeed;
 						}
 
-						if (ent->NPC->currentSpeed >= 80 && !controlledByPlayer)
+						if (ent->NPC->currentSpeed >= 80 && !controlled_by_player)
 						{
 							//At higher speeds, need to slow down close to stuff
 							//Slow down as you approach your goal
@@ -6912,10 +6886,10 @@ void ClientAlterSpeed(gentity_t* ent, usercmd_t* ucmd, qboolean controlledByPlay
 							{
 								if (ent->NPC->desiredSpeed > MIN_NPC_SPEED)
 								{
-									const float slowdownSpeed = static_cast<float>(ent->NPC->desiredSpeed) * ent->NPC->
+									const float slowdown_speed = static_cast<float>(ent->NPC->desiredSpeed) * ent->NPC->
 										distToGoal / SLOWDOWN_DIST;
 
-									ent->NPC->desiredSpeed = ceil(slowdownSpeed);
+									ent->NPC->desiredSpeed = ceil(slowdown_speed);
 									if (ent->NPC->desiredSpeed < MIN_NPC_SPEED)
 									{
 										//don't slow down too much
@@ -6926,7 +6900,7 @@ void ClientAlterSpeed(gentity_t* ent, usercmd_t* ucmd, qboolean controlledByPlay
 						}
 					}
 				}
-				else if (Climbing)
+				else if (climbing)
 				{
 					ent->NPC->desiredSpeed = ent->NPC->stats.walkSpeed;
 				}
@@ -6960,7 +6934,7 @@ void ClientAlterSpeed(gentity_t* ent, usercmd_t* ucmd, qboolean controlledByPlay
 					if (ent->NPC->currentSpeed > 0)
 					{
 						//We should be moving
-						if (Climbing || Flying)
+						if (climbing || flying)
 						{
 							if (!ucmd->upmove)
 							{
@@ -7186,7 +7160,7 @@ void ClientAlterSpeed(gentity_t* ent, usercmd_t* ucmd, qboolean controlledByPlay
 		}
 	}
 
-	if (!pVeh)
+	if (!p_veh)
 	{
 		if (ucmd->forwardmove < 0 && !(ucmd->buttons & BUTTON_WALKING) && client->ps.groundEntityNum != ENTITYNUM_NONE)
 		{
@@ -7233,7 +7207,7 @@ extern void ForceDeadlySight(gentity_t* ent);
 extern void ForceBlast(gentity_t* self);
 extern void ForceProjection(gentity_t* self);
 
-static void ProcessGenericCmd(gentity_t* ent, byte cmd)
+static void ProcessGenericCmd(gentity_t* ent, const byte cmd)
 {
 	switch (cmd)
 	{
@@ -7748,7 +7722,7 @@ qboolean IsHoldingGun(const gentity_t* ent)
 	return qfalse;
 }
 
-int ClipSize(int ammo, gentity_t* ent)
+int ClipSize(const int ammo)
 {
 	switch (ammo)
 	{
@@ -7765,7 +7739,7 @@ int ClipSize(int ammo, gentity_t* ent)
 	return -1;
 }
 
-int MagazineSize(int ammo, gentity_t* ent)
+int MagazineSize(const int ammo)
 {
 	switch (ammo)
 	{
@@ -7846,9 +7820,9 @@ void ReloadGun(gentity_t* ent)
 				ent->s.weapon == WP_DUAL_PISTOL ||
 				ent->s.weapon == WP_REBELBLASTER)
 			{
-				if (ent->client->ps.ammo[AMMO_BLASTER] < ClipSize(AMMO_BLASTER, ent))
+				if (ent->client->ps.ammo[AMMO_BLASTER] < ClipSize(AMMO_BLASTER))
 				{
-					ent->client->ps.ammo[AMMO_BLASTER] += MagazineSize(AMMO_BLASTER, ent);
+					ent->client->ps.ammo[AMMO_BLASTER] += MagazineSize(AMMO_BLASTER);
 
 					if (ent->s.weapon == WP_BRYAR_PISTOL ||
 						ent->s.weapon == WP_BLASTER_PISTOL ||
@@ -7910,9 +7884,9 @@ void ReloadGun(gentity_t* ent)
 				ent->s.weapon == WP_REBELRIFLE ||
 				ent->s.weapon == WP_BOBA)
 			{
-				if (ent->client->ps.ammo[AMMO_POWERCELL] < ClipSize(AMMO_POWERCELL, ent))
+				if (ent->client->ps.ammo[AMMO_POWERCELL] < ClipSize(AMMO_POWERCELL))
 				{
-					ent->client->ps.ammo[AMMO_POWERCELL] += MagazineSize(AMMO_POWERCELL, ent);
+					ent->client->ps.ammo[AMMO_POWERCELL] += MagazineSize(AMMO_POWERCELL);
 
 					NPC_SetAnim(ent, SETANIM_TORSO, BOTH_RIFLERELOAD, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 
@@ -7933,9 +7907,9 @@ void ReloadGun(gentity_t* ent)
 				ent->s.weapon == WP_CLONECOMMANDO ||
 				ent->s.weapon == WP_CLONEPISTOL)
 			{
-				if (ent->client->ps.ammo[AMMO_METAL_BOLTS] < ClipSize(AMMO_METAL_BOLTS, ent))
+				if (ent->client->ps.ammo[AMMO_METAL_BOLTS] < ClipSize(AMMO_METAL_BOLTS))
 				{
-					ent->client->ps.ammo[AMMO_METAL_BOLTS] += MagazineSize(AMMO_METAL_BOLTS, ent);
+					ent->client->ps.ammo[AMMO_METAL_BOLTS] += MagazineSize(AMMO_METAL_BOLTS);
 
 					if (ent->s.weapon == WP_REPEATER ||
 						ent->s.weapon == WP_FLECHETTE ||
@@ -7986,9 +7960,9 @@ void ReloadGun(gentity_t* ent)
 			}
 			else if (ent->s.weapon == WP_ROCKET_LAUNCHER)
 			{
-				if (ent->client->ps.ammo[AMMO_ROCKETS] < ClipSize(AMMO_ROCKETS, ent))
+				if (ent->client->ps.ammo[AMMO_ROCKETS] < ClipSize(AMMO_ROCKETS))
 				{
-					ent->client->ps.ammo[AMMO_ROCKETS] += MagazineSize(AMMO_ROCKETS, ent);
+					ent->client->ps.ammo[AMMO_ROCKETS] += MagazineSize(AMMO_ROCKETS);
 					NPC_SetAnim(ent, SETANIM_TORSO, BOTH_ROCKETRELOAD, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					G_SoundOnEnt(ent, CHAN_WEAPON, "sound/weapons/reload.mp3");
 					ent->reloadTime = level.time + ReloadTime(ent);
@@ -8033,18 +8007,18 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 {
 	gclient_t* client;
 	pmove_t pm;
-	vec3_t oldOrigin;
-	int oldEventSequence;
+	vec3_t old_origin;
+	int old_event_sequence;
 	int msec;
-	qboolean inSpinFlipAttack = PM_AdjustAnglesForSpinningFlip(ent, ucmd, qfalse);
-	qboolean controlledByPlayer = qfalse;
-	Vehicle_t* pVeh = nullptr;
+	qboolean in_spin_flip_attack = PM_AdjustAnglesForSpinningFlip(ent, ucmd, qfalse);
+	qboolean controlled_by_player = qfalse;
+	Vehicle_t* p_veh = nullptr;
 
-	qboolean HoldingStun = ent->client->ps.communicatingflags & 1 << STUNNING ? qtrue : qfalse;
+	qboolean holding_stun = ent->client->ps.communicatingflags & 1 << STUNNING ? qtrue : qfalse;
 
 	if (ent->client && ent->client->NPC_class == CLASS_VEHICLE)
 	{
-		pVeh = ent->m_pVehicle;
+		p_veh = ent->m_pVehicle;
 	}
 
 	//Don't let the player do anything if in a camera
@@ -8086,7 +8060,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 			//don't update if in backstab unless don't currently have an enemy
 		{
 			//NOTE: doesn't keep updating to nearest enemy once you're dead
-			int newLookTarget;
+			int new_look_target;
 			if (!G_ValidateLookEnemy(ent, ent->enemy))
 			{
 				ent->enemy = nullptr;
@@ -8096,7 +8070,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 			if (ent->enemy)
 			{
 				//target
-				newLookTarget = ent->enemy->s.number;
+				new_look_target = ent->enemy->s.number;
 				//so we don't change our minds in the next 1 second
 				ent->client->renderInfo.lookTargetClearTime = level.time + 1000;
 				ent->client->renderInfo.lookMode = LM_ENT;
@@ -8105,9 +8079,9 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 			{
 				//no target
 				//FIXME: what about sightalerts and missiles?
-				newLookTarget = ENTITYNUM_NONE;
-				newLookTarget = G_FindLocalInterestPoint(ent);
-				if (newLookTarget != ENTITYNUM_NONE)
+				new_look_target = ENTITYNUM_NONE;
+				new_look_target = G_FindLocalInterestPoint(ent);
+				if (new_look_target != ENTITYNUM_NONE)
 				{
 					//found something of interest
 					ent->client->renderInfo.lookMode = LM_INTEREST;
@@ -8115,14 +8089,14 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 				else
 				{
 					//okay, no interesting things and no enemies, so look for items
-					newLookTarget = G_FindLookItem(ent);
+					new_look_target = G_FindLookItem(ent);
 					ent->client->renderInfo.lookMode = LM_ENT;
 				}
 			}
-			if (ent->client->renderInfo.lookTarget != newLookTarget)
+			if (ent->client->renderInfo.lookTarget != new_look_target)
 			{
 				//transitioning
-				NPC_SetLookTarget(ent, newLookTarget, level.time + 1000);
+				NPC_SetLookTarget(ent, new_look_target, level.time + 1000);
 			}
 		}
 		if (in_camera)
@@ -8232,7 +8206,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 		}
 		if (player && player->client && player->client->ps.viewEntity == ent->s.number)
 		{
-			controlledByPlayer = qtrue;
+			controlled_by_player = qtrue;
 			int sav_weapon = ucmd->weapon;
 			memcpy(ucmd, &player->client->usercmd, sizeof(usercmd_t));
 			ucmd->weapon = sav_weapon;
@@ -8265,12 +8239,12 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 	}
 
 	// If we are a vehicle, update ourself.
-	if (pVeh
-		&& (pVeh->m_pVehicleInfo->Inhabited(pVeh)
-			|| pVeh->m_iBoarding != 0
-			|| pVeh->m_pVehicleInfo->type != VH_ANIMAL))
+	if (p_veh
+		&& (p_veh->m_pVehicleInfo->Inhabited(p_veh)
+			|| p_veh->m_iBoarding != 0
+			|| p_veh->m_pVehicleInfo->type != VH_ANIMAL))
 	{
-		pVeh->m_pVehicleInfo->Update(pVeh, ucmd);
+		p_veh->m_pVehicleInfo->Update(p_veh, ucmd);
 	}
 	else if (ent->client)
 	{
@@ -8313,72 +8287,72 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 		else if (ent->client->ps.groundEntityNum < ENTITYNUM_WORLD && !ent->client->ps.forceJumpCharge)
 		{
 			//standing on an entity and not currently force jumping
-			gentity_t* groundEnt = &g_entities[ent->client->ps.groundEntityNum];
-			if (groundEnt && groundEnt->client)
+			gentity_t* ground_ent = &g_entities[ent->client->ps.groundEntityNum];
+			if (ground_ent && ground_ent->client)
 			{
 				// If you landed on a speeder or animal vehicle...
-				if (groundEnt->client && groundEnt->client->NPC_class == CLASS_VEHICLE)
+				if (ground_ent->client && ground_ent->client->NPC_class == CLASS_VEHICLE)
 				{
 					if (ent->client->NPC_class != CLASS_VEHICLE)
 					{
 						//um... vehicles shouldn't ride other vehicles, mmkay?
-						if (groundEnt->m_pVehicle->m_pVehicleInfo->type == VH_ANIMAL && PM_HasAnimation(
+						if (ground_ent->m_pVehicle->m_pVehicleInfo->type == VH_ANIMAL && PM_HasAnimation(
 							ent, BOTH_VT_IDLE)
-							|| groundEnt->m_pVehicle->m_pVehicleInfo->type == VH_SPEEDER && PM_HasAnimation(
+							|| ground_ent->m_pVehicle->m_pVehicleInfo->type == VH_SPEEDER && PM_HasAnimation(
 								ent, BOTH_VS_IDLE))
 						{
-							groundEnt->m_pVehicle->m_pVehicleInfo->Board(groundEnt->m_pVehicle, ent);
+							ground_ent->m_pVehicle->m_pVehicleInfo->Board(ground_ent->m_pVehicle, ent);
 						}
 					}
 				}
-				else if (groundEnt->client && groundEnt->client->NPC_class == CLASS_SAND_CREATURE
+				else if (ground_ent->client && ground_ent->client->NPC_class == CLASS_SAND_CREATURE
 					&& G_HasKnockdownAnims(ent))
 				{
 					//step on a sand creature = *you* fall down
-					G_Knockdown(ent, groundEnt, vec3_origin, 300, qtrue);
+					G_Knockdown(ent, ground_ent, vec3_origin, 300, qtrue);
 				}
-				else if (groundEnt->client && groundEnt->client->NPC_class == CLASS_RANCOR)
+				else if (ground_ent->client && ground_ent->client->NPC_class == CLASS_RANCOR)
 				{
 					//step on a Rancor, it bucks & throws you off
-					if (groundEnt->client->ps.legsAnim != BOTH_ATTACK3
-						&& groundEnt->client->ps.legsAnim != BOTH_ATTACK4
-						&& groundEnt->client->ps.legsAnim != BOTH_BUCK_RIDER)
+					if (ground_ent->client->ps.legsAnim != BOTH_ATTACK3
+						&& ground_ent->client->ps.legsAnim != BOTH_ATTACK4
+						&& ground_ent->client->ps.legsAnim != BOTH_BUCK_RIDER)
 					{
 						//don't interrupt special anims
-						vec3_t throwDir, right;
-						AngleVectors(groundEnt->currentAngles, throwDir, right, nullptr);
-						VectorScale(throwDir, -1, throwDir);
-						VectorMA(throwDir, Q_flrand(-0.5f, 0.5f), right, throwDir);
-						throwDir[2] = 0.2f;
-						VectorNormalize(throwDir);
+						vec3_t throw_dir, right;
+						AngleVectors(ground_ent->currentAngles, throw_dir, right, nullptr);
+						VectorScale(throw_dir, -1, throw_dir);
+						VectorMA(throw_dir, Q_flrand(-0.5f, 0.5f), right, throw_dir);
+						throw_dir[2] = 0.2f;
+						VectorNormalize(throw_dir);
 						if (!(ent->flags & FL_NO_KNOCKBACK))
 						{
-							G_Throw(ent, throwDir, Q_flrand(50, 200));
+							G_Throw(ent, throw_dir, Q_flrand(50, 200));
 						}
 						if (G_HasKnockdownAnims(ent))
 						{
-							G_Knockdown(ent, groundEnt, vec3_origin, 300, qtrue);
+							G_Knockdown(ent, ground_ent, vec3_origin, 300, qtrue);
 						}
-						NPC_SetAnim(groundEnt, SETANIM_BOTH, BOTH_BUCK_RIDER,
+						NPC_SetAnim(ground_ent, SETANIM_BOTH, BOTH_BUCK_RIDER,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 				}
-				else if (groundEnt->client->ps.groundEntityNum != ENTITYNUM_NONE &&
-					groundEnt->health > 0 && !PM_InRoll(&groundEnt->client->ps)
-					&& !(groundEnt->client->ps.eFlags & EF_LOCKED_TO_WEAPON)
-					&& !(groundEnt->client->ps.eFlags & EF_HELD_BY_RANCOR)
-					&& !(groundEnt->client->ps.eFlags & EF_HELD_BY_WAMPA)
-					&& !(groundEnt->client->ps.eFlags & EF_HELD_BY_SAND_CREATURE)
-					&& !inSpinFlipAttack)
+				else if (ground_ent->client->ps.groundEntityNum != ENTITYNUM_NONE &&
+					ground_ent->health > 0 && !PM_InRoll(&ground_ent->client->ps)
+					&& !(ground_ent->client->ps.eFlags & EF_LOCKED_TO_WEAPON)
+					&& !(ground_ent->client->ps.eFlags & EF_HELD_BY_RANCOR)
+					&& !(ground_ent->client->ps.eFlags & EF_HELD_BY_WAMPA)
+					&& !(ground_ent->client->ps.eFlags & EF_HELD_BY_SAND_CREATURE)
+					&& !in_spin_flip_attack)
 
 				{
 					//landed on a live client who is on the ground, jump off them and knock them down
-					qboolean forceKnockdown = qfalse;
+					qboolean force_knockdown = qfalse;
 
 					// If in a vehicle when land on someone, always knockdown.
-					if (pVeh)
+					if (p_veh)
 					{
-						forceKnockdown = qtrue;
+						force_knockdown = qtrue;
 					}
 					else if (ent->s.number
 						&& ent->NPC
@@ -8386,22 +8360,22 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 					{
 						//force-jumper landed on someone
 						//don't jump off, too many ledges, plus looks weird
-						if (groundEnt->client->playerTeam != ent->client->playerTeam)
+						if (ground_ent->client->playerTeam != ent->client->playerTeam)
 						{
 							//don't knock down own guys
-							forceKnockdown = static_cast<qboolean>(Q_irand(0, RANK_CAPTAIN + 4) < ent->NPC->rank);
+							force_knockdown = static_cast<qboolean>(Q_irand(0, RANK_CAPTAIN + 4) < ent->NPC->rank);
 						}
 						//now what... push the groundEnt out of the way?
 						if (!ent->client->ps.velocity[0]
 							&& !ent->client->ps.velocity[1])
 						{
 							//not moving, shove us a little
-							vec3_t slideFwd;
-							AngleVectors(ent->client->ps.viewangles, slideFwd, nullptr, nullptr);
-							slideFwd[2] = 0.0f;
-							VectorNormalize(slideFwd);
-							ent->client->ps.velocity[0] = slideFwd[0] * 10.0f;
-							ent->client->ps.velocity[1] = slideFwd[1] * 10.0f;
+							vec3_t slide_fwd;
+							AngleVectors(ent->client->ps.viewangles, slide_fwd, nullptr, nullptr);
+							slide_fwd[2] = 0.0f;
+							VectorNormalize(slide_fwd);
+							ent->client->ps.velocity[0] = slide_fwd[0] * 10.0f;
+							ent->client->ps.velocity[1] = slide_fwd[1] * 10.0f;
 						}
 						//slide for a little
 						ent->client->ps.pm_flags |= PMF_TIME_NOFRICTION;
@@ -8445,24 +8419,24 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 							if (!ent->s.number && ucmd->upmove < 0)
 							{
 								//player who should roll- force it
-								int rollAnim = BOTH_ROLL_F;
+								int roll_anim = BOTH_ROLL_F;
 								if (ucmd->forwardmove >= 0)
 								{
-									rollAnim = BOTH_ROLL_F;
+									roll_anim = BOTH_ROLL_F;
 								}
 								else if (ucmd->forwardmove < 0)
 								{
-									rollAnim = BOTH_ROLL_B;
+									roll_anim = BOTH_ROLL_B;
 								}
 								else if (ucmd->rightmove > 0)
 								{
-									rollAnim = BOTH_ROLL_R;
+									roll_anim = BOTH_ROLL_R;
 								}
 								else if (ucmd->rightmove < 0)
 								{
-									rollAnim = BOTH_ROLL_L;
+									roll_anim = BOTH_ROLL_L;
 								}
-								NPC_SetAnim(ent, SETANIM_BOTH, rollAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+								NPC_SetAnim(ent, SETANIM_BOTH, roll_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 								G_AddEvent(ent, EV_ROLL, 0);
 								ent->client->ps.saberMove = LS_NONE;
 							}
@@ -8472,51 +8446,51 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 					{
 						//a corpse?  Shit
 						//Hmm, corpses should probably *always* knockdown...
-						forceKnockdown = qtrue;
+						force_knockdown = qtrue;
 						ent->clipmask &= ~CONTENTS_BODY;
 					}
 					//FIXME: need impact sound event
-					GEntity_PainFunc(groundEnt, ent, ent, groundEnt->currentOrigin, 0, MOD_CRUSH);
-					if (!forceKnockdown
-						&& (groundEnt->client->NPC_class == CLASS_DESANN
-							|| groundEnt->client->NPC_class == CLASS_SITHLORD
-							|| groundEnt->client->NPC_class == CLASS_VADER)
+					GEntity_PainFunc(ground_ent, ent, ent, ground_ent->currentOrigin, 0, MOD_CRUSH);
+					if (!force_knockdown
+						&& (ground_ent->client->NPC_class == CLASS_DESANN
+							|| ground_ent->client->NPC_class == CLASS_SITHLORD
+							|| ground_ent->client->NPC_class == CLASS_VADER)
 						&& ent->client->NPC_class != CLASS_LUKE)
 					{
 						//can't knock down desann unless you're luke
 						//FIXME: should he smack you away like Galak Mech?
 					}
-					else if (forceKnockdown //forced
+					else if (force_knockdown //forced
 						|| ent->client->NPC_class == CLASS_DESANN
 						|| ent->client->NPC_class == CLASS_SITHLORD
 						|| ent->client->NPC_class == CLASS_GROGU
 						|| ent->client->NPC_class == CLASS_VADER //desann always knocks people down
-						|| (groundEnt->s.number && (groundEnt->s.weapon != WP_SABER || !groundEnt->NPC || groundEnt->
+						|| (ground_ent->s.number && (ground_ent->s.weapon != WP_SABER || !ground_ent->NPC || ground_ent->
 							NPC->rank < Q_irand(RANK_CIVILIAN, RANK_CAPTAIN + 1))
 							//an NPC who is either not a saber user or passed the rank-based probability test
-							|| (!ent->s.number || G_ControlledByPlayer(groundEnt)) && !Q_irand(0, 3) && cg.
+							|| (!ent->s.number || G_ControlledByPlayer(ground_ent)) && !Q_irand(0, 3) && cg.
 							renderingThirdPerson && !cg.zoomMode)
 						//or a player in third person, 25% of the time
-						&& groundEnt->client->playerTeam != ent->client->playerTeam //and not on the same team
+						&& ground_ent->client->playerTeam != ent->client->playerTeam //and not on the same team
 						&& ent->client->ps.legsAnim != BOTH_JUMPATTACK6) //not in the sideways-spinning jump attack
 					{
-						int knockAnim = BOTH_KNOCKDOWN1;
-						if (PM_CrouchAnim(groundEnt->client->ps.legsAnim))
+						int knock_anim = BOTH_KNOCKDOWN1;
+						if (PM_CrouchAnim(ground_ent->client->ps.legsAnim))
 						{
 							//knockdown from crouch
-							knockAnim = BOTH_KNOCKDOWN4;
+							knock_anim = BOTH_KNOCKDOWN4;
 						}
 						else
 						{
-							vec3_t gEFwd, gEAngles = { 0, groundEnt->client->ps.viewangles[YAW], 0 };
-							AngleVectors(gEAngles, gEFwd, nullptr, nullptr);
-							if (DotProduct(ent->client->ps.velocity, gEFwd) > 50)
+							vec3_t g_e_fwd, g_e_angles = { 0, ground_ent->client->ps.viewangles[YAW], 0 };
+							AngleVectors(g_e_angles, g_e_fwd, nullptr, nullptr);
+							if (DotProduct(ent->client->ps.velocity, g_e_fwd) > 50)
 							{
 								//pushing him forward
-								knockAnim = BOTH_KNOCKDOWN3;
+								knock_anim = BOTH_KNOCKDOWN3;
 							}
 						}
-						NPC_SetAnim(groundEnt, SETANIM_BOTH, knockAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						NPC_SetAnim(ground_ent, SETANIM_BOTH, knock_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 				}
 			}
@@ -8767,7 +8741,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 	}
 
 	if (/*g_SerenityJediEngineMode->integer
-		&&*/ ent->s.clientNum >= MAX_CLIENTS && !G_ControlledByPlayer(ent))
+		&&*/ ent->s.client_num >= MAX_CLIENTS && !G_ControlledByPlayer(ent))
 	{
 		if (NPC_Can_Do_Blocking_stances_In_SJE_Mode(ent))
 		{
@@ -8824,7 +8798,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 		}
 	}
 
-	if (ent->NPC || ent->s.clientNum >= MAX_CLIENTS && !G_ControlledByPlayer(ent) &&
+	if (ent->NPC || ent->s.client_num >= MAX_CLIENTS && !G_ControlledByPlayer(ent) &&
 		client->ps.weapon == WP_SABER &&
 		client->ps.SaberActive()
 		&& !PM_SaberInMassiveBounce(client->ps.torsoAnim)
@@ -8845,7 +8819,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 	}
 
 	if (g_SerenityJediEngineMode->integer <= 1
-		&& (ent->s.clientNum >= MAX_CLIENTS && !G_ControlledByPlayer(ent))
+		&& (ent->s.client_num >= MAX_CLIENTS && !G_ControlledByPlayer(ent))
 		&& !PM_SaberInMassiveBounce(client->ps.torsoAnim)
 		&& !PM_SaberInBashedAnim(client->ps.torsoAnim)
 		&& !PM_Saberinstab(client->ps.saberMove))
@@ -9089,7 +9063,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 
 	if (ent->s.number == 0)
 	{
-		ClientAlterSpeed(ent, ucmd, controlledByPlayer, 0);
+		ClientAlterSpeed(ent, ucmd, controlled_by_player);
 	}
 
 	//FIXME: need to do this before check to avoid walls and cliffs (or just cliffs?)
@@ -9145,37 +9119,37 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 	if (client && ent->s.m_iVehicleNum != 0 && !ent->s.number && !MatrixMode)
 	{
 		//FIXME: extern and read from g_vehicleInfo?
-		Vehicle_t* pPlayerVeh = ent->owner->m_pVehicle;
-		if (pPlayerVeh && pPlayerVeh->m_pVehicleInfo->cameraOverride)
+		Vehicle_t* p_player_veh = ent->owner->m_pVehicle;
+		if (p_player_veh && p_player_veh->m_pVehicleInfo->cameraOverride)
 		{
 			// Vehicle Camera Overrides
 			//--------------------------
 			cg.overrides.active |= CG_OVERRIDE_3RD_PERSON_RNG | CG_OVERRIDE_FOV | CG_OVERRIDE_3RD_PERSON_VOF |
 				CG_OVERRIDE_3RD_PERSON_POF;
-			cg.overrides.thirdPersonRange = pPlayerVeh->m_pVehicleInfo->cameraRange;
-			cg.overrides.fov = pPlayerVeh->m_pVehicleInfo->cameraFOV;
-			cg.overrides.thirdPersonVertOffset = pPlayerVeh->m_pVehicleInfo->cameraVertOffset;
-			cg.overrides.thirdPersonPitchOffset = pPlayerVeh->m_pVehicleInfo->cameraPitchOffset;
+			cg.overrides.thirdPersonRange = p_player_veh->m_pVehicleInfo->cameraRange;
+			cg.overrides.fov = p_player_veh->m_pVehicleInfo->cameraFOV;
+			cg.overrides.thirdPersonVertOffset = p_player_veh->m_pVehicleInfo->cameraVertOffset;
+			cg.overrides.thirdPersonPitchOffset = p_player_veh->m_pVehicleInfo->cameraPitchOffset;
 
-			if (pPlayerVeh->m_pVehicleInfo->cameraAlpha)
+			if (p_player_veh->m_pVehicleInfo->cameraAlpha)
 			{
 				cg.overrides.active |= CG_OVERRIDE_3RD_PERSON_APH;
 			}
 
 			// If In A Speeder (NOT DURING TURBO)
 			//------------------------------------
-			if (level.time > pPlayerVeh->m_iTurboTime && pPlayerVeh->m_pVehicleInfo->type == VH_SPEEDER)
+			if (level.time > p_player_veh->m_iTurboTime && p_player_veh->m_pVehicleInfo->type == VH_SPEEDER)
 			{
 				// If Using Strafe And Use Keys
 				//------------------------------
-				if (pPlayerVeh->m_ucmd.rightmove != 0 &&
+				if (p_player_veh->m_ucmd.rightmove != 0 &&
 					//					(pPlayerVeh->m_pParentEntity->client->ps.speed>=0) &&
-					pPlayerVeh->m_ucmd.buttons & BUTTON_USE
+					p_player_veh->m_ucmd.buttons & BUTTON_USE
 					)
 				{
 					cg.overrides.active |= CG_OVERRIDE_3RD_PERSON_ANG; // Turn On Angle Offset
 					cg.overrides.thirdPersonRange *= -2; // Camera In Front Of Player
-					cg.overrides.thirdPersonAngle = pPlayerVeh->m_ucmd.rightmove > 0 ? 20 : -20;
+					cg.overrides.thirdPersonAngle = p_player_veh->m_ucmd.rightmove > 0 ? 20 : -20;
 				}
 
 				// Auto Pullback Of Camera To Show Enemy
@@ -9185,17 +9159,17 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 					cg.overrides.active &= ~CG_OVERRIDE_3RD_PERSON_ANG; // Turn Off Angle Offset
 					if (ent->enemy)
 					{
-						vec3_t actorDirection;
-						vec3_t enemyDirection;
+						vec3_t actor_direction;
+						vec3_t enemy_direction;
 
-						AngleVectors(ent->currentAngles, actorDirection, nullptr, nullptr);
-						VectorSubtract(ent->enemy->currentOrigin, ent->currentOrigin, enemyDirection);
-						float enemyDistance = VectorNormalize(enemyDirection);
+						AngleVectors(ent->currentAngles, actor_direction, nullptr, nullptr);
+						VectorSubtract(ent->enemy->currentOrigin, ent->currentOrigin, enemy_direction);
+						float enemy_distance = VectorNormalize(enemy_direction);
 
-						if (enemyDistance > cg.overrides.thirdPersonRange && enemyDistance < 400 && DotProduct(
-							actorDirection, enemyDirection) < -0.5f)
+						if (enemy_distance > cg.overrides.thirdPersonRange && enemy_distance < 400 && DotProduct(
+							actor_direction, enemy_direction) < -0.5f)
 						{
-							cg.overrides.thirdPersonRange = enemyDistance;
+							cg.overrides.thirdPersonRange = enemy_distance;
 						}
 					}
 				}
@@ -9268,7 +9242,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 	//remember your last angles
 	VectorCopy(client->ps.viewangles, ent->lastAngles);
 	// set up for pmove
-	oldEventSequence = client->ps.eventSequence;
+	old_event_sequence = client->ps.eventSequence;
 
 	memset(&pm, 0, sizeof pm);
 
@@ -9287,7 +9261,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 		pm.cmd.weapon = ent->client->ps.weapon;
 	}
 
-	VectorCopy(client->ps.origin, oldOrigin);
+	VectorCopy(client->ps.origin, old_origin);
 
 	// perform a pmove
 	Pmove(&pm);
@@ -9296,7 +9270,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 	ProcessGenericCmd(ent, pm.cmd.generic_cmd);
 
 	// save results of pmove
-	if (client->ps.eventSequence != oldEventSequence)
+	if (client->ps.eventSequence != old_event_sequence)
 	{
 		ent->eventTime = level.time;
 		{
@@ -9336,11 +9310,10 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 	VectorCopyM(ucmd->angles, client->pers.cmd_angles);
 
 	// execute client events
-	ClientEvents(ent, oldEventSequence);
+	ClientEvents(ent, old_event_sequence);
 
 	if (pm.useEvent)
 	{
-		//TODO: Use
 		TryUse(ent);
 	}
 
@@ -9381,21 +9354,21 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 			&& !(cg.overrides.active & CG_OVERRIDE_3RD_PERSON_ANG))
 		{
 			//keep facing enemy
-			vec3_t deadDir;
-			float deadYaw;
-			VectorSubtract(ent->enemy->currentOrigin, ent->currentOrigin, deadDir);
-			deadYaw = AngleNormalize180(vectoyaw(deadDir));
-			if (deadYaw > client->ps.stats[STAT_DEAD_YAW] + 1)
+			vec3_t dead_dir;
+			float dead_yaw;
+			VectorSubtract(ent->enemy->currentOrigin, ent->currentOrigin, dead_dir);
+			dead_yaw = AngleNormalize180(vectoyaw(dead_dir));
+			if (dead_yaw > client->ps.stats[STAT_DEAD_YAW] + 1)
 			{
 				client->ps.stats[STAT_DEAD_YAW]++;
 			}
-			else if (deadYaw < client->ps.stats[STAT_DEAD_YAW] - 1)
+			else if (dead_yaw < client->ps.stats[STAT_DEAD_YAW] - 1)
 			{
 				client->ps.stats[STAT_DEAD_YAW]--;
 			}
 			else
 			{
-				client->ps.stats[STAT_DEAD_YAW] = deadYaw;
+				client->ps.stats[STAT_DEAD_YAW] = dead_yaw;
 			}
 		}
 		return;
@@ -9404,7 +9377,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 	// perform once-a-second actions
 	ClientTimerActions(ent, msec);
 
-	if (ent->s.clientNum >= MAX_CLIENTS && !G_ControlledByPlayer(ent) && npc_is_projected(ent))
+	if (ent->s.client_num >= MAX_CLIENTS && !G_ControlledByPlayer(ent) && npc_is_projected(ent))
 	{
 		//decrement it
 		ClientTimerProjectionLifeDrain(ent, msec);
@@ -9424,7 +9397,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 		}
 	}
 
-	if (client->ps.weapon == WP_STUN_BATON && HoldingStun && g_SerenityJediEngineMode->integer == 2)
+	if (client->ps.weapon == WP_STUN_BATON && holding_stun && g_SerenityJediEngineMode->integer == 2)
 	{
 		if (client->ps.pm_type != PM_DEAD && !ent->client->stunhasbeenfired)
 		{
@@ -9444,7 +9417,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 			}
 		}
 		else if (client->stun && (client->stunHeld == qfalse ||
-			!HoldingStun ||
+			!holding_stun ||
 			ucmd->buttons & BUTTON_USE ||
 			ucmd->buttons & BUTTON_BLOCK ||
 			ent->client->ps.pm_type == PM_DEAD))
@@ -9455,7 +9428,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 	else
 	{
 		if (client->stun && (client->stunHeld == qfalse ||
-			!HoldingStun ||
+			!holding_stun ||
 			ucmd->buttons & BUTTON_USE ||
 			ucmd->buttons & BUTTON_BLOCK ||
 			ent->client->ps.pm_type == PM_DEAD))
@@ -9620,12 +9593,12 @@ A new command has arrived from the client
 extern void PM_CheckForceUseButton(gentity_t* ent, usercmd_t* ucmd);
 extern qboolean PM_GentCantJump(const gentity_t* gent);
 
-void ClientThink(int clientNum, usercmd_t* ucmd)
+void ClientThink(const int client_num, usercmd_t* ucmd)
 {
 	qboolean restore_ucmd = qfalse;
 	usercmd_t sav_ucmd = { 0 };
 
-	gentity_t* ent = g_entities + clientNum;
+	gentity_t* ent = g_entities + client_num;
 
 	if (ent->s.number < MAX_CLIENTS)
 	{
@@ -9786,11 +9759,11 @@ void ClientEndPowerUps(const gentity_t* ent)
 		return;
 	}
 	// turn off any expired powerups
-	for (int i = 0; i < MAX_POWERUPS; i++)
+	for (int & powerup : ent->client->ps.powerups)
 	{
-		if (ent->client->ps.powerups[i] < level.time)
+		if (powerup < level.time)
 		{
-			ent->client->ps.powerups[i] = 0;
+			powerup = 0;
 		}
 	}
 }
@@ -9817,16 +9790,5 @@ void ClientEndFrame(gentity_t* ent)
 	// apply all the damage taken this frame
 	P_DamageFeedback(ent);
 
-	// add the EF_CONNECTION flag if we haven't gotten commands recently
-	/*
-	if ( level.time - ent->client->lastCmdTime > 1000 ) {
-		ent->s.eFlags |= EF_CONNECTION;
-	} else {
-		ent->s.eFlags &= ~EF_CONNECTION;
-	}
-	*/
-
 	ent->client->ps.stats[STAT_HEALTH] = ent->health; // FIXME: get rid of ent->health...
-
-	//	G_SetClientSound (ent);
 }

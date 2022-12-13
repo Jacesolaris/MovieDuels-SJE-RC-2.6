@@ -27,7 +27,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 extern void G_SpeechEvent(const gentity_t* self, int event);
 
-void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime)
+void G_AddVoiceEvent(const gentity_t* self, const int event, const int speakDebounceTime)
 {
 	if (!self->NPC)
 	{

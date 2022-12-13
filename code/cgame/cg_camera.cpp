@@ -206,7 +206,7 @@ CGCam_Move
 -------------------------
 */
 
-void CGCam_Move(vec3_t dest, float duration)
+void CGCam_Move(vec3_t dest, const float duration)
 {
 	if (client_camera.info_state & CAMERA_ROFFING)
 	{
@@ -249,7 +249,7 @@ CGCam_Pan
 -------------------------
 */
 
-void CGCam_Pan(vec3_t dest, vec3_t panDirection, float duration)
+void CGCam_Pan(vec3_t dest, vec3_t panDirection, const float duration)
 {
 	float delta2;
 
@@ -338,7 +338,7 @@ CGCam_SetRoll
 -------------------------
 */
 
-void CGCam_SetRoll(float roll)
+void CGCam_SetRoll(const float roll)
 {
 	client_camera.angles[2] = roll;
 }
@@ -349,7 +349,7 @@ CGCam_Roll
 -------------------------
 */
 
-void CGCam_Roll(float dest, float duration)
+void CGCam_Roll(const float dest, const float duration)
 {
 	if (!duration)
 	{
@@ -373,7 +373,7 @@ CGCam_SetFOV
 -------------------------
 */
 
-void CGCam_SetFOV(float FOV)
+void CGCam_SetFOV(const float FOV)
 {
 	client_camera.FOV = FOV;
 }
@@ -384,7 +384,7 @@ CGCam_Zoom
 -------------------------
 */
 
-void CGCam_Zoom(float FOV, float duration)
+void CGCam_Zoom(const float FOV, const float duration)
 {
 	if (!duration)
 	{
@@ -399,7 +399,7 @@ void CGCam_Zoom(float FOV, float duration)
 	client_camera.FOV_duration = duration;
 }
 
-void CGCam_Zoom2(float FOV, float FOV2, float duration)
+void CGCam_Zoom2(const float FOV, const float FOV2, const float duration)
 {
 	if (!duration)
 	{
@@ -415,7 +415,7 @@ void CGCam_Zoom2(float FOV, float FOV2, float duration)
 	client_camera.FOV_duration = duration;
 }
 
-void CGCam_ZoomAccel(float initialFOV, float fovVelocity, float fovAccel, float duration)
+void CGCam_ZoomAccel(const float initialFOV, const float fovVelocity, const float fovAccel, const float duration)
 {
 	if (!duration)
 	{
@@ -452,7 +452,7 @@ CGCam_Fade
 -------------------------
 */
 
-void CGCam_Fade(vec4_t source, vec4_t dest, float duration)
+void CGCam_Fade(vec4_t source, vec4_t dest, const float duration)
 {
 	if (!duration)
 	{
@@ -494,7 +494,7 @@ CGCam_Follow
 -------------------------
 */
 
-void CGCam_Follow(const char* cameraGroup, float speed, float initLerp)
+void CGCam_Follow(const char* cameraGroup, const float speed, const float initLerp)
 {
 	//Clear any previous
 	CGCam_FollowDisable();
@@ -586,7 +586,7 @@ void CG_CameraAutoAim(const char* name)
 CGCam_Track
 -------------------------
 */
-void CGCam_Track(const char* trackName, float speed, float initLerp)
+void CGCam_Track(const char* trackName, const float speed, const float initLerp)
 {
 	CGCam_TrackDisable();
 
@@ -699,7 +699,7 @@ CGCam_Distance
 -------------------------
 */
 
-void CGCam_Distance(float distance, float initLerp)
+void CGCam_Distance(const float distance, const float initLerp)
 {
 	client_camera.distance = distance;
 
@@ -1406,7 +1406,7 @@ CGCam_Shake
 -------------------------
 */
 
-void CGCam_Shake(float intensity, int duration)
+void CGCam_Shake(float intensity, const int duration)
 {
 	if (intensity > MAX_SHAKE_INTENSITY)
 		intensity = MAX_SHAKE_INTENSITY;
@@ -1416,7 +1416,7 @@ void CGCam_Shake(float intensity, int duration)
 	client_camera.shake_start = cg.time;
 }
 
-void CGCam_BlockShakeSP(float intensity, int duration)
+void CGCam_BlockShakeSP(float intensity, const int duration)
 {
 	if (intensity > MAX_BLOCKSHAKE_INTENSITY)
 	{
@@ -1477,7 +1477,7 @@ void CGCam_UpdateShake(vec3_t origin, vec3_t angles)
 	VectorAdd(angles, moveDir, angles);
 }
 
-void CGCam_Smooth(float intensity, int duration)
+void CGCam_Smooth(const float intensity, const int duration)
 {
 	client_camera.smooth_active = false; // means smooth_origin and angles are valid
 	if (intensity > 1.0f || intensity == 0.0f || duration < 1)

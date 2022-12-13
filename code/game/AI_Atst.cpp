@@ -83,7 +83,7 @@ Called by NPC's and player in an ATST
 -------------------------
 */
 
-void G_ATSTCheckPain(gentity_t* self, gentity_t* other, const vec3_t point, int damage, int mod, int hitLoc)
+void G_ATSTCheckPain(gentity_t* self, gentity_t* other, const vec3_t point, int damage, int mod, const int hitLoc)
 {
 	int newBolt;
 
@@ -133,8 +133,8 @@ void G_ATSTCheckPain(gentity_t* self, gentity_t* other, const vec3_t point, int 
 NPC_ATST_Pain
 -------------------------
 */
-void NPC_ATST_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
-	int hitLoc)
+void NPC_ATST_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage, const int mod,
+                   const int hitLoc)
 {
 	G_ATSTCheckPain(self, other, point, damage, mod, hitLoc);
 	NPC_Pain(self, inflictor, other, point, damage, mod);
@@ -163,7 +163,7 @@ void ATST_Hunt(qboolean visible, qboolean advance)
 ATST_Ranged
 -------------------------
 */
-void ATST_Ranged(qboolean visible, qboolean advance, qboolean altAttack)
+void ATST_Ranged(const qboolean visible, const qboolean advance, const qboolean altAttack)
 {
 	if (TIMER_Done(NPC, "atkDelay") && visible) // Attack?
 	{

@@ -48,7 +48,7 @@ void FX_DisruptorMainShot(vec3_t start, vec3_t end)
 FX_DisruptorAltShot
 ---------------------------
 */
-void FX_DisruptorAltShot(vec3_t start, vec3_t end, qboolean fullCharge)
+void FX_DisruptorAltShot(vec3_t start, vec3_t end, const qboolean fullCharge)
 {
 	FX_AddLine(-1, start, end, 0.1f, 10.0f, 0.0f,
 		1.0f, 0.0f, 0.0f,

@@ -256,7 +256,7 @@ void CG_S_UpdateLoopingSounds(int entityNum)
 	}
 
 	if ((cent->currentState.eFlags & EF_SOUNDTRACKER)
-		&& (!cg.snap || cent->currentState.trickedentindex != cg.snap->ps.clientNum))
+		&& (!cg.snap || cent->currentState.trickedentindex != cg.snap->ps.client_num))
 	{//keep sound for this entity updated in accordance with its attached entity at all times
 		//entity out of range
 		if (!cg_entities[cent->currentState.trickedentindex].currentValid)
@@ -705,17 +705,17 @@ void CG_Disintegration(centity_t* cent, refEntity_t* ent)
 extern int cgSiegeEntityRender;
 static qboolean CG_RenderTimeEntBolt(centity_t* cent)
 {
-	const int clientNum = cent->currentState.boltToPlayer - 1;
+	const int client_num = cent->currentState.boltToPlayer - 1;
 	mdxaBone_t matrix;
 	vec3_t boltOrg, boltAng;
 
-	if (clientNum >= MAX_CLIENTS || clientNum < 0)
+	if (client_num >= MAX_CLIENTS || client_num < 0)
 	{
 		assert(0);
 		return qfalse;
 	}
 
-	centity_t* cl = &cg_entities[clientNum];
+	centity_t* cl = &cg_entities[client_num];
 
 	if (!cl->ghoul2)
 	{
@@ -723,7 +723,7 @@ static qboolean CG_RenderTimeEntBolt(centity_t* cent)
 		return qfalse;
 	}
 
-	if (clientNum == cg.predictedPlayerState.clientNum &&
+	if (client_num == cg.predictedPlayerState.client_num &&
 		!cg.renderingThirdPerson)
 	{ //If in first person and you have it then render the thing spinning around on your hud.
 		cgSiegeEntityRender = cent->currentState.number; //set it to render at the end of the frame.
@@ -748,18 +748,18 @@ static qboolean CG_RenderTimeEntBolt(centity_t* cent)
 /*
 static void CG_SiegeEntRenderAboveHead(centity_t *cent)
 {
-	int clientNum = cent->currentState.boltToPlayer-1;
+	int client_num = cent->currentState.boltToPlayer-1;
 	centity_t *cl;
 	refEntity_t ent;
 	vec3_t renderAngles;
 
-	if (clientNum >= MAX_CLIENTS || clientNum < 0)
+	if (client_num >= MAX_CLIENTS || client_num < 0)
 	{
 		assert(0);
 		return;
 	}
 
-	cl = &cg_entities[clientNum];
+	cl = &cg_entities[client_num];
 
 	memset(&ent, 0, sizeof(ent));
 
@@ -873,7 +873,7 @@ static void CG_General(centity_t* cent) {
 			pl->currentState.trickedentindex2,
 			pl->currentState.trickedentindex3,
 			pl->currentState.trickedentindex4,
-			cg.predictedPlayerState.clientNum))
+			cg.predictedPlayerState.client_num))
 		{ //don't show if this guy is mindtricking
 			return;
 		}
@@ -898,7 +898,7 @@ static void CG_General(centity_t* cent) {
 		}
 
 		/* disabled for now
-				if (pl->currentState.number != cg.predictedPlayerState.clientNum)
+				if (pl->currentState.number != cg.predictedPlayerState.client_num)
 				{ //don't render thing above head to self
 					CG_SiegeEntRenderAboveHead(cent);
 				}
@@ -1290,7 +1290,7 @@ static void CG_General(centity_t* cent) {
 
 		empOwn = &cg_entities[cent->currentState.emplacedOwner];
 
-		if (cg.snap->ps.clientNum == empOwn->currentState.number &&
+		if (cg.snap->ps.client_num == empOwn->currentState.number &&
 			!cg.renderingThirdPerson)
 		{
 			VectorCopy(cg.refdef.viewangles, empAngles);
@@ -1418,7 +1418,7 @@ static void CG_General(centity_t* cent) {
 	}
 
 	// player model
-	if (s1->number == cg.snap->ps.clientNum) {
+	if (s1->number == cg.snap->ps.client_num) {
 		ent.renderfx |= RF_THIRD_PERSON;	// only draw from mirrors
 	}
 
@@ -1809,7 +1809,7 @@ static void CG_Speaker(centity_t* cent) {
 		CG_S_StopLoopingSound(cent->currentState.number, -1);
 	}
 
-	if (!cent->currentState.clientNum) {	// FIXME: use something other than clientNum...
+	if (!cent->currentState.client_num) {	// FIXME: use something other than client_num...
 		return;		// not auto triggering
 	}
 
@@ -1820,8 +1820,8 @@ static void CG_Speaker(centity_t* cent) {
 	trap->S_StartSound(NULL, cent->currentState.number, CHAN_ITEM, cgs.gameSounds[cent->currentState.eventParm]);
 
 	//	ent->s.frame = ent->wait * 10;
-	//	ent->s.clientNum = ent->random * 10;
-	cent->miscTime = cg.time + cent->currentState.frame * 100 + cent->currentState.clientNum * 100 * Q_flrand(-1.0f, 1.0f);
+	//	ent->s.client_num = ent->random * 10;
+	cent->miscTime = cg.time + cent->currentState.frame * 100 + cent->currentState.client_num * 100 * Q_flrand(-1.0f, 1.0f);
 }
 
 qboolean CG_GreyItem(int type, int tag, int plSide)
@@ -2937,7 +2937,7 @@ static void CG_Portal(centity_t* cent) {
 	ent.reType = RT_PORTALSURFACE;
 	ent.oldframe = s1->powerups;
 	ent.frame = s1->frame;		// rotation speed
-	ent.skinNum = s1->clientNum / 256.0 * 360;	// roll offset
+	ent.skinNum = s1->client_num / 256.0 * 360;	// roll offset
 	/*
 	Ghoul2 Insert Start
 	*/
@@ -3037,7 +3037,7 @@ void CG_CalcEntityLerpPositions(centity_t* cent) {
 	// if this player does not want to see extrapolated players
 	if (!cg_smoothClients.integer) {
 		// make sure the clients use TR_INTERPOLATE
-		if ((cent->currentState.number != cg.clientNum && cent->currentState.number < MAX_CLIENTS) || cent->currentState.eType == ET_NPC) {
+		if ((cent->currentState.number != cg.client_num && cent->currentState.number < MAX_CLIENTS) || cent->currentState.eType == ET_NPC) {
 			cent->currentState.pos.trType = TR_INTERPOLATE;
 			cent->nextState.pos.trType = TR_INTERPOLATE;
 		}
@@ -3049,7 +3049,7 @@ void CG_CalcEntityLerpPositions(centity_t* cent) {
 	{ //special case for vehicle we are riding
 		const centity_t* veh = &cg_entities[cg.predictedPlayerState.m_iVehicleNum];
 
-		if (veh->currentState.owner == cg.predictedPlayerState.clientNum)
+		if (veh->currentState.owner == cg.predictedPlayerState.client_num)
 		{ //only do this if the vehicle is pilotted by this client and predicting properly
 			BG_EvaluateTrajectory(&cent->currentState.pos, cg.time, cent->lerpOrigin);
 			BG_EvaluateTrajectory(&cent->currentState.apos, cg.time, cent->lerpAngles);
@@ -3065,7 +3065,7 @@ void CG_CalcEntityLerpPositions(centity_t* cent) {
 	// first see if we can interpolate between two snaps for
 	// linear extrapolated clients
 	if (cent->interpolate && cent->currentState.pos.trType == TR_LINEAR_STOP
-		&& ((cent->currentState.number != cg.clientNum && cent->currentState.number < MAX_CLIENTS) || cent->currentState.eType == ET_NPC)) {
+		&& ((cent->currentState.number != cg.client_num && cent->currentState.number < MAX_CLIENTS) || cent->currentState.eType == ET_NPC)) {
 		CG_InterpolateEntityPosition(cent);
 		goAway = qtrue;
 	}
@@ -3149,7 +3149,7 @@ void CG_CalcEntityLerpPositions(centity_t* cent) {
 
 	// adjust for riding a mover if it wasn't rolled into the predicted
 	// player state
-	if (cent->currentState.number != cg.clientNum) {
+	if (cent->currentState.number != cg.client_num) {
 		CG_AdjustPositionForMover(cent->lerpOrigin, cent->currentState.groundEntityNum,
 			cg.snap->serverTime, cg.time, cent->lerpOrigin);
 	}
@@ -3255,7 +3255,7 @@ static void CG_AddCEntity(centity_t* cent) {
 	}
 
 	// don't render when we are in spec, happens occasionally on map_restart and such
-	if (cg.predictedPlayerState.clientNum == cent->currentState.number && cg.predictedPlayerState.persistant[PERS_TEAM] == TEAM_SPECTATOR)
+	if (cg.predictedPlayerState.client_num == cent->currentState.number && cg.predictedPlayerState.persistant[PERS_TEAM] == TEAM_SPECTATOR)
 		return;
 
 	// calculate the current origin
@@ -3398,8 +3398,8 @@ void CG_AddPacketEntities(qboolean isPortal) {
 	// generate and add the entity from the playerstate
 	playerState_t* ps = &cg.predictedPlayerState;
 
-	CG_CheckPlayerG2Weapons(ps, &cg_entities[cg.predictedPlayerState.clientNum]);
-	BG_PlayerStateToEntityState(ps, &cg_entities[cg.predictedPlayerState.clientNum].currentState, qfalse);
+	CG_CheckPlayerG2Weapons(ps, &cg_entities[cg.predictedPlayerState.client_num]);
+	BG_PlayerStateToEntityState(ps, &cg_entities[cg.predictedPlayerState.client_num].currentState, qfalse);
 
 	if (cg.predictedPlayerState.m_iVehicleNum)
 	{ //add the vehicle I'm riding first
@@ -3407,7 +3407,7 @@ void CG_AddPacketEntities(qboolean isPortal) {
 		//cg_entities[cg.predictedPlayerState.m_iVehicleNum].currentState.eType = ET_NPC;
 		centity_t* veh = &cg_entities[cg.predictedPlayerState.m_iVehicleNum];
 
-		if (veh->currentState.owner == cg.predictedPlayerState.clientNum)
+		if (veh->currentState.owner == cg.predictedPlayerState.client_num)
 		{
 			BG_PlayerStateToEntityState(&cg.predictedVehicleState, &veh->currentState, qfalse);
 			veh->currentState.eType = ET_NPC;
@@ -3418,18 +3418,18 @@ void CG_AddPacketEntities(qboolean isPortal) {
 		veh->bodyHeight = cg.time; //indicate we have already been added
 	}
 
-	CG_AddCEntity(&cg_entities[cg.predictedPlayerState.clientNum]);
+	CG_AddCEntity(&cg_entities[cg.predictedPlayerState.client_num]);
 
 	/*
 	// lerp the non-predicted value for lightning gun origins
-	CG_CalcEntityLerpPositions( &cg_entities[ cg.snap->ps.clientNum ] );
+	CG_CalcEntityLerpPositions( &cg_entities[ cg.snap->ps.client_num ] );
 	*/
 	//No longer have to do this.
 
 	// add each entity sent over by the server
 	for (num = 0; num < cg.snap->numEntities; num++) {
 		// Don't re-add ents that have been predicted.
-		if (cg.snap->entities[num].number != cg.snap->ps.clientNum)
+		if (cg.snap->entities[num].number != cg.snap->ps.client_num)
 		{
 			cent = &cg_entities[cg.snap->entities[num].number];
 			if (cent->currentState.eType == ET_PLAYER &&

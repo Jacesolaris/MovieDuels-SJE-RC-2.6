@@ -88,7 +88,7 @@ extern qboolean FighterIsLanded(const Vehicle_t* pVeh, playerState_t* parentPS);
 extern void G_BlastDown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength);
 constexpr auto MISSILE_PRESTEP_TIME = 50;
 //-------------------------------------------------------------------------
-void G_MissileBounceEffect(const gentity_t* ent, vec3_t org, vec3_t dir, qboolean hitWorld)
+void G_MissileBounceEffect(const gentity_t* ent, vec3_t org, vec3_t dir, const qboolean hitWorld)
 {
 	switch (ent->s.weapon)
 	{
@@ -239,7 +239,7 @@ void G_MissileBouncedoffSaber(gentity_t* ent, gentity_t* missile, vec3_t forward
 
 	if (perfectReflection)
 	{
-		if (owner->s.clientNum >= MAX_CLIENTS)
+		if (owner->s.client_num >= MAX_CLIENTS)
 		{
 			gentity_t* enemy;
 			if (owner->enemy && Q_irand(0, 3))
@@ -324,7 +324,7 @@ void G_MissileBouncedoffSaber(gentity_t* ent, gentity_t* missile, vec3_t forward
 	}
 	if (!reflected)
 	{
-		if (owner && owner->s.clientNum >= MAX_CLIENTS)
+		if (owner && owner->s.client_num >= MAX_CLIENTS)
 		{
 			if (missile->owner && missile->s.weapon != WP_SABER)
 			{
@@ -1115,7 +1115,7 @@ void G_BoltBlockMissile(gentity_t* ent, gentity_t* missile, vec3_t forward)
 			Com_Printf(S_COLOR_CYAN"Saber Not Blocked but Reflected off saber.\n");
 		}
 
-		if (Blocker && Blocker->s.clientNum >= MAX_CLIENTS)
+		if (Blocker && Blocker->s.client_num >= MAX_CLIENTS)
 		{
 			if (missile->owner && missile->s.weapon != WP_SABER)
 			{
@@ -1620,7 +1620,7 @@ void G_SpawnNoghriGasCloud(gentity_t* ent)
 extern void laserTrapStick(gentity_t* ent, vec3_t endpos, vec3_t normal);
 extern qboolean W_AccuracyLoggableWeapon(int weapon, qboolean alt_fire, int mod);
 
-void G_MissileImpacted(gentity_t* ent, gentity_t* other, vec3_t impactPos, vec3_t normal, int hitLoc = HL_NONE)
+void G_MissileImpacted(gentity_t* ent, gentity_t* other, vec3_t impactPos, vec3_t normal, const int hitLoc = HL_NONE)
 {
 	// impact damage
 	if (other->takedamage)
@@ -1802,7 +1802,7 @@ static void G_MissileAddAlerts(gentity_t* ent)
 }
 
 //------------------------------------------------------
-void G_MissileImpact_MD(gentity_t* ent, trace_t* trace, int hitLoc = HL_NONE)
+void G_MissileImpact_MD(gentity_t* ent, trace_t* trace, const int hitLoc = HL_NONE)
 {
 	vec3_t diff;
 
@@ -2255,7 +2255,7 @@ void G_MissileImpact_MD(gentity_t* ent, trace_t* trace, int hitLoc = HL_NONE)
 	G_MissileImpacted(ent, other, trace->endpos, trace->plane.normal, hitLoc);
 }
 
-void G_MissileImpactJKA(gentity_t* ent, trace_t* trace, int hitLoc = HL_NONE)
+void G_MissileImpactJKA(gentity_t* ent, trace_t* trace, const int hitLoc = HL_NONE)
 {
 	vec3_t diff;
 
@@ -2656,7 +2656,7 @@ int G_GroundTrace(const gentity_t* ent, pml_t* pPml)
 	return trace.entityNum;
 }
 
-void G_ClipVelocity(vec3_t in, vec3_t normal, vec3_t out, float overbounce)
+void G_ClipVelocity(vec3_t in, vec3_t normal, vec3_t out, const float overbounce)
 {
 	float backoff = DotProduct(in, normal);
 
@@ -2927,7 +2927,7 @@ G_RunMissile
 
 ================
 */
-void G_MoverTouchPushTriggers(gentity_t* ent, vec3_t oldOrg);
+void G_MoverTouchPushTriggers(gentity_t* ent, vec3_t old_org);
 
 void G_RunMissile(gentity_t* ent)
 {
@@ -3522,7 +3522,7 @@ void wp_handle_bolt_block_sje_blockpoints(gentity_t* ent, gentity_t* missile, ve
 			Com_Printf(S_COLOR_CYAN"Saber Not Blocked but Reflected off saber.\n");
 		}
 
-		if (Blocker && Blocker->s.clientNum >= MAX_CLIENTS)
+		if (Blocker && Blocker->s.client_num >= MAX_CLIENTS)
 		{
 			if (missile->owner && missile->s.weapon != WP_SABER)
 			{
@@ -4005,7 +4005,7 @@ void wp_handle_bolt_block_sje_forcepoints(gentity_t* ent, gentity_t* missile, ve
 			Com_Printf(S_COLOR_CYAN"Saber Not Blocked but Reflected off saber.\n");
 		}
 
-		if (Blocker && Blocker->s.clientNum >= MAX_CLIENTS)
+		if (Blocker && Blocker->s.client_num >= MAX_CLIENTS)
 		{
 			if (missile->owner && missile->s.weapon != WP_SABER)
 			{
