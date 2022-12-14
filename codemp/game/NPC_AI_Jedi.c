@@ -5266,17 +5266,17 @@ void NPC_Jedi_Pain(gentity_t* self, gentity_t* attacker, int damage)
 
 qboolean jedi_check_danger(void)
 {
-	const int alertEvent = NPC_CheckAlertEvents(qtrue, qtrue, -1, qfalse, AEL_MINOR);
+	const int alert_event = NPC_CheckAlertEvents(qtrue, qtrue, -1, qfalse, AEL_MINOR);
 
-	if (level.alertEvents[alertEvent].level >= AEL_DANGER)
+	if (level.alertEvents[alert_event].level >= AEL_DANGER)
 	{//run away!
-		if (!level.alertEvents[alertEvent].owner
-			|| !level.alertEvents[alertEvent].owner->client
-			|| (level.alertEvents[alertEvent].owner != NPCS.NPC && level.alertEvents[alertEvent].owner->client->playerTeam != NPCS.NPC->client->playerTeam))
+		if (!level.alertEvents[alert_event].owner
+			|| !level.alertEvents[alert_event].owner->client
+			|| (level.alertEvents[alert_event].owner != NPCS.NPC && level.alertEvents[alert_event].owner->client->playerTeam != NPCS.NPC->client->playerTeam))
 		{//no owner
 			return qfalse;
 		}
-		G_SetEnemy(NPCS.NPC, level.alertEvents[alertEvent].owner);
+		G_SetEnemy(NPCS.NPC, level.alertEvents[alert_event].owner);
 		NPCS.NPCInfo->enemyLastSeenTime = level.time;
 		TIMER_Set(NPCS.NPC, "attackDelay", Q_irand(500, 2500));
 		return qtrue;

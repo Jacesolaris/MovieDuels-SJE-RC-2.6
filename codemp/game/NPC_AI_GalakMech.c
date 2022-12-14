@@ -776,19 +776,19 @@ void NPC_BSGM_Attack(void)
 			if (TIMER_Done(NPCS.NPC, "attackDelay"))
 			{
 				//animate me
-				int swingAnim = BOTH_ATTACK1;
+				int swing_anim = BOTH_ATTACK1;
 #if 0
 				if (NPC->locationDamage[HL_GENERIC1] > GENERATOR_HEALTH)
 				{//generator down, use random melee
-					swingAnim = Q_irand(BOTH_ATTACK4, BOTH_ATTACK5);//smackdown or uppercut
+					swing_anim = Q_irand(BOTH_ATTACK4, BOTH_ATTACK5);//smackdown or uppercut
 				}
 				else
 				{//always knock-away
-					swingAnim = BOTH_ATTACK5;//uppercut
+					swing_anim = BOTH_ATTACK5;//uppercut
 				}
 #endif
 				//FIXME: swing sound
-				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, swingAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, swing_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				TIMER_Set(NPCS.NPC, "attackDelay", NPCS.NPC->client->ps.torsoTimer + Q_irand(1000, 3000));
 				//delay the hurt until the proper point in the anim
 				TIMER_Set(NPCS.NPC, "smackTime", 600);

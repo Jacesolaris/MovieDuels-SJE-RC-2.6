@@ -51,8 +51,8 @@ const char* CG_DisplayBoxedText(int iBoxX, int iBoxY, int iBoxWidth, int iBoxHei
 	const vec4_t v4Color);
 
 constexpr auto NUM_CHUNKS = 6;
-extern void G_StartNextItemEffect(gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f,
-	int spinTime = 0);
+extern void G_StartNextItemEffect(gentity_t* ent, int me_flags = 0, int length = 1000, float time_scale = 0.0f,
+	int spin_time = 0);
 /*
 Ghoul2 Insert Start
 */

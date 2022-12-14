@@ -63,7 +63,7 @@ bool HFILEclose(const int& handle)
 ////////////////////////////////////////////////////////////////////////////////////////
 extern gentity_t* G_FindDoorTrigger(const gentity_t* ent);
 extern qboolean G_EntIsBreakable(int entity_num, const gentity_t* breaker);
-extern qboolean G_CheckInSolidTeleport(const vec3_t& teleportPos, const gentity_t* self);
+extern qboolean G_CheckInSolidTeleport(const vec3_t& teleport_pos, const gentity_t* self);
 
 extern cvar_t* g_nav1;
 extern cvar_t* g_nav2;

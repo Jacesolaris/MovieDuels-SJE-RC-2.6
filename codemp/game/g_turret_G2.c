@@ -26,7 +26,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 void G_SetEnemy(gentity_t* self, gentity_t* enemy);
 void finish_spawning_turretG2(gentity_t* base);
-void ObjectDie(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath);
+void ObjectDie(gentity_t* self, gentity_t* attacker);
 void turretG2_base_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 
 #define SPF_TURRETG2_CANRESPAWN	4
@@ -318,7 +318,7 @@ void turretG2_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, in
 	}
 	else
 	{
-		ObjectDie(self, inflictor, attacker, damage, meansOfDeath);
+		ObjectDie(self, attacker);
 	}
 }
 

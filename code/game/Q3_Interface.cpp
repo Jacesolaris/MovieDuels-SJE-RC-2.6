@@ -76,8 +76,8 @@ extern void WP_SetSaberOrigin(gentity_t* self, vec3_t new_org);
 extern void Rail_LockCenterOfTrack(const char* trackName);
 extern void Rail_UnLockCenterOfTrack(const char* trackName);
 extern void G_GetBoltPosition(gentity_t* self, int boltIndex, vec3_t pos, int modelIndex = 0);
-extern qboolean G_DoDismembermentcin(gentity_t* self, vec3_t point, int mod, int damage, int hitLoc,
-	qboolean force = qfalse);
+extern qboolean G_DoDismembermentcin(gentity_t* self, vec3_t point, const int mod, const int hit_loc,
+                                     const qboolean force = qfalse);
 extern void G_ChangeScale(const char* data);
 extern void UnLockDoors(const gentity_t* ent);
 extern void LockDoors(const gentity_t* ent);
@@ -2517,8 +2517,6 @@ void Q3_SetHealth(const int entID, int data)
 			ent->client->respawnTime = level.time + 2000;
 			//stop all scripts
 			stop_icarus = qtrue;
-			//make the team killable
-			//G_MakeTeamVulnerable();
 		}
 	}
 }
@@ -7275,7 +7273,7 @@ void Q3_DismemberLimb(const int entID, char* hitLocName)
 		break;
 	default:;
 	}
-	G_DoDismembermentcin(self, point, MOD_SABER, 1000, hitLoc, qtrue);
+	G_DoDismembermentcin(self, point, MOD_SABER, hitLoc, qtrue);
 }
 
 /*
@@ -8177,7 +8175,7 @@ unsigned int CQuake3GameInterface::GetTime(void)
 //	 DWORD	CQuake3GameInterface::GetTimeScale(void ) {}
 
 // NOTE: This extern does not really fit here, fix later please...
-extern void G_SoundBroadcast(const gentity_t* ent, int soundIndex);
+extern void G_SoundBroadcast(const gentity_t* ent, int sound_index);
 // Plays a sound from an entity.
 int CQuake3GameInterface::PlayIcarusSound(const int taskID, const int entID, const char* name, const char* channel)
 {

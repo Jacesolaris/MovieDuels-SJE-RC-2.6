@@ -622,8 +622,8 @@ void AI_DeleteSelfFromGroup(const gentity_t* self)
 
 extern void ST_AggressionAdjust(const gentity_t* self, int change);
 extern void ST_MarkToCover(const gentity_t* self);
-extern void ST_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t dangerPoint, int dangerLevel, int minTime,
-	int maxTime);
+extern void ST_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t danger_point, int danger_level, int min_time,
+	int max_time);
 
 void AI_GroupMemberKilled(const gentity_t* self)
 {
@@ -848,7 +848,7 @@ qboolean AI_RefreshGroup(AIGroupInfo_t* group)
 		}
 		if (group->commander && debugNPCAI->integer)
 		{
-			G_DebugLine(group->commander->currentOrigin, member->currentOrigin, FRAMETIME, 0x00ff00ff, qtrue);
+			G_DebugLine(group->commander->currentOrigin, member->currentOrigin, FRAMETIME, 0x00ff00ff);
 		}
 	}
 	if (group->enemy)

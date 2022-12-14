@@ -31,10 +31,10 @@ extern int PM_AnimLength(int index, animNumber_t anim);
 
 qboolean NPC_CheckPlayerTeamStealth();
 
-static qboolean enemyLOS;
-static qboolean enemyCS;
-static qboolean faceEnemy;
-static qboolean doMove;
+static qboolean enemy_los;
+static qboolean enemy_cs;
+static qboolean face_enemy;
+static qboolean do_move;
 static qboolean shoot;
 static float enemyDist;
 
@@ -113,20 +113,20 @@ void NPC_BSSaberDroid_Patrol(void)
 		if (!(NPCInfo->scriptFlags & SCF_IGNORE_ALERTS))
 		{
 			//Is there danger nearby
-			const int alertEvent = NPC_CheckAlertEvents(qtrue, qtrue, -1, qfalse, AEL_SUSPICIOUS);
+			const int alert_event = NPC_CheckAlertEvents(qtrue, qtrue, -1, qfalse, AEL_SUSPICIOUS);
 			//There is an event to look at
-			if (alertEvent >= 0) //&& level.alertEvents[alertEvent].ID != NPCInfo->lastAlertID )
+			if (alert_event >= 0) //&& level.alertEvents[alert_event].ID != NPCInfo->lastAlertID )
 			{
-				//NPCInfo->lastAlertID = level.alertEvents[alertEvent].ID;
-				if (level.alertEvents[alertEvent].level >= AEL_DISCOVERED)
+				//NPCInfo->lastAlertID = level.alertEvents[alert_event].ID;
+				if (level.alertEvents[alert_event].level >= AEL_DISCOVERED)
 				{
-					if (level.alertEvents[alertEvent].owner &&
-						level.alertEvents[alertEvent].owner->client &&
-						level.alertEvents[alertEvent].owner->health >= 0 &&
-						level.alertEvents[alertEvent].owner->client->playerTeam == NPC->client->enemyTeam)
+					if (level.alertEvents[alert_event].owner &&
+						level.alertEvents[alert_event].owner->client &&
+						level.alertEvents[alert_event].owner->health >= 0 &&
+						level.alertEvents[alert_event].owner->client->playerTeam == NPC->client->enemyTeam)
 					{
 						//an enemy
-						G_SetEnemy(NPC, level.alertEvents[alertEvent].owner);
+						G_SetEnemy(NPC, level.alertEvents[alert_event].owner);
 						//NPCInfo->enemyLastSeenTime = level.time;
 						TIMER_Set(NPC, "attackDelay", Q_irand(500, 2500));
 					}
@@ -135,9 +135,9 @@ void NPC_BSSaberDroid_Patrol(void)
 				{
 					//FIXME: get more suspicious over time?
 					//Save the position for movement (if necessary)
-					VectorCopy(level.alertEvents[alertEvent].position, NPCInfo->investigateGoal);
+					VectorCopy(level.alertEvents[alert_event].position, NPCInfo->investigateGoal);
 					NPCInfo->investigateDebounceTime = level.time + Q_irand(500, 1000);
-					if (level.alertEvents[alertEvent].level == AEL_SUSPICIOUS)
+					if (level.alertEvents[alert_event].level == AEL_SUSPICIOUS)
 					{
 						//suspicious looks longer
 						NPCInfo->investigateDebounceTime += Q_irand(500, 2500);
@@ -337,9 +337,9 @@ void NPC_BSSaberDroid_Attack(void)
 		return;
 	}
 
-	enemyLOS = enemyCS = qfalse;
-	doMove = qtrue;
-	faceEnemy = qfalse;
+	enemy_los = enemy_cs = qfalse;
+	do_move = qtrue;
+	face_enemy = qfalse;
 	shoot = qfalse;
 	enemyDist = DistanceSquared(NPC->enemy->currentOrigin, NPC->currentOrigin);
 
@@ -347,13 +347,13 @@ void NPC_BSSaberDroid_Attack(void)
 	if (NPC_ClearLOS(NPC->enemy))
 	{
 		NPCInfo->enemyLastSeenTime = level.time;
-		enemyLOS = qtrue;
+		enemy_los = qtrue;
 
 		if (enemyDist <= 4096 && InFOV(NPC->enemy->currentOrigin, NPC->currentOrigin, NPC->client->ps.viewangles, 90,
 			45)) //within 64 & infront
 		{
 			VectorCopy(NPC->enemy->currentOrigin, NPCInfo->enemyLastSeenLocation);
-			enemyCS = qtrue;
+			enemy_cs = qtrue;
 		}
 	}
 	/*
@@ -364,23 +364,23 @@ void NPC_BSSaberDroid_Attack(void)
 	}
 	*/
 
-	if (enemyLOS)
+	if (enemy_los)
 	{
 		//FIXME: no need to face enemy if we're moving to some other goal and he's too far away to shoot?
-		faceEnemy = qtrue;
+		face_enemy = qtrue;
 	}
 
 	if (!TIMER_Done(NPC, "taunting"))
 	{
-		doMove = qfalse;
+		do_move = qfalse;
 	}
-	else if (enemyCS)
+	else if (enemy_cs)
 	{
 		shoot = qtrue;
 		if (enemyDist < (NPC->maxs[0] + NPC->enemy->maxs[0] + 32) * (NPC->maxs[0] + NPC->enemy->maxs[0] + 32))
 		{
 			//close enough
-			doMove = qfalse;
+			do_move = qfalse;
 		}
 	} //this should make him chase enemy when out of range...?
 
@@ -388,24 +388,24 @@ void NPC_BSSaberDroid_Attack(void)
 		&& NPC->client->ps.legsAnim != BOTH_A3__L__R) //this one is a running attack
 	{
 		//in the middle of a held, stationary anim, can't doMove
-		doMove = qfalse;
+		do_move = qfalse;
 	}
 
-	if (doMove)
+	if (do_move)
 	{
 		//doMove toward goal
-		doMove = SaberDroid_Move();
-		if (doMove)
+		do_move = SaberDroid_Move();
+		if (do_move)
 		{
 			//if we had to chase him, be sure to attack as soon as possible
 			TIMER_Set(NPC, "attackDelay", NPC->client->ps.weaponTime);
 		}
 	}
 
-	if (!faceEnemy)
+	if (!face_enemy)
 	{
 		//we want to face in the dir we're running
-		if (doMove)
+		if (do_move)
 		{
 			//don't run away and shoot
 			NPCInfo->desiredYaw = NPCInfo->lastPathAngles[YAW];

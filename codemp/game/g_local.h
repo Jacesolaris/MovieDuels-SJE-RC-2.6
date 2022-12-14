@@ -1085,7 +1085,7 @@ void	G_TeamCommand(team_t team, char* cmd);
 void	G_ScaleNetHealth(gentity_t* self);
 void	G_KillBox(gentity_t* ent);
 gentity_t* G_Find(gentity_t* from, int fieldofs, const char* match);
-int		G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean takeDamage, gentity_t* ent_list[MAX_GENTITIES]);
+int		G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean take_damage, gentity_t* ent_list[MAX_GENTITIES]);
 
 void	G_Throw(gentity_t* targ, vec3_t newDir, float push);
 
@@ -1114,7 +1114,7 @@ void	G_EntitySound(gentity_t* ent, int channel, int soundIndex);
 void	TryUse(gentity_t* ent);
 void	G_SendG2KillQueue(void);
 void	G_KillG2Queue(int entNum);
-void	G_FreeEntity(gentity_t* e);
+void	G_FreeEntity(gentity_t* ent);
 qboolean	G_EntitiesFree(void);
 
 qboolean G_ActivateBehavior(gentity_t* self, int bset);
@@ -1133,7 +1133,7 @@ float* tv(float x, float y, float z);
 char* vtos(const vec3_t v);
 
 void G_AddPredictableEvent(gentity_t* ent, int event, int eventParm);
-void G_AddEvent(gentity_t* ent, int event, int eventParm);
+void G_AddEvent(gentity_t* ent, int event, int event_parm);
 void G_SetOrigin(gentity_t* ent, vec3_t origin);
 qboolean G_CheckInSolid(gentity_t* self, qboolean fix);
 void AddRemap(const char* oldShader, const char* newShader, float timeOffset);
@@ -1377,9 +1377,9 @@ void G_WriteSessionData(void);
 //
 extern void AddSightEvent(gentity_t* owner, vec3_t position, float radius, alertEventLevel_e alertLevel, float addLight); //addLight = 0.0f
 extern void AddSoundEvent(gentity_t* owner, vec3_t position, float radius, alertEventLevel_e alertLevel, qboolean needLOS); //needLOS = qfalse
-extern qboolean G_CheckForDanger(const gentity_t* self, int alertEvent);
+extern qboolean G_CheckForDanger(const gentity_t* self, int alert_event);
 extern int G_CheckAlertEvents(gentity_t* self, qboolean checkSight, qboolean checkSound, float maxSeeDist, float maxHearDist, int ignoreAlert, qboolean mustHaveOwner, int minAlertLevel); //ignoreAlert = -1, mustHaveOwner = qfalse, minAlertLevel = AEL_MINOR
-extern qboolean G_CheckForDanger(const gentity_t* self, int alertEvent);
+extern qboolean G_CheckForDanger(const gentity_t* self, int alert_event);
 extern qboolean G_ClearLOS(gentity_t* self, const vec3_t start, const vec3_t end);
 extern qboolean G_ClearLOS2(gentity_t* self, gentity_t* ent, const vec3_t end);
 extern qboolean G_ClearLOS3(gentity_t* self, const vec3_t start, gentity_t* ent);

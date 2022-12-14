@@ -463,7 +463,7 @@ void PM_StepSlideMove(float grav_mod)
 
 	if (pm->debugLevel)
 	{
-		G_DebugLine(start_o, trace.endpos, 2000, 0xffffff, qtrue);
+		G_DebugLine(start_o, trace.endpos, 2000, 0xffffff);
 	}
 
 	//===Another slidemove forward================================================================================
@@ -476,7 +476,7 @@ void PM_StepSlideMove(float grav_mod)
 
 	if (pm->debugLevel)
 	{
-		G_DebugLine(trace.endpos, pm->ps->origin, 2000, 0xffffff, qtrue);
+		G_DebugLine(trace.endpos, pm->ps->origin, 2000, 0xffffff);
 	}
 	//compare the initial slidemove and this slidemove from a step up position
 	VectorSubtract(down_o, start_o, slide_move);
@@ -499,7 +499,7 @@ void PM_StepSlideMove(float grav_mod)
 			static_cast<EG2_Collision>(0), 0);
 		if (pm->debugLevel)
 		{
-			G_DebugLine(pm->ps->origin, trace.endpos, 2000, 0xffffff, qtrue);
+			G_DebugLine(pm->ps->origin, trace.endpos, 2000, 0xffffff);
 		}
 		if (g_stepSlideFix->integer)
 		{
@@ -521,7 +521,7 @@ void PM_StepSlideMove(float grav_mod)
 				{
 					if (pm->debugLevel)
 					{
-						G_DebugLine(down_o, trace.endpos, 2000, 0x0000ff, qtrue);
+						G_DebugLine(down_o, trace.endpos, 2000, 0x0000ff);
 					}
 					skip_step = qtrue;
 				}

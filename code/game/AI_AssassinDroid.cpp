@@ -64,11 +64,11 @@ void BubbleShield_TurnOff()
 ////////////////////////////////////////////////////////////////////////////////////////
 // Push A Particular Ent
 ////////////////////////////////////////////////////////////////////////////////////////
-void BubbleShield_PushEnt(gentity_t* pushed, vec3_t smackDir)
+void BubbleShield_PushEnt(gentity_t* pushed, vec3_t smack_dir)
 {
-	G_Damage(pushed, NPC, NPC, smackDir, NPC->currentOrigin, (g_spskill->integer + 1) * Q_irand(5, 10),
+	G_Damage(pushed, NPC, NPC, smack_dir, NPC->currentOrigin, (g_spskill->integer + 1) * Q_irand(5, 10),
 		DAMAGE_NO_KNOCKBACK, MOD_ELECTROCUTE);
-	G_Throw(pushed, smackDir, 10);
+	G_Throw(pushed, smack_dir, 10);
 
 	// Make Em Electric
 	//------------------

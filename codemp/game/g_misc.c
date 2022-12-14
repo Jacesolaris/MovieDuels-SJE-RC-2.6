@@ -2287,13 +2287,13 @@ extern int	BMS_START;
 extern int	BMS_MID;
 extern int	BMS_END;
 //----------------------------------------------------------
-void fx_runner_think(gentity_t* ent)
+void fx_runner_think(gentity_t* self)
 {
-	BG_EvaluateTrajectory(&ent->s.pos, level.time, ent->r.currentOrigin);
-	BG_EvaluateTrajectory(&ent->s.apos, level.time, ent->r.currentAngles);
+	BG_EvaluateTrajectory(&self->s.pos, level.time, self->r.currentOrigin);
+	BG_EvaluateTrajectory(&self->s.apos, level.time, self->r.currentAngles);
 
 	// call the effect with the desired position and orientation
-	if (ent->s.isPortalEnt)
+	if (self->s.isPortalEnt)
 	{
 		//		G_AddEvent( ent, EV_PLAY_PORTAL_EFFECT_ID, ent->genericValue5 );
 	}
@@ -2303,31 +2303,31 @@ void fx_runner_think(gentity_t* ent)
 	}
 
 	// start the fx on the client (continuous)
-	ent->s.modelindex2 = FX_STATE_CONTINUOUS;
+	self->s.modelindex2 = FX_STATE_CONTINUOUS;
 
-	VectorCopy(ent->r.currentAngles, ent->s.angles);
-	VectorCopy(ent->r.currentOrigin, ent->s.origin);
+	VectorCopy(self->r.currentAngles, self->s.angles);
+	VectorCopy(self->r.currentOrigin, self->s.origin);
 
-	ent->nextthink = level.time + ent->delay + Q_flrand(0.0f, 1.0f) * ent->random;
+	self->nextthink = level.time + self->delay + Q_flrand(0.0f, 1.0f) * self->random;
 
-	if (ent->spawnflags & 4) // damage
+	if (self->spawnflags & 4) // damage
 	{
-		G_RadiusDamage(ent->r.currentOrigin, ent, ent->splashDamage, ent->splashRadius, ent, ent, MOD_UNKNOWN);
+		G_RadiusDamage(self->r.currentOrigin, self, self->splashDamage, self->splashRadius, self, self, MOD_UNKNOWN);
 	}
 
-	if (ent->target2 && ent->target2[0])
+	if (self->target2 && self->target2[0])
 	{
 		// let our target know that we have spawned an effect
-		G_UseTargets2(ent, ent, ent->target2);
+		G_UseTargets2(self, self, self->target2);
 	}
 
-	if (!(ent->spawnflags & 2) && !ent->s.loopSound) // NOT ONESHOT...this is an assy thing to do
+	if (!(self->spawnflags & 2) && !self->s.loopSound) // NOT ONESHOT...this is an assy thing to do
 	{
-		if (ent->soundSet && ent->soundSet[0])
+		if (self->soundSet && self->soundSet[0])
 		{
-			ent->s.soundSetIndex = G_SoundSetIndex(ent->soundSet);
-			ent->s.loopIsSoundset = qtrue;
-			ent->s.loopSound = BMS_MID;
+			self->s.soundSetIndex = G_SoundSetIndex(self->soundSet);
+			self->s.loopIsSoundset = qtrue;
+			self->s.loopSound = BMS_MID;
 		}
 	}
 }
@@ -2407,71 +2407,71 @@ void fx_runner_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 }
 
 //----------------------------------------------------------
-void fx_runner_link(gentity_t* ent)
+void fx_runner_link(gentity_t* self)
 {
 	vec3_t	dir;
 
-	if (ent->target && ent->target[0])
+	if (self->target && self->target[0])
 	{
 		// try to use the target to override the orientation
 		gentity_t* target = NULL;
 
-		target = G_Find(target, FOFS(targetname), ent->target);
+		target = G_Find(target, FOFS(targetname), self->target);
 
 		if (!target)
 		{
 			// Bah, no good, dump a warning, but continue on and use the UP vector
-			Com_Printf("fx_runner_link: target specified but not found: %s\n", ent->target);
+			Com_Printf("fx_runner_link: target specified but not found: %s\n", self->target);
 			Com_Printf("  -assuming UP orientation.\n");
 		}
 		else
 		{
 			// Our target is valid so let's override the default UP vector
-			VectorSubtract(target->s.origin, ent->s.origin, dir);
+			VectorSubtract(target->s.origin, self->s.origin, dir);
 			VectorNormalize(dir);
-			vectoangles(dir, ent->s.angles);
+			vectoangles(dir, self->s.angles);
 		}
 	}
 
 	// don't really do anything with this right now other than do a check to warn the designers if the target2 is bogus
-	if (ent->target2 && ent->target2[0])
+	if (self->target2 && self->target2[0])
 	{
 		gentity_t* target = NULL;
 
-		target = G_Find(target, FOFS(targetname), ent->target2);
+		target = G_Find(target, FOFS(targetname), self->target2);
 
 		if (!target)
 		{
 			// Target2 is bogus, but we can still continue
-			Com_Printf("fx_runner_link: target2 was specified but is not valid: %s\n", ent->target2);
+			Com_Printf("fx_runner_link: target2 was specified but is not valid: %s\n", self->target2);
 		}
 	}
 
-	G_SetAngles(ent, ent->s.angles);
+	G_SetAngles(self, self->s.angles);
 
-	if (ent->spawnflags & 1 || ent->spawnflags & 2) // STARTOFF || ONESHOT
+	if (self->spawnflags & 1 || self->spawnflags & 2) // STARTOFF || ONESHOT
 	{
 		// We won't even consider thinking until we are used
-		ent->nextthink = -1;
+		self->nextthink = -1;
 	}
 	else
 	{
-		if (ent->soundSet && ent->soundSet[0])
+		if (self->soundSet && self->soundSet[0])
 		{
-			ent->s.soundSetIndex = G_SoundSetIndex(ent->soundSet);
-			ent->s.loopSound = BMS_MID;
-			ent->s.loopIsSoundset = qtrue;
+			self->s.soundSetIndex = G_SoundSetIndex(self->soundSet);
+			self->s.loopSound = BMS_MID;
+			self->s.loopIsSoundset = qtrue;
 		}
 
 		// Let's get to work right now!
-		ent->think = fx_runner_think;
-		ent->nextthink = level.time + 200; // wait a small bit, then start working
+		self->think = fx_runner_think;
+		self->nextthink = level.time + 200; // wait a small bit, then start working
 	}
 
 	// make us useable if we can be targeted
-	if (ent->targetname && ent->targetname[0])
+	if (self->targetname && self->targetname[0])
 	{
-		ent->use = fx_runner_use;
+		self->use = fx_runner_use;
 	}
 }
 

@@ -73,23 +73,22 @@ using rank_t = enum //# rank_e
 qboolean NPC_CheckPlayerTeamStealth();
 
 //AI_GRENADIER
-void NPC_BSGrenadier_Default(void);
+void NPC_BSGrenadier_Default();
 
 //AI_TUSKEN
-void NPC_BSTusken_Default(void);
+void NPC_BSTusken_Default();
 
 //AI_SNIPER
 void NPC_BSSniper_Default();
 
 //AI_STORMTROOPER
-void Saboteur_Decloak(gentity_t* self, int uncloakTime = 2000);
-void NPC_BSST_Investigate(void);
-void NPC_BSST_Default(void);
-void NPC_BSST_Sleep(void);
+void Saboteur_Decloak(gentity_t* self, int uncloak_time = 2000);
+void NPC_BSST_Investigate();
+void NPC_BSST_Default();
+void NPC_BSST_Sleep();
 
 //AI_JEDI
-void NPC_BSJedi_Investigate(void);
-void npc_bs_jedi_default(void);
+void npc_bs_jedi_default();
 void npc_bs_jedi_follow_leader();
 
 // AI_DROID

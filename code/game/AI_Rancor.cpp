@@ -323,10 +323,10 @@ void Rancor_Move(qboolean visible)
 }
 
 //---------------------------------------------------------
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
-extern qboolean G_DoDismemberment(gentity_t* self, vec3_t point, int mod, int damage, int hitLoc,
-	qboolean force = qfalse);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
+extern qboolean G_DoDismemberment(gentity_t* self, vec3_t point, const int mod, const int hit_loc,
+                                  const qboolean force = qfalse);
 extern float NPC_EntRangeFromBolt(const gentity_t* targEnt, int boltIndex);
 extern int NPC_GetEntsNearBolt(gentity_t** radiusEnts, float radius, int boltIndex, vec3_t boltOrg);
 
@@ -812,7 +812,7 @@ void Rancor_Bite(void)
 					}
 					radiusEnts[i]->client->dismembered = false;
 					//FIXME: the limb should just disappear, cuz I ate it
-					G_DoDismemberment(radiusEnts[i], radiusEnts[i]->currentOrigin, MOD_SABER, 1000, hit_loc, qtrue);
+					G_DoDismemberment(radiusEnts[i], radiusEnts[i]->currentOrigin, MOD_SABER, hit_loc, qtrue);
 				}
 			}
 			G_Sound(radiusEnts[i], G_SoundIndex("sound/chars/rancor/chomp.wav"));
@@ -1074,8 +1074,7 @@ void Rancor_Attack(const float distance, const qboolean doCharge, const qboolean
 					{
 						//make it look like we bit his head off
 						NPC->activator->client->dismembered = false;
-						G_DoDismemberment(NPC->activator, NPC->activator->currentOrigin, MOD_SABER, 1000, HL_HEAD,
-							qtrue);
+						G_DoDismemberment(NPC->activator, NPC->activator->currentOrigin, MOD_SABER, HL_HEAD, qtrue);
 					}
 					NPC_SetAnim(NPC->activator, SETANIM_BOTH, BOTH_SWIM_IDLE1,
 						SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
@@ -1096,7 +1095,7 @@ void Rancor_Attack(const float distance, const qboolean doCharge, const qboolean
 				if (NPC->activator->client)
 				{
 					NPC->activator->client->dismembered = false;
-					G_DoDismemberment(NPC->activator, NPC->enemy->currentOrigin, MOD_SABER, 1000, HL_WAIST, qtrue);
+					G_DoDismemberment(NPC->activator, NPC->enemy->currentOrigin, MOD_SABER, HL_WAIST, qtrue);
 				}
 				//KILL
 				G_Damage(NPC->activator, NPC, NPC, vec3_origin, NPC->activator->currentOrigin,
@@ -1140,7 +1139,7 @@ void Rancor_Attack(const float distance, const qboolean doCharge, const qboolean
 				{
 					//cut in half
 					NPC->activator->client->dismembered = false;
-					G_DoDismemberment(NPC->activator, NPC->enemy->currentOrigin, MOD_SABER, 1000, HL_WAIST, qtrue);
+					G_DoDismemberment(NPC->activator, NPC->enemy->currentOrigin, MOD_SABER, HL_WAIST, qtrue);
 					//KILL
 					G_Damage(NPC->activator, NPC, NPC, vec3_origin, NPC->activator->currentOrigin,
 						NPC->enemy->health + 1000,

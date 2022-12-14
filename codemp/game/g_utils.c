@@ -259,7 +259,7 @@ gentity_t* G_Find(gentity_t* from, int fieldofs, const char* match)
 G_RadiusList - given an origin and a radius, return all entities that are in use that are within the list
 ============
 */
-int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean takeDamage, gentity_t* ent_list[MAX_GENTITIES])
+int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean take_damage, gentity_t* ent_list[MAX_GENTITIES])
 {
 	int			entityList[MAX_GENTITIES];
 	vec3_t		mins, maxs;
@@ -284,7 +284,7 @@ int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean 
 	{
 		gentity_t* ent = &g_entities[entityList[e]];
 
-		if ((ent == ignore) || !(ent->inuse) || ent->takedamage != takeDamage)
+		if ((ent == ignore) || !(ent->inuse) || ent->takedamage != take_damage)
 			continue;
 
 		// find the distance from the edge of the bounding box
@@ -908,10 +908,10 @@ G_FreeEntity
 Marks the entity as free
 =================
 */
-void G_FreeEntity(gentity_t* ed) {
+void G_FreeEntity(gentity_t* ent) {
 	//gentity_t *te;
 
-	if (ed->isSaberEntity)
+	if (ent->isSaberEntity)
 	{
 #ifdef _DEBUG
 		Com_Printf("Tried to remove JM saber!\n");
@@ -919,11 +919,11 @@ void G_FreeEntity(gentity_t* ed) {
 		return;
 	}
 
-	trap->UnlinkEntity((sharedEntity_t*)ed);		// unlink from world
+	trap->UnlinkEntity((sharedEntity_t*)ent);		// unlink from world
 
-	trap->ICARUS_FreeEnt((sharedEntity_t*)ed);	//ICARUS information must be added after this point
+	trap->ICARUS_FreeEnt((sharedEntity_t*)ent);	//ICARUS information must be added after this point
 
-	if (ed->neverFree) {
+	if (ent->neverFree) {
 		return;
 	}
 
@@ -931,7 +931,7 @@ void G_FreeEntity(gentity_t* ed) {
 	//to anything ghoul2-related on the server and thus must send a message
 	//to let the client know he needs to clean up all the g2 stuff for this
 	//now-removed entity
-	if (ed->s.modelGhoul2)
+	if (ent->s.modelGhoul2)
 	{ //force all clients to accept an event to destroy this instance, right now
 		/*
 		te = G_TempEntity( vec3_origin, EV_DESTROY_GHOUL2_INSTANCE );
@@ -939,31 +939,31 @@ void G_FreeEntity(gentity_t* ed) {
 		te->s.eventParm = ed->s.number;
 		*/
 		//Or not. Events can be dropped, so that would be a bad thing.
-		G_KillG2Queue(ed->s.number);
+		G_KillG2Queue(ent->s.number);
 	}
 
 	//And, free the server instance too, if there is one.
-	if (ed->ghoul2)
+	if (ent->ghoul2)
 	{
-		trap->G2API_CleanGhoul2Models(&(ed->ghoul2));
+		trap->G2API_CleanGhoul2Models(&(ent->ghoul2));
 	}
 
-	if (ed->s.eType == ET_NPC && ed->m_pVehicle)
+	if (ent->s.eType == ET_NPC && ent->m_pVehicle)
 	{ //tell the "vehicle pool" that this one is now free
-		G_FreeVehicleObject(ed->m_pVehicle);
+		G_FreeVehicleObject(ent->m_pVehicle);
 	}
 
-	if (ed->s.eType == ET_NPC && ed->client)
+	if (ent->s.eType == ET_NPC && ent->client)
 	{ //this "client" structure is one of our dynamically allocated ones, so free the memory
 		int saberEntNum = -1;
 		int i = 0;
-		if (ed->client->ps.saberEntityNum)
+		if (ent->client->ps.saberEntityNum)
 		{
-			saberEntNum = ed->client->ps.saberEntityNum;
+			saberEntNum = ent->client->ps.saberEntityNum;
 		}
-		else if (ed->client->saberStoredIndex)
+		else if (ent->client->saberStoredIndex)
 		{
-			saberEntNum = ed->client->saberStoredIndex;
+			saberEntNum = ent->client->saberStoredIndex;
 		}
 
 		if (saberEntNum > 0 && g_entities[saberEntNum].inuse)
@@ -974,17 +974,17 @@ void G_FreeEntity(gentity_t* ed) {
 
 		while (i < MAX_SABERS)
 		{
-			if (ed->client->weaponGhoul2[i] && trap->G2API_HaveWeGhoul2Models(ed->client->weaponGhoul2[i]))
+			if (ent->client->weaponGhoul2[i] && trap->G2API_HaveWeGhoul2Models(ent->client->weaponGhoul2[i]))
 			{
-				trap->G2API_CleanGhoul2Models(&ed->client->weaponGhoul2[i]);
+				trap->G2API_CleanGhoul2Models(&ent->client->weaponGhoul2[i]);
 			}
 			i++;
 		}
 
-		G_FreeFakeClient(&ed->client);
+		G_FreeFakeClient(&ent->client);
 	}
 
-	if (ed->s.eFlags & EF_SOUNDTRACKER)
+	if (ent->s.eFlags & EF_SOUNDTRACKER)
 	{
 		int i = 0;
 
@@ -998,7 +998,7 @@ void G_FreeEntity(gentity_t* ed) {
 
 				while (ch < NUM_TRACK_CHANNELS - 50)
 				{
-					if (ent->client->ps.fd.killSoundEntIndex[ch] == ed->s.number)
+					if (ent->client->ps.fd.killSoundEntIndex[ch] == ent->s.number)
 					{
 						ent->client->ps.fd.killSoundEntIndex[ch] = 0;
 					}
@@ -1011,13 +1011,13 @@ void G_FreeEntity(gentity_t* ed) {
 		}
 
 		//make sure clientside loop sounds are killed on the tracker and client
-		trap->SendServerCommand(-1, va("kls %i %i", ed->s.trickedentindex, ed->s.number));
+		trap->SendServerCommand(-1, va("kls %i %i", ent->s.trickedentindex, ent->s.number));
 	}
 
-	memset(ed, 0, sizeof(*ed));
-	ed->classname = "freed";
-	ed->freetime = level.time;
-	ed->inuse = qfalse;
+	memset(ent, 0, sizeof(*ent));
+	ent->classname = "freed";
+	ent->freetime = level.time;
+	ent->inuse = qfalse;
 }
 
 /*
@@ -1186,7 +1186,7 @@ G_AddEvent
 Adds an event+parm and twiddles the event counter
 ===============
 */
-void G_AddEvent(gentity_t* ent, int event, int eventParm) {
+void G_AddEvent(gentity_t* ent, int event, int event_parm) {
 	int		bits;
 
 	if (!event) {
@@ -1199,14 +1199,14 @@ void G_AddEvent(gentity_t* ent, int event, int eventParm) {
 		bits = ent->client->ps.externalEvent & EV_EVENT_BITS;
 		bits = (bits + EV_EVENT_BIT1) & EV_EVENT_BITS;
 		ent->client->ps.externalEvent = event | bits;
-		ent->client->ps.externalEventParm = eventParm;
+		ent->client->ps.externalEventParm = event_parm;
 		ent->client->ps.externalEventTime = level.time;
 	}
 	else {
 		bits = ent->s.event & EV_EVENT_BITS;
 		bits = (bits + EV_EVENT_BIT1) & EV_EVENT_BITS;
 		ent->s.event = event | bits;
-		ent->s.eventParm = eventParm;
+		ent->s.eventParm = event_parm;
 	}
 	ent->eventTime = level.time;
 }

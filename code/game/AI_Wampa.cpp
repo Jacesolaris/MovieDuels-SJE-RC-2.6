@@ -42,21 +42,9 @@ extern cvar_t* g_dismemberment;
 NPC_Wampa_Precache
 -------------------------
 */
-void NPC_Wampa_Precache(void)
+void NPC_Wampa_Precache()
 {
-	/*
-	int i;
-	for ( i = 1; i < 4; i ++ )
-	{
-		G_SoundIndex( va("sound/chars/wampa/growl%d.wav", i) );
-	}
-	for ( i = 1; i < 3; i ++ )
-	{
-		G_SoundIndex( va("sound/chars/wampa/snort%d.wav", i) );
-	}
-	*/
 	G_SoundIndex("sound/chars/rancor/swipehit.wav");
-	//G_SoundIndex( "sound/chars/wampa/chomp.wav" );
 }
 
 /*
@@ -187,10 +175,10 @@ void Wampa_Move(const qboolean visible)
 }
 
 //---------------------------------------------------------
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
-extern qboolean G_DoDismemberment(gentity_t* self, vec3_t point, int mod, int damage, int hitLoc,
-	qboolean force = qfalse);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
+extern qboolean G_DoDismemberment(gentity_t* self, vec3_t point, const int mod, const int hit_loc,
+                                  const qboolean force = qfalse);
 extern int NPC_GetEntsNearBolt(gentity_t** radiusEnts, float radius, int boltIndex, vec3_t boltOrg);
 
 void Wampa_Slash(const int boltIndex, const qboolean backhand)
@@ -276,7 +264,7 @@ void Wampa_Slash(const int boltIndex, const qboolean backhand)
 					}
 					radiusEnts[i]->client->dismembered = false;
 					//FIXME: the limb should just disappear, cuz I ate it
-					G_DoDismemberment(radiusEnts[i], radiusEnts[i]->currentOrigin, MOD_SABER, 1000, hitLoc, qtrue);
+					G_DoDismemberment(radiusEnts[i], radiusEnts[i]->currentOrigin, MOD_SABER, hitLoc, qtrue);
 				}
 			}
 			else if (!Q_irand(0, 3) && radiusEnts[i]->health > 0)
@@ -854,8 +842,8 @@ void NPC_BSWampa_Default(void)
 									}
 									NPC->activator->client->dismembered = false;
 									//FIXME: the limb should just disappear, cuz I ate it
-									G_DoDismemberment(NPC->activator, NPC->activator->currentOrigin, MOD_SABER, 1000,
-										hitLoc, qtrue);
+									G_DoDismemberment(NPC->activator, NPC->activator->currentOrigin, MOD_SABER, hitLoc,
+									                  qtrue);
 									TIMER_Set(NPC, "sniffCorpse", Q_irand(2000, 5000));
 								}
 								NPC_SetAnim(NPC->activator, SETANIM_BOTH, BOTH_HANG_PAIN,

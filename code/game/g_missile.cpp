@@ -85,7 +85,7 @@ extern void PM_AddBlockFatigue(playerState_t* ps, int fatigue);
 extern void jedi_decloak(gentity_t* self);
 extern void player_decloak(gentity_t* self);
 extern qboolean FighterIsLanded(const Vehicle_t* pVeh, playerState_t* parentPS);
-extern void G_BlastDown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength);
+extern void G_BlastDown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength);
 constexpr auto MISSILE_PRESTEP_TIME = 50;
 //-------------------------------------------------------------------------
 void G_MissileBounceEffect(const gentity_t* ent, vec3_t org, vec3_t dir, const qboolean hitWorld)

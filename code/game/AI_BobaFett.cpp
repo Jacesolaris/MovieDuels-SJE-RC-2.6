@@ -96,13 +96,13 @@ bool Boba_Flee(); // If returns true, Jedi and Seeker AI not used
 ////////////////////////////////////////////////////////////////////////////////////////
 // External Functions
 ////////////////////////////////////////////////////////////////////////////////////////
-extern void G_SoundAtSpot(vec3_t org, int soundIndex, qboolean broadcast);
+extern void G_SoundAtSpot(vec3_t org, int sound_index, qboolean broadcast);
 extern void G_CreateG2AttachedWeaponModel(gentity_t* ent, const char* ps_weapon_model, int bolt_num, int weapon_num);
 extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
 extern void WP_ResistForcePush(gentity_t* self, const gentity_t* pusher, qboolean no_penalty);
 extern void ForceJump(gentity_t* self, const usercmd_t* ucmd);
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
 
 extern void CG_DrawEdge(vec3_t start, vec3_t end, int type);
 

@@ -896,12 +896,12 @@ void SP_target_scriptrunner(gentity_t* self)
 	self->use = target_scriptrunner_use;
 }
 
-void G_SetActiveState(const char* targetstring, qboolean actState)
+void G_SetActiveState(const char* targetstring, qboolean act_state)
 {
 	gentity_t* target = NULL;
 	while (NULL != (target = G_Find(target, FOFS(targetname), targetstring)))
 	{
-		target->flags = actState ? (target->flags & ~FL_INACTIVE) : (target->flags | FL_INACTIVE);
+		target->flags = act_state ? (target->flags & ~FL_INACTIVE) : (target->flags | FL_INACTIVE);
 	}
 }
 

@@ -57,11 +57,11 @@ extern qboolean FlyingCreature(const gentity_t* ent);
 
 qboolean NPC_CheckPlayerTeamStealth(void);
 
-static qboolean enemyLOS;
-static qboolean enemyCS;
+static qboolean enemy_los;
+static qboolean enemy_cs;
 static qboolean enemyInFOV;
 static qboolean hitAlly;
-static qboolean faceEnemy;
+static qboolean face_enemy;
 static qboolean move;
 static qboolean shoot;
 static float	enemyDist;
@@ -141,14 +141,14 @@ enum
 	SPEECH_PUSHED
 };
 
-static void ST_Speech(const gentity_t* self, int speechType, float failChance)
+static void ST_Speech(const gentity_t* self, int speech_type, float fail_chance)
 {
-	if (Q_flrand(0.0f, 1.0f) < failChance)
+	if (Q_flrand(0.0f, 1.0f) < fail_chance)
 	{
 		return;
 	}
 
-	if (failChance >= 0)
+	if (fail_chance >= 0)
 	{//a negative failChance makes it always talk
 		if (self->NPC->group)
 		{//group AI speech debounce timer
@@ -193,7 +193,7 @@ static void ST_Speech(const gentity_t* self, int speechType, float failChance)
 		return;
 	}
 
-	switch (speechType)
+	switch (speech_type)
 	{
 	case SPEECH_CHASE:
 		G_AddVoiceEvent(self, Q_irand(EV_CHASE1, EV_CHASE3), 2000);
@@ -259,13 +259,13 @@ void ST_MarkToCover(gentity_t* self)
 	}
 }
 
-void ST_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t dangerPoint, int dangerLevel, int minTime, int maxTime)
+void ST_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t danger_point, int danger_level, int min_time, int max_time)
 {
 	if (!self || !self->NPC)
 	{
 		return;
 	}
-	G_StartFlee(self, enemy, dangerPoint, dangerLevel, minTime, maxTime);
+	G_StartFlee(self, enemy, danger_point, danger_level, min_time, max_time);
 	if (self->NPC->group && self->NPC->group->numGroup > 1)
 	{
 		ST_Speech(self, SPEECH_COVER, 0);//FIXME: flee sound?
@@ -460,13 +460,13 @@ NPC_ST_Sleep
 
 void NPC_BSST_Sleep(void)
 {
-	const int alertEvent = NPC_CheckAlertEvents(qfalse, qtrue, -1, qfalse, AEL_MINOR);//only check sounds since we're alseep!
+	const int alert_event = NPC_CheckAlertEvents(qfalse, qtrue, -1, qfalse, AEL_MINOR);//only check sounds since we're alseep!
 
 	//There is an event we heard
-	if (alertEvent >= 0)
+	if (alert_event >= 0)
 	{
 		//See if it was enough to wake us up
-		if (level.alertEvents[alertEvent].level == AEL_DISCOVERED && (NPCS.NPCInfo->scriptFlags & SCF_LOOK_FOR_ENEMIES))
+		if (level.alertEvents[alert_event].level == AEL_DISCOVERED && (NPCS.NPCInfo->scriptFlags & SCF_LOOK_FOR_ENEMIES))
 		{
 			float		dist;
 			float		bestDist = 16384.0f;
@@ -1005,23 +1005,23 @@ void NPC_BSST_Investigate(void)
 
 	if (!(NPCS.NPCInfo->scriptFlags & SCF_IGNORE_ALERTS))
 	{
-		const int alertEvent = NPC_CheckAlertEvents(qtrue, qtrue, NPCS.NPCInfo->lastAlertID, qfalse, AEL_MINOR);
+		const int alert_event = NPC_CheckAlertEvents(qtrue, qtrue, NPCS.NPCInfo->lastAlertID, qfalse, AEL_MINOR);
 
 		//There is an event to look at
-		if (alertEvent >= 0)
+		if (alert_event >= 0)
 		{
 			if (NPCS.NPCInfo->confusionTime < level.time)
 			{
-				if (NPC_CheckForDanger(alertEvent))
+				if (NPC_CheckForDanger(alert_event))
 				{//running like hell
 					ST_Speech(NPCS.NPC, SPEECH_COVER, 0);//FIXME: flee sound?
 					return;
 				}
 			}
 
-			if (level.alertEvents[alertEvent].ID != NPCS.NPCInfo->lastAlertID)
+			if (level.alertEvents[alert_event].ID != NPCS.NPCInfo->lastAlertID)
 			{
-				NPC_ST_InvestigateEvent(alertEvent, qtrue);
+				NPC_ST_InvestigateEvent(alert_event, qtrue);
 			}
 		}
 	}
@@ -1098,12 +1098,12 @@ void NPC_BSST_Patrol(void)
 
 	if (!(NPCS.NPCInfo->scriptFlags & SCF_IGNORE_ALERTS))
 	{
-		const int alertEvent = NPC_CheckAlertEvents(qtrue, qtrue, -1, qfalse, AEL_MINOR);
+		const int alert_event = NPC_CheckAlertEvents(qtrue, qtrue, -1, qfalse, AEL_MINOR);
 
 		//There is an event to look at
-		if (alertEvent >= 0)
+		if (alert_event >= 0)
 		{
-			if (NPC_ST_InvestigateEvent(alertEvent, qfalse))
+			if (NPC_ST_InvestigateEvent(alert_event, qfalse))
 			{//actually going to investigate it
 				NPC_UpdateAngles(qtrue, qtrue);
 				return;
@@ -1188,12 +1188,12 @@ NPC_BSST_Idle
 /*
 void NPC_BSST_Idle( void )
 {
-	int alertEvent = NPC_CheckAlertEvents( qtrue, qtrue );
+	int alert_event = NPC_CheckAlertEvents( qtrue, qtrue );
 
 	//There is an event to look at
-	if ( alertEvent >= 0 )
+	if ( alert_event >= 0 )
 	{
-		NPC_ST_InvestigateEvent( alertEvent, qfalse );
+		NPC_ST_InvestigateEvent( alert_event, qfalse );
 		NPC_UpdateAngles( qtrue, qtrue );
 		return;
 	}
@@ -1226,9 +1226,9 @@ static void ST_CheckMoveState(void)
 		}
 
 		//Otherwise, if we can see our target, just shoot
-		if (enemyLOS)
+		if (enemy_los)
 		{
-			if (enemyCS)
+			if (enemy_cs)
 			{
 				//if we're going after our enemy, we can stop now
 				if (NPCS.NPCInfo->goalEntity == NPCS.NPC->enemy)
@@ -1242,7 +1242,7 @@ static void ST_CheckMoveState(void)
 		else
 		{
 			//Move to find our target
-			faceEnemy = qfalse;
+			face_enemy = qfalse;
 		}
 
 		/*
@@ -1262,7 +1262,7 @@ static void ST_CheckMoveState(void)
 	{
 		if (NPCS.NPCInfo->goalEntity)
 		{
-			faceEnemy = qfalse;
+			face_enemy = qfalse;
 		}
 		else
 		{//um, lost our goal?  Just stand and shoot, then
@@ -1322,7 +1322,7 @@ static void ST_CheckMoveState(void)
 	{
 		//Did we make it?
 		if (NAV_HitNavGoal(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.mins, NPCS.NPC->r.maxs, NPCS.NPCInfo->goalEntity->r.currentOrigin, 16, FlyingCreature(NPCS.NPC)) ||
-			(!trap->ICARUS_TaskIDPending((sharedEntity_t*)NPCS.NPC, TID_MOVE_NAV) && NPCS.NPCInfo->squadState == SQUAD_SCOUT && enemyLOS && enemyDist <= 10000))
+			(!trap->ICARUS_TaskIDPending((sharedEntity_t*)NPCS.NPC, TID_MOVE_NAV) && NPCS.NPCInfo->squadState == SQUAD_SCOUT && enemy_los && enemyDist <= 10000))
 		{//either hit our navgoal or our navgoal was not a crucial (scripted) one (maybe a combat point) and we're scouting and found our enemy
 			int	newSquadState = SQUAD_STAND_AND_SHOOT;
 			//we got where we wanted to go, set timers based on why we were running
@@ -1411,7 +1411,7 @@ ST_CheckFireState
 
 static void ST_CheckFireState(void)
 {
-	if (enemyCS)
+	if (enemy_cs)
 	{//if have a clear shot, always try
 		return;
 	}
@@ -1523,14 +1523,14 @@ static void ST_CheckFireState(void)
 					NPCS.NPCInfo->desiredPitch = angles[PITCH];
 
 					shoot = qtrue;
-					faceEnemy = qfalse;
+					face_enemy = qfalse;
 				}
 			}
 		}
 	}
 }
 
-void ST_TrackEnemy(const gentity_t* self, vec3_t enemyPos)
+void ST_TrackEnemy(const gentity_t* self, vec3_t enemy_pos)
 {
 	//clear timers
 	TIMER_Set(self, "attackDelay", Q_irand(1000, 2000));
@@ -1541,7 +1541,7 @@ void ST_TrackEnemy(const gentity_t* self, vec3_t enemyPos)
 	//leave my combat point
 	NPC_FreeCombatPoint(self->NPC->combatPoint, qfalse);
 	//go after his last seen pos
-	NPC_SetMoveGoal(self, enemyPos, 16, qfalse, -1, NULL);
+	NPC_SetMoveGoal(self, enemy_pos, 16, qfalse, -1, NULL);
 }
 
 int ST_ApproachEnemy(const gentity_t* self)
@@ -2469,9 +2469,9 @@ void NPC_BSST_Attack(void)
 		return;
 	}
 
-	enemyLOS = enemyCS = enemyInFOV = qfalse;
+	enemy_los = enemy_cs = enemyInFOV = qfalse;
 	move = qtrue;
-	faceEnemy = qfalse;
+	face_enemy = qfalse;
 	shoot = qfalse;
 	hitAlly = qfalse;
 	VectorClear(impactPos);
@@ -2515,18 +2515,18 @@ void NPC_BSST_Attack(void)
 	{
 		AI_GroupUpdateEnemyLastSeen(NPCS.NPCInfo->group, NPCS.NPC->enemy->r.currentOrigin);
 		NPCS.NPCInfo->enemyLastSeenTime = level.time;
-		enemyLOS = qtrue;
+		enemy_los = qtrue;
 
 		if (NPCS.NPC->client->ps.weapon == WP_NONE)
 		{
-			enemyCS = qfalse;//not true, but should stop us from firing
+			enemy_cs = qfalse;//not true, but should stop us from firing
 			NPC_AimAdjust(-1);//adjust aim worse longer we have no weapon
 		}
 		else
 		{//can we shoot our target?
 			if ((NPCS.NPC->client->ps.weapon == WP_ROCKET_LAUNCHER || (NPCS.NPC->client->ps.weapon == WP_FLECHETTE && (NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE))) && enemyDist < MIN_ROCKET_DIST_SQUARED)//128*128
 			{
-				enemyCS = qfalse;//not true, but should stop us from firing
+				enemy_cs = qfalse;//not true, but should stop us from firing
 				hitAlly = qtrue;//us!
 				//FIXME: if too close, run away!
 			}
@@ -2540,7 +2540,7 @@ void NPC_BSST_Attack(void)
 					|| (hitEnt && hitEnt->takedamage && ((hitEnt->r.svFlags & SVF_GLASS_BRUSH) || hitEnt->health < 40 || NPCS.NPC->s.weapon == WP_EMPLACED_GUN)))
 				{//can hit enemy or enemy ally or will hit glass or other minor breakable (or in emplaced gun), so shoot anyway
 					AI_GroupUpdateClearShotTime(NPCS.NPCInfo->group);
-					enemyCS = qtrue;
+					enemy_cs = qtrue;
 					NPC_AimAdjust(2);//adjust aim better longer we have clear shot at enemy
 					VectorCopy(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPCInfo->enemyLastSeenLocation);
 				}
@@ -2559,29 +2559,29 @@ void NPC_BSST_Attack(void)
 			}
 			else
 			{
-				enemyCS = qfalse;//not true, but should stop us from firing
+				enemy_cs = qfalse;//not true, but should stop us from firing
 			}
 		}
 	}
 	else if (trap->InPVS(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin))
 	{
 		NPCS.NPCInfo->enemyLastSeenTime = level.time;
-		faceEnemy = qtrue;
+		face_enemy = qtrue;
 		NPC_AimAdjust(-1);//adjust aim worse longer we cannot see enemy
 	}
 
 	if (NPCS.NPC->client->ps.weapon == WP_NONE)
 	{
-		faceEnemy = qfalse;
+		face_enemy = qfalse;
 		shoot = qfalse;
 	}
 	else
 	{
-		if (enemyLOS)
+		if (enemy_los)
 		{//FIXME: no need to face enemy if we're moving to some other goal and he's too far away to shoot?
-			faceEnemy = qtrue;
+			face_enemy = qtrue;
 		}
-		if (enemyCS)
+		if (enemy_cs)
 		{
 			shoot = qtrue;
 		}
@@ -2593,7 +2593,7 @@ void NPC_BSST_Attack(void)
 	//See if we should override shooting decision with any special considerations
 	ST_CheckFireState();
 
-	if (faceEnemy)
+	if (face_enemy)
 	{//face the enemy
 		NPC_FaceEnemy(qtrue);
 	}
@@ -2638,12 +2638,12 @@ void NPC_BSST_Attack(void)
 
 	if (!TIMER_Done(NPCS.NPC, "flee"))
 	{//running away
-		faceEnemy = qfalse;
+		face_enemy = qfalse;
 	}
 
 	//FIXME: check scf_face_move_dir here?
 
-	if (!faceEnemy)
+	if (!face_enemy)
 	{//we want to face in the dir we're running
 		if (!move)
 		{//if we haven't moved, we should look in the direction we last looked?
@@ -2675,7 +2675,7 @@ void NPC_BSST_Attack(void)
 	{
 		if (NPCS.NPC->s.weapon == WP_ROCKET_LAUNCHER)
 		{
-			if (!enemyLOS || !enemyCS)
+			if (!enemy_los || !enemy_cs)
 			{//cancel it
 				NPCS.NPC->client->ps.weaponTime = 0;
 			}

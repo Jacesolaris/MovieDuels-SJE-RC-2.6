@@ -1520,7 +1520,7 @@ void G_PlayerGuiltDeath(void)
 }
 
 extern void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags, int iBlend);
-extern void G_MakeTeamVulnerable(void);
+extern void G_MakeTeamVulnerable();
 int killPlayerTimer = 0;
 
 static void G_CheckEndLevelTimers(gentity_t* ent)

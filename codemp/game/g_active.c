@@ -222,7 +222,7 @@ void P_WorldEffects(gentity_t* ent) {
 }
 
 //==============================================================
-extern void G_ApplyKnockback(gentity_t* targ, vec3_t newDir, float knockback);
+extern void G_ApplyKnockback(gentity_t* targ, vec3_t new_dir, float knockback);
 void DoImpact(gentity_t* self, gentity_t* other, qboolean damageSelf)
 {
 	float my_mass;

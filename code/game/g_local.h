@@ -417,7 +417,7 @@ int G_IconIndex(const char* name);
 Ghoul2 Insert Start
 */
 int G_SkinIndex(const char* name);
-void G_SetBoltSurfaceRemoval(int entNum, int modelIndex, int boltIndex, int surfaceIndex = -1, float duration = 5000);
+void G_SetBoltSurfaceRemoval(int ent_num, int model_index, int bolt_index, int surface_index = -1, float duration = 5000);
 /*
 Ghoul2 Insert End
 */
@@ -427,31 +427,31 @@ void G_PlayEffect(const char* name, const vec3_t origin);
 void G_PlayEffect(const char* name, int client_num);
 void G_PlayEffect(const char* name, const vec3_t origin, const vec3_t fwd);
 void G_PlayEffect(const char* name, const vec3_t origin, const vec3_t axis[3]);
-void G_PlayEffect(int fxID, const vec3_t origin);
-void G_PlayEffect(int fxID, const vec3_t origin, const vec3_t fwd);
-void G_PlayEffect(int fxID, const vec3_t origin, const vec3_t axis[3]);
-void G_PlayEffect(int fxID, int modelIndex, int boltIndex, int entNum, const vec3_t origin, int iLoopTime = qfalse,
-	qboolean isRelative = qfalse); //iLoopTime 0 = not looping, 1 for infinite, else duration
-void G_PlayEffect(int fxID, int entNum, const vec3_t fwd);
-void G_StopEffect(int fxID, int modelIndex, int boltIndex, int entNum);
-void G_StopEffect(const char* name, int modelIndex, int boltIndex, int entNum);
+void G_PlayEffect(int fx_id, const vec3_t origin);
+void G_PlayEffect(int fx_id, const vec3_t origin, const vec3_t fwd);
+void G_PlayEffect(int fx_id, const vec3_t origin, const vec3_t axis[3]);
+void G_PlayEffect(int fx_id, int model_index, int bolt_index, int ent_num, const vec3_t origin, int i_loop_time = qfalse,
+	qboolean is_relative = qfalse); //iLoopTime 0 = not looping, 1 for infinite, else duration
+void G_PlayEffect(int fx_id, int ent_num, const vec3_t fwd);
+void G_StopEffect(int fx_id, int model_index, int bolt_index, int ent_num);
+void G_StopEffect(const char* name, int model_index, int bolt_index, int ent_num);
 
 int G_BSPIndex(const char* name);
 
 void G_KillBox(gentity_t* ent);
 gentity_t* G_Find(gentity_t* from, int fieldofs, const char* match);
-int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean takeDamage,
+int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean take_damage,
 	gentity_t* ent_list[MAX_GENTITIES]);
 gentity_t* G_PickTarget(char* targetname);
 void G_UseTargets(gentity_t* ent, gentity_t* activator);
 void G_UseTargets2(gentity_t* ent, gentity_t* activator, const char* string);
 void G_SetMovedir(vec3_t angles, vec3_t movedir);
 
-void G_InitGentity(gentity_t* e, qboolean bFreeG2);
-gentity_t* G_Spawn(void);
+void G_InitGentity(gentity_t* e, qboolean b_free_g2);
+gentity_t* G_Spawn();
 gentity_t* G_TempEntity(const vec3_t origin, int event);
-void G_Sound(const gentity_t* ent, int soundIndex);
-void G_FreeEntity(gentity_t* e);
+void G_Sound(const gentity_t* ent, int sound_index);
+void G_FreeEntity(gentity_t* ent);
 
 void G_TouchTriggers(gentity_t* ent);
 void G_TouchTeamClients(gentity_t* ent);
@@ -461,11 +461,11 @@ char* vtos(const vec3_t v);
 
 float vectoyaw(const vec3_t vec);
 
-void G_AddEvent(gentity_t* ent, int event, int eventParm);
+void G_AddEvent(gentity_t* ent, int event, int event_parm);
 void G_SetOrigin(gentity_t* ent, const vec3_t origin);
 void G_SetAngles(gentity_t* ent, const vec3_t angles);
 
-void G_DebugLine(vec3_t A, vec3_t B, int duration, int color, qboolean deleteornot);
+void G_DebugLine(vec3_t a, vec3_t b, const int duration, const int color);
 
 //
 // g_combat.c
@@ -478,7 +478,7 @@ void ExplodeDeath_Wait(gentity_t* self, gentity_t* inflictor, gentity_t* attacke
 	int dFlags, int hitLoc);
 void ExplodeDeath(gentity_t* self);
 void GoExplodeDeath(gentity_t* self, gentity_t* other, gentity_t* activator);
-void G_ApplyKnockback(gentity_t* targ, const vec3_t newDir, float knockback);
+void G_ApplyKnockback(gentity_t* targ, vec3_t new_dir, float knockback);
 void G_Throw(gentity_t* targ, const vec3_t new_dir, float push);
 
 // damage flags
@@ -545,8 +545,8 @@ gentity_t* SelectSpawnPoint(vec3_t avoidPoint, team_t team, vec3_t origin, vec3_
 void respawn(gentity_t* ent);
 
 qboolean ClientSpawn(gentity_t* ent, SavedGameJustLoaded_e eSavedGameJustLoaded);
-void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
-	int hitLoc);
+void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int means_of_death, int d_flags,
+	int hit_loc);
 void AddScore(const gentity_t* ent, int score);
 qboolean SpotWouldTelefrag(const gentity_t* spot, team_t checkteam);
 void G_RemoveWeaponModels(gentity_t* ent);
@@ -605,8 +605,8 @@ void Svcmd_Form_f(void);
 //
 // g_utils.cpp
 //
-void Svcmd_Use_f(void);
-extern void G_SoundOnEnt(const gentity_t* ent, soundChannel_t channel, const char* soundPath);
+void Svcmd_Use_f();
+extern void G_SoundOnEnt(const gentity_t* ent, soundChannel_t channel, const char* sound_path);
 extern void G_SoundIndexOnEnt(const gentity_t* ent, soundChannel_t channel, int index);
 
 //
@@ -674,11 +674,11 @@ extern void AddSightEvent(gentity_t* owner, vec3_t position, float radius, alert
 	float addLight = 0.0f);
 extern void AddSoundEvent(gentity_t* owner, vec3_t position, float radius, alertEventLevel_e alertLevel,
 	qboolean needLOS = qfalse, qboolean onGround = qfalse);
-extern qboolean G_CheckForDanger(const gentity_t* self, int alertEvent);
+extern qboolean G_CheckForDanger(const gentity_t* self, int alert_event);
 extern int G_CheckAlertEvents(gentity_t* self, qboolean checkSight, qboolean checkSound, float maxSeeDist,
 	float maxHearDist, int ignoreAlert = -1, qboolean mustHaveOwner = qfalse,
 	int minAlertLevel = AEL_MINOR, qboolean onGroundOnly = qfalse);
-extern qboolean G_CheckForDanger(const gentity_t* self, int alertEvent);
+extern qboolean G_CheckForDanger(const gentity_t* self, int alert_event);
 extern qboolean G_ClearLOS(gentity_t* self, const vec3_t start, const vec3_t end);
 extern qboolean G_ClearLOS(gentity_t* self, const gentity_t* ent, const vec3_t end);
 extern qboolean G_ClearLOS(gentity_t* self, const vec3_t start, const gentity_t* ent);

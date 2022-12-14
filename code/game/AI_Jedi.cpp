@@ -44,7 +44,7 @@ extern qboolean G_ValidEnemy(const gentity_t* self, const gentity_t* enemy);
 extern void CG_DrawAlert(vec3_t origin, float rating);
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern qboolean InFront(vec3_t spot, vec3_t from, vec3_t fromAngles, float threshHold = 0.0f);
-extern void G_StartMatrixEffect(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f, int spinTime = 0);
+extern void G_StartMatrixEffect(const gentity_t* ent, int me_flags = 0, int length = 1000, float time_scale = 0.0f, int spin_time = 0);
 extern void ForceJump(gentity_t* self, const usercmd_t* ucmd);
 extern void NPC_ClearLookTarget(const gentity_t* self);
 extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
@@ -102,7 +102,7 @@ extern qboolean NAV_DirSafe(const gentity_t* self, vec3_t dir, float dist);
 extern qboolean NAV_MoveDirSafe(const gentity_t* self, const usercmd_t* cmd, float distScale = 1.0f);
 extern float NPC_EnemyRangeFromBolt(int boltIndex);
 extern qboolean WP_SabersCheckLock2(gentity_t* attacker, gentity_t* defender, sabersLockMode_t lock_mode);
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength, qboolean breakSaberLock);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength, qboolean break_saber_lock);
 extern qboolean G_EntIsBreakable(int entity_num, const gentity_t* breaker);
 extern qboolean PM_LockedAnim(int anim);
 extern qboolean G_ClearLineOfSight(const vec3_t point1, const vec3_t point2, int ignore, int clipmask);
@@ -5936,8 +5936,7 @@ static qboolean jedi_saber_block()
 	if (d_JediAI->integer)
 	{
 		G_DebugLine(saber_point, hitloc, FRAMETIME,
-			WPDEBUG_SaberColor(NPC->enemy->client->ps.saber[closest_saber_num].blade[closest_blade_num].color),
-			qtrue);
+		            WPDEBUG_SaberColor(NPC->enemy->client->ps.saber[closest_saber_num].blade[closest_blade_num].color));
 	}
 
 	evasionType_t evasion_type;

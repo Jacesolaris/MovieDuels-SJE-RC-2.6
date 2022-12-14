@@ -1078,12 +1078,12 @@ gentity_t* NPC_PickEnemyExt(const qboolean checkAlerts = qfalse)
 
 	if (checkAlerts)
 	{
-		const int alertEvent = NPC_CheckAlertEvents(qtrue, qtrue, -1, qtrue, AEL_DISCOVERED);
+		const int alert_event = NPC_CheckAlertEvents(qtrue, qtrue, -1, qtrue, AEL_DISCOVERED);
 
 		//There is an event to look at
-		if (alertEvent >= 0)
+		if (alert_event >= 0)
 		{
-			const alertEvent_t* event = &level.alertEvents[alertEvent];
+			const alertEvent_t* event = &level.alertEvents[alert_event];
 
 			//Don't pay attention to our own alerts
 			if (event->owner == NPC)

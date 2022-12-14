@@ -38,7 +38,7 @@ void BotDamageNotification(gclient_t* bot, gentity_t* attacker);
 
 void ThrowSaberToAttacker(gentity_t* self, gentity_t* attacker);
 
-void ObjectDie(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath)
+void ObjectDie(gentity_t* self, gentity_t* attacker)
 {
 	if (self->target)
 	{
@@ -406,7 +406,7 @@ void ExplodeDeath(gentity_t* self)
 			attacker, NULL, MOD_UNKNOWN);
 	}
 
-	ObjectDie(self, self, self, 20, 0);
+	ObjectDie(self, self);
 }
 
 /*
@@ -871,7 +871,7 @@ qboolean G_InKnockDown(playerState_t* ps)
 	return qfalse;
 }
 
-static int G_CheckSpecialDeathAnim(gentity_t* self, vec3_t point, int damage, int mod, int hitLoc)
+static int G_CheckSpecialDeathAnim(gentity_t* self)
 {
 	int deathAnim = -1;
 
@@ -1518,7 +1518,7 @@ int G_PickDeathAnim(gentity_t* self, vec3_t point, int damage, int mod, int hitL
 	{
 		if (self->client)
 		{
-			deathAnim = G_CheckSpecialDeathAnim(self, point, damage, mod, hitLoc);
+			deathAnim = G_CheckSpecialDeathAnim(self);
 		}
 
 		if (deathAnim == -1)
@@ -1762,12 +1762,12 @@ G_AlertTeam
 -------------------------
 */
 
-void G_AlertTeam(const gentity_t* victim, gentity_t* attacker, float radius, float soundDist)
+void G_AlertTeam(const gentity_t* victim, gentity_t* attacker, float radius, float sound_dist)
 {
 	int			radiusEnts[128];
 	vec3_t		mins, maxs;
 	int			i;
-	const float sndDistSq = (soundDist * soundDist);
+	const float sndDistSq = (sound_dist * sound_dist);
 
 	if (attacker == NULL || attacker->client == NULL)
 		return;
@@ -1835,7 +1835,7 @@ void G_AlertTeam(const gentity_t* victim, gentity_t* attacker, float radius, flo
 				continue;
 			}
 			//NOTE: this allows sound alerts to still go through doors/PVS if the teammate is within 128 of the victim...
-			if (soundDist <= 0 || distSq > sndDistSq)
+			if (sound_dist <= 0 || distSq > sndDistSq)
 			{//out of sound range
 				if (!InFOV(victim, check, check->NPC->stats.hfov, check->NPC->stats.vfov)
 					|| !NPC_ClearLOS2(check, victim->r.currentOrigin))
@@ -2957,7 +2957,7 @@ int CheckArmor(gentity_t* ent, int damage, int dflags)
 	return save;
 }
 
-void G_ApplyKnockback(gentity_t* targ, vec3_t newDir, float knockback)
+void G_ApplyKnockback(gentity_t* targ, vec3_t new_dir, float knockback)
 {
 	vec3_t	kvel;
 	float	mass;
@@ -2969,12 +2969,12 @@ void G_ApplyKnockback(gentity_t* targ, vec3_t newDir, float knockback)
 
 	if (g_gravity.value > 0)
 	{
-		VectorScale(newDir, g_knockback.value * (float)knockback / mass * 0.8, kvel);
-		kvel[2] = newDir[2] * g_knockback.value * (float)knockback / mass * 1.5;
+		VectorScale(new_dir, g_knockback.value * (float)knockback / mass * 0.8, kvel);
+		kvel[2] = new_dir[2] * g_knockback.value * (float)knockback / mass * 1.5;
 	}
 	else
 	{
-		VectorScale(newDir, g_knockback.value * (float)knockback / mass, kvel);
+		VectorScale(new_dir, g_knockback.value * (float)knockback / mass, kvel);
 	}
 
 	if (targ->client)

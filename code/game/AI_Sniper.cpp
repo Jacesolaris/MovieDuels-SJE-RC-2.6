@@ -47,13 +47,13 @@ constexpr auto LIGHT_SCALE = 0.25f;
 constexpr auto REALIZE_THRESHOLD = 0.6f;
 #define CAUTIOUS_THRESHOLD	( REALIZE_THRESHOLD * 0.75 )
 
-extern void NPC_Tusken_Taunt(void);
+extern void NPC_Tusken_Taunt();
 qboolean NPC_CheckPlayerTeamStealth();
 
-static qboolean enemyLOS;
-static qboolean enemyCS;
-static qboolean faceEnemy;
-static qboolean doMove;
+static qboolean enemy_los;
+static qboolean enemy_cs;
+static qboolean face_enemy;
+static qboolean do_move;
 static qboolean shoot;
 static float enemyDist;
 
@@ -227,26 +227,26 @@ void NPC_BSSniper_Patrol()
 		if (!(NPCInfo->scriptFlags & SCF_IGNORE_ALERTS))
 		{
 			//Is there danger nearby
-			const int alertEvent = NPC_CheckAlertEvents(qtrue, qtrue, -1, qfalse, AEL_SUSPICIOUS);
-			if (NPC_CheckForDanger(alertEvent))
+			const int alert_event = NPC_CheckAlertEvents(qtrue, qtrue, -1, qfalse, AEL_SUSPICIOUS);
+			if (NPC_CheckForDanger(alert_event))
 			{
 				NPC_UpdateAngles(qtrue, qtrue);
 				return;
 			}
 			//check for other alert events
 			//There is an event to look at
-			if (alertEvent >= 0) //&& level.alertEvents[alertEvent].ID != NPCInfo->lastAlertID )
+			if (alert_event >= 0) //&& level.alertEvents[alert_event].ID != NPCInfo->lastAlertID )
 			{
-				//NPCInfo->lastAlertID = level.alertEvents[alertEvent].ID;
-				if (level.alertEvents[alertEvent].level == AEL_DISCOVERED)
+				//NPCInfo->lastAlertID = level.alertEvents[alert_event].ID;
+				if (level.alertEvents[alert_event].level == AEL_DISCOVERED)
 				{
-					if (level.alertEvents[alertEvent].owner &&
-						level.alertEvents[alertEvent].owner->client &&
-						level.alertEvents[alertEvent].owner->health >= 0 &&
-						level.alertEvents[alertEvent].owner->client->playerTeam == NPC->client->enemyTeam)
+					if (level.alertEvents[alert_event].owner &&
+						level.alertEvents[alert_event].owner->client &&
+						level.alertEvents[alert_event].owner->health >= 0 &&
+						level.alertEvents[alert_event].owner->client->playerTeam == NPC->client->enemyTeam)
 					{
 						//an enemy
-						G_SetEnemy(NPC, level.alertEvents[alertEvent].owner);
+						G_SetEnemy(NPC, level.alertEvents[alert_event].owner);
 						//NPCInfo->enemyLastSeenTime = level.time;
 						TIMER_Set(NPC, "attackDelay",
 							Q_irand((6 - NPCInfo->stats.aim) * 100, (6 - NPCInfo->stats.aim) * 500));
@@ -257,9 +257,9 @@ void NPC_BSSniper_Patrol()
 					//FIXME: get more suspicious over time?
 					//Save the position for movement (if necessary)
 					//FIXME: sound?
-					VectorCopy(level.alertEvents[alertEvent].position, NPCInfo->investigateGoal);
+					VectorCopy(level.alertEvents[alert_event].position, NPCInfo->investigateGoal);
 					NPCInfo->investigateDebounceTime = level.time + Q_irand(500, 1000);
-					if (level.alertEvents[alertEvent].level == AEL_SUSPICIOUS)
+					if (level.alertEvents[alert_event].level == AEL_SUSPICIOUS)
 					{
 						//suspicious looks longer
 						NPCInfo->investigateDebounceTime += Q_irand(500, 2500);
@@ -313,7 +313,7 @@ static void Sniper_CheckMoveState()
 	{
 		if (NPCInfo->goalEntity == NPC->enemy)
 		{
-			doMove = qfalse;
+			do_move = qfalse;
 			return;
 		}
 	}
@@ -326,14 +326,14 @@ static void Sniper_CheckMoveState()
 		}
 		else
 		{
-			faceEnemy = qfalse;
+			face_enemy = qfalse;
 		}
 	}
 	else if (NPCInfo->squadState == SQUAD_IDLE)
 	{
 		if (!NPCInfo->goalEntity)
 		{
-			doMove = qfalse;
+			do_move = qfalse;
 			return;
 		}
 	}
@@ -341,7 +341,7 @@ static void Sniper_CheckMoveState()
 	if (!TIMER_Done(NPC, "taunting"))
 	{
 		//no doMove while taunting
-		doMove = qfalse;
+		do_move = qfalse;
 		return;
 	}
 
@@ -350,7 +350,7 @@ static void Sniper_CheckMoveState()
 	{
 		//Did we make it?
 		if (STEER::Reached(NPC, NPCInfo->goalEntity, 16, !!FlyingCreature(NPC)) ||
-			NPCInfo->squadState == SQUAD_SCOUT && enemyLOS && enemyDist <= 10000)
+			NPCInfo->squadState == SQUAD_SCOUT && enemy_los && enemyDist <= 10000)
 		{
 			//int	newSquadState = SQUAD_STAND_AND_SHOOT;
 			//we got where we wanted to go, set timers based on why we were running
@@ -446,7 +446,7 @@ ST_CheckFireState
 
 static void Sniper_CheckFireState()
 {
-	if (enemyCS)
+	if (enemy_cs)
 	{
 		//if have a clear shot, always try
 		return;
@@ -584,7 +584,7 @@ void Sniper_FaceEnemy()
 				}
 				else
 				{
-					if (!enemyLOS)
+					if (!enemy_los)
 					{
 						NPC_UpdateAngles(qtrue, qtrue);
 						return;
@@ -689,9 +689,9 @@ void NPC_BSSniper_Attack()
 		return;
 	}
 
-	enemyLOS = enemyCS = qfalse;
-	doMove = qtrue;
-	faceEnemy = qfalse;
+	enemy_los = enemy_cs = qfalse;
+	do_move = qtrue;
+	face_enemy = qfalse;
 	shoot = qfalse;
 	enemyDist = DistanceSquared(NPC->currentOrigin, NPC->enemy->currentOrigin);
 	if (enemyDist < 16384) //128 squared
@@ -745,7 +745,7 @@ void NPC_BSSniper_Attack()
 	{
 		NPCInfo->enemyLastSeenTime = level.time;
 		VectorCopy(NPC->enemy->currentOrigin, NPCInfo->enemyLastSeenLocation);
-		enemyLOS = qtrue;
+		enemy_los = qtrue;
 		const float maxShootDist = NPC_MaxDistSquaredForWeapon();
 		if (enemyDist < maxShootDist)
 		{
@@ -760,7 +760,7 @@ void NPC_BSSniper_Attack()
 			//can we shoot our target?
 			if (Sniper_EvaluateShot(hit))
 			{
-				enemyCS = qtrue;
+				enemy_cs = qtrue;
 			}
 		}
 	}
@@ -772,18 +772,18 @@ void NPC_BSSniper_Attack()
 	}
 	*/
 
-	if (enemyLOS)
+	if (enemy_los)
 	{
 		//FIXME: no need to face enemy if we're moving to some other goal and he's too far away to shoot?
-		faceEnemy = qtrue;
+		face_enemy = qtrue;
 	}
 
 	if (!TIMER_Done(NPC, "taunting"))
 	{
-		doMove = qfalse;
+		do_move = qfalse;
 		shoot = qfalse;
 	}
-	else if (enemyCS)
+	else if (enemy_cs)
 	{
 		shoot = qtrue;
 	}
@@ -797,7 +797,7 @@ void NPC_BSSniper_Attack()
 		//start a taunt
 		NPC_Tusken_Taunt();
 		TIMER_Set(NPC, "duck", -1);
-		doMove = qfalse;
+		do_move = qfalse;
 	}
 
 	//Check for movement to take care of
@@ -806,20 +806,20 @@ void NPC_BSSniper_Attack()
 	//See if we should override shooting decision with any special considerations
 	Sniper_CheckFireState();
 
-	if (doMove)
+	if (do_move)
 	{
 		//doMove toward goal
 		if (NPCInfo->goalEntity) //&& ( NPCInfo->goalEntity != NPC->enemy || enemyDist > 10000 ) )//100 squared
 		{
-			doMove = Sniper_Move();
+			do_move = Sniper_Move();
 		}
 		else
 		{
-			doMove = qfalse;
+			do_move = qfalse;
 		}
 	}
 
-	if (!doMove)
+	if (!do_move)
 	{
 		if (!TIMER_Done(NPC, "duck"))
 		{
@@ -851,7 +851,7 @@ void NPC_BSSniper_Attack()
 		&& TIMER_Get(NPC, "attackDelay") - level.time > 1000
 		&& NPC->attackDebounceTime < level.time)
 	{
-		if (enemyLOS && NPCInfo->scriptFlags & SCF_ALT_FIRE)
+		if (enemy_los && NPCInfo->scriptFlags & SCF_ALT_FIRE)
 		{
 			if (NPC->fly_sound_debounce_time < level.time)
 			{
@@ -860,10 +860,10 @@ void NPC_BSSniper_Attack()
 		}
 	}
 
-	if (!faceEnemy)
+	if (!face_enemy)
 	{
 		//we want to face in the dir we're running
-		if (doMove)
+		if (do_move)
 		{
 			//don't run away and shoot
 			NPCInfo->desiredYaw = NPCInfo->lastPathAngles[YAW];

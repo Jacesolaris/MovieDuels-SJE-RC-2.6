@@ -57,8 +57,8 @@ extern void SabBeh_AnimateSmallBounce(const gentity_t* self);
 extern qboolean PM_InForceGetUp(const playerState_t* ps);
 extern qboolean PM_InGetUp(const playerState_t* ps);
 extern qboolean PM_SaberInMassiveBounce(int move);
-extern void G_StartStasisEffect_FORCE_LEVEL_1(const gentity_t* ent, int meFlags = 0, int length = 1000,
-	float timeScale = 0.0f, int spinTime = 0);
+extern void G_StartStasisEffect_FORCE_LEVEL_1(const gentity_t* ent, int me_flags = 0, int length = 1000,
+	float time_scale = 0.0f, int spin_time = 0);
 extern cvar_t* d_slowmoaction;
 extern void wp_block_points_regenerate_over_ride(const gentity_t* self, int override_amt);
 extern void WP_ForcePowerRegenerate(const gentity_t* self, int override_amt);

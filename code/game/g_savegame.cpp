@@ -421,7 +421,7 @@ static void EnumerateField(const save_field_t* pField, const byte* pbBase)
 			break;
 	*/
 
-	case F_ALERTEVENT:	// convert all gentity_t ptrs in an alertEvent array into indexes...
+	case F_ALERTEVENT:	// convert all gentity_t ptrs in an alert_event array into indexes...
 	{
 		alertEvent_t* p = static_cast<alertEvent_t*>(pv);
 

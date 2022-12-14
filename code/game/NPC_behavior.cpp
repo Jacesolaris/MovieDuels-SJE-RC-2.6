@@ -526,10 +526,10 @@ void NPC_BSSleep( void )
 */
 void NPC_BSSleep(void)
 {
-	const int alertEvent = NPC_CheckAlertEvents(qtrue, qfalse);
+	const int alert_event = NPC_CheckAlertEvents(qtrue, qfalse);
 
 	//There is an event to look at
-	if (alertEvent >= 0)
+	if (alert_event >= 0)
 	{
 		G_ActivateBehavior(NPC, BSET_AWAKE);
 	}

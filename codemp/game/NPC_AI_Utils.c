@@ -585,7 +585,7 @@ void AI_DeleteSelfFromGroup(gentity_t* self)
 
 extern void ST_AggressionAdjust(const gentity_t* self, int change);
 extern void ST_MarkToCover(const gentity_t* self);
-extern void ST_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t dangerPoint, int dangerLevel, int minTime, int maxTime);
+extern void ST_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t danger_point, int danger_level, int min_time, int max_time);
 void AI_GroupMemberKilled(const gentity_t* self)
 {
 	AIGroupInfo_t* group = self->NPC->group;

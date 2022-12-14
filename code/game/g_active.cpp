@@ -113,8 +113,8 @@ extern int BG_InGrappleMove(int move);
 extern qboolean WalkCheck(const gentity_t* self);
 extern qboolean PM_SaberInBrokenParry(int move);
 extern void SabBeh_AnimateSlowBounce(gentity_t* self);
-extern void G_Slapdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
+extern void G_Slapdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
 extern qboolean PM_SaberInAttackPure(int move);
 extern qboolean PM_SaberInTransitionAny(int move);
 extern qboolean PM_Saberinstab(int move);
@@ -161,8 +161,8 @@ extern qboolean PM_SaberInKnockaway(int move);
 extern void G_Stagger(gentity_t* hit_ent);
 extern void G_MawStagger(gentity_t* hit_ent);
 extern void WP_DeactivateSaber(const gentity_t* self, qboolean clear_length = qfalse);
-extern void G_StartStasisEffect_FORCE_LEVEL_1(const gentity_t* ent, int meFlags = 0, int length = 1000,
-	float timeScale = 0.0f, int spinTime = 0);
+extern void G_StartStasisEffect_FORCE_LEVEL_1(const gentity_t* ent, int me_flags = 0, int length = 1000,
+	float time_scale = 0.0f, int spin_time = 0);
 extern cvar_t* d_slowmoaction;
 extern int PlayerCanAbsorbKick(const gentity_t* defender, const vec3_t push_dir); //Can the player absorb a kick
 extern qboolean G_InScriptedCinematicSaberAnim(const gentity_t* self);
@@ -862,10 +862,10 @@ void P_WorldEffects(gentity_t* ent)
 }
 
 //==============================================================
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
-extern void G_StartMatrixEffect(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f,
-	int spinTime = 0);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
+extern void G_StartMatrixEffect(const gentity_t* ent, int me_flags = 0, int length = 1000, float time_scale = 0.0f,
+	int spin_time = 0);
 
 void G_GetMassAndVelocityForEnt(const gentity_t* ent, float* mass, vec3_t velocity)
 {

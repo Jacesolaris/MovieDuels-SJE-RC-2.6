@@ -161,7 +161,7 @@ using thinkFunc_t = enum
 //
 extern void teleporter_think(gentity_t* ent);
 extern void funcBBrushDieGo(gentity_t* ent);
-extern void ExplodeDeath(gentity_t* ent);
+extern void ExplodeDeath(gentity_t* self);
 extern void RespawnItem(gentity_t* ent);
 extern void G_FreeEntity(gentity_t* ent);
 extern void FinishSpawningItem(gentity_t* ent);
@@ -595,7 +595,7 @@ extern void func_usable_pain(gentity_t* self, gentity_t* inflictor, gentity_t* a
 extern void NPC_ATST_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage,
 	int mod, int hitLoc = HL_NONE);
 extern void NPC_ST_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage,
-	int mod, int hitLoc = HL_NONE);
+	int mod, int hit_loc = HL_NONE);
 extern void npc_jedi_pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage,
 	int mod, int hitLoc = HL_NONE);
 extern void NPC_Droid_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage,
@@ -627,7 +627,7 @@ extern void NPC_Sentry_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* at
 extern void NPC_Mark2_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage,
 	int mod, int hitLoc = HL_NONE);
 extern void PlayerPain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage,
-	int mod, int hitLoc = HL_NONE);
+	int mod, int hit_loc = HL_NONE);
 extern void GasBurst(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage,
 	int mod, int hitLoc = HL_NONE);
 extern void CrystalCratePain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage,
@@ -676,8 +676,8 @@ extern void misc_model_cargo_die(gentity_t* self, const gentity_t* inflictor, ge
 	int dFlags = 0, int hitLoc = HL_NONE);
 extern void func_train_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod,
 	int dFlags = 0, int hitLoc = HL_NONE);
-extern void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags = 0,
-	int hitLoc = HL_NONE);
+extern void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int means_of_death, int d_flags = 0,
+	int hit_loc = HL_NONE);
 extern void ExplodeDeath_Wait(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod,
 	int dFlags = 0, int hitLoc = HL_NONE);
 extern void ExplodeDeath(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod,

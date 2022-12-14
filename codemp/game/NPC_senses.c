@@ -542,16 +542,16 @@ int NPC_CheckAlertEvents(qboolean checkSight, qboolean checkSound, int ignoreAle
 	return G_CheckAlertEvents(NPCS.NPC, checkSight, checkSound, NPCS.NPCInfo->stats.visrange, NPCS.NPCInfo->stats.earshot, ignoreAlert, mustHaveOwner, minAlertLevel);
 }
 
-qboolean G_CheckForDanger(const gentity_t* self, int alertEvent)
+qboolean G_CheckForDanger(const gentity_t* self, int alert_event)
 {//FIXME: more bStates need to call this?
-	if (alertEvent == -1)
+	if (alert_event == -1)
 	{
 		return qfalse;
 	}
 
-	if (level.alertEvents[alertEvent].level >= AEL_DANGER)
+	if (level.alertEvents[alert_event].level >= AEL_DANGER)
 	{//run away!
-		if (!level.alertEvents[alertEvent].owner || !level.alertEvents[alertEvent].owner->client || (level.alertEvents[alertEvent].owner != self && level.alertEvents[alertEvent].owner->client->playerTeam != self->client->playerTeam))
+		if (!level.alertEvents[alert_event].owner || !level.alertEvents[alert_event].owner->client || (level.alertEvents[alert_event].owner != self && level.alertEvents[alert_event].owner->client->playerTeam != self->client->playerTeam))
 		{
 			if (self->NPC)
 			{
@@ -559,7 +559,7 @@ qboolean G_CheckForDanger(const gentity_t* self, int alertEvent)
 				{//can't flee
 					return qfalse;
 				}
-				NPC_StartFlee(level.alertEvents[alertEvent].owner, level.alertEvents[alertEvent].position, level.alertEvents[alertEvent].level, 3000, 6000);
+				NPC_StartFlee(level.alertEvents[alert_event].owner, level.alertEvents[alert_event].position, level.alertEvents[alert_event].level, 3000, 6000);
 				return qtrue;
 			}
 			return qtrue;
@@ -567,9 +567,9 @@ qboolean G_CheckForDanger(const gentity_t* self, int alertEvent)
 	}
 	return qfalse;
 }
-qboolean NPC_CheckForDanger(int alertEvent)
+qboolean NPC_CheckForDanger(int alert_event)
 {//FIXME: more bStates need to call this?
-	return G_CheckForDanger(NPCS.NPC, alertEvent);
+	return G_CheckForDanger(NPCS.NPC, alert_event);
 }
 
 /*

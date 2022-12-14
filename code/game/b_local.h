@@ -331,8 +331,8 @@ extern qboolean NPC_CheckCanAttackExt();
 extern int NPC_CheckAlertEvents(qboolean checkSight, qboolean checkSound, int ignoreAlert = -1,
 	qboolean mustHaveOwner = qfalse, int minAlertLevel = AEL_MINOR,
 	qboolean onGroundOnly = qfalse);
-extern qboolean NPC_CheckForDanger(int alertEvent);
-extern void G_AlertTeam(const gentity_t* victim, gentity_t* attacker, float radius, float soundDist);
+extern qboolean NPC_CheckForDanger(int alert_event);
+extern void G_AlertTeam(const gentity_t* victim, gentity_t* attacker, float radius, float sound_dist);
 
 extern int NPC_FindSquadPoint(vec3_t position);
 

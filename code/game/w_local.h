@@ -37,14 +37,14 @@ bool WP_MissileTargetHint(gentity_t* shooter, vec3_t start, vec3_t out);
 void drop_charge(gentity_t* ent, vec3_t start, vec3_t dir);
 void ViewHeightFix(const gentity_t* ent);
 qboolean LogAccuracyHit(const gentity_t* target, const gentity_t* attacker);
-extern qboolean G_BoxInBounds(const vec3_t point, const vec3_t mins, const vec3_t maxs, const vec3_t boundsMins,
-	const vec3_t boundsMaxs);
+extern qboolean G_BoxInBounds(const vec3_t point, const vec3_t mins, const vec3_t maxs, const vec3_t bounds_mins,
+	const vec3_t bounds_maxs);
 extern qboolean jedi_dodge_evasion(gentity_t* self, gentity_t* shooter, trace_t* tr, int hit_loc);
 extern qboolean jedi_disruptor_dodge_evasion(gentity_t* self, gentity_t* shooter, trace_t* tr, int hit_loc);
 extern qboolean jedi_npc_disruptor_dodge_evasion(gentity_t* self, gentity_t* shooter, trace_t* tr, int hit_loc);
 extern qboolean PM_DroidMelee(int npc_class);
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
 extern qboolean G_HasKnockdownAnims(const gentity_t* ent);
 
 extern gentity_t* ent_list[MAX_GENTITIES];

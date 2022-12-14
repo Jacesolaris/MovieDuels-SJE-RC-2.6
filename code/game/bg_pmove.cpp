@@ -55,8 +55,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "g_vehicles.h"
 #include <cfloat>
 
-extern qboolean G_DoDismemberment(gentity_t* self, vec3_t point, int mod, int damage, int hitLoc,
-	qboolean force = qfalse);
+extern qboolean G_DoDismemberment(gentity_t* self, vec3_t point, const int mod, const int hit_loc,
+                                  const qboolean force = qfalse);
 extern qboolean rocket_trooper_player(const gentity_t* self);
 extern qboolean G_EntIsUnlockedDoor(int entityNum);
 extern qboolean G_EntIsDoor(int entityNum);
@@ -104,8 +104,8 @@ extern qboolean PM_CheckBackflipAttackMove();
 extern saberMoveName_t PM_SaberLungeAttackMove(qboolean fallback_to_normal_lunge);
 extern qboolean PM_InSecondaryStyle();
 extern qboolean PM_KnockDownAnimExtended(int anim);
-extern void G_StartMatrixEffect(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f,
-	int spinTime = 0);
+extern void G_StartMatrixEffect(const gentity_t* ent, int me_flags = 0, int length = 1000, float time_scale = 0.0f,
+	int spin_time = 0);
 extern void WP_ForcePowerStop(gentity_t* self, forcePowers_t forcePower);
 extern qboolean WP_ForcePowerAvailable(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
 extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
@@ -149,7 +149,7 @@ extern cvar_t* g_SerenityJediEngineMode;
 extern cvar_t* g_RealisticBlockingMode;
 extern qboolean PM_SaberInDamageMove(int move);
 extern saberMoveName_t PM_BrokenParryForAttack(int move);
-extern void G_StartStasisEffect_FORCE_LEVEL_1(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f, int spinTime = 0);
+extern void G_StartStasisEffect_FORCE_LEVEL_1(const gentity_t* ent, int me_flags = 0, int length = 1000, float time_scale = 0.0f, int spin_time = 0);
 extern cvar_t* d_slowmoaction;
 extern void G_SetWeapon(gentity_t* self, int wp);
 extern cvar_t* g_AllowLedgeGrab;
@@ -15298,8 +15298,8 @@ void PM_SaberLockBreak(gentity_t* gent, gentity_t* genemy, const saberLockResult
 									SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD); //force this
 								genemy->client->dismembered = false;
 
-								G_DoDismemberment(genemy, genemy->client->renderInfo.handRPoint, MOD_SABER, 1000,
-									HL_HAND_RT, qtrue);
+								G_DoDismemberment(genemy, genemy->client->renderInfo.handRPoint, MOD_SABER, HL_HAND_RT,
+								                  qtrue);
 
 								if (genemy->health >= 1000)
 								{

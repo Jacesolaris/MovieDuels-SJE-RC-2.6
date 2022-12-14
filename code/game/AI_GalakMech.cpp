@@ -33,8 +33,8 @@ extern qboolean WP_LobFire(const gentity_t* self, vec3_t start, vec3_t target, v
 	vec3_t velocity, qboolean tracePath, int ignoreEntNum, int enemyNum,
 	float minSpeed, float maxSpeed, float idealSpeed, qboolean mustHit);
 extern qboolean InFront(vec3_t spot, vec3_t from, vec3_t fromAngles, float threshHold = 0.0f);
-extern void G_SoundAtSpot(vec3_t org, int soundIndex, qboolean broadcast);
-extern void G_SoundOnEnt(const gentity_t* ent, soundChannel_t channel, const char* soundPath);
+extern void G_SoundAtSpot(vec3_t org, int sound_index, qboolean broadcast);
+extern void G_SoundOnEnt(const gentity_t* ent, soundChannel_t channel, const char* sound_path);
 extern qboolean PM_CrouchAnim(int anim);
 extern qboolean NAV_HitNavGoal(vec3_t point, vec3_t mins, vec3_t maxs, vec3_t dest, int radius, qboolean flying);
 extern void NAV_GetLastMove(navInfo_t& info);
@@ -55,10 +55,10 @@ static vec3_t shieldMaxs = { 60, 60, 80 };
 
 extern qboolean NPC_CheckPlayerTeamStealth();
 
-static qboolean enemyLOS;
-static qboolean enemyCS;
+static qboolean enemy_los;
+static qboolean enemy_cs;
 static qboolean hitAlly;
-static qboolean faceEnemy;
+static qboolean face_enemy;
 static qboolean AImove;
 static qboolean shoot;
 static float enemyDist;
@@ -473,7 +473,7 @@ static void GM_CheckMoveState()
 	{
 		//Did we make it?
 		if (NAV_HitNavGoal(NPC->currentOrigin, NPC->mins, NPC->maxs, NPCInfo->goalEntity->currentOrigin, 16, qfalse) ||
-			!Q3_TaskIDPending(NPC, TID_MOVE_NAV) && enemyLOS && enemyDist <= 10000)
+			!Q3_TaskIDPending(NPC, TID_MOVE_NAV) && enemy_los && enemyDist <= 10000)
 		{
 			//either hit our navgoal or our navgoal was not a crucial (scripted) one (maybe a combat point) and we're scouting and found our enemy
 			NPC_ReachedGoal();
@@ -491,7 +491,7 @@ GM_CheckFireState
 
 static void GM_CheckFireState()
 {
-	if (enemyCS)
+	if (enemy_cs)
 	{
 		//if have a clear shot, always try
 		return;
@@ -578,7 +578,7 @@ static void GM_CheckFireState()
 					NPCInfo->desiredPitch = angles[PITCH];
 
 					shoot = qtrue;
-					faceEnemy = qfalse;
+					face_enemy = qfalse;
 				}
 			}
 		}
@@ -700,9 +700,9 @@ void NPC_BSGM_Attack()
 		return;
 	}
 
-	enemyLOS = enemyCS = qfalse;
+	enemy_los = enemy_cs = qfalse;
 	AImove = qtrue;
-	faceEnemy = qfalse;
+	face_enemy = qfalse;
 	shoot = qfalse;
 	hitAlly = qfalse;
 	VectorClear(impactPos);
@@ -719,13 +719,13 @@ void NPC_BSGM_Attack()
 			if (enemyDist < MELEE_DIST_SQUARED && InFront(NPC->enemy->currentOrigin, NPC->currentOrigin,
 				NPC->client->ps.viewangles, 0.3f))
 			{
-				vec3_t smackDir;
-				VectorSubtract(NPC->enemy->currentOrigin, NPC->currentOrigin, smackDir);
-				smackDir[2] += 30;
-				VectorNormalize(smackDir);
+				vec3_t smack_dir;
+				VectorSubtract(NPC->enemy->currentOrigin, NPC->currentOrigin, smack_dir);
+				smack_dir[2] += 30;
+				VectorNormalize(smack_dir);
 				//hurt them
 				G_Sound(NPC->enemy, G_SoundIndex("sound/weapons/galak/skewerhit.wav"));
-				G_Damage(NPC->enemy, NPC, NPC, smackDir, NPC->currentOrigin, (g_spskill->integer + 1) * Q_irand(5, 10),
+				G_Damage(NPC->enemy, NPC, NPC, smack_dir, NPC->currentOrigin, (g_spskill->integer + 1) * Q_irand(5, 10),
 					DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK, MOD_CRUSH);
 				if (NPC->client->ps.torsoAnim == BOTH_ATTACK4)
 				{
@@ -737,16 +737,16 @@ void NPC_BSGM_Attack()
 						knockAnim = BOTH_KNOCKDOWN4;
 					}
 					//throw them
-					smackDir[2] = 1;
-					VectorNormalize(smackDir);
-					G_Throw(NPC->enemy, smackDir, 50);
+					smack_dir[2] = 1;
+					VectorNormalize(smack_dir);
+					G_Throw(NPC->enemy, smack_dir, 50);
 					NPC_SetAnim(NPC->enemy, SETANIM_BOTH, knockAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				}
 				else
 				{
 					//uppercut
 					//throw them
-					G_Throw(NPC->enemy, smackDir, 100);
+					G_Throw(NPC->enemy, smack_dir, 100);
 					//make them backflip
 					NPC_SetAnim(NPC->enemy, SETANIM_BOTH, BOTH_KNOCKDOWN5, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				}
@@ -863,19 +863,19 @@ void NPC_BSGM_Attack()
 			if (TIMER_Done(NPC, "attackDelay"))
 			{
 				//animate me
-				int swingAnim;
+				int swing_anim;
 				if (NPC->locationDamage[HL_GENERIC1] > GENERATOR_HEALTH)
 				{
 					//generator down, use random melee
-					swingAnim = Q_irand(BOTH_ATTACK4, BOTH_ATTACK5); //smack down or uppercut
+					swing_anim = Q_irand(BOTH_ATTACK4, BOTH_ATTACK5); //smack down or uppercut
 				}
 				else
 				{
 					//always knock-away
-					swingAnim = BOTH_ATTACK5; //uppercut
+					swing_anim = BOTH_ATTACK5; //uppercut
 				}
 				G_Sound(NPC->enemy, G_SoundIndex("sound/weapons/melee/punch1.mp3"));
-				NPC_SetAnim(NPC, SETANIM_BOTH, swingAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+				NPC_SetAnim(NPC, SETANIM_BOTH, swing_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				TIMER_Set(NPC, "attackDelay", NPC->client->ps.torsoAnimTimer + Q_irand(1000, 3000));
 				//delay the hurt until the proper point in the anim
 				TIMER_Set(NPC, "smackTime", 600);
@@ -929,11 +929,11 @@ void NPC_BSGM_Attack()
 	if (NPC_ClearLOS(NPC->enemy))
 	{
 		NPCInfo->enemyLastSeenTime = level.time; //used here for aim debouncing, not always a clear LOS
-		enemyLOS = qtrue;
+		enemy_los = qtrue;
 
 		if (NPC->client->ps.weapon == WP_NONE)
 		{
-			enemyCS = qfalse; //not true, but should stop us from firing
+			enemy_cs = qfalse; //not true, but should stop us from firing
 			NPC_AimAdjust(-1); //adjust aim worse longer we have no weapon
 		}
 		else
@@ -942,7 +942,7 @@ void NPC_BSGM_Attack()
 			if (NPC->client->ps.weapon == WP_REPEATER && NPCInfo->scriptFlags & SCF_ALT_FIRE && enemyDist <
 				MIN_LOB_DIST_SQUARED) //256
 			{
-				enemyCS = qfalse; //not true, but should stop us from firing
+				enemy_cs = qfalse; //not true, but should stop us from firing
 				hitAlly = qtrue; //us!
 			}
 			else
@@ -954,7 +954,7 @@ void NPC_BSGM_Attack()
 					|| hitEnt && hitEnt->takedamage)
 				{
 					//can hit enemy or will hit glass or other breakable, so shoot anyway
-					enemyCS = qtrue;
+					enemy_cs = qtrue;
 					NPC_AimAdjust(2); //adjust aim better longer we have clear shot at enemy
 					VectorCopy(NPC->enemy->currentOrigin, NPCInfo->enemyLastSeenLocation);
 				}
@@ -1018,18 +1018,18 @@ void NPC_BSGM_Attack()
 			|| hitEnt && hitEnt->takedamage)
 		{
 			//can hit enemy or will hit glass or other breakable, so shoot anyway
-			enemyCS = qtrue;
+			enemy_cs = qtrue;
 		}
 		else
 		{
-			faceEnemy = qtrue;
+			face_enemy = qtrue;
 			NPC_AimAdjust(-1); //adjust aim worse longer we cannot see enemy
 		}
 	}
 
-	if (enemyLOS)
+	if (enemy_los)
 	{
-		faceEnemy = qtrue;
+		face_enemy = qtrue;
 	}
 	else
 	{
@@ -1043,7 +1043,7 @@ void NPC_BSGM_Attack()
 			AImove = qtrue;
 		}
 	}
-	if (enemyCS)
+	if (enemy_cs)
 	{
 		shoot = qtrue;
 	}
@@ -1088,10 +1088,10 @@ void NPC_BSGM_Attack()
 		const qboolean clearshot = WP_LobFire(NPC, muzzle, target, mins, maxs, MASK_SHOT | CONTENTS_LIGHTSABER,
 			velocity, qtrue, NPC->s.number, NPC->enemy->s.number,
 			300, 1100, 1500, qtrue);
-		if (VectorCompare(vec3_origin, velocity) || !clearshot && enemyLOS && enemyCS)
+		if (VectorCompare(vec3_origin, velocity) || !clearshot && enemy_los && enemy_cs)
 		{
 			//no clear lob shot and no lob shot that will hit something breakable
-			if (enemyLOS && enemyCS && TIMER_Done(NPC, "noRapid"))
+			if (enemy_los && enemy_cs && TIMER_Done(NPC, "noRapid"))
 			{
 				//have a clear straight shot, so switch to primary
 				NPCInfo->scriptFlags &= ~SCF_ALT_FIRE;
@@ -1117,7 +1117,7 @@ void NPC_BSGM_Attack()
 			NPC->client->hiddenDist = VectorNormalize(NPC->client->hiddenDir);
 		}
 	}
-	else if (faceEnemy)
+	else if (face_enemy)
 	{
 		//face the enemy
 		NPC_FaceEnemy(qtrue);
@@ -1158,12 +1158,12 @@ void NPC_BSGM_Attack()
 	if (!TIMER_Done(NPC, "flee"))
 	{
 		//running away
-		faceEnemy = qfalse;
+		face_enemy = qfalse;
 	}
 
 	//FIXME: check scf_face_move_dir here?
 
-	if (!faceEnemy)
+	if (!face_enemy)
 	{
 		//we want to face in the dir we're running
 		if (!AImove)
@@ -1239,14 +1239,14 @@ void NPC_BSGM_Attack()
 			NPCInfo->touchedByPlayer = nullptr;
 			//FIXME: some shield effect?
 			NPC->client->ps.powerups[PW_BATTLESUIT] = level.time + ARMOR_EFFECT_TIME;
-			vec3_t smackDir;
-			VectorSubtract(NPC->enemy->currentOrigin, NPC->currentOrigin, smackDir);
-			smackDir[2] += 30;
-			VectorNormalize(smackDir);
-			G_Damage(NPC->enemy, NPC, NPC, smackDir, NPC->currentOrigin, (g_spskill->integer + 1) * Q_irand(5, 10),
+			vec3_t smack_dir;
+			VectorSubtract(NPC->enemy->currentOrigin, NPC->currentOrigin, smack_dir);
+			smack_dir[2] += 30;
+			VectorNormalize(smack_dir);
+			G_Damage(NPC->enemy, NPC, NPC, smack_dir, NPC->currentOrigin, (g_spskill->integer + 1) * Q_irand(5, 10),
 				DAMAGE_NO_KNOCKBACK, MOD_ELECTROCUTE);
 			//throw them
-			G_Throw(NPC->enemy, smackDir, 100);
+			G_Throw(NPC->enemy, smack_dir, 100);
 			NPC->enemy->s.powerups |= 1 << PW_SHOCKED;
 			if (NPC->enemy->client)
 			{
