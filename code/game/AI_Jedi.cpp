@@ -360,6 +360,7 @@ qboolean npc_can_do_slap()
 		|| PM_SaberInBrokenParry(NPC->client->ps.saberMove)
 		|| g_AllowMawKick->integer < 1 && jedi_forbidden_kicker(NPC)
 		|| NPC->client->ps.groundEntityNum == ENTITYNUM_NONE
+		|| NPC->client->NPC_class == CLASS_YODA
 		|| g_SerenityJediEngineMode->integer == 2 && NPC->client->ps.blockPoints < BLOCKPOINTS_FIVE
 		|| NPC->client->ps.forcePower < BLOCKPOINTS_FIVE)
 	{
@@ -382,8 +383,7 @@ qboolean npc_can_do_slap()
 		|| NPC->client->NPC_class == CLASS_ALORA
 		|| NPC->client->NPC_class == CLASS_GALEN
 		|| NPC->client->NPC_class == CLASS_PROJECTION
-		|| NPC->client->NPC_class == CLASS_JEDIMASTER
-		|| NPC->client->NPC_class == CLASS_YODA)
+		|| NPC->client->NPC_class == CLASS_JEDIMASTER)
 	{
 		return qtrue;
 	}

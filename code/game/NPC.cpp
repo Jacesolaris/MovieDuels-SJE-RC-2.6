@@ -1929,7 +1929,7 @@ extern void NPC_BSEmplaced(void);
 extern qboolean NPC_CheckSurrender(void);
 extern void NPC_BSRT_Default(void);
 extern void NPC_BSCivilian_Default(int bState);
-extern void NPC_BSSD_Default(void);
+extern void NPC_BSSD_Default();
 extern void NPC_BehaviorSet_Trooper(int bState);
 extern bool NPC_IsTrooper(const gentity_t* ent);
 extern bool Pilot_MasterUpdate();
