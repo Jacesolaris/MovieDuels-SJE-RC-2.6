@@ -32622,7 +32622,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 				if (!in_camera && (trace_ent->NPC || (trace_ent->s.number < MAX_CLIENTS ||
 					G_ControlledByPlayer(trace_ent)))
 					&& !PM_SaberInKata(static_cast<saberMoveName_t>(trace_ent->client->ps.saberMove))
-					&& !(trace_ent->s.weapon == WP_EMPLACED_GUN))
+					&& (trace_ent->s.weapon != WP_EMPLACED_GUN))
 				{
 					if (trace_ent && trace_ent->client && trace_ent->client->ps.stats[STAT_HEALTH] <= 35)
 					{
@@ -37753,7 +37753,7 @@ void WP_ForcePowerStop(gentity_t* self, const forcePowers_t force_power)
 					//rww - RAGDOLL_BEGIN
 #ifndef JK2_RAGDOLL_GRIPNOHEALTH
 //rww - RAGDOLL_END
-					if (gripEnt->health > 0)
+					if (grip_ent->health > 0)
 						//rww - RAGDOLL_BEGIN
 #endif
 					//rww - RAGDOLL_END
@@ -38063,7 +38063,7 @@ void WP_ForcePowerStop(gentity_t* self, const forcePowers_t force_power)
 					//rww - RAGDOLL_BEGIN
 #ifndef JK2_RAGDOLL_GRIPNOHEALTH
 //rww - RAGDOLL_END
-					if (gripEnt->health > 0)
+					if (grip_ent->health > 0)
 						//rww - RAGDOLL_BEGIN
 #endif
 					//rww - RAGDOLL_END
@@ -38487,7 +38487,7 @@ static void wp_force_power_run(gentity_t* self, forcePowers_t force_power, userc
 				return;
 			}
 #ifndef JK2_RAGDOLL_GRIPNOHEALTH
-			if (gripEnt->health <= 0 && gripEnt->takedamage)
+			if (grip_ent->health <= 0 && grip_ent->takedamage)
 			{//either invalid ent, or dead ent
 				WP_ForcePowerStop(self, FP_GRIP);
 				return;
@@ -39330,7 +39330,7 @@ static void wp_force_power_run(gentity_t* self, forcePowers_t force_power, userc
 				return;
 			}
 #ifndef JK2_RAGDOLL_GRIPNOHEALTH
-			if (gripEnt->health <= 0 && gripEnt->takedamage)
+			if (grip_ent->health <= 0 && grip_ent->takedamage)
 			{//either invalid ent, or dead ent
 				WP_ForcePowerStop(self, FP_GRASP);
 				return;
@@ -39487,28 +39487,35 @@ static void wp_force_power_run(gentity_t* self, forcePowers_t force_power, userc
 					//level 1 just holds them
 					VectorSubtract(grip_org, grip_ent_org, grip_ent->client->ps.velocity);
 
-					//if (self->client->ps.forcePowerLevel[FP_GRASP] > FORCE_LEVEL_2
-					//	&& (!gripEnt->client || !gripEnt->message && !(gripEnt->flags & FL_NO_KNOCKBACK)))
-					//{
-					//	//level 2 just lifts them
-					//	float grip_dist = VectorNormalize(gripEnt->client->ps.velocity) / 3.0f;
+					if (self->client->ps.forcePowerLevel[FP_GRASP] > FORCE_LEVEL_2
+						&& (!grip_ent->client || !grip_ent->message && !(grip_ent->flags & FL_NO_KNOCKBACK)))
+					{
+						if (grip_ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(grip_ent)) // npc,s cant throw the player around with grip any more
+						{
+							VectorSubtract(grip_org, grip_ent_org, grip_ent->client->ps.velocity);
+						}
+						else
+						{
+							//level 2 just lifts them
+							float grip_dist = VectorNormalize(grip_ent->client->ps.velocity) / 3.0f;
 
-					//	if (grip_dist < 20.0f)
-					//	{
-					//		if (grip_dist < 2.0f)
-					//		{
-					//			VectorClear(gripEnt->client->ps.velocity);
-					//		}
-					//		else
-					//		{
-					//			VectorScale(gripEnt->client->ps.velocity, grip_dist * grip_dist, gripEnt->client->ps.velocity);
-					//		}
-					//	}
-					//	else
-					//	{
-					//		VectorScale(gripEnt->client->ps.velocity, grip_dist * grip_dist, gripEnt->client->ps.velocity);
-					//	}
-					//}
+							if (grip_dist < 20.0f)
+							{
+								if (grip_dist < 2.0f)
+								{
+									VectorClear(grip_ent->client->ps.velocity);
+								}
+								else
+								{
+									VectorScale(grip_ent->client->ps.velocity, grip_dist * grip_dist, grip_ent->client->ps.velocity);
+								}
+							}
+							else
+							{
+								VectorScale(grip_ent->client->ps.velocity, grip_dist * grip_dist, grip_ent->client->ps.velocity);
+							}
+						}
+					}
 				}
 				//stop them from thinking
 				grip_ent->client->ps.pm_time = 2000;
@@ -39554,10 +39561,10 @@ static void wp_force_power_run(gentity_t* self, forcePowers_t force_power, userc
 					VectorCopy(grip_ent->currentOrigin, grip_ent->s.pos.trBase);
 					VectorSubtract(grip_org, grip_ent_org, grip_ent->s.pos.trDelta);
 					//if (self->client->ps.forcePowerLevel[FP_GRASP] > FORCE_LEVEL_2
-					//	&& (!gripEnt->client || !gripEnt->message && !(gripEnt->flags & FL_NO_KNOCKBACK)))
+					//	&& (!grip_ent->client || !grip_ent->message && !(grip_ent->flags & FL_NO_KNOCKBACK)))
 					//{
 					//	//level 2 just lifts them
-					//	VectorScale(gripEnt->s.pos.trDelta, 10, gripEnt->s.pos.trDelta);
+					//	VectorScale(grip_ent->s.pos.trDelta, 10, grip_ent->s.pos.trDelta);
 					//}
 					grip_ent->s.pos.trType = TR_LINEAR;
 					grip_ent->s.pos.trTime = level.time;

@@ -37,7 +37,7 @@ extern namePrecache_m* as_preCacheMap;
 extern void CG_RegisterNPCCustomSounds(clientInfo_t* ci);
 
 extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
-extern int G_ParseAnimFileSet(const char* skeletonName, const char* modelName = nullptr);
+extern int G_ParseAnimFileSet(const char* skeleton_name, const char* model_name = nullptr);
 extern void CG_DrawDataPadInventorySelect(void);
 
 void CG_Init(int serverCommandSequence);

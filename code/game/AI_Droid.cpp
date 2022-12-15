@@ -464,7 +464,7 @@ void NPC_R2D2_Precache(void)
 NPC_Gonk_Precache
 -------------------------
 */
-void NPC_Gonk_Precache(void)
+void NPC_Gonk_Precache()
 {
 	G_SoundIndex("sound/chars/gonk/misc/gonktalk1.wav");
 	G_SoundIndex("sound/chars/gonk/misc/gonktalk2.wav");

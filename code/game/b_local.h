@@ -205,9 +205,9 @@ extern qboolean InVisrange(const gentity_t* ent);
 extern void NPC_Spawn(gentity_t* self);
 
 //NPC_stats
-extern int NPC_ReactionTime(void);
-extern qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC);
-extern void NPC_LoadParms(void);
+extern int NPC_ReactionTime();
+extern qboolean NPC_ParseParms(const char* npc_name, gentity_t* npc);
+extern void NPC_LoadParms();
 
 //NPC_utils
 extern int teamNumbers[TEAM_NUM_TEAMS];

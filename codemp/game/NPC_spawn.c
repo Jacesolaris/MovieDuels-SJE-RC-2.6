@@ -1916,7 +1916,7 @@ teamnodmg - team that NPC does not take damage from (turrets and other auto-defe
 "noCombatSounds" - set to 1 to prevent loading and usage of combat sounds (anger, victory, etc.)
 "noExtraSounds" - set to 1 to prevent loading and usage of "extra" sounds (chasing the enemy - detecting them, flanking them... also jedi combat sounds)
 */
-extern void NPC_PrecacheAnimationCFG(const char* NPC_type);
+extern void NPC_PrecacheAnimationCFG(const char* npc_type);
 void NPC_Precache(gentity_t* spawner);
 void NPC_PrecacheType(char* NPC_type)
 {

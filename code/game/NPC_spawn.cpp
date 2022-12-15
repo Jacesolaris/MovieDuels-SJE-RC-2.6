@@ -939,7 +939,7 @@ NPC_WeaponsForTeam
 -------------------------
 */
 
-int NPC_WeaponsForTeam(const team_t team, const int spawnflags, const char* NPC_type)
+int NPC_WeaponsForTeam(const team_t team, const int spawnflags, const char* npc_type)
 {
 	//*** not sure how to handle this, should I pass in class instead of team and go from there? - dmv
 	switch (team)
@@ -948,131 +948,131 @@ int NPC_WeaponsForTeam(const team_t team, const int spawnflags, const char* NPC_
 
 		//	case TEAM_IMPERIAL:
 	case TEAM_ENEMY:
-		if (Q_stricmp("tavion", NPC_type) == 0 ||
-			Q_stricmpn("reborn", NPC_type, 6) == 0 ||
-			Q_stricmp("desann", NPC_type) == 0 ||
-			Q_stricmpn("shadowtrooper", NPC_type, 13) == 0)
+		if (Q_stricmp("tavion", npc_type) == 0 ||
+			Q_stricmpn("reborn", npc_type, 6) == 0 ||
+			Q_stricmp("desann", npc_type) == 0 ||
+			Q_stricmpn("shadowtrooper", npc_type, 13) == 0)
 			return 1 << WP_SABER;
 		//			return ( 1 << WP_IMPERIAL_BLADE);
 		//NOTENOTE: Falls through if not a knife user
 
 		//FIXME: default weapon in npc config?
-		if (Q_stricmpn("stofficer", NPC_type, 9) == 0)
+		if (Q_stricmpn("stofficer", npc_type, 9) == 0)
 		{
 			return 1 << WP_FLECHETTE;
 		}
-		if (Q_stricmp("stcommander", NPC_type) == 0)
+		if (Q_stricmp("stcommander", npc_type) == 0)
 		{
 			return 1 << WP_REPEATER;
 		}
-		if (Q_stricmp("swamptrooper", NPC_type) == 0)
+		if (Q_stricmp("swamptrooper", npc_type) == 0)
 		{
 			return 1 << WP_FLECHETTE;
 		}
-		if (Q_stricmp("swamptrooper2", NPC_type) == 0)
+		if (Q_stricmp("swamptrooper2", npc_type) == 0)
 		{
 			return 1 << WP_REPEATER;
 		}
-		if (Q_stricmp("rockettrooper", NPC_type) == 0)
+		if (Q_stricmp("rockettrooper", npc_type) == 0)
 		{
 			return 1 << WP_ROCKET_LAUNCHER;
 		}
-		if (Q_stricmpn("shadowtrooper", NPC_type, 13) == 0)
+		if (Q_stricmpn("shadowtrooper", npc_type, 13) == 0)
 		{
 			return 1 << WP_SABER; //|( 1 << WP_RAPID_CONCUSSION)?
 		}
-		if (Q_stricmp("imperial", NPC_type) == 0)
+		if (Q_stricmp("imperial", npc_type) == 0)
 		{
 			return 1 << WP_BLASTER_PISTOL;
 		}
-		if (Q_stricmpn("impworker", NPC_type, 9) == 0)
+		if (Q_stricmpn("impworker", npc_type, 9) == 0)
 		{
 			return 1 << WP_BLASTER_PISTOL;
 		}
-		if (Q_stricmp("stormpilot", NPC_type) == 0)
+		if (Q_stricmp("stormpilot", npc_type) == 0)
 		{
 			return 1 << WP_BLASTER_PISTOL;
 		}
-		if (Q_stricmp("galak", NPC_type) == 0)
+		if (Q_stricmp("galak", npc_type) == 0)
 		{
 			return 1 << WP_BLASTER;
 		}
-		if (Q_stricmp("galak_mech", NPC_type) == 0)
+		if (Q_stricmp("galak_mech", npc_type) == 0)
 		{
 			return 1 << WP_REPEATER;
 		}
-		if (Q_stricmpn("ugnaught", NPC_type, 8) == 0)
+		if (Q_stricmpn("ugnaught", npc_type, 8) == 0)
 		{
 			return WP_NONE;
 		}
-		if (Q_stricmp("granshooter", NPC_type) == 0)
+		if (Q_stricmp("granshooter", npc_type) == 0)
 		{
 			return 1 << WP_BLASTER;
 		}
-		if (Q_stricmp("granboxer", NPC_type) == 0)
+		if (Q_stricmp("granboxer", npc_type) == 0)
 		{
 			return 1 << WP_MELEE;
 		}
-		if (Q_stricmpn("gran", NPC_type, 4) == 0)
+		if (Q_stricmpn("gran", npc_type, 4) == 0)
 		{
 			return 1 << WP_THERMAL | 1 << WP_MELEE;
 		}
-		if (Q_stricmp("rodian", NPC_type) == 0)
+		if (Q_stricmp("rodian", npc_type) == 0)
 		{
 			return 1 << WP_DISRUPTOR;
 		}
-		if (Q_stricmp("rodian2", NPC_type) == 0)
+		if (Q_stricmp("rodian2", npc_type) == 0)
 		{
 			return 1 << WP_BLASTER;
 		}
 
-		if (Q_stricmp("interrogator", NPC_type) == 0 || Q_stricmp("sentry", NPC_type) == 0 || Q_stricmpn(
-			"protocol", NPC_type, 8) == 0)
+		if (Q_stricmp("interrogator", npc_type) == 0 || Q_stricmp("sentry", npc_type) == 0 || Q_stricmpn(
+			"protocol", npc_type, 8) == 0)
 		{
 			return WP_NONE;
 		}
 
-		if (Q_stricmpn("weequay", NPC_type, 7) == 0)
+		if (Q_stricmpn("weequay", npc_type, 7) == 0)
 		{
 			return 1 << WP_BOWCASTER; //|( 1 << WP_STAFF )(FIXME: new weap?)
 		}
-		if (Q_stricmp("impofficer", NPC_type) == 0)
+		if (Q_stricmp("impofficer", npc_type) == 0)
 		{
 			return 1 << WP_BLASTER;
 		}
-		if (Q_stricmp("impcommander", NPC_type) == 0)
+		if (Q_stricmp("impcommander", npc_type) == 0)
 		{
 			return 1 << WP_BLASTER;
 		}
-		if (Q_stricmp("probe", NPC_type) == 0 || Q_stricmp("seeker", NPC_type) == 0)
+		if (Q_stricmp("probe", npc_type) == 0 || Q_stricmp("seeker", npc_type) == 0)
 		{
 			return 1 << WP_BOT_LASER;
 		}
-		if (Q_stricmpn("remote", NPC_type, 6) == 0)
+		if (Q_stricmpn("remote", npc_type, 6) == 0)
 		{
 			return 1 << WP_BOT_LASER;
 		}
-		if (Q_stricmp("trandoshan", NPC_type) == 0)
+		if (Q_stricmp("trandoshan", npc_type) == 0)
 		{
 			return 1 << WP_REPEATER;
 		}
-		if (Q_stricmp("atst", NPC_type) == 0)
+		if (Q_stricmp("atst", npc_type) == 0)
 		{
 			return 1 << WP_ATST_MAIN | 1 << WP_ATST_SIDE;
 		}
-		if (Q_stricmp("mark1", NPC_type) == 0)
+		if (Q_stricmp("mark1", npc_type) == 0)
 		{
 			return 1 << WP_BOT_LASER;
 		}
-		if (Q_stricmp("mark2", NPC_type) == 0)
+		if (Q_stricmp("mark2", npc_type) == 0)
 		{
 			return 1 << WP_BOT_LASER;
 		}
-		if (Q_stricmp("minemonster", NPC_type) == 0)
+		if (Q_stricmp("minemonster", npc_type) == 0)
 		{
 			return 1 << WP_MELEE;
 		}
-		if (Q_stricmp("howler", NPC_type) == 0)
+		if (Q_stricmp("howler", npc_type) == 0)
 		{
 			return 1 << WP_MELEE;
 		}
@@ -1087,25 +1087,25 @@ int NPC_WeaponsForTeam(const team_t team, const int spawnflags, const char* NPC_
 		if (spawnflags & SFB_PHASER)
 			return 1 << WP_BLASTER_PISTOL;
 
-		if (Q_stricmpn("jedi", NPC_type, 4) == 0 || Q_stricmp("luke", NPC_type) == 0)
+		if (Q_stricmpn("jedi", npc_type, 4) == 0 || Q_stricmp("luke", npc_type) == 0)
 			return 1 << WP_SABER;
 
-		if (Q_stricmpn("prisoner", NPC_type, 8) == 0
-			|| Q_stricmpn("elder", NPC_type, 5) == 0)
+		if (Q_stricmpn("prisoner", npc_type, 8) == 0
+			|| Q_stricmpn("elder", npc_type, 5) == 0)
 		{
 			return WP_NONE;
 		}
 
-		if (Q_stricmpn("bespincop", NPC_type, 9) == 0)
+		if (Q_stricmpn("bespincop", npc_type, 9) == 0)
 		{
 			return 1 << WP_BLASTER_PISTOL;
 		}
 
-		if (Q_stricmp("MonMothma", NPC_type) == 0)
+		if (Q_stricmp("MonMothma", npc_type) == 0)
 		{
 			return WP_NONE;
 		}
-		if (Q_stricmp("md_grogu", NPC_type) == 0)
+		if (Q_stricmp("md_grogu", npc_type) == 0)
 		{
 			return WP_NONE;
 		}
@@ -1115,23 +1115,23 @@ int NPC_WeaponsForTeam(const team_t team, const int spawnflags, const char* NPC_
 
 	case TEAM_NEUTRAL:
 
-		if (Q_stricmp("mark1", NPC_type) == 0)
+		if (Q_stricmp("mark1", npc_type) == 0)
 		{
 			return WP_NONE;
 		}
-		if (Q_stricmp("mark2", NPC_type) == 0)
+		if (Q_stricmp("mark2", npc_type) == 0)
 		{
 			return WP_NONE;
 		}
-		if (Q_stricmpn("ugnaught", NPC_type, 8) == 0)
+		if (Q_stricmpn("ugnaught", npc_type, 8) == 0)
 		{
 			return WP_NONE;
 		}
-		if (Q_stricmp("bartender", NPC_type) == 0)
+		if (Q_stricmp("bartender", npc_type) == 0)
 		{
 			return WP_NONE;
 		}
-		if (Q_stricmp("morgankatarn", NPC_type) == 0)
+		if (Q_stricmp("morgankatarn", npc_type) == 0)
 		{
 			return WP_NONE;
 		}

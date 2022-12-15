@@ -236,7 +236,7 @@ stringID_table_t ClassTable[] =
 NPC_ReactionTime
 */
 //FIXME use grandom in here
-int NPC_ReactionTime(void)
+int NPC_ReactionTime()
 {
 	return 200 * (6 - NPCInfo->stats.reactions);
 }
@@ -376,47 +376,13 @@ saber_colors_t TranslateSaberColor(const char* name)
 	}
 	float colors[3];
 	Q_parseSaberColor(name, colors);
-	int colourArray[3];
+	int colour_array[3];
 	for (int i = 0; i < 3; i++)
 	{
-		colourArray[i] = static_cast<int>(colors[i] * 255);
+		colour_array[i] = static_cast<int>(colors[i] * 255);
 	}
-	return static_cast<saber_colors_t>(colourArray[0] + (colourArray[1] << 8) + (colourArray[2] << 16) + (1 << 24));
+	return static_cast<saber_colors_t>(colour_array[0] + (colour_array[1] << 8) + (colour_array[2] << 16) + (1 << 24));
 }
-
-/* static int MethodNameToNumber( const char *name ) {
-	if ( !Q_stricmp( name, "EXPONENTIAL" ) ) {
-		return METHOD_EXPONENTIAL;
-	}
-	if ( !Q_stricmp( name, "LINEAR" ) ) {
-		return METHOD_LINEAR;
-	}
-	if ( !Q_stricmp( name, "LOGRITHMIC" ) ) {
-		return METHOD_LOGRITHMIC;
-	}
-	if ( !Q_stricmp( name, "ALWAYS" ) ) {
-		return METHOD_ALWAYS;
-	}
-	if ( !Q_stricmp( name, "NEVER" ) ) {
-		return METHOD_NEVER;
-	}
-	return -1;
-}
-
-static int ItemNameToNumber( const char *name, int itemType ) {
-//	int		n;
-
-	for ( n = 0; n < bg_numItems; n++ ) {
-		if ( bg_itemlist[n].type != itemType ) {
-			continue;
-		}
-		if ( Q_stricmp( bg_itemlist[n].classname, name ) == 0 ) {
-			return bg_itemlist[n].tag;
-		}
-	}
-	return -1;
-}
-*/
 
 static int MoveTypeNameToEnum(const char* name)
 {
@@ -473,18 +439,18 @@ void SpewDebugStuffToFile(animation_t* bgGlobalAnimations)
 }
 #endif
 
-int CG_CheckAnimFrameForEventType(const animevent_t* animEvents, const int keyFrame, const animEventType_t eventType,
-                                  const unsigned short modelIndex)
+int CG_CheckAnimFrameForEventType(const animevent_t* anim_events, const int key_frame, const animEventType_t event_type,
+                                  const unsigned short model_index)
 {
 	for (int i = 0; i < MAX_ANIM_EVENTS; i++)
 	{
-		if (animEvents[i].keyFrame == keyFrame)
+		if (anim_events[i].keyFrame == key_frame)
 		{
 			//there is an animevent on this frame already
-			if (animEvents[i].eventType == eventType)
+			if (anim_events[i].eventType == event_type)
 			{
 				//and it is of the same type
-				if (animEvents[i].modelOnly == modelIndex)
+				if (anim_events[i].modelOnly == model_index)
 				{
 					//and it is for the same model
 					return i;
@@ -501,12 +467,12 @@ int CG_CheckAnimFrameForEventType(const animevent_t* animEvents, const int keyFr
 ParseAnimationEvtBlock
 ======================
 */
-static void ParseAnimationEvtBlock(const int glaIndex, const unsigned short modelIndex, const char* aeb_filename,
-                                   animevent_t* animEvents, const animation_t* animations, unsigned char& lastAnimEvent,
-                                   const char** text_p, const bool bIsFrameSkipped)
+static void ParseAnimationEvtBlock(const int gla_index, const unsigned short model_index, const char* aeb_filename,
+                                   animevent_t* anim_events, const animation_t* animations, unsigned char& last_anim_event,
+                                   const char** text_p, const bool b_is_frame_skipped)
 {
 	const char* token;
-	int num, n, lowestVal, highestVal;
+	int num, n, lowest_val, highest_val;
 
 	// get past starting bracket
 	while (true)
@@ -525,7 +491,7 @@ static void ParseAnimationEvtBlock(const int glaIndex, const unsigned short mode
 	// read information for each frame
 	while (true)
 	{
-		char stringData[MAX_QPATH];
+		char string_data[MAX_QPATH];
 		// Get base frame of sequence
 		token = COM_Parse(text_p);
 		if (!token || !token[0])
@@ -543,8 +509,8 @@ static void ParseAnimationEvtBlock(const int glaIndex, const unsigned short mode
 		//	just need offsets.
 		//This way when animation numbers change, this table won't have to be updated,
 		//	at least not much.
-		const int animNum = GetIDForString(animTable, token);
-		if (animNum == -1)
+		const int anim_num = GetIDForString(animTable, token);
+		if (anim_num == -1)
 		{
 			//Unrecognized ANIM ENUM name,
 			Com_Printf(S_COLOR_YELLOW"WARNING: Unknown ANIM %s in file %s\n", token, aeb_filename);
@@ -553,7 +519,7 @@ static void ParseAnimationEvtBlock(const int glaIndex, const unsigned short mode
 			continue;
 		}
 
-		if (animations[animNum].numFrames == 0)
+		if (animations[anim_num].numFrames == 0)
 		{
 			//we don't use this anim
 #ifndef FINAL_BUILD
@@ -565,8 +531,8 @@ static void ParseAnimationEvtBlock(const int glaIndex, const unsigned short mode
 		}
 
 		token = COM_Parse(text_p);
-		const auto eventType = static_cast<animEventType_t>(GetIDForString(animEventTypeTable, token));
-		if (eventType == AEV_NONE || eventType == static_cast<animEventType_t>(-1))
+		const auto event_type = static_cast<animEventType_t>(GetIDForString(animEventTypeTable, token));
+		if (event_type == AEV_NONE || event_type == static_cast<animEventType_t>(-1))
 		{
 			//Unrecognized ANIM EVENT TYPE
 			Com_Printf(S_COLOR_RED"ERROR: Unknown EVENT %s in animEvent file %s\n", token, aeb_filename);
@@ -581,43 +547,43 @@ static void ParseAnimationEvtBlock(const int glaIndex, const unsigned short mode
 			break;
 		}
 
-		int keyFrame = atoi(token);
+		int key_frame = atoi(token);
 
-		if (bIsFrameSkipped &&
-			animations[animNum].numFrames > 2)
+		if (b_is_frame_skipped &&
+			animations[anim_num].numFrames > 2)
 			// important, else frame 1 gets divided down and becomes frame 0. Carcass & Assimilate also work this way
 		{
-			keyFrame /= 2;
+			key_frame /= 2;
 			// if we ever use any other value in frame-skipping we'll have to figure out some way of reading it, since it's not stored anywhere
 		}
-		if (keyFrame >= animations[animNum].numFrames)
+		if (key_frame >= animations[anim_num].numFrames)
 		{
 			//Com_Printf(S_COLOR_YELLOW"WARNING: Event out of range on %s in %s\n", GetStringForID(animTable,animNum), aeb_filename );
 			//assert(keyFrame < animations[animNum].numFrames);
-			keyFrame = animations[animNum].numFrames - 1; //clamp it
+			key_frame = animations[anim_num].numFrames - 1; //clamp it
 		}
 
 		//set our start frame
-		keyFrame += animations[animNum].firstFrame;
+		key_frame += animations[anim_num].firstFrame;
 
 		//see if this frame already has an event of this type on it, if so, overwrite it
-		int curAnimEvent = CG_CheckAnimFrameForEventType(animEvents, keyFrame, eventType, modelIndex);
+		int curAnimEvent = CG_CheckAnimFrameForEventType(anim_events, key_frame, event_type, model_index);
 		if (curAnimEvent == -1)
 		{
 			//this anim frame doesn't already have an event of this type on it
-			curAnimEvent = lastAnimEvent;
+			curAnimEvent = last_anim_event;
 		}
 
 		//now that we know which event index we're going to plug the data into, start doing it
-		animEvents[curAnimEvent].eventType = eventType;
-		assert(keyFrame >= 0 && keyFrame < 65535); //
-		animEvents[curAnimEvent].keyFrame = keyFrame;
-		animEvents[curAnimEvent].glaIndex = glaIndex;
-		animEvents[curAnimEvent].modelOnly = modelIndex;
-		int tempVal;
+		anim_events[curAnimEvent].eventType = event_type;
+		assert(key_frame >= 0 && key_frame < 65535); //
+		anim_events[curAnimEvent].keyFrame = key_frame;
+		anim_events[curAnimEvent].glaIndex = gla_index;
+		anim_events[curAnimEvent].modelOnly = model_index;
+		int temp_val;
 
 		//now read out the proper data based on the type
-		switch (animEvents[curAnimEvent].eventType)
+		switch (anim_events[curAnimEvent].eventType)
 		{
 		case AEV_SOUNDCHAN: //# animID AEV_SOUNDCHAN framenum CHANNEL soundpath randomlow randomhi chancetoplay
 			token = COM_Parse(text_p);
@@ -627,31 +593,31 @@ static void ParseAnimationEvtBlock(const int glaIndex, const unsigned short mode
 			}
 			if (Q_stricmp(token, "CHAN_VOICE_ATTEN") == 0)
 			{
-				animEvents[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_VOICE_ATTEN;
+				anim_events[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_VOICE_ATTEN;
 			}
 			else if (Q_stricmp(token, "CHAN_VOICE_GLOBAL") == 0)
 			{
-				animEvents[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_VOICE_GLOBAL;
+				anim_events[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_VOICE_GLOBAL;
 			}
 			else if (Q_stricmp(token, "CHAN_ANNOUNCER") == 0)
 			{
-				animEvents[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_ANNOUNCER;
+				anim_events[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_ANNOUNCER;
 			}
 			else if (Q_stricmp(token, "CHAN_BODY") == 0)
 			{
-				animEvents[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_BODY;
+				anim_events[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_BODY;
 			}
 			else if (Q_stricmp(token, "CHAN_WEAPON") == 0)
 			{
-				animEvents[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_WEAPON;
+				anim_events[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_WEAPON;
 			}
 			else if (Q_stricmp(token, "CHAN_VOICE") == 0)
 			{
-				animEvents[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_VOICE;
+				anim_events[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_VOICE;
 			}
 			else
 			{
-				animEvents[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_AUTO;
+				anim_events[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_AUTO;
 			}
 			//fall through to normal sound
 		case AEV_SOUND: //# animID AEV_SOUND framenum soundpath randomlow randomhi chancetoplay
@@ -661,7 +627,7 @@ static void ParseAnimationEvtBlock(const int glaIndex, const unsigned short mode
 			{
 				break;
 			}
-			strcpy(stringData, token);
+			strcpy(string_data, token);
 			//get lowest value
 			token = COM_Parse(text_p);
 			if (!token)
@@ -669,7 +635,7 @@ static void ParseAnimationEvtBlock(const int glaIndex, const unsigned short mode
 				//WARNING!  BAD TABLE!
 				break;
 			}
-			lowestVal = atoi(token);
+			lowest_val = atoi(token);
 			//get highest value
 			token = COM_Parse(text_p);
 			if (!token)
@@ -677,23 +643,23 @@ static void ParseAnimationEvtBlock(const int glaIndex, const unsigned short mode
 				//WARNING!  BAD TABLE!
 				break;
 			}
-			highestVal = atoi(token);
+			highest_val = atoi(token);
 			//Now precache all the sounds
 			//NOTE: If we can be assured sequential handles, we can store the first sound index and count
 			//		unfortunately, if these sounds were previously registered, we cannot be guaranteed sequential indices.  Thus an array
-			if (lowestVal && highestVal)
+			if (lowest_val && highest_val)
 			{
-				assert(highestVal - lowestVal < MAX_RANDOM_ANIM_SOUNDS);
-				for (n = lowestVal, num = AED_SOUNDINDEX_START; n <= highestVal && num <= AED_SOUNDINDEX_END; n++, num
+				assert(highest_val - lowest_val < MAX_RANDOM_ANIM_SOUNDS);
+				for (n = lowest_val, num = AED_SOUNDINDEX_START; n <= highest_val && num <= AED_SOUNDINDEX_END; n++, num
 					++)
 				{
-					animEvents[curAnimEvent].eventData[num] = G_SoundIndex(va(stringData, n)); //cgi_S_RegisterSound
+					anim_events[curAnimEvent].eventData[num] = G_SoundIndex(va(string_data, n)); //cgi_S_RegisterSound
 				}
-				animEvents[curAnimEvent].eventData[AED_SOUND_NUMRANDOMSNDS] = num - 1;
+				anim_events[curAnimEvent].eventData[AED_SOUND_NUMRANDOMSNDS] = num - 1;
 			}
 			else
 			{
-				animEvents[curAnimEvent].eventData[AED_SOUNDINDEX_START] = G_SoundIndex(stringData);
+				anim_events[curAnimEvent].eventData[AED_SOUNDINDEX_START] = G_SoundIndex(string_data);
 				//cgi_S_RegisterSound
 #if 0 //#ifndef FINAL_BUILD (only meaningfull if using S_RegisterSound
 				if (!animEvents[curAnimEvent].eventData[AED_SOUNDINDEX_START])
@@ -701,7 +667,7 @@ static void ParseAnimationEvtBlock(const int glaIndex, const unsigned short mode
 					Com_Printf(S_COLOR_RED "ParseAnimationSndBlock: sound %s does not exist (%s)!\n", stringData, *aeb_filename);
 				}
 #endif
-				animEvents[curAnimEvent].eventData[AED_SOUND_NUMRANDOMSNDS] = 0;
+				anim_events[curAnimEvent].eventData[AED_SOUND_NUMRANDOMSNDS] = 0;
 			}
 			//get probability
 			token = COM_Parse(text_p);
@@ -710,70 +676,70 @@ static void ParseAnimationEvtBlock(const int glaIndex, const unsigned short mode
 				//WARNING!  BAD TABLE!
 				break;
 			}
-			animEvents[curAnimEvent].eventData[AED_SOUND_PROBABILITY] = atoi(token);
+			anim_events[curAnimEvent].eventData[AED_SOUND_PROBABILITY] = atoi(token);
 
 			//last part - cheat and check and see if it's a special overridable saber sound we know of...
-			if (!Q_stricmpn("sound/weapons/saber/saberhup", stringData, 28))
+			if (!Q_stricmpn("sound/weapons/saber/saberhup", string_data, 28))
 			{
 				//a saber swing
-				animEvents[curAnimEvent].eventType = AEV_SABER_SWING;
-				animEvents[curAnimEvent].eventData[AED_SABER_SWING_saber_num] = 0;
+				anim_events[curAnimEvent].eventType = AEV_SABER_SWING;
+				anim_events[curAnimEvent].eventData[AED_SABER_SWING_saber_num] = 0;
 				//since we don't know which one they meant if we're hacking this, always use first saber
-				animEvents[curAnimEvent].eventData[AED_SABER_SWING_PROBABILITY] = animEvents[curAnimEvent].eventData[
+				anim_events[curAnimEvent].eventData[AED_SABER_SWING_PROBABILITY] = anim_events[curAnimEvent].eventData[
 					AED_SOUND_PROBABILITY];
-				if (lowestVal < 4)
+				if (lowest_val < 4)
 				{
 					//fast swing
-					animEvents[curAnimEvent].eventData[AED_SABER_SWING_TYPE] = SWING_FAST;
+					anim_events[curAnimEvent].eventData[AED_SABER_SWING_TYPE] = SWING_FAST;
 				}
-				else if (lowestVal < 7)
+				else if (lowest_val < 7)
 				{
 					//medium swing
-					animEvents[curAnimEvent].eventData[AED_SABER_SWING_TYPE] = SWING_MEDIUM;
+					anim_events[curAnimEvent].eventData[AED_SABER_SWING_TYPE] = SWING_MEDIUM;
 				}
 				else
 				{
 					//strong swing
-					animEvents[curAnimEvent].eventData[AED_SABER_SWING_TYPE] = SWING_STRONG;
+					anim_events[curAnimEvent].eventData[AED_SABER_SWING_TYPE] = SWING_STRONG;
 				}
 			}
-			else if (!Q_stricmpn("sound/weapons/saber/saberspin", stringData, 29))
+			else if (!Q_stricmpn("sound/weapons/saber/saberspin", string_data, 29))
 			{
 				//a saber spin
-				animEvents[curAnimEvent].eventType = AEV_SABER_SPIN;
-				animEvents[curAnimEvent].eventData[AED_SABER_SPIN_saber_num] = 0;
+				anim_events[curAnimEvent].eventType = AEV_SABER_SPIN;
+				anim_events[curAnimEvent].eventData[AED_SABER_SPIN_saber_num] = 0;
 				//since we don't know which one they meant if we're hacking this, always use first saber
-				animEvents[curAnimEvent].eventData[AED_SABER_SPIN_PROBABILITY] = animEvents[curAnimEvent].eventData[
+				anim_events[curAnimEvent].eventData[AED_SABER_SPIN_PROBABILITY] = anim_events[curAnimEvent].eventData[
 					AED_SOUND_PROBABILITY];
-				if (stringData[29] == 'o')
+				if (string_data[29] == 'o')
 				{
 					//saberspinoff
-					animEvents[curAnimEvent].eventData[AED_SABER_SPIN_TYPE] = 0;
+					anim_events[curAnimEvent].eventData[AED_SABER_SPIN_TYPE] = 0;
 				}
-				else if (stringData[29] == '1')
+				else if (string_data[29] == '1')
 				{
 					//saberspin1
-					animEvents[curAnimEvent].eventData[AED_SABER_SPIN_TYPE] = 2;
+					anim_events[curAnimEvent].eventData[AED_SABER_SPIN_TYPE] = 2;
 				}
-				else if (stringData[29] == '2')
+				else if (string_data[29] == '2')
 				{
 					//saberspin2
-					animEvents[curAnimEvent].eventData[AED_SABER_SPIN_TYPE] = 3;
+					anim_events[curAnimEvent].eventData[AED_SABER_SPIN_TYPE] = 3;
 				}
-				else if (stringData[29] == '3')
+				else if (string_data[29] == '3')
 				{
 					//saberspin3
-					animEvents[curAnimEvent].eventData[AED_SABER_SPIN_TYPE] = 4;
+					anim_events[curAnimEvent].eventData[AED_SABER_SPIN_TYPE] = 4;
 				}
-				else if (stringData[29] == '%')
+				else if (string_data[29] == '%')
 				{
 					//saberspin%d
-					animEvents[curAnimEvent].eventData[AED_SABER_SPIN_TYPE] = 5;
+					anim_events[curAnimEvent].eventData[AED_SABER_SPIN_TYPE] = 5;
 				}
 				else
 				{
 					//just plain saberspin
-					animEvents[curAnimEvent].eventData[AED_SABER_SPIN_TYPE] = 1;
+					anim_events[curAnimEvent].eventData[AED_SABER_SPIN_TYPE] = 1;
 				}
 			}
 			break;
@@ -784,7 +750,7 @@ static void ParseAnimationEvtBlock(const int glaIndex, const unsigned short mode
 			{
 				break;
 			}
-			animEvents[curAnimEvent].eventData[AED_FOOTSTEP_TYPE] = GetIDForString(footstepTypeTable, token);
+			anim_events[curAnimEvent].eventData[AED_FOOTSTEP_TYPE] = GetIDForString(footstepTypeTable, token);
 			//get probability
 			token = COM_Parse(text_p);
 			if (!token)
@@ -792,7 +758,7 @@ static void ParseAnimationEvtBlock(const int glaIndex, const unsigned short mode
 				//WARNING!  BAD TABLE!
 				break;
 			}
-			animEvents[curAnimEvent].eventData[AED_FOOTSTEP_PROBABILITY] = atoi(token);
+			anim_events[curAnimEvent].eventData[AED_FOOTSTEP_PROBABILITY] = atoi(token);
 			break;
 		case AEV_EFFECT: //# animID AEV_EFFECT framenum effectpath boltName
 			//get effect index
@@ -805,17 +771,17 @@ static void ParseAnimationEvtBlock(const int glaIndex, const unsigned short mode
 			{
 				//special hard-coded effects
 				//let cgame know it's not a real effect
-				animEvents[curAnimEvent].eventData[AED_EFFECTINDEX] = -1;
+				anim_events[curAnimEvent].eventData[AED_EFFECTINDEX] = -1;
 				//get the name of it
 				token = COM_Parse(text_p);
-				animEvents[curAnimEvent].stringData = G_NewString(token);
+				anim_events[curAnimEvent].stringData = G_NewString(token);
 			}
 			else
 			{
 				//regular effect
-				tempVal = G_EffectIndex(token);
-				assert(tempVal > -32767 && tempVal < 32767);
-				animEvents[curAnimEvent].eventData[AED_EFFECTINDEX] = tempVal;
+				temp_val = G_EffectIndex(token);
+				assert(temp_val > -32767 && temp_val < 32767);
+				anim_events[curAnimEvent].eventData[AED_EFFECTINDEX] = temp_val;
 				//get bolt index
 				token = COM_Parse(text_p);
 				if (!token)
@@ -825,7 +791,7 @@ static void ParseAnimationEvtBlock(const int glaIndex, const unsigned short mode
 				if (Q_stricmp("none", token) != 0 && Q_stricmp("NULL", token) != 0)
 				{
 					//actually are specifying a bolt to use
-					animEvents[curAnimEvent].stringData = G_NewString(token);
+					anim_events[curAnimEvent].stringData = G_NewString(token);
 				}
 			}
 			//NOTE: this string will later be used to add a bolt and store the index, as below:
@@ -837,7 +803,7 @@ static void ParseAnimationEvtBlock(const int glaIndex, const unsigned short mode
 				//WARNING!  BAD TABLE!
 				break;
 			}
-			animEvents[curAnimEvent].eventData[AED_EFFECT_PROBABILITY] = atoi(token);
+			anim_events[curAnimEvent].eventData[AED_EFFECT_PROBABILITY] = atoi(token);
 			break;
 		case AEV_FIRE: //# animID AEV_FIRE framenum altfire chancetofire
 			//get altfire
@@ -847,7 +813,7 @@ static void ParseAnimationEvtBlock(const int glaIndex, const unsigned short mode
 				//WARNING!  BAD TABLE!
 				break;
 			}
-			animEvents[curAnimEvent].eventData[AED_FIRE_ALT] = atoi(token);
+			anim_events[curAnimEvent].eventData[AED_FIRE_ALT] = atoi(token);
 			//get probability
 			token = COM_Parse(text_p);
 			if (!token)
@@ -855,7 +821,7 @@ static void ParseAnimationEvtBlock(const int glaIndex, const unsigned short mode
 				//WARNING!  BAD TABLE!
 				break;
 			}
-			animEvents[curAnimEvent].eventData[AED_FIRE_PROBABILITY] = atoi(token);
+			anim_events[curAnimEvent].eventData[AED_FIRE_PROBABILITY] = atoi(token);
 			break;
 		case AEV_MOVE: //# animID AEV_MOVE framenum forwardpush rightpush uppush
 			//get forward push
@@ -865,9 +831,9 @@ static void ParseAnimationEvtBlock(const int glaIndex, const unsigned short mode
 				//WARNING!  BAD TABLE!
 				break;
 			}
-			tempVal = atoi(token);
-			assert(tempVal > -32767 && tempVal < 32767);
-			animEvents[curAnimEvent].eventData[AED_MOVE_FWD] = tempVal;
+			temp_val = atoi(token);
+			assert(temp_val > -32767 && temp_val < 32767);
+			anim_events[curAnimEvent].eventData[AED_MOVE_FWD] = temp_val;
 			//get right push
 			token = COM_Parse(text_p);
 			if (!token)
@@ -875,9 +841,9 @@ static void ParseAnimationEvtBlock(const int glaIndex, const unsigned short mode
 				//WARNING!  BAD TABLE!
 				break;
 			}
-			tempVal = atoi(token);
-			assert(tempVal > -32767 && tempVal < 32767);
-			animEvents[curAnimEvent].eventData[AED_MOVE_RT] = tempVal;
+			temp_val = atoi(token);
+			assert(temp_val > -32767 && temp_val < 32767);
+			anim_events[curAnimEvent].eventData[AED_MOVE_RT] = temp_val;
 			//get upwards push
 			token = COM_Parse(text_p);
 			if (!token)
@@ -885,18 +851,18 @@ static void ParseAnimationEvtBlock(const int glaIndex, const unsigned short mode
 				//WARNING!  BAD TABLE!
 				break;
 			}
-			tempVal = atoi(token);
-			assert(tempVal > -32767 && tempVal < 32767);
-			animEvents[curAnimEvent].eventData[AED_MOVE_UP] = tempVal;
+			temp_val = atoi(token);
+			assert(temp_val > -32767 && temp_val < 32767);
+			anim_events[curAnimEvent].eventData[AED_MOVE_UP] = temp_val;
 			break;
 		default: //unknown?
 			SkipRestOfLine(text_p);
 			continue;
 		}
 
-		if (curAnimEvent == lastAnimEvent)
+		if (curAnimEvent == last_anim_event)
 		{
-			lastAnimEvent++;
+			last_anim_event++;
 		}
 	}
 }
@@ -912,28 +878,27 @@ This file's presence is not required
 
 ======================
 */
-static
-void G_ParseAnimationEvtFile(const int glaIndex, const char* eventsDirectory, const int fileIndex, const int iRealGLAIndex = -1,
-                             const bool modelSpecific = false)
+static void G_ParseAnimationEvtFile(const int gla_index, const char* events_directory, const int file_index, const int i_real_gla_index = -1,
+                             const bool model_specific = false)
 {
 	char text[80000];
 	const char* text_p = text;
 	fileHandle_t f;
-	char eventsPath[MAX_QPATH];
-	int modelIndex = 0;
+	char events_path[MAX_QPATH];
+	int model_index = 0;
 
-	assert(fileIndex >= 0 && fileIndex < MAX_ANIM_FILES);
+	assert(file_index >= 0 && file_index < MAX_ANIM_FILES);
 
-	const char* psAnimFileInternalName = iRealGLAIndex == -1
+	const char* ps_anim_file_internal_name = i_real_gla_index == -1
 		? nullptr
-		: gi.G2API_GetAnimFileInternalNameIndex(iRealGLAIndex);
-	const bool bIsFrameSkipped = psAnimFileInternalName && strlen(psAnimFileInternalName) > 5 && !Q_stricmp(
-		&psAnimFileInternalName[strlen(psAnimFileInternalName) - 5], "_skip");
+		: gi.G2API_GetAnimFileInternalNameIndex(i_real_gla_index);
+	const bool b_is_frame_skipped = ps_anim_file_internal_name && strlen(ps_anim_file_internal_name) > 5 && !Q_stricmp(
+		&ps_anim_file_internal_name[strlen(ps_anim_file_internal_name) - 5], "_skip");
 
 	// Open The File, Make Sure It Is Safe
 	//-------------------------------------
-	Com_sprintf(eventsPath, MAX_QPATH, "models/players/%s/animevents.cfg", eventsDirectory);
-	const int len = cgi_FS_FOpenFile(eventsPath, &f, FS_READ);
+	Com_sprintf(events_path, MAX_QPATH, "models/players/%s/animevents.cfg", events_directory);
+	const int len = cgi_FS_FOpenFile(events_path, &f, FS_READ);
 	if (len <= 0)
 	{
 		//no file
@@ -942,7 +907,7 @@ void G_ParseAnimationEvtFile(const int glaIndex, const char* eventsDirectory, co
 	if (len >= static_cast<int>(sizeof text - 1))
 	{
 		cgi_FS_FCloseFile(f);
-		CG_Printf("File %s too long\n", eventsPath);
+		CG_Printf("File %s too long\n", events_path);
 		return;
 	}
 
@@ -954,15 +919,15 @@ void G_ParseAnimationEvtFile(const int glaIndex, const char* eventsDirectory, co
 
 	// Get The Pointers To The Anim Event Arrays
 	//-------------------------------------------
-	animFileSet_t& afileset = level.knownAnimFileSets[fileIndex];
-	animevent_t* legsAnimEvents = afileset.legsAnimEvents;
-	animevent_t* torsoAnimEvents = afileset.torsoAnimEvents;
+	animFileSet_t& afileset = level.knownAnimFileSets[file_index];
+	animevent_t* legs_anim_events = afileset.legsAnimEvents;
+	animevent_t* torso_anim_events = afileset.torsoAnimEvents;
 	const animation_t* animations = afileset.animations;
 
-	if (modelSpecific)
+	if (model_specific)
 	{
-		const hstring modelName(eventsDirectory);
-		modelIndex = modelName.handle();
+		const hstring model_name(events_directory);
+		model_index = model_name.handle();
 	}
 
 	// read information for batches of sounds (UPPER or LOWER)
@@ -979,14 +944,14 @@ void G_ParseAnimationEvtFile(const int glaIndex, const char* eventsDirectory, co
 		//these stomp anything set in the include file (if it's an event of the same type on the same frame)!
 		if (!Q_stricmp(token, "UPPEREVENTS")) // A batch of upper events
 		{
-			ParseAnimationEvtBlock(glaIndex, modelIndex, eventsPath, torsoAnimEvents, animations,
-				afileset.torsoAnimEventCount, &text_p, bIsFrameSkipped);
+			ParseAnimationEvtBlock(gla_index, model_index, events_path, torso_anim_events, animations,
+				afileset.torsoAnimEventCount, &text_p, b_is_frame_skipped);
 		}
 
 		else if (!Q_stricmp(token, "LOWEREVENTS")) // A batch of lower events
 		{
-			ParseAnimationEvtBlock(glaIndex, modelIndex, eventsPath, legsAnimEvents, animations,
-				afileset.legsAnimEventCount, &text_p, bIsFrameSkipped);
+			ParseAnimationEvtBlock(gla_index, model_index, events_path, legs_anim_events, animations,
+				afileset.legsAnimEventCount, &text_p, b_is_frame_skipped);
 		}
 	}
 	COM_EndParseSession();
@@ -1001,22 +966,22 @@ models/players/visor/animation.cfg, etc
 
 ======================
 */
-qboolean G_ParseAnimationFile(const int glaIndex, const char* skeletonName, const int fileIndex)
+qboolean G_ParseAnimationFile(const int gla_index, const char* skeleton_name, const int file_index)
 {
 	char text[160000];
 	const char* text_p = text;
-	animation_t* animations = level.knownAnimFileSets[fileIndex].animations;
-	char skeletonPath[MAX_QPATH];
+	animation_t* animations = level.knownAnimFileSets[file_index].animations;
+	char skeleton_path[MAX_QPATH];
 
 	// Read In The File To The Text Buffer, Make Sure Everything Is Safe To Continue
 	//-------------------------------------------------------------------------------
-	Com_sprintf(skeletonPath, MAX_QPATH, "models/players/%s/%s.cfg", skeletonName, skeletonName);
-	int len = gi.RE_GetAnimationCFG(skeletonPath, text, sizeof text);
+	Com_sprintf(skeleton_path, MAX_QPATH, "models/players/%s/%s.cfg", skeleton_name, skeleton_name);
+	int len = gi.RE_GetAnimationCFG(skeleton_path, text, sizeof text);
 
 	if (len <= 0)
 	{
-		Com_sprintf(skeletonPath, MAX_QPATH, "models/players/%s/animation.cfg", skeletonName);
-		len = gi.RE_GetAnimationCFG(skeletonPath, text, sizeof text);
+		Com_sprintf(skeleton_path, MAX_QPATH, "models/players/%s/animation.cfg", skeleton_name);
+		len = gi.RE_GetAnimationCFG(skeleton_path, text, sizeof text);
 		if (len <= 0)
 		{
 			return qfalse;
@@ -1024,7 +989,7 @@ qboolean G_ParseAnimationFile(const int glaIndex, const char* skeletonName, cons
 	}
 	if (len >= static_cast<int>(sizeof text - 1))
 	{
-		G_Error("G_ParseAnimationFile: File %s too long\n (%d > %d)", skeletonName, len, sizeof text - 1);
+		G_Error("G_ParseAnimationFile: File %s too long\n (%d > %d)", skeleton_name, len, sizeof text - 1);
 	}
 
 	// Read In Each Token
@@ -1043,8 +1008,8 @@ qboolean G_ParseAnimationFile(const int glaIndex, const char* skeletonName, cons
 
 		// Get The Anim Number Converted From The First Token
 		//----------------------------------------------------
-		const int animNum = GetIDForString(animTable, token);
-		if (animNum == -1)
+		const int anim_num = GetIDForString(animTable, token);
+		if (anim_num == -1)
 		{
 #ifndef FINAL_BUILD
 			if (strcmp(token, "ROOT"))
@@ -1062,7 +1027,7 @@ qboolean G_ParseAnimationFile(const int glaIndex, const char* skeletonName, cons
 
 		// GLAIndex
 		//----------
-		animations[animNum].glaIndex = glaIndex; // Passed Into This Func
+		animations[anim_num].glaIndex = gla_index; // Passed Into This Func
 
 		// First Frame
 		//-------------
@@ -1072,7 +1037,7 @@ qboolean G_ParseAnimationFile(const int glaIndex, const char* skeletonName, cons
 			break;
 		}
 		assert(atoi(token) >= 0 && atoi(token) < 65536);
-		animations[animNum].firstFrame = atoi(token);
+		animations[anim_num].firstFrame = atoi(token);
 
 		// Num Frames
 		//------------
@@ -1082,7 +1047,7 @@ qboolean G_ParseAnimationFile(const int glaIndex, const char* skeletonName, cons
 			break;
 		}
 		assert(atoi(token) >= 0 && atoi(token) < 65536);
-		animations[animNum].numFrames = atoi(token);
+		animations[anim_num].numFrames = atoi(token);
 
 		// Loop Frames
 		//-------------
@@ -1092,7 +1057,7 @@ qboolean G_ParseAnimationFile(const int glaIndex, const char* skeletonName, cons
 			break;
 		}
 		assert(atoi(token) >= -1 && atoi(token) < 128);
-		animations[animNum].loopFrames = atoi(token);
+		animations[anim_num].loopFrames = atoi(token);
 
 		// FPS
 		//-----
@@ -1114,15 +1079,15 @@ qboolean G_ParseAnimationFile(const int glaIndex, const char* skeletonName, cons
 		{//backwards
 			lerp = floor(1000.0f / fps);
 			assert(lerp > -32767 && lerp < 32767);
-			animations[animNum].frameLerp = lerp;
-			assert(animations[animNum].frameLerp <= 1);
+			animations[anim_num].frameLerp = lerp;
+			assert(animations[anim_num].frameLerp <= 1);
 		}
 		else
 		{
 			lerp = ceil(1000.0f / fps);
 			assert(lerp > -32767 && lerp < 32767);
-			animations[animNum].frameLerp = lerp;
-			assert(animations[animNum].frameLerp >= 1);
+			animations[anim_num].frameLerp = lerp;
+			assert(animations[anim_num].frameLerp >= 1);
 		}
 	}
 	COM_EndParseSession();
@@ -1144,15 +1109,15 @@ qboolean G_ParseAnimationFile(const int glaIndex, const char* skeletonName, cons
 // the animation event file.
 //
 ////////////////////////////////////////////////////////////////////////
-int G_ParseAnimFileSet(const char* skeletonName, const char* modelName = nullptr)
+int G_ParseAnimFileSet(const char* skeleton_name, const char* model_name = nullptr)
 {
-	int fileIndex;
+	int file_index;
 
 	// Try To Find An Existing Skeleton File For This Animation Set
 	//--------------------------------------------------------------
-	for (fileIndex = 0; fileIndex < level.numKnownAnimFileSets; fileIndex++)
+	for (file_index = 0; file_index < level.numKnownAnimFileSets; file_index++)
 	{
-		if (Q_stricmp(level.knownAnimFileSets[fileIndex].filename, skeletonName) == 0)
+		if (Q_stricmp(level.knownAnimFileSets[file_index].filename, skeleton_name) == 0)
 		{
 			break;
 		}
@@ -1160,7 +1125,7 @@ int G_ParseAnimFileSet(const char* skeletonName, const char* modelName = nullptr
 
 	// Ok, We Don't Already Have One, So Time To Create A New One And Initialize It
 	//------------------------------------------------------------------------------
-	if (fileIndex >= level.numKnownAnimFileSets)
+	if (file_index >= level.numKnownAnimFileSets)
 	{
 		if (level.numKnownAnimFileSets == MAX_ANIM_FILES)
 		{
@@ -1169,16 +1134,16 @@ int G_ParseAnimFileSet(const char* skeletonName, const char* modelName = nullptr
 
 		// Allocate A new File Set, And Get Some Shortcut Pointers
 		//---------------------------------------------------------
-		fileIndex = level.numKnownAnimFileSets;
+		file_index = level.numKnownAnimFileSets;
 		level.numKnownAnimFileSets++;
-		strcpy(level.knownAnimFileSets[fileIndex].filename, skeletonName);
+		strcpy(level.knownAnimFileSets[file_index].filename, skeleton_name);
 
-		level.knownAnimFileSets[fileIndex].torsoAnimEventCount = 0;
-		level.knownAnimFileSets[fileIndex].legsAnimEventCount = 0;
+		level.knownAnimFileSets[file_index].torsoAnimEventCount = 0;
+		level.knownAnimFileSets[file_index].legsAnimEventCount = 0;
 
-		animation_t* animations = level.knownAnimFileSets[fileIndex].animations;
-		animevent_t* legsAnimEvents = level.knownAnimFileSets[fileIndex].legsAnimEvents;
-		animevent_t* torsoAnimEvents = level.knownAnimFileSets[fileIndex].torsoAnimEvents;
+		animation_t* animations = level.knownAnimFileSets[file_index].animations;
+		animevent_t* legs_anim_events = level.knownAnimFileSets[file_index].legsAnimEvents;
+		animevent_t* torso_anim_events = level.knownAnimFileSets[file_index].torsoAnimEvents;
 
 		int i;
 
@@ -1198,59 +1163,59 @@ int G_ParseAnimFileSet(const char* skeletonName, const char* modelName = nullptr
 		//----------------------------------
 		for (i = 0; i < MAX_ANIM_EVENTS; i++)
 		{
-			torsoAnimEvents[i].eventType = AEV_NONE; //Type of event
-			legsAnimEvents[i].eventType = AEV_NONE;
-			torsoAnimEvents[i].keyFrame = static_cast<unsigned short>(-1); //65535 should never be a valid frame... :)
-			legsAnimEvents[i].keyFrame = static_cast<unsigned short>(-1); //Frame to play event on
-			torsoAnimEvents[i].stringData = nullptr;
+			torso_anim_events[i].eventType = AEV_NONE; //Type of event
+			legs_anim_events[i].eventType = AEV_NONE;
+			torso_anim_events[i].keyFrame = static_cast<unsigned short>(-1); //65535 should never be a valid frame... :)
+			legs_anim_events[i].keyFrame = static_cast<unsigned short>(-1); //Frame to play event on
+			torso_anim_events[i].stringData = nullptr;
 			//we allow storage of one string, temporarily (in case we have to look up an index later,
-			legsAnimEvents[i].stringData = nullptr;
+			legs_anim_events[i].stringData = nullptr;
 			//then make sure to set stringData to NULL so we only do the look-up once)
-			torsoAnimEvents[i].modelOnly = 0;
-			legsAnimEvents[i].modelOnly = 0;
-			torsoAnimEvents[i].glaIndex = 0;
-			legsAnimEvents[i].glaIndex = 0;
+			torso_anim_events[i].modelOnly = 0;
+			legs_anim_events[i].modelOnly = 0;
+			torso_anim_events[i].glaIndex = 0;
+			legs_anim_events[i].glaIndex = 0;
 
 			for (int j = 0; j < AED_ARRAY_SIZE; j++)
 				//Unique IDs, can be soundIndex of sound file to play OR effect index or footstep type, etc.
 			{
-				torsoAnimEvents[i].eventData[j] = -1;
-				legsAnimEvents[i].eventData[j] = -1;
+				torso_anim_events[i].eventData[j] = -1;
+				legs_anim_events[i].eventData[j] = -1;
 			}
 		}
 
 		// Get The Cinematic GLA Name
 		//----------------------------
-		if (G_StandardHumanoid(skeletonName))
+		if (G_StandardHumanoid(skeleton_name))
 		{
-			const char* mapName = strrchr(level.mapname, '/');
-			if (mapName)
+			const char* map_name = strrchr(level.mapname, '/');
+			if (map_name)
 			{
-				mapName++;
+				map_name++;
 			}
 			else
 			{
-				mapName = level.mapname;
+				map_name = level.mapname;
 			}
-			char skeletonMapName[MAX_QPATH];
-			Com_sprintf(skeletonMapName, MAX_QPATH, "_humanoid_%s", mapName);
-			const int normalGLAIndex = gi.
-				G2API_PrecacheGhoul2Model(va("models/players/%s/_humanoid.gla", skeletonName));
+			char skeleton_map_name[MAX_QPATH];
+			Com_sprintf(skeleton_map_name, MAX_QPATH, "_humanoid_%s", map_name);
+			const int normal_gla_index = gi.
+				G2API_PrecacheGhoul2Model(va("models/players/%s/_humanoid.gla", skeleton_name));
 			//double check this always comes first!
 
 			// Make Sure To Precache The GLAs (both regular and cinematic), And Remember Their Indicies
 			//------------------------------------------------------------------------------------------
 
-			G_ParseAnimationFile(0, skeletonName, fileIndex);
-			G_ParseAnimationEvtFile(0, skeletonName, fileIndex, normalGLAIndex, false/*flag for model specific*/);
+			G_ParseAnimationFile(0, skeleton_name, file_index);
+			G_ParseAnimationEvtFile(0, skeleton_name, file_index, normal_gla_index, false/*flag for model specific*/);
 
-			const int cineGLAIndex = gi.G2API_PrecacheGhoul2Model(
-				va("models/players/%s/%s.gla", skeletonMapName, skeletonMapName));
-			if (cineGLAIndex)
+			const int cine_gla_index = gi.G2API_PrecacheGhoul2Model(
+				va("models/players/%s/%s.gla", skeleton_map_name, skeleton_map_name));
+			if (cine_gla_index)
 			{
-				assert(cineGLAIndex == normalGLAIndex + 1);
-				G_ParseAnimationFile(1, skeletonMapName, fileIndex);
-				G_ParseAnimationEvtFile(1, skeletonMapName, fileIndex, cineGLAIndex, false/*flag for model specific*/);
+				assert(cine_gla_index == normal_gla_index + 1);
+				G_ParseAnimationFile(1, skeleton_map_name, file_index);
+				G_ParseAnimationEvtFile(1, skeleton_map_name, file_index, cine_gla_index, false/*flag for model specific*/);
 			}
 		}
 		else
@@ -1260,113 +1225,113 @@ int G_ParseAnimFileSet(const char* skeletonName, const char* modelName = nullptr
 			// Make Sure To Precache The GLAs (both regular and cinematic), And Remember Their Indicies
 			//------------------------------------------------------------------------------------------
 
-			G_ParseAnimationFile(0, skeletonName, fileIndex);
-			G_ParseAnimationEvtFile(0, skeletonName, fileIndex);
+			G_ParseAnimationFile(0, skeleton_name, file_index);
+			G_ParseAnimationEvtFile(0, skeleton_name, file_index);
 		}
 	}
 
 	// Tack Any Additional Per Model Events
 	//--------------------------------------
-	if (modelName)
+	if (model_name)
 	{
 		// Quick Search To See If We've Already Loaded This Model
 		//--------------------------------------------------------
-		int curModel = 0;
-		const hstring curModelName(modelName);
-		while (curModel < MAX_MODELS_PER_LEVEL && !modelsAlreadyDone[curModel].empty())
+		int cur_model = 0;
+		const hstring cur_model_name(model_name);
+		while (cur_model < MAX_MODELS_PER_LEVEL && !modelsAlreadyDone[cur_model].empty())
 		{
-			if (modelsAlreadyDone[curModel] == curModelName)
+			if (modelsAlreadyDone[cur_model] == cur_model_name)
 			{
-				return fileIndex;
+				return file_index;
 			}
-			curModel++;
+			cur_model++;
 		}
 
-		if (curModel == MAX_MODELS_PER_LEVEL)
+		if (cur_model == MAX_MODELS_PER_LEVEL)
 		{
 			Com_Error(ERR_DROP, "About to overflow modelsAlreadyDone, increase MAX_MODELS_PER_LEVEL\n");
 		}
 
 		// Nope, Ok, Record The Model As Found And Parse It's Event File
 		//---------------------------------------------------------------
-		modelsAlreadyDone[curModel] = curModelName;
+		modelsAlreadyDone[cur_model] = cur_model_name;
 
 		// Only Do The Event File If The Model Is Not The Same As The Skeleton
 		//---------------------------------------------------------------------
-		if (Q_stricmp(skeletonName, modelName) != 0)
+		if (Q_stricmp(skeleton_name, model_name) != 0)
 		{
-			const int iGLAIndexToCheckForSkip = Q_stricmp(skeletonName, "_humanoid")
+			const int i_gla_index_to_check_for_skip = Q_stricmp(skeleton_name, "_humanoid")
 				? -1
 				: gi.G2API_PrecacheGhoul2Model(
 					"models/players/_humanoid/_humanoid.gla"); // ;-)
 
-			G_ParseAnimationEvtFile(0, modelName, fileIndex, iGLAIndexToCheckForSkip, true);
+			G_ParseAnimationEvtFile(0, model_name, file_index, i_gla_index_to_check_for_skip, true);
 		}
 	}
 
-	return fileIndex;
+	return file_index;
 }
 
 extern cvar_t* g_char_model;
 
-void G_LoadAnimFileSet(gentity_t* ent, const char* pModelName)
+void G_LoadAnimFileSet(gentity_t* ent, const char* p_model_name)
 {
 	//load its animation config
-	char* modelName;
-	char* strippedName;
+	char* model_name;
+	char* stripped_name;
 
 	if (ent->playerModel == -1)
 	{
 		return;
 	}
-	if (Q_stricmp("player", pModelName) == 0)
+	if (Q_stricmp("player", p_model_name) == 0)
 	{
 		//model is actually stored on console
-		modelName = g_char_model->string;
+		model_name = g_char_model->string;
 	}
 	else
 	{
-		modelName = const_cast<char*>(pModelName);
+		model_name = const_cast<char*>(p_model_name);
 	}
 	//get the location of the animation.cfg
-	const char* GLAName = gi.G2API_GetGLAName(&ent->ghoul2[ent->playerModel]);
+	const char* gla_name = gi.G2API_GetGLAName(&ent->ghoul2[ent->playerModel]);
 	//now load and parse the animation.cfg, animevents.cfg and set the animFileIndex
-	if (!GLAName)
+	if (!gla_name)
 	{
-		Com_Printf(S_COLOR_RED"Failed find animation file name models/players/%s\n", modelName);
-		strippedName = "_humanoid"; //take a guess, maybe it's right?
+		Com_Printf(S_COLOR_RED"Failed find animation file name models/players/%s\n", model_name);
+		stripped_name = "_humanoid"; //take a guess, maybe it's right?
 	}
 	else
 	{
-		char animName[MAX_QPATH];
-		Q_strncpyz(animName, GLAName, sizeof animName);
-		char* slash = strrchr(animName, '/');
+		char anim_name[MAX_QPATH];
+		Q_strncpyz(anim_name, gla_name, sizeof anim_name);
+		char* slash = strrchr(anim_name, '/');
 		if (slash)
 		{
 			*slash = 0;
 		}
-		strippedName = COM_SkipPath(animName);
+		stripped_name = COM_SkipPath(anim_name);
 	}
 
 	//now load and parse the animation.cfg, animevents.cfg and set the animFileIndex
-	ent->client->clientInfo.animFileIndex = G_ParseAnimFileSet(strippedName, modelName);
+	ent->client->clientInfo.animFileIndex = G_ParseAnimFileSet(stripped_name, model_name);
 
 	if (ent->client->clientInfo.animFileIndex < 0)
 	{
-		Com_Printf(S_COLOR_RED"Failed to load animation file set models/players/%s/animation.cfg\n", modelName);
+		Com_Printf(S_COLOR_RED"Failed to load animation file set models/players/%s/animation.cfg\n", model_name);
 #ifndef FINAL_BUILD
 		Com_Error(ERR_FATAL, "Failed to load animation file set models/players/%s/animation.cfg\n", modelName);
 #endif
 	}
 }
 
-void NPC_PrecacheAnimationCFG(const char* NPC_type)
+void NPC_PrecacheAnimationCFG(const char* npc_type)
 {
 	const char* token;
 	const char* value;
 	const char* p;
 
-	if (!Q_stricmp("random", NPC_type))
+	if (!Q_stricmp("random", npc_type))
 	{
 		//sorry, can't precache a random just yet
 		return;
@@ -1385,7 +1350,7 @@ void NPC_PrecacheAnimationCFG(const char* NPC_type)
 			return;
 		}
 
-		if (!Q_stricmp(token, NPC_type))
+		if (!Q_stricmp(token, npc_type))
 		{
 			break;
 		}
@@ -1412,7 +1377,7 @@ void NPC_PrecacheAnimationCFG(const char* NPC_type)
 		token = COM_ParseExt(&p, qtrue);
 		if (!token[0])
 		{
-			gi.Printf(S_COLOR_RED"ERROR: unexpected EOF while parsing '%s'\n", NPC_type);
+			gi.Printf(S_COLOR_RED"ERROR: unexpected EOF while parsing '%s'\n", npc_type);
 			COM_EndParseSession();
 			return;
 		}
@@ -1447,22 +1412,22 @@ void NPC_PrecacheAnimationCFG(const char* NPC_type)
 			const int handle = gi.G2API_PrecacheGhoul2Model(va("models/players/%s/model.glm", value));
 			if (handle > 0) //FIXME: isn't 0 a valid handle?
 			{
-				const char* GLAName = gi.G2API_GetAnimFileNameIndex(handle);
-				if (GLAName)
+				const char* gla_name = gi.G2API_GetAnimFileNameIndex(handle);
+				if (gla_name)
 				{
-					char animName[MAX_QPATH];
-					Q_strncpyz(animName, GLAName, sizeof animName);
-					char* slash = strrchr(animName, '/');
+					char anim_name[MAX_QPATH];
+					Q_strncpyz(anim_name, gla_name, sizeof anim_name);
+					char* slash = strrchr(anim_name, '/');
 					if (slash)
 					{
 						*slash = 0;
 					}
-					const char* strippedName = COM_SkipPath(animName);
+					const char* stripped_name = COM_SkipPath(anim_name);
 
 					//must copy data out of this pointer into a different part of memory because the funcs we're about to call will call COM_ParseExt
 					Q_strncpyz(filename, value, sizeof filename);
 
-					G_ParseAnimFileSet(strippedName, filename);
+					G_ParseAnimFileSet(stripped_name, filename);
 					COM_EndParseSession();
 					return;
 				}
@@ -1472,35 +1437,35 @@ void NPC_PrecacheAnimationCFG(const char* NPC_type)
 	COM_EndParseSession();
 }
 
-extern int NPC_WeaponsForTeam(team_t team, int spawnflags, const char* NPC_type);
+extern int NPC_WeaponsForTeam(team_t team, int spawnflags, const char* npc_type);
 
-void NPC_PrecacheWeapons(const team_t playerTeam, const int spawnflags, const char* NPCtype)
+void NPC_PrecacheWeapons(const team_t player_team, const int spawnflags, const char* np_ctype)
 {
-	const int weapons = NPC_WeaponsForTeam(playerTeam, spawnflags, NPCtype);
-	for (int curWeap = WP_SABER; curWeap < WP_NUM_WEAPONS; curWeap++)
+	const int weapons = NPC_WeaponsForTeam(player_team, spawnflags, np_ctype);
+	for (int cur_weap = WP_SABER; cur_weap < WP_NUM_WEAPONS; cur_weap++)
 	{
-		if (weapons & 1 << curWeap)
+		if (weapons & 1 << cur_weap)
 		{
-			const gitem_t* item = FindItemForWeapon(static_cast<weapon_t>(curWeap)); //precache the weapon
+			const gitem_t* item = FindItemForWeapon(static_cast<weapon_t>(cur_weap)); //precache the weapon
 			CG_RegisterItemSounds(item - bg_itemlist);
 			CG_RegisterItemVisuals(item - bg_itemlist);
 			//precache the in-hand/in-world ghoul2 weapon model
 
-			char weaponModel[64];
+			char weapon_model[64];
 
-			strcpy(weaponModel, weaponData[curWeap].weaponMdl);
-			if (char* spot = strstr(weaponModel, ".md3"))
+			strcpy(weapon_model, weaponData[cur_weap].weaponMdl);
+			if (char* spot = strstr(weapon_model, ".md3"))
 			{
 				*spot = 0;
-				spot = strstr(weaponModel, "_w");
+				spot = strstr(weapon_model, "_w");
 				//i'm using the in view weapon array instead of scanning the item list, so put the _w back on
 				if (!spot)
 				{
-					strcat(weaponModel, "_w");
+					strcat(weapon_model, "_w");
 				}
-				strcat(weaponModel, ".glm"); //and change to ghoul2
+				strcat(weapon_model, ".glm"); //and change to ghoul2
 			}
-			gi.G2API_PrecacheGhoul2Model(weaponModel); // correct way is item->world_model
+			gi.G2API_PrecacheGhoul2Model(weapon_model); // correct way is item->world_model
 		}
 	}
 }
@@ -1513,7 +1478,7 @@ This runs all the class specific precache functions
 */
 
 extern void npc_shadow_trooper_precache();
-extern void NPC_Gonk_Precache(void);
+extern void NPC_Gonk_Precache();
 extern void NPC_Mouse_Precache(void);
 extern void NPC_Seeker_Precache();
 extern void NPC_Remote_Precache();
@@ -1542,7 +1507,7 @@ extern void NPC_Saboteur_Precache();
 extern void npc_cultist_destroyer_precache();
 extern void NPC_GalakMech_Precache();
 
-void NPC_Jawa_Precache(void)
+void NPC_Jawa_Precache()
 {
 	for (int i = 1; i < 7; i++)
 	{
@@ -1695,15 +1660,15 @@ void CG_NPC_Precache(gentity_t* spawner)
 {
 	clientInfo_t ci = {};
 	renderInfo_t ri = {};
-	team_t playerTeam = TEAM_FREE;
+	team_t player_team = TEAM_FREE;
 	faction_t friendlyfaction = FACTION_SOLO;
 	const char* token;
 	const char* value;
 	const char* p;
 	char* patch;
-	qboolean md3Model = qfalse;
-	char playerModel[MAX_QPATH] = { 0 };
-	char customSkin[MAX_QPATH];
+	qboolean md3_model = qfalse;
+	char player_model[MAX_QPATH] = { 0 };
+	char custom_skin[MAX_QPATH];
 
 	if (!Q_stricmp("random", spawner->NPC_type))
 	{
@@ -1711,7 +1676,7 @@ void CG_NPC_Precache(gentity_t* spawner)
 		return;
 	}
 
-	strcpy(customSkin, "default");
+	strcpy(custom_skin, "default");
 
 	p = NPCParms;
 	COM_BeginParseSession();
@@ -1780,7 +1745,7 @@ void CG_NPC_Precache(gentity_t* spawner)
 			{
 				Q_strncpyz(ri.headModelName, value, sizeof ri.headModelName);
 			}
-			md3Model = qtrue;
+			md3_model = qtrue;
 			continue;
 		}
 
@@ -1799,7 +1764,7 @@ void CG_NPC_Precache(gentity_t* spawner)
 			{
 				Q_strncpyz(ri.torsoModelName, value, sizeof ri.torsoModelName);
 			}
-			md3Model = qtrue;
+			md3_model = qtrue;
 			continue;
 		}
 
@@ -1811,7 +1776,7 @@ void CG_NPC_Precache(gentity_t* spawner)
 				continue;
 			}
 			Q_strncpyz(ri.legsModelName, value, sizeof ri.legsModelName);
-			md3Model = qtrue;
+			md3_model = qtrue;
 			continue;
 		}
 
@@ -1822,8 +1787,8 @@ void CG_NPC_Precache(gentity_t* spawner)
 			{
 				continue;
 			}
-			Q_strncpyz(playerModel, value, sizeof playerModel);
-			md3Model = qfalse;
+			Q_strncpyz(player_model, value, sizeof player_model);
+			md3_model = qfalse;
 			continue;
 		}
 
@@ -1834,7 +1799,7 @@ void CG_NPC_Precache(gentity_t* spawner)
 			{
 				continue;
 			}
-			Q_strncpyz(customSkin, value, sizeof customSkin);
+			Q_strncpyz(custom_skin, value, sizeof custom_skin);
 			continue;
 		}
 
@@ -1845,7 +1810,7 @@ void CG_NPC_Precache(gentity_t* spawner)
 			{
 				continue;
 			}
-			playerTeam = static_cast<team_t>(GetIDForString(TeamTable, token));
+			player_team = static_cast<team_t>(GetIDForString(TeamTable, token));
 			continue;
 		}
 
@@ -1969,9 +1934,9 @@ void CG_NPC_Precache(gentity_t* spawner)
 			{
 				continue;
 			}
-			char* saberName = G_NewString(value);
+			char* saber_name = G_NewString(value);
 			saberInfo_t saber;
-			WP_SaberParseParms(saberName, &saber);
+			WP_SaberParseParms(saber_name, &saber);
 			if (saber.model && saber.model[0])
 			{
 				G_ModelIndex(saber.model);
@@ -2007,9 +1972,9 @@ void CG_NPC_Precache(gentity_t* spawner)
 			{
 				continue;
 			}
-			char* saberName = G_NewString(value);
+			char* saber_name = G_NewString(value);
 			saberInfo_t saber;
-			WP_SaberParseParms(saberName, &saber);
+			WP_SaberParseParms(saber_name, &saber);
 			if (saber.model && saber.model[0])
 			{
 				G_ModelIndex(saber.model);
@@ -2024,32 +1989,32 @@ void CG_NPC_Precache(gentity_t* spawner)
 
 	COM_EndParseSession();
 
-	if (md3Model)
+	if (md3_model)
 	{
 		CG_RegisterClientRenderInfo(&ci, &ri);
 	}
 	else
 	{
-		char skinName[MAX_QPATH];
+		char skin_name[MAX_QPATH];
 		//precache ghoul2 model
-		gi.G2API_PrecacheGhoul2Model(va("models/players/%s/model.glm", playerModel));
+		gi.G2API_PrecacheGhoul2Model(va("models/players/%s/model.glm", player_model));
 		//precache skin
-		if (strchr(customSkin, '|'))
+		if (strchr(custom_skin, '|'))
 		{
 			//three part skin
-			Com_sprintf(skinName, sizeof skinName, "models/players/%s/|%s", playerModel, customSkin);
+			Com_sprintf(skin_name, sizeof skin_name, "models/players/%s/|%s", player_model, custom_skin);
 		}
 		else
 		{
 			//standard skin
-			Com_sprintf(skinName, sizeof skinName, "models/players/%s/model_%s.skin", playerModel, customSkin);
+			Com_sprintf(skin_name, sizeof skin_name, "models/players/%s/model_%s.skin", player_model, custom_skin);
 		}
 		// lets see if it's out there
-		gi.RE_RegisterSkin(skinName);
+		gi.RE_RegisterSkin(skin_name);
 	}
 
 	//precache this NPC's possible weapons
-	NPC_PrecacheWeapons(playerTeam, spawner->spawnflags, spawner->NPC_type);
+	NPC_PrecacheWeapons(player_team, spawner->spawnflags, spawner->NPC_type);
 
 	// Anything else special about them
 	NPC_PrecacheByClassName(spawner->NPC_type);
@@ -2060,51 +2025,51 @@ void CG_NPC_Precache(gentity_t* spawner)
 	//FIXME: Look for a "sounds" directory and precache death, pain, alert sounds
 }
 
-void NPC_BuildRandom(gentity_t* NPC)
+void NPC_BuildRandom()
 {
 }
 
 extern void G_MatchPlayerWeapon(gentity_t* ent);
 extern void G_InitPlayerFromCvars(gentity_t* ent);
-extern void g_set_g2_player_model(gentity_t* ent, const char* modelName, const char* customSkin, const char* surfOff,
-	const char* surfOn);
+extern void g_set_g2_player_model(gentity_t* ent, const char* model_name, const char* custom_skin, const char* surf_off,
+	const char* surf_on);
 
-qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
+qboolean NPC_ParseParms(const char* npc_name, gentity_t* npc)
 {
 	const char* value;
 	const char* p;
 	int n;
 	float f;
-	char playerModel[MAX_QPATH];
-	char customSkin[MAX_QPATH];
-	clientInfo_t* ci = &NPC->client->clientInfo;
-	renderInfo_t* ri = &NPC->client->renderInfo;
+	char player_model[MAX_QPATH];
+	char custom_skin[MAX_QPATH];
+	clientInfo_t* ci = &npc->client->clientInfo;
+	renderInfo_t* ri = &npc->client->renderInfo;
 	gNPCstats_t* stats;
-	qboolean md3Model = qtrue;
-	char surfOff[1024] = { 0 };
-	char surfOn[1024] = { 0 };
-	qboolean parsingPlayer = qfalse;
+	qboolean md3_model = qtrue;
+	char surf_off[1024] = { 0 };
+	char surf_on[1024] = { 0 };
+	qboolean parsing_player = qfalse;
 
-	qboolean forcedRGBSaberColours[MAX_SABERS][MAX_BLADES] = {
+	qboolean forced_rgb_saber_colours[MAX_SABERS][MAX_BLADES] = {
 		{qfalse, qfalse, qfalse, qfalse, qfalse, qfalse, qfalse, qfalse},
 		{qfalse, qfalse, qfalse, qfalse, qfalse, qfalse, qfalse, qfalse}
 	};
 
-	strcpy(customSkin, "default");
-	if (!NPCName || !NPCName[0])
+	strcpy(custom_skin, "default");
+	if (!npc_name || !npc_name[0])
 	{
-		NPCName = "Player";
+		npc_name = "Player";
 	}
 
-	if (!NPC->s.number && NPC->client != nullptr)
+	if (!npc->s.number && npc->client != nullptr)
 	{
 		//player, only want certain data
-		parsingPlayer = qtrue;
+		parsing_player = qtrue;
 	}
 
-	if (NPC->NPC)
+	if (npc->NPC)
 	{
-		stats = &NPC->NPC->stats;
+		stats = &npc->NPC->stats;
 
 		if (g_SerenityJediEngineMode->integer)
 		{
@@ -2112,7 +2077,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 			stats->sex = SEX_MALE;
 			stats->aggression = 5;
 			stats->aim = 5;
-			if (NPC->client->NPC_class == CLASS_STORMTROOPER || com_outcast->integer == 1)
+			if (npc->client->NPC_class == CLASS_STORMTROOPER || com_outcast->integer == 1)
 			{
 				stats->earshot = 1024;
 			}
@@ -2126,7 +2091,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 			stats->move = 5;
 			stats->reactions = 5;
 			stats->vfov = 120;
-			if (NPC->client->NPC_class == CLASS_STORMTROOPER || com_outcast->integer == 1)
+			if (npc->client->NPC_class == CLASS_STORMTROOPER || com_outcast->integer == 1)
 			{
 				stats->vigilance = 0.2f;
 			}
@@ -2134,7 +2099,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 			{
 				stats->vigilance = 1.0f;
 			}
-			if (NPC->client->NPC_class == CLASS_STORMTROOPER || com_outcast->integer == 1)
+			if (npc->client->NPC_class == CLASS_STORMTROOPER || com_outcast->integer == 1)
 			{
 				stats->visrange = 1024;
 			}
@@ -2185,9 +2150,9 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 		stats = nullptr;
 	}
 
-	Q_strncpyz(ci->name, NPCName, sizeof ci->name);
+	Q_strncpyz(ci->name, npc_name, sizeof ci->name);
 
-	NPC->playerModel = -1;
+	npc->playerModel = -1;
 
 	//Set defaults
 	ri->headModelName[0] = 0;
@@ -2203,34 +2168,34 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 	ri->torsoPitchRangeUp = 30;
 	ri->torsoPitchRangeDown = 50;
 
-	VectorCopy(playerMins, NPC->mins);
-	VectorCopy(playerMaxs, NPC->maxs);
-	NPC->client->crouchheight = CROUCH_MAXS_2;
-	NPC->client->standheight = DEFAULT_MAXS_2;
+	VectorCopy(playerMins, npc->mins);
+	VectorCopy(playerMaxs, npc->maxs);
+	npc->client->crouchheight = CROUCH_MAXS_2;
+	npc->client->standheight = DEFAULT_MAXS_2;
 
-	if (NPC->client->NPC_class == CLASS_BOC)
+	if (npc->client->NPC_class == CLASS_BOC)
 	{
-		NPC->client->moveType = MT_RUNJUMP;
+		npc->client->moveType = MT_RUNJUMP;
 	}
 	else
 	{
-		NPC->client->moveType = MT_RUNJUMP;
+		npc->client->moveType = MT_RUNJUMP;
 	}
 
-	NPC->client->dismemberProbHead = 100;
-	NPC->client->dismemberProbArms = 100;
-	NPC->client->dismemberProbHands = 100;
-	NPC->client->dismemberProbWaist = 100;
-	NPC->client->dismemberProbLegs = 100;
+	npc->client->dismemberProbHead = 100;
+	npc->client->dismemberProbArms = 100;
+	npc->client->dismemberProbHands = 100;
+	npc->client->dismemberProbWaist = 100;
+	npc->client->dismemberProbLegs = 100;
 
-	NPC->s.modelScale[0] = NPC->s.modelScale[1] = NPC->s.modelScale[2] = 1.0f;
+	npc->s.modelScale[0] = npc->s.modelScale[1] = npc->s.modelScale[2] = 1.0f;
 
 	ri->customRGBA[0] = ri->customRGBA[1] = ri->customRGBA[2] = ri->customRGBA[3] = 0xFFu;
 
-	if (!Q_stricmp("random", NPCName))
+	if (!Q_stricmp("random", npc_name))
 	{
 		//Randomly assemble an NPC
-		NPC_BuildRandom(NPC);
+		NPC_BuildRandom();
 	}
 	else
 	{
@@ -2251,7 +2216,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				return qfalse;
 			}
 
-			if (!Q_stricmp(token, NPCName))
+			if (!Q_stricmp(token, npc_name))
 			{
 				break;
 			}
@@ -2277,7 +2242,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 			token = COM_ParseExt(&p, qtrue);
 			if (!token[0])
 			{
-				gi.Printf(S_COLOR_RED"ERROR: unexpected EOF while parsing '%s'\n", NPCName);
+				gi.Printf(S_COLOR_RED"ERROR: unexpected EOF while parsing '%s'\n", npc_name);
 				COM_EndParseSession();
 				return qfalse;
 			}
@@ -2723,8 +2688,8 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				{
 					continue;
 				}
-				Q_strncpyz(playerModel, value, sizeof playerModel);
-				md3Model = qfalse;
+				Q_strncpyz(player_model, value, sizeof player_model);
+				md3_model = qfalse;
 				continue;
 			}
 
@@ -2735,7 +2700,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				{
 					continue;
 				}
-				Q_strncpyz(customSkin, value, sizeof customSkin);
+				Q_strncpyz(custom_skin, value, sizeof custom_skin);
 				continue;
 			}
 
@@ -2746,14 +2711,14 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				{
 					continue;
 				}
-				if (surfOff[0])
+				if (surf_off[0])
 				{
-					Q_strcat(surfOff, sizeof surfOff, ",");
-					Q_strcat(surfOff, sizeof surfOff, value);
+					Q_strcat(surf_off, sizeof surf_off, ",");
+					Q_strcat(surf_off, sizeof surf_off, value);
 				}
 				else
 				{
-					Q_strncpyz(surfOff, value, sizeof surfOff);
+					Q_strncpyz(surf_off, value, sizeof surf_off);
 				}
 				continue;
 			}
@@ -2765,14 +2730,14 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				{
 					continue;
 				}
-				if (surfOn[0])
+				if (surf_on[0])
 				{
-					Q_strcat(surfOn, sizeof surfOn, ",");
-					Q_strcat(surfOn, sizeof surfOn, value);
+					Q_strcat(surf_on, sizeof surf_on, ",");
+					Q_strcat(surf_on, sizeof surf_on, value);
 				}
 				else
 				{
-					Q_strncpyz(surfOn, value, sizeof surfOn);
+					Q_strncpyz(surf_on, value, sizeof surf_on);
 				}
 				continue;
 			}
@@ -2787,7 +2752,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				}
 				if (n < 0)
 				{
-					gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, NPCName);
+					gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, npc_name);
 					continue;
 				}
 				ri->headYawRangeLeft = n;
@@ -2804,7 +2769,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				}
 				if (n < 0)
 				{
-					gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, NPCName);
+					gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, npc_name);
 					continue;
 				}
 				ri->headYawRangeRight = n;
@@ -2821,7 +2786,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				}
 				if (n < 0)
 				{
-					gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, NPCName);
+					gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, npc_name);
 					continue;
 				}
 				ri->headPitchRangeUp = n;
@@ -2838,7 +2803,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				}
 				if (n < 0)
 				{
-					gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, NPCName);
+					gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, npc_name);
 					continue;
 				}
 				ri->headPitchRangeDown = n;
@@ -2855,7 +2820,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				}
 				if (n < 0)
 				{
-					gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, NPCName);
+					gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, npc_name);
 					continue;
 				}
 				ri->torsoYawRangeLeft = n;
@@ -2872,7 +2837,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				}
 				if (n < 0)
 				{
-					gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, NPCName);
+					gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, npc_name);
 					continue;
 				}
 				ri->torsoYawRangeRight = n;
@@ -2889,7 +2854,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				}
 				if (n < 0)
 				{
-					gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, NPCName);
+					gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, npc_name);
 					continue;
 				}
 				ri->torsoPitchRangeUp = n;
@@ -2906,7 +2871,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				}
 				if (n < 0)
 				{
-					gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, NPCName);
+					gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, npc_name);
 					continue;
 				}
 				ri->torsoPitchRangeDown = n;
@@ -2923,12 +2888,12 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				}
 				if (n < 0)
 				{
-					gi.Printf("bad %s in NPC '%s'\n", token, NPCName);
+					gi.Printf("bad %s in NPC '%s'\n", token, npc_name);
 					continue;
 				}
 				if (n != 100)
 				{
-					NPC->s.modelScale[0] = NPC->s.modelScale[1] = NPC->s.modelScale[2] = n / 100.0f;
+					npc->s.modelScale[0] = npc->s.modelScale[1] = npc->s.modelScale[2] = n / 100.0f;
 				}
 				continue;
 			}
@@ -2943,12 +2908,12 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				}
 				if (n < 0)
 				{
-					gi.Printf("bad %s in NPC '%s'\n", token, NPCName);
+					gi.Printf("bad %s in NPC '%s'\n", token, npc_name);
 					continue;
 				}
 				if (n != 100)
 				{
-					NPC->s.modelScale[0] = n / 100.0f;
+					npc->s.modelScale[0] = n / 100.0f;
 				}
 				continue;
 			}
@@ -2963,12 +2928,12 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				}
 				if (n < 0)
 				{
-					gi.Printf("bad %s in NPC '%s'\n", token, NPCName);
+					gi.Printf("bad %s in NPC '%s'\n", token, npc_name);
 					continue;
 				}
 				if (n != 100)
 				{
-					NPC->s.modelScale[1] = n / 100.0f;
+					npc->s.modelScale[1] = n / 100.0f;
 				}
 				continue;
 			}
@@ -2983,18 +2948,18 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				}
 				if (n < 0)
 				{
-					gi.Printf("bad %s in NPC '%s'\n", token, NPCName);
+					gi.Printf("bad %s in NPC '%s'\n", token, npc_name);
 					continue;
 				}
 				if (n != 100)
 				{
-					NPC->s.modelScale[2] = n / 100.0f;
+					npc->s.modelScale[2] = n / 100.0f;
 				}
 				continue;
 			}
 
 			//===AI STATS=====================================================================
-			if (!parsingPlayer)
+			if (!parsing_player)
 			{
 				// aggression
 				if (!Q_stricmp(token, "aggression"))
@@ -3006,10 +2971,10 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					}
 					if (n < 1 || n > 5)
 					{
-						gi.Printf("bad %s in NPC '%s'\n", token, NPCName);
+						gi.Printf("bad %s in NPC '%s'\n", token, npc_name);
 						continue;
 					}
-					if (NPC->NPC)
+					if (npc->NPC)
 					{
 						stats->aggression = n;
 					}
@@ -3026,10 +2991,10 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					}
 					if (n < 1 || n > 5)
 					{
-						gi.Printf("bad %s in NPC '%s'\n", token, NPCName);
+						gi.Printf("bad %s in NPC '%s'\n", token, npc_name);
 						continue;
 					}
-					if (NPC->NPC)
+					if (npc->NPC)
 					{
 						stats->aim = n;
 					}
@@ -3046,10 +3011,10 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					}
 					if (f < 0.0f)
 					{
-						gi.Printf("bad %s in NPC '%s'\n", token, NPCName);
+						gi.Printf("bad %s in NPC '%s'\n", token, npc_name);
 						continue;
 					}
-					if (NPC->NPC)
+					if (npc->NPC)
 					{
 						stats->earshot = f;
 					}
@@ -3066,10 +3031,10 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					}
 					if (n < 1 || n > 5)
 					{
-						gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, NPCName);
+						gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, npc_name);
 						continue;
 					}
-					if (NPC->NPC)
+					if (npc->NPC)
 					{
 						stats->evasion = n;
 					}
@@ -3086,10 +3051,10 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					}
 					if (n < 1 || n > 180)
 					{
-						gi.Printf("bad %s in NPC '%s'\n", token, NPCName);
+						gi.Printf("bad %s in NPC '%s'\n", token, npc_name);
 						continue;
 					}
-					if (NPC->NPC)
+					if (npc->NPC)
 					{
 						stats->hfov = n; // / 2;	//FIXME: Why was this being done?!
 					}
@@ -3106,10 +3071,10 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					}
 					if (n < 1 || n > 5)
 					{
-						gi.Printf("bad %s in NPC '%s'\n", token, NPCName);
+						gi.Printf("bad %s in NPC '%s'\n", token, npc_name);
 						continue;
 					}
-					if (NPC->NPC)
+					if (npc->NPC)
 					{
 						stats->intelligence = n;
 					}
@@ -3126,10 +3091,10 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					}
 					if (n < 1 || n > 5)
 					{
-						gi.Printf("bad %s in NPC '%s'\n", token, NPCName);
+						gi.Printf("bad %s in NPC '%s'\n", token, npc_name);
 						continue;
 					}
-					if (NPC->NPC)
+					if (npc->NPC)
 					{
 						stats->move = n;
 					}
@@ -3146,10 +3111,10 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					}
 					if (n < 1 || n > 5)
 					{
-						gi.Printf("bad %s in NPC '%s'\n", token, NPCName);
+						gi.Printf("bad %s in NPC '%s'\n", token, npc_name);
 						continue;
 					}
-					if (NPC->NPC)
+					if (npc->NPC)
 					{
 						stats->reactions = n;
 					}
@@ -3166,10 +3131,10 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					}
 					if (f < 0.0f)
 					{
-						gi.Printf("bad %s in NPC '%s'\n", token, NPCName);
+						gi.Printf("bad %s in NPC '%s'\n", token, npc_name);
 						continue;
 					}
-					if (NPC->NPC)
+					if (npc->NPC)
 					{
 						stats->shootDistance = f;
 					}
@@ -3186,10 +3151,10 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					}
 					if (n < 2 || n > 360)
 					{
-						gi.Printf("bad %s in NPC '%s'\n", token, NPCName);
+						gi.Printf("bad %s in NPC '%s'\n", token, npc_name);
 						continue;
 					}
-					if (NPC->NPC)
+					if (npc->NPC)
 					{
 						stats->vfov = n / 2;
 					}
@@ -3206,10 +3171,10 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					}
 					if (f < 0.0f)
 					{
-						gi.Printf("bad %s in NPC '%s'\n", token, NPCName);
+						gi.Printf("bad %s in NPC '%s'\n", token, npc_name);
 						continue;
 					}
-					if (NPC->NPC)
+					if (npc->NPC)
 					{
 						stats->vigilance = f;
 					}
@@ -3226,10 +3191,10 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					}
 					if (f < 0.0f)
 					{
-						gi.Printf("bad %s in NPC '%s'\n", token, NPCName);
+						gi.Printf("bad %s in NPC '%s'\n", token, npc_name);
 						continue;
 					}
-					if (NPC->NPC)
+					if (npc->NPC)
 					{
 						stats->visrange = f;
 						if (g_entities[ENTITYNUM_WORLD].max_health && stats->visrange > g_entities[ENTITYNUM_WORLD].
@@ -3241,17 +3206,6 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					continue;
 				}
 
-				// race
-				//		if ( !Q_stricmp( token, "race" ) )
-				//		{
-				//			if ( COM_ParseString( &p, &value ) )
-				//			{
-				//				continue;
-				//			}
-				//			NPC->client->race = TranslateRaceName(value);
-				//			continue;
-				//		}
-
 				// rank
 				if (!Q_stricmp(token, "rank"))
 				{
@@ -3259,9 +3213,9 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					{
 						continue;
 					}
-					if (NPC->NPC)
+					if (npc->NPC)
 					{
-						NPC->NPC->rank = TranslateRankName(value);
+						npc->NPC->rank = TranslateRankName(value);
 					}
 					continue;
 				}
@@ -3277,16 +3231,16 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				}
 				if (n < 0)
 				{
-					gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, NPCName);
+					gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, npc_name);
 					continue;
 				}
-				if (NPC->NPC)
+				if (npc->NPC)
 				{
 					stats->health = n;
 				}
-				else if (parsingPlayer)
+				else if (parsing_player)
 				{
-					NPC->client->ps.stats[STAT_MAX_HEALTH] = NPC->client->pers.maxHealth = NPC->max_health = n;
+					npc->client->ps.stats[STAT_MAX_HEALTH] = npc->client->pers.maxHealth = npc->max_health = n;
 
 					if (g_playerArmourSync->integer)
 					{
@@ -3317,7 +3271,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				{
 					continue;
 				}
-				NPC->client->playerTeam = static_cast<team_t>(GetIDForString(TeamTable, value));
+				npc->client->playerTeam = static_cast<team_t>(GetIDForString(TeamTable, value));
 				continue;
 			}
 
@@ -3327,7 +3281,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				{
 					continue;
 				}
-				NPC->client->friendlyfaction = static_cast<faction_t>(GetIDForString(FactionTable, value));
+				npc->client->friendlyfaction = static_cast<faction_t>(GetIDForString(FactionTable, value));
 				continue;
 			}
 
@@ -3339,7 +3293,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				{
 					continue;
 				}
-				NPC->client->enemyTeam = static_cast<team_t>(GetIDForString(TeamTable, value));
+				npc->client->enemyTeam = static_cast<team_t>(GetIDForString(TeamTable, value));
 				continue;
 			}
 
@@ -3349,7 +3303,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				{
 					continue;
 				}
-				NPC->client->enemyfaction = static_cast<faction_t>(GetIDForString(FactionTable, value));
+				npc->client->enemyfaction = static_cast<faction_t>(GetIDForString(FactionTable, value));
 				continue;
 			}
 
@@ -3360,22 +3314,22 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				{
 					continue;
 				}
-				NPC->client->NPC_class = static_cast<class_t>(GetIDForString(ClassTable, value));
+				npc->client->NPC_class = static_cast<class_t>(GetIDForString(ClassTable, value));
 
 				// No md3's for vehicles.
-				if (NPC->client->NPC_class == CLASS_VEHICLE)
+				if (npc->client->NPC_class == CLASS_VEHICLE)
 				{
-					if (!NPC->m_pVehicle)
+					if (!npc->m_pVehicle)
 					{
 						//you didn't spawn this guy right!
 						Com_Printf(
 							S_COLOR_RED
 							"ERROR: Tried to spawn a vehicle NPC (%s) without using NPC_Vehicle or 'NPC spawn vehicle <vehiclename>'!!!  Bad, bad, bad!  Shame on you!\n",
-							NPCName);
+							npc_name);
 						COM_EndParseSession();
 						return qfalse;
 					}
-					md3Model = qfalse;
+					md3_model = qfalse;
 				}
 
 				continue;
@@ -3391,12 +3345,12 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				}
 				if (n < 0)
 				{
-					gi.Printf("bad %s in NPC '%s'\n", token, NPCName);
+					gi.Printf("bad %s in NPC '%s'\n", token, npc_name);
 					continue;
 				}
-				if (NPC->NPC)
+				if (npc->NPC)
 				{
-					NPC->client->dismemberProbHead = n;
+					npc->client->dismemberProbHead = n;
 				}
 				continue;
 			}
@@ -3411,12 +3365,12 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				}
 				if (n < 0)
 				{
-					gi.Printf("bad %s in NPC '%s'\n", token, NPCName);
+					gi.Printf("bad %s in NPC '%s'\n", token, npc_name);
 					continue;
 				}
-				if (NPC->NPC)
+				if (npc->NPC)
 				{
-					NPC->client->dismemberProbArms = n;
+					npc->client->dismemberProbArms = n;
 				}
 				continue;
 			}
@@ -3431,12 +3385,12 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				}
 				if (n < 0)
 				{
-					gi.Printf("bad %s in NPC '%s'\n", token, NPCName);
+					gi.Printf("bad %s in NPC '%s'\n", token, npc_name);
 					continue;
 				}
-				if (NPC->NPC)
+				if (npc->NPC)
 				{
-					NPC->client->dismemberProbHands = n;
+					npc->client->dismemberProbHands = n;
 				}
 				continue;
 			}
@@ -3451,12 +3405,12 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				}
 				if (n < 0)
 				{
-					gi.Printf("bad %s in NPC '%s'\n", token, NPCName);
+					gi.Printf("bad %s in NPC '%s'\n", token, npc_name);
 					continue;
 				}
-				if (NPC->NPC)
+				if (npc->NPC)
 				{
-					NPC->client->dismemberProbWaist = n;
+					npc->client->dismemberProbWaist = n;
 				}
 				continue;
 			}
@@ -3471,12 +3425,12 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				}
 				if (n < 0)
 				{
-					gi.Printf("bad %s in NPC '%s'\n", token, NPCName);
+					gi.Printf("bad %s in NPC '%s'\n", token, npc_name);
 					continue;
 				}
-				if (NPC->NPC)
+				if (npc->NPC)
 				{
-					NPC->client->dismemberProbLegs = n;
+					npc->client->dismemberProbLegs = n;
 				}
 				continue;
 			}
@@ -3490,8 +3444,8 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					continue;
 				}
 
-				NPC->mins[0] = NPC->mins[1] = -n;
-				NPC->maxs[0] = NPC->maxs[1] = n;
+				npc->mins[0] = npc->mins[1] = -n;
+				npc->maxs[0] = npc->maxs[1] = n;
 				continue;
 			}
 
@@ -3502,26 +3456,26 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					continue;
 				}
 
-				if (NPC->client->NPC_class == CLASS_VEHICLE
-					&& NPC->m_pVehicle
-					&& NPC->m_pVehicle->m_pVehicleInfo
-					&& NPC->m_pVehicle->m_pVehicleInfo->type == VH_FIGHTER)
+				if (npc->client->NPC_class == CLASS_VEHICLE
+					&& npc->m_pVehicle
+					&& npc->m_pVehicle->m_pVehicleInfo
+					&& npc->m_pVehicle->m_pVehicleInfo->type == VH_FIGHTER)
 				{
 					//a flying vehicle's origin must be centered in bbox
-					NPC->maxs[2] = NPC->client->standheight = n / 2.0f;
-					NPC->mins[2] = -NPC->maxs[2];
-					NPC->s.origin[2] += DEFAULT_MINS_2 - NPC->mins[2] + 0.125f;
-					VectorCopy(NPC->s.origin, NPC->client->ps.origin);
-					VectorCopy(NPC->s.origin, NPC->currentOrigin);
-					G_SetOrigin(NPC, NPC->s.origin);
-					gi.linkentity(NPC);
+					npc->maxs[2] = npc->client->standheight = n / 2.0f;
+					npc->mins[2] = -npc->maxs[2];
+					npc->s.origin[2] += DEFAULT_MINS_2 - npc->mins[2] + 0.125f;
+					VectorCopy(npc->s.origin, npc->client->ps.origin);
+					VectorCopy(npc->s.origin, npc->currentOrigin);
+					G_SetOrigin(npc, npc->s.origin);
+					gi.linkentity(npc);
 				}
 				else
 				{
-					NPC->mins[2] = DEFAULT_MINS_2; //Cannot change
-					NPC->maxs[2] = NPC->client->standheight = n + DEFAULT_MINS_2;
+					npc->mins[2] = DEFAULT_MINS_2; //Cannot change
+					npc->maxs[2] = npc->client->standheight = n + DEFAULT_MINS_2;
 				}
-				NPC->s.radius = n;
+				npc->s.radius = n;
 				continue;
 			}
 
@@ -3532,11 +3486,11 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					continue;
 				}
 
-				NPC->client->crouchheight = n + DEFAULT_MINS_2;
+				npc->client->crouchheight = n + DEFAULT_MINS_2;
 				continue;
 			}
 
-			if (!parsingPlayer)
+			if (!parsing_player)
 			{
 				if (!Q_stricmp(token, "movetype"))
 				{
@@ -3545,7 +3499,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 						continue;
 					}
 
-					NPC->client->moveType = static_cast<movetype_t>(MoveTypeNameToEnum(value));
+					npc->client->moveType = static_cast<movetype_t>(MoveTypeNameToEnum(value));
 					continue;
 				}
 
@@ -3559,10 +3513,10 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					}
 					if (n <= 0)
 					{
-						gi.Printf("bad %s in NPC '%s'\n", token, NPCName);
+						gi.Printf("bad %s in NPC '%s'\n", token, npc_name);
 						continue;
 					}
-					if (NPC->NPC)
+					if (npc->NPC)
 					{
 						stats->yawSpeed = static_cast<float>(n);
 					}
@@ -3579,10 +3533,10 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					}
 					if (n < 0)
 					{
-						gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, NPCName);
+						gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, npc_name);
 						continue;
 					}
-					if (NPC->NPC)
+					if (npc->NPC)
 					{
 						stats->walkSpeed = n;
 					}
@@ -3599,10 +3553,10 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					}
 					if (n < 0)
 					{
-						gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, NPCName);
+						gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, npc_name);
 						continue;
 					}
-					if (NPC->NPC)
+					if (npc->NPC)
 					{
 						stats->runSpeed = n;
 					}
@@ -3619,10 +3573,10 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					}
 					if (n < 0)
 					{
-						gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, NPCName);
+						gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, npc_name);
 						continue;
 					}
-					if (NPC->NPC)
+					if (npc->NPC)
 					{
 						stats->acceleration = n;
 					}
@@ -3685,12 +3639,12 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					}
 					if (n < BS_DEFAULT || n >= NUM_BSTATES)
 					{
-						gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, NPCName);
+						gi.Printf(S_COLOR_YELLOW"WARNING: bad %s in NPC '%s'\n", token, npc_name);
 						continue;
 					}
-					if (NPC->NPC)
+					if (npc->NPC)
 					{
-						NPC->NPC->defaultBehavior = static_cast<bState_t>(n);
+						npc->NPC->defaultBehavior = static_cast<bState_t>(n);
 					}
 					continue;
 				}
@@ -3703,7 +3657,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				{
 					continue;
 				}
-				if (!(NPC->svFlags & SVF_NO_BASIC_SOUNDS))
+				if (!(npc->svFlags & SVF_NO_BASIC_SOUNDS))
 				{
 					//FIXME: store this in some sound field or parse in the soundTable like the animTable...
 					Q_strncpyz(sound, value, sizeof sound);
@@ -3724,7 +3678,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				{
 					continue;
 				}
-				if (!(NPC->svFlags & SVF_NO_COMBAT_SOUNDS))
+				if (!(npc->svFlags & SVF_NO_COMBAT_SOUNDS))
 				{
 					//FIXME: store this in some sound field or parse in the soundTable like the animTable...
 					Q_strncpyz(sound, value, sizeof sound);
@@ -3745,7 +3699,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				{
 					continue;
 				}
-				if (!(NPC->svFlags & SVF_NO_EXTRA_SOUNDS))
+				if (!(npc->svFlags & SVF_NO_EXTRA_SOUNDS))
 				{
 					//FIXME: store this in some sound field or parse in the soundTable like the animTable...
 					Q_strncpyz(sound, value, sizeof sound);
@@ -3766,7 +3720,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				{
 					continue;
 				}
-				if (!(NPC->svFlags & SVF_NO_EXTRA_SOUNDS))
+				if (!(npc->svFlags & SVF_NO_EXTRA_SOUNDS))
 				{
 					//FIXME: store this in some sound field or parse in the soundTable like the animTable...
 					Q_strncpyz(sound, value, sizeof sound);
@@ -3792,18 +3746,18 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				int weap = GetIDForString(WPTable, value);
 				if (weap >= WP_NONE && weap < WP_NUM_WEAPONS)
 				{
-					NPC->client->ps.weapon = weap;
-					NPC->client->ps.weapons[weap] = 1;
+					npc->client->ps.weapon = weap;
+					npc->client->ps.weapons[weap] = 1;
 					if (weap > WP_NONE)
 					{
 						RegisterItem(FindItemForWeapon(static_cast<weapon_t>(weap))); //precache the weapon
-						NPC->client->ps.ammo[weaponData[weap].ammoIndex] = ammoData[weaponData[weap].ammoIndex].max;
+						npc->client->ps.ammo[weaponData[weap].ammoIndex] = ammoData[weaponData[weap].ammoIndex].max;
 					}
 				}
 				continue;
 			}
 
-			if (!parsingPlayer)
+			if (!parsing_player)
 			{
 				//altFire
 				if (!Q_stricmp(token, "altFire"))
@@ -3813,11 +3767,11 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 						SkipRestOfLine(&p);
 						continue;
 					}
-					if (NPC->NPC)
+					if (npc->NPC)
 					{
 						if (n != 0)
 						{
-							NPC->NPC->scriptFlags |= SCF_ALT_FIRE;
+							npc->NPC->scriptFlags |= SCF_ALT_FIRE;
 						}
 					}
 					continue;
@@ -3847,14 +3801,14 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				if (n)
 				{
 					//set
-					NPC->client->ps.forcePowersKnown |= 1 << fp;
+					npc->client->ps.forcePowersKnown |= 1 << fp;
 				}
 				else
 				{
 					//clear
-					NPC->client->ps.forcePowersKnown &= ~(1 << fp);
+					npc->client->ps.forcePowersKnown &= ~(1 << fp);
 				}
-				NPC->client->ps.forcePowerLevel[fp] = n;
+				npc->client->ps.forcePowerLevel[fp] = n;
 				continue;
 			}
 
@@ -3866,7 +3820,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					SkipRestOfLine(&p);
 					continue;
 				}
-				NPC->client->ps.forcePowerMax = n;
+				npc->client->ps.forcePowerMax = n;
 				continue;
 			}
 
@@ -3877,7 +3831,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					SkipRestOfLine(&p);
 					continue;
 				}
-				NPC->client->ps.BlockPointsMax = n;
+				npc->client->ps.BlockPointsMax = n;
 				continue;
 			}
 
@@ -3889,7 +3843,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					SkipRestOfLine(&p);
 					continue;
 				}
-				NPC->client->ps.forcePowerRegenRate = n;
+				npc->client->ps.forcePowerRegenRate = n;
 				continue;
 			}
 
@@ -3900,7 +3854,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					SkipRestOfLine(&p);
 					continue;
 				}
-				NPC->client->ps.BlockPointRegenRate = n;
+				npc->client->ps.BlockPointRegenRate = n;
 				continue;
 			}
 
@@ -3912,7 +3866,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					SkipRestOfLine(&p);
 					continue;
 				}
-				NPC->client->ps.forcePowerRegenAmount = n;
+				npc->client->ps.forcePowerRegenAmount = n;
 				continue;
 			}
 
@@ -3923,7 +3877,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					SkipRestOfLine(&p);
 					continue;
 				}
-				NPC->client->ps.BlockPointRegenAmount = n;
+				npc->client->ps.BlockPointRegenAmount = n;
 				continue;
 			}
 
@@ -3935,16 +3889,16 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				{
 					continue;
 				}
-				const char* saberName = G_NewString(value);
-				WP_SaberParseParms(saberName, &NPC->client->ps.saber[0]);
+				const char* saber_name = G_NewString(value);
+				WP_SaberParseParms(saber_name, &npc->client->ps.saber[0]);
 				//if it requires a specific style, make sure we know how to use it
-				if (NPC->client->ps.saber[0].stylesLearned)
+				if (npc->client->ps.saber[0].stylesLearned)
 				{
-					NPC->client->ps.saberStylesKnown |= NPC->client->ps.saber[0].stylesLearned;
+					npc->client->ps.saberStylesKnown |= npc->client->ps.saber[0].stylesLearned;
 				}
-				if (NPC->client->ps.saber[0].singleBladeStyle)
+				if (npc->client->ps.saber[0].singleBladeStyle)
 				{
-					NPC->client->ps.saberStylesKnown |= NPC->client->ps.saber[0].singleBladeStyle;
+					npc->client->ps.saberStylesKnown |= npc->client->ps.saber[0].singleBladeStyle;
 				}
 				continue;
 			}
@@ -3957,27 +3911,27 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					continue;
 				}
 
-				if (!(NPC->client->ps.saber[0].saberFlags & SFL_TWO_HANDED))
+				if (!(npc->client->ps.saber[0].saberFlags & SFL_TWO_HANDED))
 				{
 					//can't use a second saber if first one is a two-handed saber...?
-					const char* saberName = G_NewString(value);
-					WP_SaberParseParms(saberName, &NPC->client->ps.saber[1]);
-					if (NPC->client->ps.saber[1].stylesLearned)
+					const char* saber_name = G_NewString(value);
+					WP_SaberParseParms(saber_name, &npc->client->ps.saber[1]);
+					if (npc->client->ps.saber[1].stylesLearned)
 					{
-						NPC->client->ps.saberStylesKnown |= NPC->client->ps.saber[1].stylesLearned;
+						npc->client->ps.saberStylesKnown |= npc->client->ps.saber[1].stylesLearned;
 					}
-					if (NPC->client->ps.saber[1].singleBladeStyle)
+					if (npc->client->ps.saber[1].singleBladeStyle)
 					{
-						NPC->client->ps.saberStylesKnown |= NPC->client->ps.saber[1].singleBladeStyle;
+						npc->client->ps.saberStylesKnown |= npc->client->ps.saber[1].singleBladeStyle;
 					}
-					if (NPC->client->ps.saber[1].saberFlags & SFL_TWO_HANDED)
+					if (npc->client->ps.saber[1].saberFlags & SFL_TWO_HANDED)
 					{
 						//tsk tsk, can't use a twoHanded saber as second saber
-						WP_RemoveSaber(NPC, 1);
+						WP_RemoveSaber(npc, 1);
 					}
 					else
 					{
-						NPC->client->ps.dualSabers = qtrue;
+						npc->client->ps.dualSabers = qtrue;
 					}
 				}
 				continue;
@@ -3986,7 +3940,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 			// saberColor
 			if (!Q_stricmpn(token, "saberColor", 10))
 			{
-				if (!NPC->client)
+				if (!npc->client)
 				{
 					continue;
 				}
@@ -4000,9 +3954,9 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					const saber_colors_t color = TranslateSaberColor(value);
 					for (n = 0; n < MAX_BLADES; n++)
 					{
-						if (!forcedRGBSaberColours[0][n])
+						if (!forced_rgb_saber_colours[0][n])
 						{
-							NPC->client->ps.saber[0].blade[n].color = color;
+							npc->client->ps.saber[0].blade[n].color = color;
 						}
 					}
 				}
@@ -4011,28 +3965,28 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					const int index = atoi(&token[10]) - 1;
 					if (index > 7 || index < 1)
 					{
-						gi.Printf(S_COLOR_YELLOW"WARNING: bad saberColor '%s' in %s\n", token, NPCName);
+						gi.Printf(S_COLOR_YELLOW"WARNING: bad saberColor '%s' in %s\n", token, npc_name);
 						continue;
 					}
 					if (COM_ParseString(&p, &value))
 					{
 						continue;
 					}
-					if (!forcedRGBSaberColours[0][index])
+					if (!forced_rgb_saber_colours[0][index])
 					{
-						NPC->client->ps.saber[0].blade[index].color = TranslateSaberColor(value);
+						npc->client->ps.saber[0].blade[index].color = TranslateSaberColor(value);
 					}
 				}
 				else
 				{
-					gi.Printf(S_COLOR_YELLOW"WARNING: bad saberColor '%s' in %s\n", token, NPCName);
+					gi.Printf(S_COLOR_YELLOW"WARNING: bad saberColor '%s' in %s\n", token, npc_name);
 				}
 				continue;
 			}
 
 			if (!Q_stricmpn(token, "saber2Color", 11))
 			{
-				if (!NPC->client)
+				if (!npc->client)
 				{
 					continue;
 				}
@@ -4046,9 +4000,9 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					const saber_colors_t color = TranslateSaberColor(value);
 					for (n = 0; n < MAX_BLADES; n++)
 					{
-						if (!forcedRGBSaberColours[1][n])
+						if (!forced_rgb_saber_colours[1][n])
 						{
-							NPC->client->ps.saber[1].blade[n].color = color;
+							npc->client->ps.saber[1].blade[n].color = color;
 						}
 					}
 				}
@@ -4057,21 +4011,21 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					n = atoi(&token[11]) - 1;
 					if (n > 7 || n < 1)
 					{
-						gi.Printf(S_COLOR_YELLOW"WARNING: bad saber2Color '%s' in %s\n", token, NPCName);
+						gi.Printf(S_COLOR_YELLOW"WARNING: bad saber2Color '%s' in %s\n", token, npc_name);
 						continue;
 					}
 					if (COM_ParseString(&p, &value))
 					{
 						continue;
 					}
-					if (!forcedRGBSaberColours[1][n])
+					if (!forced_rgb_saber_colours[1][n])
 					{
-						NPC->client->ps.saber[1].blade[n].color = TranslateSaberColor(value);
+						npc->client->ps.saber[1].blade[n].color = TranslateSaberColor(value);
 					}
 				}
 				else
 				{
-					gi.Printf(S_COLOR_YELLOW"WARNING: bad saber2Color '%s' in %s\n", token, NPCName);
+					gi.Printf(S_COLOR_YELLOW"WARNING: bad saber2Color '%s' in %s\n", token, npc_name);
 				}
 				continue;
 			}
@@ -4079,7 +4033,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 			// saberColor
 			if (!Q_stricmpn(token, "saberColorRGB", 13))
 			{
-				if (!NPC->client)
+				if (!npc->client)
 				{
 					continue;
 				}
@@ -4091,10 +4045,10 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 						continue;
 					}
 					const saber_colors_t color = TranslateSaberColor(value);
-					forcedRGBSaberColours[0][0] = qtrue;
+					forced_rgb_saber_colours[0][0] = qtrue;
 					for (n = 0; n < MAX_BLADES; n++)
 					{
-						NPC->client->ps.saber[0].blade[n].color = color;
+						npc->client->ps.saber[0].blade[n].color = color;
 					}
 				}
 				else if (strlen(token) == 14)
@@ -4102,26 +4056,26 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					const int index = atoi(&token[13]) - 1;
 					if (index > 7 || index < 1)
 					{
-						gi.Printf(S_COLOR_YELLOW"WARNING: bad saberColorRGB '%s' in %s\n", token, NPCName);
+						gi.Printf(S_COLOR_YELLOW"WARNING: bad saberColorRGB '%s' in %s\n", token, npc_name);
 						continue;
 					}
 					if (COM_ParseString(&p, &value))
 					{
 						continue;
 					}
-					forcedRGBSaberColours[0][index] = qtrue;
-					NPC->client->ps.saber[0].blade[index].color = TranslateSaberColor(value);
+					forced_rgb_saber_colours[0][index] = qtrue;
+					npc->client->ps.saber[0].blade[index].color = TranslateSaberColor(value);
 				}
 				else
 				{
-					gi.Printf(S_COLOR_YELLOW"WARNING: bad saberColorRGB '%s' in %s\n", token, NPCName);
+					gi.Printf(S_COLOR_YELLOW"WARNING: bad saberColorRGB '%s' in %s\n", token, npc_name);
 				}
 				continue;
 			}
 
 			if (!Q_stricmpn(token, "saber2ColorRGB", 14))
 			{
-				if (!NPC->client)
+				if (!npc->client)
 				{
 					continue;
 				}
@@ -4132,11 +4086,11 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					{
 						continue;
 					}
-					forcedRGBSaberColours[1][0] = qtrue;
+					forced_rgb_saber_colours[1][0] = qtrue;
 					const saber_colors_t color = TranslateSaberColor(value);
 					for (n = 0; n < MAX_BLADES; n++)
 					{
-						NPC->client->ps.saber[1].blade[n].color = color;
+						npc->client->ps.saber[1].blade[n].color = color;
 					}
 				}
 				else if (strlen(token) == 15)
@@ -4144,19 +4098,19 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					n = atoi(&token[14]) - 1;
 					if (n > 7 || n < 1)
 					{
-						gi.Printf(S_COLOR_YELLOW"WARNING: bad saber2ColorRGB '%s' in %s\n", token, NPCName);
+						gi.Printf(S_COLOR_YELLOW"WARNING: bad saber2ColorRGB '%s' in %s\n", token, npc_name);
 						continue;
 					}
 					if (COM_ParseString(&p, &value))
 					{
 						continue;
 					}
-					forcedRGBSaberColours[1][n] = qtrue;
-					NPC->client->ps.saber[1].blade[n].color = TranslateSaberColor(value);
+					forced_rgb_saber_colours[1][n] = qtrue;
+					npc->client->ps.saber[1].blade[n].color = TranslateSaberColor(value);
 				}
 				else
 				{
-					gi.Printf(S_COLOR_YELLOW"WARNING: bad saber2ColorRGB '%s' in %s\n", token, NPCName);
+					gi.Printf(S_COLOR_YELLOW"WARNING: bad saber2ColorRGB '%s' in %s\n", token, npc_name);
 				}
 				continue;
 			}
@@ -4173,13 +4127,13 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					n = atoi(&token[11]) - 1;
 					if (n > 7 || n < 1)
 					{
-						gi.Printf(S_COLOR_YELLOW"WARNING: bad saberLength '%s' in %s\n", token, NPCName);
+						gi.Printf(S_COLOR_YELLOW"WARNING: bad saberLength '%s' in %s\n", token, npc_name);
 						continue;
 					}
 				}
 				else
 				{
-					gi.Printf(S_COLOR_YELLOW"WARNING: bad saberLength '%s' in %s\n", token, NPCName);
+					gi.Printf(S_COLOR_YELLOW"WARNING: bad saberLength '%s' in %s\n", token, npc_name);
 					continue;
 				}
 
@@ -4198,12 +4152,12 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				{
 					for (n = 0; n < MAX_BLADES; n++)
 					{
-						NPC->client->ps.saber[0].blade[n].lengthMax = f;
+						npc->client->ps.saber[0].blade[n].lengthMax = f;
 					}
 				}
 				else //just one
 				{
-					NPC->client->ps.saber[0].blade[n].lengthMax = f;
+					npc->client->ps.saber[0].blade[n].lengthMax = f;
 				}
 				continue;
 			}
@@ -4219,13 +4173,13 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					n = atoi(&token[12]) - 1;
 					if (n > 7 || n < 1)
 					{
-						gi.Printf(S_COLOR_YELLOW"WARNING: bad saber2Length '%s' in %s\n", token, NPCName);
+						gi.Printf(S_COLOR_YELLOW"WARNING: bad saber2Length '%s' in %s\n", token, npc_name);
 						continue;
 					}
 				}
 				else
 				{
-					gi.Printf(S_COLOR_YELLOW"WARNING: bad saber2Length '%s' in %s\n", token, NPCName);
+					gi.Printf(S_COLOR_YELLOW"WARNING: bad saber2Length '%s' in %s\n", token, npc_name);
 					continue;
 				}
 
@@ -4244,12 +4198,12 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				{
 					for (n = 0; n < MAX_BLADES; n++)
 					{
-						NPC->client->ps.saber[1].blade[n].lengthMax = f;
+						npc->client->ps.saber[1].blade[n].lengthMax = f;
 					}
 				}
 				else //just one
 				{
-					NPC->client->ps.saber[1].blade[n].lengthMax = f;
+					npc->client->ps.saber[1].blade[n].lengthMax = f;
 				}
 				continue;
 			}
@@ -4266,13 +4220,13 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					n = atoi(&token[11]) - 1;
 					if (n > 7 || n < 1)
 					{
-						gi.Printf(S_COLOR_YELLOW"WARNING: bad saberRadius '%s' in %s\n", token, NPCName);
+						gi.Printf(S_COLOR_YELLOW"WARNING: bad saberRadius '%s' in %s\n", token, npc_name);
 						continue;
 					}
 				}
 				else
 				{
-					gi.Printf(S_COLOR_YELLOW"WARNING: bad saberRadius '%s' in %s\n", token, NPCName);
+					gi.Printf(S_COLOR_YELLOW"WARNING: bad saberRadius '%s' in %s\n", token, npc_name);
 					continue;
 				}
 
@@ -4292,12 +4246,12 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					//NOTE: this fills in the rest of the blades with the same length by default
 					for (n = 0; n < MAX_BLADES; n++)
 					{
-						NPC->client->ps.saber[0].blade[n].radius = f;
+						npc->client->ps.saber[0].blade[n].radius = f;
 					}
 				}
 				else
 				{
-					NPC->client->ps.saber[0].blade[n].radius = f;
+					npc->client->ps.saber[0].blade[n].radius = f;
 				}
 				continue;
 			}
@@ -4313,13 +4267,13 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					n = atoi(&token[12]) - 1;
 					if (n > 7 || n < 1)
 					{
-						gi.Printf(S_COLOR_YELLOW"WARNING: bad saber2Radius '%s' in %s\n", token, NPCName);
+						gi.Printf(S_COLOR_YELLOW"WARNING: bad saber2Radius '%s' in %s\n", token, npc_name);
 						continue;
 					}
 				}
 				else
 				{
-					gi.Printf(S_COLOR_YELLOW"WARNING: bad saber2Radius '%s' in %s\n", token, NPCName);
+					gi.Printf(S_COLOR_YELLOW"WARNING: bad saber2Radius '%s' in %s\n", token, npc_name);
 					continue;
 				}
 
@@ -4339,12 +4293,12 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 					//NOTE: this fills in the rest of the blades with the same length by default
 					for (n = 0; n < MAX_BLADES; n++)
 					{
-						NPC->client->ps.saber[1].blade[n].radius = f;
+						npc->client->ps.saber[1].blade[n].radius = f;
 					}
 				}
 				else
 				{
-					NPC->client->ps.saber[1].blade[n].radius = f;
+					npc->client->ps.saber[1].blade[n].radius = f;
 				}
 				continue;
 			}
@@ -4373,24 +4327,24 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 				if (n)
 				{
 					//set
-					NPC->client->ps.saberStylesKnown |= 1 << n;
+					npc->client->ps.saberStylesKnown |= 1 << n;
 				}
 				else
 				{
 					//clear
-					NPC->client->ps.saberStylesKnown &= ~(1 << n);
+					npc->client->ps.saberStylesKnown &= ~(1 << n);
 				}
-				NPC->client->ps.saberAnimLevel = n;
-				if (parsingPlayer)
+				npc->client->ps.saberAnimLevel = n;
+				if (parsing_player)
 				{
 					cg.saberAnimLevelPending = n;
 				}
 				continue;
 			}
 
-			if (!parsingPlayer)
+			if (!parsing_player)
 			{
-				gi.Printf("WARNING: unknown keyword '%s' while parsing '%s'\n", token, NPCName);
+				gi.Printf("WARNING: unknown keyword '%s' while parsing '%s'\n", token, npc_name);
 			}
 			SkipRestOfLine(&p);
 		}
@@ -4405,69 +4359,69 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 	/*
 	Ghoul2 Insert Start
 	*/
-	if (!md3Model)
+	if (!md3_model)
 	{
-		NPC->weaponModel[0] = -1;
-		if (Q_stricmp("player", playerModel) == 0)
+		npc->weaponModel[0] = -1;
+		if (Q_stricmp("player", player_model) == 0)
 		{
 			//set the model from the console cvars
-			G_InitPlayerFromCvars(NPC);
+			G_InitPlayerFromCvars(npc);
 			//now set the weapon, etc.
-			G_MatchPlayerWeapon(NPC);
+			G_MatchPlayerWeapon(npc);
 			//NPC->NPC->aiFlags |= NPCAI_MATCHPLAYERWEAPON;//FIXME: may not always want this
 		}
 		else
 		{
 			//do a normal model load
 			// If this is a vehicle, set the model name from the vehicle type array.
-			if (NPC->client->NPC_class == CLASS_VEHICLE)
+			if (npc->client->NPC_class == CLASS_VEHICLE)
 			{
-				const int iVehIndex = BG_VehicleGetIndex(NPC->NPC_type);
-				strcpy(customSkin, "default"); // Ignore any custom skin that may have come from the NPC File
-				Q_strncpyz(playerModel, g_vehicleInfo[iVehIndex].model, sizeof playerModel);
-				if (g_vehicleInfo[iVehIndex].skin && g_vehicleInfo[iVehIndex].skin[0])
+				const int i_veh_index = BG_VehicleGetIndex(npc->NPC_type);
+				strcpy(custom_skin, "default"); // Ignore any custom skin that may have come from the NPC File
+				Q_strncpyz(player_model, g_vehicleInfo[i_veh_index].model, sizeof player_model);
+				if (g_vehicleInfo[i_veh_index].skin && g_vehicleInfo[i_veh_index].skin[0])
 				{
-					bool forceSkin = false;
+					bool force_skin = false;
 
 					// Iterate Over All Possible Skins
 					//---------------------------------
 					ratl::vector_vs<hstring, 15> skinarray;
-					ratl::string_vs<256> skins(g_vehicleInfo[iVehIndex].skin);
+					ratl::string_vs<256> skins(g_vehicleInfo[i_veh_index].skin);
 					for (ratl::string_vs<256>::tokenizer i = skins.begin("|"); i != skins.end(); i++)
 					{
-						if (NPC->soundSet && NPC->soundSet[0] && Q_stricmp(*i, NPC->soundSet) == 0)
+						if (npc->soundSet && npc->soundSet[0] && Q_stricmp(*i, npc->soundSet) == 0)
 						{
-							forceSkin = true;
+							force_skin = true;
 						}
 						skinarray.push_back(*i);
 					}
 
 					// Soundset Is The Designer Set Way To Supply A Skin
 					//---------------------------------------------------
-					if (forceSkin)
+					if (force_skin)
 					{
-						Q_strncpyz(customSkin, NPC->soundSet, sizeof customSkin);
+						Q_strncpyz(custom_skin, npc->soundSet, sizeof custom_skin);
 					}
 
 					// Otherwise Choose A Random Skin
 					//--------------------------------
 					else
 					{
-						if (NPC->soundSet && NPC->soundSet[0])
+						if (npc->soundSet && npc->soundSet[0])
 						{
-							gi.Printf(S_COLOR_RED"WARNING: Unable to use skin (%s)", NPC->soundSet);
+							gi.Printf(S_COLOR_RED"WARNING: Unable to use skin (%s)", npc->soundSet);
 						}
-						Q_strncpyz(customSkin, *skinarray[Q_irand(0, skinarray.size() - 1)], sizeof customSkin);
+						Q_strncpyz(custom_skin, *skinarray[Q_irand(0, skinarray.size() - 1)], sizeof custom_skin);
 					}
-					if (NPC->soundSet && gi.bIsFromZone(NPC->soundSet, TAG_G_ALLOC))
+					if (npc->soundSet && gi.bIsFromZone(npc->soundSet, TAG_G_ALLOC))
 					{
-						gi.Free(NPC->soundSet);
+						gi.Free(npc->soundSet);
 					}
-					NPC->soundSet = nullptr; // clear the pointer
+					npc->soundSet = nullptr; // clear the pointer
 				}
 			}
 
-			g_set_g2_player_model(NPC, playerModel, customSkin, surfOff, surfOn);
+			g_set_g2_player_model(npc, player_model, custom_skin, surf_off, surf_on);
 		}
 	}
 	/*
@@ -4476,7 +4430,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 	if (NPCsPrecached)
 	{
 		//Spawning in after initial precache, our models are precached, we just need to set our clientInfo
-		CG_RegisterClientModels(NPC->s.number);
+		CG_RegisterClientModels(npc->s.number);
 		CG_RegisterNPCCustomSounds(ci);
 		//CG_RegisterNPCEffects( NPC->client->playerTeam );
 	}
@@ -4484,11 +4438,11 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 	return qtrue;
 }
 
-void NPC_LoadParms(void)
+void NPC_LoadParms()
 {
-	int npcExtFNLen;
+	int npc_ext_fn_len;
 	char* buffer;
-	char npcExtensionListBuf[16384]; //	The list of file names read in, EDIT: Npcs, lots and lots of npcs =D
+	char npc_extension_list_buf[16384]; //	The list of file names read in, EDIT: Npcs, lots and lots of npcs =D
 
 	//gi.Printf( "Parsing ext_data/npcs/*.npc definitions\n" );
 
@@ -4498,20 +4452,20 @@ void NPC_LoadParms(void)
 	marker[0] = '\0';
 
 	//now load in the .npc definitions
-	const int fileCnt = gi.FS_GetFileList("ext_data/npcs", ".npc", npcExtensionListBuf, sizeof npcExtensionListBuf);
+	const int file_cnt = gi.FS_GetFileList("ext_data/npcs", ".npc", npc_extension_list_buf, sizeof npc_extension_list_buf);
 
-	char* holdChar = npcExtensionListBuf;
-	for (int i = 0; i < fileCnt; i++, holdChar += npcExtFNLen + 1)
+	char* hold_char = npc_extension_list_buf;
+	for (int i = 0; i < file_cnt; i++, hold_char += npc_ext_fn_len + 1)
 	{
-		npcExtFNLen = strlen(holdChar);
+		npc_ext_fn_len = strlen(hold_char);
 
 		//gi.Printf( "Parsing %s\n", holdChar );
 
-		int len = gi.FS_ReadFile(va("ext_data/npcs/%s", holdChar), reinterpret_cast<void**>(&buffer));
+		int len = gi.FS_ReadFile(va("ext_data/npcs/%s", hold_char), reinterpret_cast<void**>(&buffer));
 
 		if (len == -1)
 		{
-			gi.Printf("NPC_LoadParms: error reading file %s\n", holdChar);
+			gi.Printf("NPC_LoadParms: error reading file %s\n", hold_char);
 		}
 		else
 		{
@@ -4527,7 +4481,7 @@ void NPC_LoadParms(void)
 			if (totallen + len >= MAX_NPC_DATA_SIZE)
 			{
 				G_Error("NPC_LoadParms: ran out of space before reading %s\n(you must make the .npc files smaller)",
-					holdChar);
+					hold_char);
 			}
 			strcat(marker, buffer);
 			gi.FS_FreeFile(buffer);
