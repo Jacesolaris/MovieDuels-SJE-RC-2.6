@@ -56,7 +56,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include <cfloat>
 
 extern qboolean G_DoDismemberment(gentity_t* self, vec3_t point, const int mod, const int hit_loc,
-                                  const qboolean force = qfalse);
+	const qboolean force = qfalse);
 extern qboolean rocket_trooper_player(const gentity_t* self);
 extern qboolean G_EntIsUnlockedDoor(int entityNum);
 extern qboolean G_EntIsDoor(int entityNum);
@@ -14479,7 +14479,6 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			}
 			else if (PM_SaberInStart(new_move))
 			{//don't damage on the first few frames of a start anim because it may pop from one position to some drastically different one, killing the enemy without hitting them.
-
 				if (pm->ps->saberAnimLevel == SS_STRONG)
 				{
 					WP_SaberSwingSound(pm->gent, 0, SWING_FAST);
@@ -15299,7 +15298,7 @@ void PM_SaberLockBreak(gentity_t* gent, gentity_t* genemy, const saberLockResult
 								genemy->client->dismembered = false;
 
 								G_DoDismemberment(genemy, genemy->client->renderInfo.handRPoint, MOD_SABER, HL_HAND_RT,
-								                  qtrue);
+									qtrue);
 
 								if (genemy->health >= 1000)
 								{
@@ -19533,7 +19532,7 @@ void PM_WeaponLightsaber()
 					{
 						if (PM_HasAnimation(pm->gent, saberMoveData[newmove].animToUse))
 						{
-							saberMoveData[newmove].animToUse;
+							anim = saberMoveData[newmove].animToUse;
 						}
 					}
 				}
@@ -19542,7 +19541,88 @@ void PM_WeaponLightsaber()
 				{//not moving at all, so set the anim on entire body
 					both = qtrue;
 				}
-			}			
+			}
+
+			if (anim == -1)
+			{
+				switch (pm->ps->legsAnim)
+				{
+				case BOTH_WALK1:
+				case BOTH_WALK1_MDA:
+				case BOTH_WALK2:
+				case BOTH_WALK_STAFF:
+				case BOTH_WALK_STAFF_AMD:
+				case BOTH_WALK_DUAL:
+				case BOTH_WALK_DUAL_AMD:
+				case BOTH_WALKBACK1:
+				case BOTH_WALKBACK_PISTOL:
+				case BOTH_WALKBACK_BLASTER:
+				case BOTH_WALKBACK_HEAVY:
+				case BOTH_WALKBACK_GRENADE:
+				case BOTH_WALKBACK2:
+				case BOTH_WALKBACK_STAFF:
+				case BOTH_WALKBACK_DUAL:
+				case BOTH_WALKBACK_DUALPISTOL:
+				case BOTH_RUN1:
+				case BOTH_SPRINT:
+				case BOTH_SPRINT_SINGLE_LIGHTSABER:
+				case BOTH_SPRINT_STAFF_LIGHTSABER:
+				case BOTH_SPRINT_DUAL_LIGHTSABER:
+				case BOTH_RUN2:
+				case BOTH_RUN_STAFF:
+				case BOTH_RUN_DUAL:
+				case BOTH_RUNBACK1:
+				case BOTH_RUNBACK2:
+				case BOTH_RUNBACK_STAFF:
+				case BOTH_MENUIDLE1:
+				case BOTH_WALK1_STICK:
+					pm->ps->legsAnim;
+					break;
+				default:
+					if (holding_block)
+					{
+						if (pm->ps->saberAnimLevel == SS_DUAL)
+						{
+							if (g_SerenityJediEngineMode->integer == 2)
+							{
+								PM_BlockingPoseForSaberAnimLevelDualAMD();
+							}
+							else
+							{
+								PM_BlockingPoseForSaberAnimLevelDualMD();
+							}
+						}
+						else if (pm->ps->saberAnimLevel == SS_STAFF)
+						{
+							if (g_SerenityJediEngineMode->integer == 2)
+							{
+								PM_BlockingPoseForSaberAnimLevelStaffAMD();
+							}
+							else
+							{
+								PM_BlockingPoseForSaberAnimLevelStaffMD();
+							}
+						}
+						else
+						{
+							if (g_SerenityJediEngineMode->integer == 2)
+							{
+								PM_BlockingPoseForSaberAnimLevelSingleAMD();
+							}
+							else
+							{
+								PM_BlockingPoseForSaberAnimLevelSingleMD();
+							}
+						}
+					}
+					else
+					{
+						PM_ReadyPoseForSaberAnimLevel();
+					}
+					break;
+				}
+				newmove = LS_READY;
+			}
 
 			if (!pm->ps->SaberActive())
 			{//turn on the saber if it's not on
