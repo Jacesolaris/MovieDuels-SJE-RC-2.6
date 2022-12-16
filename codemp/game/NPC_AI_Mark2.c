@@ -98,15 +98,15 @@ NPC_Mark2_Pain
 */
 void NPC_Mark2_Pain(gentity_t* self, gentity_t* attacker, int damage)
 {
-	const int hitLoc = gPainHitLoc;
+	const int hit_loc = gPainHitLoc;
 
 	NPC_Pain(self, attacker, damage);
 
 	for (int i = 0; i < 3; i++)
 	{
-		if ((hitLoc == HL_GENERIC1 + i) && (self->locationDamage[HL_GENERIC1 + i] > AMMO_POD_HEALTH))	// Blow it up?
+		if ((hit_loc == HL_GENERIC1 + i) && (self->locationDamage[HL_GENERIC1 + i] > AMMO_POD_HEALTH))	// Blow it up?
 		{
-			if (self->locationDamage[hitLoc] >= AMMO_POD_HEALTH)
+			if (self->locationDamage[hit_loc] >= AMMO_POD_HEALTH)
 			{
 				const int newBolt = trap->G2API_AddBolt(self->ghoul2, 0, va("torso_canister%d", (i + 1)));
 				if (newBolt != -1)
@@ -152,7 +152,7 @@ void Mark2_Hunt(void)
 Mark2_FireBlaster
 -------------------------
 */
-void Mark2_FireBlaster(qboolean advance)
+void Mark2_FireBlaster()
 {
 	vec3_t	muzzle1, enemy_org1, delta1, angleToEnemy1;
 	static	vec3_t	forward, vright, up;
@@ -210,7 +210,7 @@ void Mark2_BlasterAttack(qboolean advance)
 		{
 			TIMER_Set(NPCS.NPC, "attackDelay", Q_irand(100, 500));
 		}
-		Mark2_FireBlaster(advance);
+		Mark2_FireBlaster();
 		return;
 	}
 	if (advance)

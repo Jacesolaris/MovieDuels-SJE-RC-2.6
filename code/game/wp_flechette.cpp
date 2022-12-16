@@ -41,7 +41,7 @@ static void WP_FlechetteMainFire(gentity_t* ent)
 	float damage = weaponData[WP_FLECHETTE].damage, vel = FLECHETTE_VEL;
 
 	VectorCopy(muzzle, start);
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	// If we aren't the player, we will cut the velocity and damage of the shots
@@ -296,7 +296,7 @@ static void WP_FlechetteAltFire(gentity_t* self)
 	vectoangles(forwardVec, angs);
 	VectorCopy(muzzle, start);
 
-	WP_TraceSetStart(self, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(self, start);
 	//make sure our start point isn't on the other side of a wall
 
 	if (self->client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_HALF)

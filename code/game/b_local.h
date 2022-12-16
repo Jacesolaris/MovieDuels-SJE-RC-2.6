@@ -74,7 +74,7 @@ extern void pitch_roll_for_slope(gentity_t* forwhom, vec3_t pass_slope = nullptr
 
 //NPC_reactions.cpp
 extern void NPC_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, vec3_t point, int damage, int mod,
-	int hitLoc);
+	int hit_loc);
 extern void NPC_Touch(gentity_t* self, gentity_t* other, trace_t* trace);
 extern void NPC_Use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern float NPC_GetPainChance(const gentity_t* self, int damage);
@@ -228,7 +228,7 @@ extern void CalcMuzzlePoint(gentity_t* const ent, vec3_t forward_vec, vec3_t muz
 //g_combat
 extern void ExplodeDeath(gentity_t* self);
 extern void ExplodeDeath_Wait(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath,
-	int dFlags, int hitLoc);
+	int dFlags, int hit_loc);
 extern void GoExplodeDeath(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern float IdealDistance();
 

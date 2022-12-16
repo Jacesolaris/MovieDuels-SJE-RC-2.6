@@ -45,7 +45,7 @@ constexpr auto SPF_TURRETG2_LEAD_ENEMY = 8;
 
 //------------------------------------------------------------------------------------------------------------
 void TurretPain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage, const int mod,
-	int hitLoc)
+	int hit_loc)
 	//------------------------------------------------------------------------------------------------------------
 {
 	vec3_t dir;
@@ -71,7 +71,7 @@ void TurretPain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, cons
 
 //------------------------------------------------------------------------------------------------------------
 void turret_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const int damage, const int meansOfDeath, int dFlags,
-	int hitLoc)
+	int hit_loc)
 	//------------------------------------------------------------------------------------------------------------
 {
 	vec3_t forward = { 0, 0, -1 };
@@ -2033,7 +2033,7 @@ void ion_cannon_think(gentity_t* self)
 
 //----------------------------------------------------------------------------------------------
 void ion_cannon_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
-	int hitLoc)
+	int hit_loc)
 	//----------------------------------------------------------------------------------------------
 {
 	vec3_t org;
@@ -2358,7 +2358,7 @@ extern gentity_t* player;
 extern qboolean G_ClearViewEntity(gentity_t* ent);
 extern void G_SetViewEntity(gentity_t* self, gentity_t* view_entity);
 extern gentity_t* CreateMissile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner,
-	qboolean altFire = qfalse);
+	qboolean alt_fire = qfalse);
 
 void panel_turret_shoot(gentity_t* self, vec3_t org, vec3_t dir)
 {
@@ -2386,7 +2386,7 @@ void panel_turret_shoot(gentity_t* self, vec3_t org, vec3_t dir)
 
 //-----------------------------------------
 void misc_panel_turret_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
-	int hitLoc)
+	int hit_loc)
 {
 	if (self->target3)
 	{

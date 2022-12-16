@@ -261,13 +261,13 @@ NPC_GM_Pain
 extern void NPC_SetPainEvent(gentity_t* self);
 
 void NPC_GM_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, const int damage, const int mod,
-                 const int hitLoc)
+                 const int hit_loc)
 {
 	if (self->client->ps.powerups[PW_GALAK_SHIELD] == 0)
 	{
 		//shield is currently down
 		//FIXME: allow for radius damage?
-		if (hitLoc == HL_GENERIC1 && self->locationDamage[HL_GENERIC1] > GENERATOR_HEALTH)
+		if (hit_loc == HL_GENERIC1 && self->locationDamage[HL_GENERIC1] > GENERATOR_HEALTH)
 		{
 			const int newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*antenna_base");
 			if (newBolt != -1)
@@ -302,7 +302,7 @@ void NPC_GM_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, con
 	if (!self->lockCount && !self->client->ps.torsoAnimTimer)
 	{
 		//don't interrupt laser sweep attack or other special attacks/moves
-		if (self->count < 4 && self->health > 100 && hitLoc != HL_GENERIC1)
+		if (self->count < 4 && self->health > 100 && hit_loc != HL_GENERIC1)
 		{
 			if (self->delay < level.time)
 			{
@@ -331,10 +331,10 @@ void NPC_GM_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, con
 		}
 		else
 		{
-			NPC_Pain(self, inflictor, attacker, point, damage, mod, hitLoc);
+			NPC_Pain(self, inflictor, attacker, point, damage, mod, hit_loc);
 		}
 	}
-	else if (hitLoc == HL_GENERIC1)
+	else if (hit_loc == HL_GENERIC1)
 	{
 		NPC_SetPainEvent(self);
 		self->s.powerups |= 1 << PW_SHOCKED;

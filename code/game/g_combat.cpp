@@ -89,7 +89,7 @@ extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legs_anim_timer, int time);
 extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torso_anim_timer, int time);
 extern int PM_PickAnim(const gentity_t* self, int min_anim, int max_anim);
 extern qboolean PM_InOnGroundAnim(playerState_t* ps);
-extern void G_ATSTCheckPain(gentity_t* self, gentity_t* other, const vec3_t point, int damage, int mod, int hitLoc);
+extern void G_ATSTCheckPain(gentity_t* self, gentity_t* other, const vec3_t point, int damage, int mod, int hit_loc);
 extern qboolean jedi_waiting_ambush(const gentity_t* self);
 extern qboolean G_ClearViewEntity(gentity_t* ent);
 extern qboolean PM_CrouchAnim(int anim);
@@ -496,7 +496,7 @@ void ExplodeDeath(gentity_t* self)
 }
 
 void ExplodeDeath_Wait(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath,
-	int dFlags, int hitLoc)
+	int dFlags, int hit_loc)
 {
 	self->e_DieFunc = dieF_NULL;
 	self->nextthink = level.time + Q_irand(100, 500);
@@ -504,7 +504,7 @@ void ExplodeDeath_Wait(gentity_t* self, gentity_t* inflictor, gentity_t* attacke
 }
 
 void ExplodeDeath(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath, int dFlags,
-	int hitLoc)
+	int hit_loc)
 {
 	self->currentOrigin[2] += 16;
 	// me bad for hacking this.  should either do it in the effect file or make a custom explode death??
@@ -1242,7 +1242,7 @@ qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surf_name, int* hit
 		return qfalse;
 	}
 
-	//FIXME: check the hitLoc and hitDir against the cap tag for the place
+	//FIXME: check the hit_loc and hitDir against the cap tag for the place
 	//where the split will be- if the hit dir is roughly perpendicular to
 	//the direction of the cap, then the split is allowed, otherwise we
 	//hit it at the wrong angle and should not dismember...
@@ -1508,7 +1508,7 @@ qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surf_name, int* hit
 				//the probability let us continue
 				const char* tag_name = nullptr;
 				float aoa = 0.5f;
-				//dir must be roughly perpendicular to the hitLoc's cap bolt
+				//dir must be roughly perpendicular to the hit_loc's cap bolt
 				switch (*hit_loc)
 				{
 				case HL_LEG_RT:
@@ -3695,7 +3695,7 @@ static int G_PickDeathAnim(gentity_t* self, vec3_t point, const int damage, int 
 	int death_anim = -1;
 	if (hit_loc == HL_NONE)
 	{
-		hit_loc = G_GetHitLocation(self, point); //self->hitLoc
+		hit_loc = G_GetHitLocation(self, point); //self->hit_loc
 	}
 	//dead flops...if you are already playing a death animation, I guess it can just return directly
 	switch (self->client->ps.legsAnim)
@@ -3820,7 +3820,7 @@ static int G_PickDeathAnim(gentity_t* self, vec3_t point, const int damage, int 
 
 		if (death_anim == -1)
 		{
-			//base on hitLoc
+			//base on hit_loc
 			vec3_t fwd;
 			AngleVectors(self->currentAngles, fwd, nullptr, nullptr);
 			const float thrown = DotProduct(fwd, self->client->ps.velocity);

@@ -256,7 +256,7 @@ void NPC_GM_Pain(gentity_t* self, gentity_t* attacker, int damage)
 {
 	vec3_t point;
 	const gentity_t* inflictor = attacker;
-	const int hitLoc = 1;
+	const int hit_loc = 1;
 	const int mod = gPainMOD;
 
 	VectorCopy(gPainPoint, point);

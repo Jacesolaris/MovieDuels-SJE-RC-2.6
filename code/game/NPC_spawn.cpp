@@ -259,7 +259,7 @@ void G_ClassSetDontFlee(const gentity_t* self)
 
 extern void Vehicle_Register(gentity_t* ent);
 extern void RT_FlyStart(gentity_t* self);
-extern void SandCreature_ClearTimers(gentity_t* ent);
+extern void SandCreature_ClearTimers();
 extern cvar_t* g_noAutoFollow;
 
 void NPC_SetMiscDefaultData(gentity_t* ent)
@@ -291,7 +291,7 @@ void NPC_SetMiscDefaultData(gentity_t* ent)
 		ent->contents = 0; //can't be hit?
 		ent->takedamage = qfalse; //can't be killed
 		ent->flags |= FL_NO_KNOCKBACK;
-		SandCreature_ClearTimers(ent);
+		SandCreature_ClearTimers();
 		if (g_spskill->integer > 1)
 		{
 			ent->NPC->stats.runSpeed *= 1.5f;
@@ -2500,11 +2500,11 @@ first and so no scripts should be names with these names:
 delay - after spawned or triggered, how many seconds to wait to spawn the NPC
 */
 extern qboolean spawning; // the G_Spawn*() functions are valid  (only turned on during one function)
+extern void NPC_PrecacheAnimationCFG(const char* npc_type);
 
 void SP_NPC_spawner(gentity_t* self)
 {
-	extern void NPC_PrecacheAnimationCFG(const char* NPC_type);
-	float fDelay;
+	float f_delay;
 
 	//register/precache the models needed for this NPC, not anymore
 	//self->classname = "NPC_spawner";
@@ -2547,10 +2547,10 @@ void SP_NPC_spawner(gentity_t* self)
 		self->wait *= 1000; //1 = 1 msec, 1000 = 1 sec
 	}
 
-	G_SpawnFloat("delay", "0", &fDelay);
-	if (fDelay)
+	G_SpawnFloat("delay", "0", &f_delay);
+	if (f_delay)
 	{
-		self->delay = ceil(1000.0f * fDelay); //1 = 1 msec, 1000 = 1 sec
+		self->delay = ceil(1000.0f * f_delay); //1 = 1 msec, 1000 = 1 sec
 	}
 
 	if (self->delay > 0)

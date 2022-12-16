@@ -37,7 +37,7 @@ static void WP_RepeaterMainFire(gentity_t* ent, vec3_t dir)
 	int damage = weaponData[WP_REPEATER].damage;
 
 	VectorCopy(muzzle, start);
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	WP_MissileTargetHint(ent, start, dir);
@@ -89,7 +89,7 @@ static void WP_RepeaterAltFire(gentity_t* ent)
 	gentity_t* missile;
 
 	VectorCopy(muzzle, start);
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	if (ent->client && ent->client->NPC_class == CLASS_GALAKMECH)

@@ -35,7 +35,7 @@ constexpr auto MAX_MISS_DIST = 500;
 #define MAX_MISS_DIST_SQ	(MAX_MISS_DIST*MAX_MISS_DIST)
 constexpr auto MIN_SCORE = -37500; //speed of (50*50) - dist of (200*200);
 
-void SandCreature_Precache(void)
+void SandCreature_Precache()
 {
 	G_EffectIndex("env/sand_dive");
 	G_EffectIndex("env/sand_spray");
@@ -49,7 +49,7 @@ void SandCreature_Precache(void)
 	G_SoundIndex("sound/chars/sand_creature/slither.wav");
 }
 
-void SandCreature_ClearTimers(gentity_t* ent)
+void SandCreature_ClearTimers()
 {
 	TIMER_Set(NPC, "speaking", -level.time);
 	TIMER_Set(NPC, "breaching", -level.time);
@@ -60,13 +60,13 @@ void SandCreature_ClearTimers(gentity_t* ent)
 }
 
 void NPC_SandCreature_Die(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage,
-	int mod, int hitLoc)
+	int mod, int hit_loc)
 {
 	//FIXME: somehow make him solid when he dies?
 }
 
 void NPC_SandCreature_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage,
-	int mod, int hitLoc)
+	int mod, int hit_loc)
 {
 	if (TIMER_Done(self, "pain"))
 	{

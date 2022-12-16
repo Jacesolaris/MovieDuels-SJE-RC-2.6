@@ -475,7 +475,7 @@ void G_Damage(gentity_t* targ, gentity_t* inflictor, gentity_t* attacker, const 
 void G_RadiusDamage(const vec3_t origin, gentity_t* attacker, float damage, float radius, const gentity_t* ignore, int mod);
 gentity_t* TossClientItems(gentity_t* self);
 void ExplodeDeath_Wait(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath,
-	int dFlags, int hitLoc);
+	int dFlags, int hit_loc);
 void ExplodeDeath(gentity_t* self);
 void GoExplodeDeath(gentity_t* self, gentity_t* other, gentity_t* activator);
 void G_ApplyKnockback(gentity_t* targ, vec3_t new_dir, float knockback);

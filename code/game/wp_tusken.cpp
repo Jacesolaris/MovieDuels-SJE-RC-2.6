@@ -36,7 +36,7 @@ void WP_FireTuskenRifle(gentity_t* ent)
 	vec3_t start;
 
 	VectorCopy(muzzle, start);
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	if (ent->client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_TWENTYNINE)

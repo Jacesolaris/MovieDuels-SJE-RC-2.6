@@ -7195,7 +7195,7 @@ void RemoveOwner(gentity_t* self)
 void Q3_DismemberLimb(const int entID, char* hitLocName)
 {
 	gentity_t* self = &g_entities[entID];
-	const int hitLoc = GetIDForString(HLTable, hitLocName);
+	const int hit_loc = GetIDForString(HLTable, hitLocName);
 	vec3_t point;
 
 	if (!self)
@@ -7218,14 +7218,14 @@ void Q3_DismemberLimb(const int entID, char* hitLocName)
 		return;
 	}
 
-	if (hitLoc <= HL_NONE || hitLoc >= HL_MAX)
+	if (hit_loc <= HL_NONE || hit_loc >= HL_MAX)
 	{
 		Quake3Game()->DebugPrint(IGameInterface::WL_ERROR, "Q3_DismemberLimb: '%s' is not a valid hit location!\n",
 			hitLocName);
 		return;
 	}
 
-	switch (hitLoc)
+	switch (hit_loc)
 	{
 	case HL_FOOT_RT:
 		VectorCopy(self->client->renderInfo.footRPoint, point);
@@ -7273,7 +7273,7 @@ void Q3_DismemberLimb(const int entID, char* hitLocName)
 		break;
 	default:;
 	}
-	G_DoDismembermentcin(self, point, MOD_SABER, hitLoc, qtrue);
+	G_DoDismembermentcin(self, point, MOD_SABER, hit_loc, qtrue);
 }
 
 /*

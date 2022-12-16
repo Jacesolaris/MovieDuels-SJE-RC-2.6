@@ -40,7 +40,7 @@ constexpr auto RIGHT_ARM_HEALTH = 40;
 NPC_ATST_Precache
 -------------------------
 */
-void NPC_ATST_Precache(void)
+void NPC_ATST_Precache()
 {
 	G_SoundIndex("sound/chars/atst/atst_damaged1");
 	G_SoundIndex("sound/chars/atst/atst_damaged2");
@@ -56,20 +56,20 @@ void NPC_ATST_Precache(void)
 }
 
 //-----------------------------------------------------------------
-static void ATST_PlayEffect(gentity_t* self, const int boltID, const char* fx)
+static void ATST_PlayEffect(gentity_t* self, const int bolt_id, const char* fx)
 {
-	if (boltID >= 0 && fx && fx[0])
+	if (bolt_id >= 0 && fx && fx[0])
 	{
-		mdxaBone_t boltMatrix;
+		mdxaBone_t bolt_matrix;
 		vec3_t org, dir;
 
 		gi.G2API_GetBoltMatrix(self->ghoul2, self->playerModel,
-			boltID,
-			&boltMatrix, self->currentAngles, self->currentOrigin, cg.time ? cg.time : level.time,
+			bolt_id,
+			&bolt_matrix, self->currentAngles, self->currentOrigin, cg.time ? cg.time : level.time,
 			nullptr, self->s.modelScale);
 
-		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, org);
-		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, NEGATIVE_Y, dir);
+		gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, org);
+		gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, NEGATIVE_Y, dir);
 
 		G_PlayEffect(fx, org, dir);
 	}
@@ -83,9 +83,9 @@ Called by NPC's and player in an ATST
 -------------------------
 */
 
-void G_ATSTCheckPain(gentity_t* self, gentity_t* other, const vec3_t point, int damage, int mod, const int hitLoc)
+void G_ATSTCheckPain(gentity_t* self, gentity_t* other, const vec3_t point, int damage, int mod, const int hit_loc)
 {
-	int newBolt;
+	int new_bolt;
 
 	if (rand() & 1)
 	{
@@ -96,31 +96,31 @@ void G_ATSTCheckPain(gentity_t* self, gentity_t* other, const vec3_t point, int 
 		G_SoundOnEnt(self, CHAN_LESS_ATTEN, "sound/chars/atst/atst_damaged2");
 	}
 
-	if (hitLoc == HL_ARM_LT && self->locationDamage[HL_ARM_LT] > LEFT_ARM_HEALTH)
+	if (hit_loc == HL_ARM_LT && self->locationDamage[HL_ARM_LT] > LEFT_ARM_HEALTH)
 	{
-		if (self->locationDamage[hitLoc] >= LEFT_ARM_HEALTH) // Blow it up?
+		if (self->locationDamage[hit_loc] >= LEFT_ARM_HEALTH) // Blow it up?
 		{
-			newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*flash3");
-			if (newBolt != -1)
+			new_bolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*flash3");
+			if (new_bolt != -1)
 			{
 				//				G_PlayEffect( "small_chunks", self->playerModel, self->genericBolt1, self->s.number);
 				ATST_PlayEffect(self, self->genericBolt1, "env/med_explode2");
-				G_PlayEffect(G_EffectIndex("blaster/smoke_bolton"), self->playerModel, newBolt, self->s.number, point);
+				G_PlayEffect(G_EffectIndex("blaster/smoke_bolton"), self->playerModel, new_bolt, self->s.number, point);
 			}
 
 			gi.G2API_SetSurfaceOnOff(&self->ghoul2[self->playerModel], "head_light_blaster_cann", TURN_OFF);
 		}
 	}
-	else if (hitLoc == HL_ARM_RT && self->locationDamage[HL_ARM_RT] > RIGHT_ARM_HEALTH) // Blow it up?
+	else if (hit_loc == HL_ARM_RT && self->locationDamage[HL_ARM_RT] > RIGHT_ARM_HEALTH) // Blow it up?
 	{
-		if (self->locationDamage[hitLoc] >= RIGHT_ARM_HEALTH)
+		if (self->locationDamage[hit_loc] >= RIGHT_ARM_HEALTH)
 		{
-			newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*flash4");
-			if (newBolt != -1)
+			new_bolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*flash4");
+			if (new_bolt != -1)
 			{
 				//				G_PlayEffect( "small_chunks", self->playerModel, self->genericBolt2, self->s.number);
 				ATST_PlayEffect(self, self->genericBolt2, "env/med_explode2");
-				G_PlayEffect(G_EffectIndex("blaster/smoke_bolton"), self->playerModel, newBolt, self->s.number, point);
+				G_PlayEffect(G_EffectIndex("blaster/smoke_bolton"), self->playerModel, new_bolt, self->s.number, point);
 			}
 
 			gi.G2API_SetSurfaceOnOff(&self->ghoul2[self->playerModel], "head_concussion_charger", TURN_OFF);
@@ -133,11 +133,11 @@ void G_ATSTCheckPain(gentity_t* self, gentity_t* other, const vec3_t point, int 
 NPC_ATST_Pain
 -------------------------
 */
-void NPC_ATST_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage, const int mod,
-                   const int hitLoc)
+void NPC_ATST_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, const int damage, const int mod,
+                   const int hit_loc)
 {
-	G_ATSTCheckPain(self, other, point, damage, mod, hitLoc);
-	NPC_Pain(self, inflictor, other, point, damage, mod);
+	G_ATSTCheckPain(self, attacker, point, damage, mod, hit_loc);
+	NPC_Pain(self, inflictor, attacker, point, damage, mod);
 }
 
 /*
@@ -145,7 +145,7 @@ void NPC_ATST_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, cons
 ATST_Hunt
 -------------------------`
 */
-void ATST_Hunt(qboolean visible, qboolean advance)
+void ATST_Hunt()
 {
 	if (NPCInfo->goalEntity == nullptr)
 	{
@@ -163,13 +163,13 @@ void ATST_Hunt(qboolean visible, qboolean advance)
 ATST_Ranged
 -------------------------
 */
-void ATST_Ranged(const qboolean visible, const qboolean advance, const qboolean altAttack)
+void ATST_Ranged(const qboolean visible, const qboolean alt_attack)
 {
 	if (TIMER_Done(NPC, "atkDelay") && visible) // Attack?
 	{
 		TIMER_Set(NPC, "atkDelay", Q_irand(500, 3000));
 
-		if (altAttack)
+		if (alt_attack)
 		{
 			ucmd.buttons |= BUTTON_ATTACK | BUTTON_ALT_ATTACK;
 		}
@@ -181,7 +181,7 @@ void ATST_Ranged(const qboolean visible, const qboolean advance, const qboolean 
 
 	if (NPCInfo->scriptFlags & SCF_CHASE_ENEMIES)
 	{
-		ATST_Hunt(visible, advance);
+		ATST_Hunt();
 	}
 }
 
@@ -190,10 +190,10 @@ void ATST_Ranged(const qboolean visible, const qboolean advance, const qboolean 
 ATST_Attack
 -------------------------
 */
-void ATST_Attack(void)
+void ATST_Attack()
 {
-	qboolean altAttack = qfalse;
-	int blasterTest, chargerTest;
+	qboolean alt_attack = qfalse;
+	int blaster_test, charger_test;
 
 	if (NPC_CheckEnemyExt() == qfalse) //!NPC->enemy )//
 	{
@@ -205,22 +205,22 @@ void ATST_Attack(void)
 
 	// Rate our distance to the target, and our visibilty
 	const float distance = static_cast<int>(DistanceHorizontalSquared(NPC->currentOrigin, NPC->enemy->currentOrigin));
-	const distance_e distRate = distance > MIN_MELEE_RANGE_SQR ? DIST_LONG : DIST_MELEE;
+	const distance_e dist_rate = distance > MIN_MELEE_RANGE_SQR ? DIST_LONG : DIST_MELEE;
 	const qboolean visible = NPC_ClearLOS(NPC->enemy);
-	const auto advance = static_cast<qboolean>(distance > MIN_DISTANCE_SQR);
+	
 
 	// If we cannot see our target, move to see it
 	if (visible == qfalse)
 	{
 		if (NPCInfo->scriptFlags & SCF_CHASE_ENEMIES)
 		{
-			ATST_Hunt(visible, advance);
+			ATST_Hunt();
 			return;
 		}
 	}
 
 	// Decide what type of attack to do
-	switch (distRate)
+	switch (dist_rate)
 	{
 	case DIST_MELEE:
 		NPC_ChangeWeapon(WP_ATST_MAIN);
@@ -231,30 +231,30 @@ void ATST_Attack(void)
 		NPC_ChangeWeapon(WP_ATST_SIDE);
 
 		// See if the side weapons are there
-		blasterTest = gi.G2API_GetSurfaceRenderStatus(&NPC->ghoul2[NPC->playerModel], "head_light_blaster_cann");
-		chargerTest = gi.G2API_GetSurfaceRenderStatus(&NPC->ghoul2[NPC->playerModel], "head_concussion_charger");
+		blaster_test = gi.G2API_GetSurfaceRenderStatus(&NPC->ghoul2[NPC->playerModel], "head_light_blaster_cann");
+		charger_test = gi.G2API_GetSurfaceRenderStatus(&NPC->ghoul2[NPC->playerModel], "head_concussion_charger");
 
 		// It has both side weapons
-		if (!(blasterTest & TURN_OFF) && !(chargerTest & TURN_OFF))
+		if (!(blaster_test & TURN_OFF) && !(charger_test & TURN_OFF))
 		{
 			const int weapon = Q_irand(0, 1); // 0 is blaster, 1 is charger (ALT SIDE)
 
 			if (weapon) // Fire charger
 			{
-				altAttack = qtrue;
+				alt_attack = qtrue;
 			}
 			else
 			{
-				altAttack = qfalse;
+				alt_attack = qfalse;
 			}
 		}
-		else if (!(blasterTest & TURN_OFF)) // Blaster is on
+		else if (!(blaster_test & TURN_OFF)) // Blaster is on
 		{
-			altAttack = qfalse;
+			alt_attack = qfalse;
 		}
-		else if (!(chargerTest & TURN_OFF)) // Blaster is on
+		else if (!(charger_test & TURN_OFF)) // Blaster is on
 		{
-			altAttack = qtrue;
+			alt_attack = qtrue;
 		}
 		else
 		{
@@ -265,7 +265,7 @@ void ATST_Attack(void)
 
 	NPC_FaceEnemy(qtrue);
 
-	ATST_Ranged(visible, advance, altAttack);
+	ATST_Ranged(visible, alt_attack);
 }
 
 /*
@@ -273,7 +273,7 @@ void ATST_Attack(void)
 ATST_Patrol
 -------------------------
 */
-void ATST_Patrol(void)
+void ATST_Patrol()
 {
 	if (NPC_CheckPlayerTeamStealth())
 	{
@@ -298,7 +298,7 @@ void ATST_Patrol(void)
 ATST_Idle
 -------------------------
 */
-void ATST_Idle(void)
+void ATST_Idle()
 {
 	NPC_BSIdle();
 
@@ -310,7 +310,7 @@ void ATST_Idle(void)
 NPC_BSDroid_Default
 -------------------------
 */
-void NPC_BSATST_Default(void)
+void NPC_BSATST_Default()
 {
 	if (NPC->enemy)
 	{

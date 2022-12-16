@@ -254,16 +254,16 @@ void Wampa_Slash(int boltIndex, qboolean backhand)
 			{//killed them, chance of dismembering
 				if (!Q_irand(0, 1))
 				{//bite something off
-					const int hitLoc = Q_irand(G2_MODELPART_HEAD, G2_MODELPART_RLEG);
-					if (hitLoc == G2_MODELPART_HEAD)
+					const int hit_loc = Q_irand(G2_MODELPART_HEAD, G2_MODELPART_RLEG);
+					if (hit_loc == G2_MODELPART_HEAD)
 					{
 						NPC_SetAnim(radiusEnt, SETANIM_BOTH, BOTH_DEATH17, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
-					else if (hitLoc == G2_MODELPART_WAIST)
+					else if (hit_loc == G2_MODELPART_WAIST)
 					{
 						NPC_SetAnim(radiusEnt, SETANIM_BOTH, BOTH_DEATHBACKWARD2, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
-					G_Dismember(radiusEnt, NPCS.NPC, radiusEnt->r.currentOrigin, hitLoc, 90, 0, radiusEnt->client->ps.torsoAnim, qtrue);
+					G_Dismember(radiusEnt, NPCS.NPC, radiusEnt->r.currentOrigin, hit_loc, 90, 0, radiusEnt->client->ps.torsoAnim, qtrue);
 				}
 			}
 			else if (!Q_irand(0, 3) && radiusEnt->health > 0)

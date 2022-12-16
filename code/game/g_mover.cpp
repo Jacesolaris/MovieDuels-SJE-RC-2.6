@@ -2112,7 +2112,7 @@ void SP_path_corner(gentity_t* self)
 }
 
 void func_train_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
-	int hitLoc)
+	int hit_loc)
 {
 	if (self->target3)
 	{

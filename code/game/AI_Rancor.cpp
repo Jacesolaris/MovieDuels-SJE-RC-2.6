@@ -49,7 +49,7 @@ void Rancor_Attack(float distance, qboolean doCharge, qboolean aimAtBlockedEntit
 NPC_Rancor_Precache
 -------------------------
 */
-void NPC_Rancor_Precache(void)
+void NPC_Rancor_Precache()
 {
 	for (int i = 1; i < 5; i++)
 	{
@@ -59,7 +59,7 @@ void NPC_Rancor_Precache(void)
 	G_SoundIndex("sound/chars/rancor/chomp.wav");
 }
 
-void NPC_MutantRancor_Precache(void)
+void NPC_MutantRancor_Precache()
 {
 	G_SoundIndex("sound/chars/rancor/breath_start.wav");
 	G_SoundIndex("sound/chars/rancor/breath_loop.wav");
@@ -118,7 +118,7 @@ qboolean Rancor_CheckAhead(vec3_t end)
 Rancor_Idle
 -------------------------
 */
-void Rancor_Idle(void)
+void Rancor_Idle()
 {
 	NPCInfo->localState = LSTATE_CLEAR;
 
@@ -148,7 +148,7 @@ qboolean Rancor_CheckRoar(gentity_t* self)
 Rancor_Patrol
 -------------------------
 */
-void Rancor_Patrol(void)
+void Rancor_Patrol()
 {
 	NPCInfo->localState = LSTATE_CLEAR;
 
@@ -173,7 +173,7 @@ void Rancor_Patrol(void)
 Rancor_Move
 -------------------------
 */
-void Rancor_Move(qboolean visible)
+void Rancor_Move()
 {
 	if (NPCInfo->localState != LSTATE_WAITING)
 	{
@@ -270,7 +270,7 @@ void Rancor_Move(qboolean visible)
 				if (!NPCInfo->blockedEntity && NPC->enemy && gi.inPVS(NPC->currentOrigin, NPC->enemy->currentOrigin))
 				{
 					//nothing to destroy?  just go straight at goal dest
-					qboolean horzClose = qfalse;
+					qboolean horz_close = qfalse;
 					if (!savWalking)
 					{
 						ucmd.buttons &= ~BUTTON_WALKING; // Unset from MoveToGoal()
@@ -279,7 +279,7 @@ void Rancor_Move(qboolean visible)
 					if (DistanceHorizontal(NPC->enemy->currentOrigin, NPC->currentOrigin) < NPC->maxs[0] + MIN_DISTANCE * NPC->s.modelScale[0])
 					{
 						//close, just look at him
-						horzClose = qtrue;
+						horz_close = qtrue;
 						NPC_FaceEnemy(qtrue);
 					}
 					else
@@ -297,7 +297,7 @@ void Rancor_Move(qboolean visible)
 							&& TIMER_Done(NPC, "frustrationAttack"))
 						{
 							const float enemyDist = Distance(dest, NPC->currentOrigin);
-							if ((!horzClose || !Q_irand(0, 5))
+							if ((!horz_close || !Q_irand(0, 5))
 								&& Q_irand(0, 1))
 							{
 								Rancor_Attack(enemyDist, qtrue, qfalse);
@@ -306,7 +306,7 @@ void Rancor_Move(qboolean visible)
 							{
 								Rancor_Attack(enemyDist, qfalse, qfalse);
 							}
-							if (horzClose)
+							if (horz_close)
 							{
 								TIMER_Set(NPC, "frustrationAttack", Q_irand(2000, 5000));
 							}
@@ -1222,7 +1222,7 @@ void Rancor_Combat(void)
 		NPCInfo->combatMove = qtrue;
 		NPCInfo->goalEntity = NPC->enemy;
 
-		Rancor_Move(qfalse);
+		Rancor_Move();
 		return;
 	}
 
@@ -1275,7 +1275,7 @@ void Rancor_Combat(void)
 		}
 		else
 		{
-			Rancor_Move(qtrue);
+			Rancor_Move();
 		}
 	}
 	else
@@ -1290,7 +1290,7 @@ NPC_Rancor_Pain
 -------------------------
 */
 void NPC_Rancor_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage, int mod,
-	int hitLoc)
+	int hit_loc)
 {
 	qboolean hitByRancor = qfalse;
 
@@ -1724,7 +1724,7 @@ void NPC_BSRancor_Default(void)
 						if (!Rancor_AttackBBrush())
 						{
 							//didn't move inside that func, so call move here...?
-							Rancor_Move(qtrue);
+							Rancor_Move();
 						}
 						NPC_UpdateAngles(qtrue, qtrue);
 						return;

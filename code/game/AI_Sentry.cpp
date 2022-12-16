@@ -25,7 +25,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "../cgame/cg_local.h"
 #include "g_functions.h"
 
-gentity_t* CreateMissile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner, qboolean altFire = qfalse);
+gentity_t* CreateMissile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner, qboolean alt_fire = qfalse);
 extern gitem_t* FindItemForAmmo(ammo_t ammo);
 
 constexpr auto MIN_DISTANCE = 256;
@@ -56,7 +56,7 @@ enum
 NPC_Sentry_Precache
 -------------------------
 */
-void NPC_Sentry_Precache(void)
+void NPC_Sentry_Precache()
 {
 	G_SoundIndex("sound/chars/sentry/misc/sentry_explo");
 	G_SoundIndex("sound/chars/sentry/misc/sentry_pain");
@@ -97,7 +97,7 @@ NPC_Sentry_Pain
 -------------------------
 */
 void NPC_Sentry_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage, const int mod,
-	int hitLoc)
+	int hit_loc)
 {
 	NPC_Pain(self, inflictor, other, point, damage, mod);
 

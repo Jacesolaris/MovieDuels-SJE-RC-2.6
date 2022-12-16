@@ -521,7 +521,7 @@ qboolean jedi_is_kick_resistant(gentity_t* self)
 
 qboolean jedi_win_po(const gentity_t* self)
 {
-	if (Q_stricmp("md_win_po", self->NPC_type) == 0)
+	if ((Q_stricmp("md_win_po", self->NPC_type) == 0))
 	{
 		return qtrue;
 	}
@@ -8340,7 +8340,7 @@ NPC_Jedi_Pain
 -------------------------
 */
 
-void npc_jedi_pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, const int damage, const int mod, int hitLoc)
+void npc_jedi_pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, const int damage, const int mod, int hit_loc)
 {
 	if (attacker->s.weapon == WP_SABER)
 	{

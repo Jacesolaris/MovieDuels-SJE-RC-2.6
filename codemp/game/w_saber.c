@@ -7487,7 +7487,7 @@ static void G_KickSomeMofos(gentity_t* ent)
 	VectorSet(kickEnd, 0.0f, 0.0f, 0.0f);
 	VectorSet(fwdAngs, 0.0f, ent->client->ps.viewangles[YAW], 0.0f);
 
-	//HMM... or maybe trace from origin to footRBolt/footLBolt?  Which one?  G2 trace?  Will do hitLoc, if so...
+	//HMM... or maybe trace from origin to footRBolt/footLBolt?  Which one?  G2 trace?  Will do hit_loc, if so...
 	if (ent->client->ps.torsoAnim == BOTH_A7_HILT)
 	{
 		if (elapsedTime >= 250 && remainingTime >= 250)

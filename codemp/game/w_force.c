@@ -5432,7 +5432,7 @@ powersetcheck:
 	}
 }
 
-qboolean Jedi_DodgeEvasion(gentity_t* self, gentity_t* shooter, trace_t* tr, int hitLoc)
+qboolean Jedi_DodgeEvasion(gentity_t* self, gentity_t* shooter, trace_t* tr, int hit_loc)
 {
 	int	dodgeAnim = -1;
 
@@ -5496,7 +5496,7 @@ qboolean Jedi_DodgeEvasion(gentity_t* self, gentity_t* shooter, trace_t* tr, int
 		}
 	}
 
-	switch (hitLoc)
+	switch (hit_loc)
 	{
 	case HL_NONE:
 		return qfalse;

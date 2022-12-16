@@ -88,7 +88,7 @@ Called by NPC's and player in an ATST
 void G_ATSTCheckPain(gentity_t* self, gentity_t* other, int damage)
 {
 	//int newBolt;
-	//int hitLoc = gPainHitLoc;
+	//int hit_loc = gPainHitLoc;
 
 	if (rand() & 1)
 	{
@@ -100,9 +100,9 @@ void G_ATSTCheckPain(gentity_t* self, gentity_t* other, int damage)
 	}
 
 	/*
-	if ((hitLoc==HL_ARM_LT) && (self->locationDamage[HL_ARM_LT] > LEFT_ARM_HEALTH))
+	if ((hit_loc==HL_ARM_LT) && (self->locationDamage[HL_ARM_LT] > LEFT_ARM_HEALTH))
 	{
-		if (self->locationDamage[hitLoc] >= LEFT_ARM_HEALTH)	// Blow it up?
+		if (self->locationDamage[hit_loc] >= LEFT_ARM_HEALTH)	// Blow it up?
 		{
 			newBolt = trap->G2API_AddBolt( self->ghoul2, 0, "*flash3" );
 			if ( newBolt != -1 )
@@ -116,9 +116,9 @@ void G_ATSTCheckPain(gentity_t* self, gentity_t* other, int damage)
 			NPC_SetSurfaceOnOff( self, "head_light_blaster_cann", TURN_OFF );
 		}
 	}
-	else if ((hitLoc==HL_ARM_RT) && (self->locationDamage[HL_ARM_RT] > RIGHT_ARM_HEALTH))	// Blow it up?
+	else if ((hit_loc==HL_ARM_RT) && (self->locationDamage[HL_ARM_RT] > RIGHT_ARM_HEALTH))	// Blow it up?
 	{
-		if (self->locationDamage[hitLoc] >= RIGHT_ARM_HEALTH)
+		if (self->locationDamage[hit_loc] >= RIGHT_ARM_HEALTH)
 		{
 			newBolt = trap->G2API_AddBolt( self->ghoul2, 0, "*flash4" );
 			if ( newBolt != -1 )
@@ -149,7 +149,7 @@ void NPC_ATST_Pain(gentity_t* self, gentity_t* attacker, int damage)
 ATST_Hunt
 -------------------------`
 */
-void ATST_Hunt(qboolean visible, qboolean advance)
+void ATST_Hunt()
 {
 	if (NPCS.NPCInfo->goalEntity == NULL)
 	{//hunt
@@ -166,13 +166,13 @@ void ATST_Hunt(qboolean visible, qboolean advance)
 ATST_Ranged
 -------------------------
 */
-void ATST_Ranged(qboolean visible, qboolean advance, qboolean altAttack)
+void ATST_Ranged(const qboolean visible, const qboolean alt_attack)
 {
 	if (TIMER_Done(NPCS.NPC, "atkDelay") && visible)	// Attack?
 	{
 		TIMER_Set(NPCS.NPC, "atkDelay", Q_irand(500, 3000));
 
-		if (altAttack)
+		if (alt_attack)
 		{
 			NPCS.ucmd.buttons |= BUTTON_ATTACK | BUTTON_ALT_ATTACK;
 		}
@@ -184,7 +184,7 @@ void ATST_Ranged(qboolean visible, qboolean advance, qboolean altAttack)
 
 	if (NPCS.NPCInfo->scriptFlags & SCF_CHASE_ENEMIES)
 	{
-		ATST_Hunt(visible, advance);
+		ATST_Hunt();
 	}
 }
 
@@ -217,7 +217,7 @@ void ATST_Attack(void)
 	{
 		if (NPCS.NPCInfo->scriptFlags & SCF_CHASE_ENEMIES)
 		{
-			ATST_Hunt(visible, advance);
+			ATST_Hunt();
 			return;
 		}
 	}
@@ -274,7 +274,7 @@ void ATST_Attack(void)
 
 	NPC_FaceEnemy(qtrue);
 
-	ATST_Ranged(visible, advance, altAttack);
+	ATST_Ranged(visible, altAttack);
 }
 
 /*

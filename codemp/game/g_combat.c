@@ -1363,7 +1363,7 @@ static int G_CheckSpecialDeathAnim(gentity_t* self)
 	return deathAnim;
 }
 
-int G_PickDeathAnim(gentity_t* self, vec3_t point, int damage, int mod, int hitLoc)
+int G_PickDeathAnim(gentity_t* self, vec3_t point, int damage, int mod, int hit_loc)
 {//FIXME: play dead flop anims on body if in an appropriate _DEAD anim when this func is called
 	int deathAnim = -1;
 	int max_health;
@@ -1401,9 +1401,9 @@ int G_PickDeathAnim(gentity_t* self, vec3_t point, int damage, int mod, int hitL
 		VectorCopy(self->s.pos.trDelta, objVelocity);
 	}
 
-	if (hitLoc == HL_NONE)
+	if (hit_loc == HL_NONE)
 	{
-		hitLoc = G_GetHitLocation(self, point);//self->hitLoc
+		hit_loc = G_GetHitLocation(self, point);//self->hit_loc
 	}
 
 	if (self->client)
@@ -1524,7 +1524,7 @@ int G_PickDeathAnim(gentity_t* self, vec3_t point, int damage, int mod, int hitL
 		if (deathAnim == -1)
 		{
 			//death anims
-			switch (hitLoc)
+			switch (hit_loc)
 			{
 			case HL_FOOT_RT:
 			case HL_FOOT_LT:
@@ -3575,7 +3575,7 @@ int G_GetHitQuad(gentity_t* self, vec3_t hitloc)
 {
 	vec3_t diff, fwdangles = { 0,0,0 }, right;
 	vec3_t clEye;
-	int hitLoc = gPainHitLoc;
+	int hit_loc = gPainHitLoc;
 
 	if (self->client)
 	{
@@ -3610,52 +3610,52 @@ int G_GetHitQuad(gentity_t* self, vec3_t hitloc)
 	{
 		if (rightdot > 0.3)
 		{
-			hitLoc = G2_MODELPART_RARM;
+			hit_loc = G2_MODELPART_RARM;
 		}
 		else if (rightdot < -0.3)
 		{
-			hitLoc = G2_MODELPART_LARM;
+			hit_loc = G2_MODELPART_LARM;
 		}
 		else
 		{
-			hitLoc = G2_MODELPART_HEAD;
+			hit_loc = G2_MODELPART_HEAD;
 		}
 	}
 	else if (zdiff > -20)
 	{
 		if (rightdot > 0.1)
 		{
-			hitLoc = G2_MODELPART_RARM;
+			hit_loc = G2_MODELPART_RARM;
 		}
 		else if (rightdot < -0.1)
 		{
-			hitLoc = G2_MODELPART_LARM;
+			hit_loc = G2_MODELPART_LARM;
 		}
 		else
 		{
-			hitLoc = G2_MODELPART_HEAD;
+			hit_loc = G2_MODELPART_HEAD;
 		}
 	}
 	else
 	{
 		if (rightdot >= 0)
 		{
-			hitLoc = G2_MODELPART_RLEG;
+			hit_loc = G2_MODELPART_RLEG;
 		}
 		else
 		{
-			hitLoc = G2_MODELPART_LLEG;
+			hit_loc = G2_MODELPART_LLEG;
 		}
 	}
 
-	return hitLoc;
+	return hit_loc;
 }
 
 int gGAvoidDismember = 0;
 
 void UpdateClientRenderBolts(gentity_t* self, vec3_t renderOrigin, vec3_t renderAngles);
 
-qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hitLoc, vec3_t point, vec3_t dir, vec3_t bladeDir, int mod)
+qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hit_loc, vec3_t point, vec3_t dir, vec3_t bladeDir, int mod)
 {
 	qboolean dismember = qfalse;
 	int kneeLBolt = -1;
@@ -3665,7 +3665,7 @@ qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hitL
 	int footRBolt = -1;
 	int footLBolt = -1;
 
-	*hitLoc = HL_NONE;
+	*hit_loc = HL_NONE;
 
 	if (!surfName || !surfName[0])
 	{
@@ -3711,11 +3711,11 @@ qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hitL
 		//		Or, if we ever get bbox G2 traces, that may fix it, too
 		if (!Q_stricmp("head_light_blaster_cann", surfName))
 		{
-			*hitLoc = HL_ARM_LT;
+			*hit_loc = HL_ARM_LT;
 		}
 		else if (!Q_stricmp("head_concussion_charger", surfName))
 		{
-			*hitLoc = HL_ARM_RT;
+			*hit_loc = HL_ARM_RT;
 		}
 		return(qfalse);
 	}
@@ -3723,39 +3723,39 @@ qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hitL
 	{
 		if (!Q_stricmp("l_arm", surfName))
 		{
-			*hitLoc = HL_ARM_LT;
+			*hit_loc = HL_ARM_LT;
 		}
 		else if (!Q_stricmp("r_arm", surfName))
 		{
-			*hitLoc = HL_ARM_RT;
+			*hit_loc = HL_ARM_RT;
 		}
 		else if (!Q_stricmp("torso_front", surfName))
 		{
-			*hitLoc = HL_CHEST;
+			*hit_loc = HL_CHEST;
 		}
 		else if (!Q_stricmp("torso_tube1", surfName))
 		{
-			*hitLoc = HL_GENERIC1;
+			*hit_loc = HL_GENERIC1;
 		}
 		else if (!Q_stricmp("torso_tube2", surfName))
 		{
-			*hitLoc = HL_GENERIC2;
+			*hit_loc = HL_GENERIC2;
 		}
 		else if (!Q_stricmp("torso_tube3", surfName))
 		{
-			*hitLoc = HL_GENERIC3;
+			*hit_loc = HL_GENERIC3;
 		}
 		else if (!Q_stricmp("torso_tube4", surfName))
 		{
-			*hitLoc = HL_GENERIC4;
+			*hit_loc = HL_GENERIC4;
 		}
 		else if (!Q_stricmp("torso_tube5", surfName))
 		{
-			*hitLoc = HL_GENERIC5;
+			*hit_loc = HL_GENERIC5;
 		}
 		else if (!Q_stricmp("torso_tube6", surfName))
 		{
-			*hitLoc = HL_GENERIC6;
+			*hit_loc = HL_GENERIC6;
 		}
 		return(qfalse);
 	}
@@ -3763,15 +3763,15 @@ qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hitL
 	{
 		if (!Q_stricmp("torso_canister1", surfName))
 		{
-			*hitLoc = HL_GENERIC1;
+			*hit_loc = HL_GENERIC1;
 		}
 		else if (!Q_stricmp("torso_canister2", surfName))
 		{
-			*hitLoc = HL_GENERIC2;
+			*hit_loc = HL_GENERIC2;
 		}
 		else if (!Q_stricmp("torso_canister3", surfName))
 		{
-			*hitLoc = HL_GENERIC3;
+			*hit_loc = HL_GENERIC3;
 		}
 		return(qfalse);
 	}
@@ -3779,27 +3779,27 @@ qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hitL
 	{
 		if (!Q_stricmp("torso_antenna", surfName) || !Q_stricmp("torso_antenna_base", surfName))
 		{
-			*hitLoc = HL_GENERIC1;
+			*hit_loc = HL_GENERIC1;
 		}
 		else if (!Q_stricmp("torso_shield", surfName))
 		{
-			*hitLoc = HL_GENERIC2;
+			*hit_loc = HL_GENERIC2;
 		}
 		else
 		{
-			*hitLoc = HL_CHEST;
+			*hit_loc = HL_CHEST;
 		}
 		return(qfalse);
 	}
 
-	//FIXME: check the hitLoc and hitDir against the cap tag for the place
+	//FIXME: check the hit_loc and hitDir against the cap tag for the place
 	//where the split will be- if the hit dir is roughly perpendicular to
 	//the direction of the cap, then the split is allowed, otherwise we
 	//hit it at the wrong angle and should not dismember...
 	const int actualTime = level.time;
 	if (!Q_strncmp("hips", surfName, 4))
 	{//FIXME: test properly for legs
-		*hitLoc = HL_WAIST;
+		*hit_loc = HL_WAIST;
 		if (ent->client != NULL && ent->ghoul2)
 		{
 			mdxaBone_t	boltMatrix;
@@ -3814,10 +3814,10 @@ qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hitL
 				BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, tagOrg);
 				if (DistanceSquared(point, tagOrg) < 100)
 				{//actually hit the knee
-					*hitLoc = HL_LEG_LT;
+					*hit_loc = HL_LEG_LT;
 				}
 			}
-			if (*hitLoc == HL_WAIST)
+			if (*hit_loc == HL_WAIST)
 			{
 				if (kneeRBolt >= 0)
 				{
@@ -3827,7 +3827,7 @@ qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hitL
 					BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, tagOrg);
 					if (DistanceSquared(point, tagOrg) < 100)
 					{//actually hit the knee
-						*hitLoc = HL_LEG_RT;
+						*hit_loc = HL_LEG_RT;
 					}
 				}
 			}
@@ -3837,7 +3837,7 @@ qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hitL
 	{
 		if (!ent->client)
 		{
-			*hitLoc = HL_CHEST;
+			*hit_loc = HL_CHEST;
 		}
 		else
 		{
@@ -3861,62 +3861,62 @@ qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hitL
 			const float upSide = DotProduct(t_up, dirToImpact);
 			if (upSide < -10)
 			{//hit at waist
-				*hitLoc = HL_WAIST;
+				*hit_loc = HL_WAIST;
 			}
 			else
 			{//hit on upper torso
 				if (rightSide > 4)
 				{
-					*hitLoc = HL_ARM_RT;
+					*hit_loc = HL_ARM_RT;
 				}
 				else if (rightSide < -4)
 				{
-					*hitLoc = HL_ARM_LT;
+					*hit_loc = HL_ARM_LT;
 				}
 				else if (rightSide > 2)
 				{
 					if (frontSide > 0)
 					{
-						*hitLoc = HL_CHEST_RT;
+						*hit_loc = HL_CHEST_RT;
 					}
 					else
 					{
-						*hitLoc = HL_BACK_RT;
+						*hit_loc = HL_BACK_RT;
 					}
 				}
 				else if (rightSide < -2)
 				{
 					if (frontSide > 0)
 					{
-						*hitLoc = HL_CHEST_LT;
+						*hit_loc = HL_CHEST_LT;
 					}
 					else
 					{
-						*hitLoc = HL_BACK_LT;
+						*hit_loc = HL_BACK_LT;
 					}
 				}
 				else if (upSide > -3 && mod == MOD_SABER)
 				{
-					*hitLoc = HL_HEAD;
+					*hit_loc = HL_HEAD;
 				}
 				else if (frontSide > 0)
 				{
-					*hitLoc = HL_CHEST;
+					*hit_loc = HL_CHEST;
 				}
 				else
 				{
-					*hitLoc = HL_BACK;
+					*hit_loc = HL_BACK;
 				}
 			}
 		}
 	}
 	else if (!Q_strncmp("head", surfName, 4))
 	{
-		*hitLoc = HL_HEAD;
+		*hit_loc = HL_HEAD;
 	}
 	else if (!Q_strncmp("r_arm", surfName, 5))
 	{
-		*hitLoc = HL_ARM_RT;
+		*hit_loc = HL_ARM_RT;
 		if (ent->client != NULL && ent->ghoul2)
 		{
 			mdxaBone_t	boltMatrix;
@@ -3931,14 +3931,14 @@ qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hitL
 				BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, tagOrg);
 				if (DistanceSquared(point, tagOrg) < 256)
 				{//actually hit the hand
-					*hitLoc = HL_HAND_RT;
+					*hit_loc = HL_HAND_RT;
 				}
 			}
 		}
 	}
 	else if (!Q_strncmp("l_arm", surfName, 5))
 	{
-		*hitLoc = HL_ARM_LT;
+		*hit_loc = HL_ARM_LT;
 		if (ent->client != NULL && ent->ghoul2)
 		{
 			mdxaBone_t	boltMatrix;
@@ -3953,14 +3953,14 @@ qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hitL
 				BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, tagOrg);
 				if (DistanceSquared(point, tagOrg) < 256)
 				{//actually hit the hand
-					*hitLoc = HL_HAND_LT;
+					*hit_loc = HL_HAND_LT;
 				}
 			}
 		}
 	}
 	else if (!Q_strncmp("r_leg", surfName, 5))
 	{
-		*hitLoc = HL_LEG_RT;
+		*hit_loc = HL_LEG_RT;
 		if (ent->client != NULL && ent->ghoul2)
 		{
 			mdxaBone_t	boltMatrix;
@@ -3975,14 +3975,14 @@ qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hitL
 				BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, tagOrg);
 				if (DistanceSquared(point, tagOrg) < 100)
 				{//actually hit the foot
-					*hitLoc = HL_FOOT_RT;
+					*hit_loc = HL_FOOT_RT;
 				}
 			}
 		}
 	}
 	else if (!Q_strncmp("l_leg", surfName, 5))
 	{
-		*hitLoc = HL_LEG_LT;
+		*hit_loc = HL_LEG_LT;
 		if (ent->client != NULL && ent->ghoul2)
 		{
 			mdxaBone_t	boltMatrix;
@@ -3997,18 +3997,18 @@ qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hitL
 				BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, tagOrg);
 				if (DistanceSquared(point, tagOrg) < 100)
 				{//actually hit the foot
-					*hitLoc = HL_FOOT_LT;
+					*hit_loc = HL_FOOT_LT;
 				}
 			}
 		}
 	}
 	else if (!Q_strncmp("r_hand", surfName, 6) || !Q_strncmp("w_", surfName, 2))
 	{//right hand or weapon
-		*hitLoc = HL_HAND_RT;
+		*hit_loc = HL_HAND_RT;
 	}
 	else if (!Q_strncmp("l_hand", surfName, 6))
 	{
-		*hitLoc = HL_HAND_LT;
+		*hit_loc = HL_HAND_LT;
 	}
 
 	if (g_dismember.integer == 100)
@@ -4024,8 +4024,8 @@ qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hitL
 			{//either we don't care about probabilties or the probability let us continue
 				const char* tagName = NULL;
 				float	aoa = 0.5f;
-				//dir must be roughly perpendicular to the hitLoc's cap bolt
-				switch (*hitLoc)
+				//dir must be roughly perpendicular to the hit_loc's cap bolt
+				switch (*hit_loc)
 				{
 				case HL_LEG_RT:
 					tagName = "*hips_cap_r_leg";
@@ -4105,7 +4105,7 @@ qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hitL
 
 void G_CheckForDismemberment(gentity_t* ent, gentity_t* enemy, vec3_t point, int damage, int deathAnim, qboolean postDeath)
 {
-	int hitLoc = -1, hitLocUse = -1;
+	int hit_loc = -1, hitLocUse = -1;
 	vec3_t boltPoint;
 	const int dismember = g_dismember.integer;
 
@@ -4147,7 +4147,7 @@ void G_CheckForDismemberment(gentity_t* ent, gentity_t* enemy, vec3_t point, int
 
 	if (gGAvoidDismember == 2)
 	{
-		hitLoc = HL_HAND_RT;
+		hit_loc = HL_HAND_RT;
 	}
 	else
 	{
@@ -4159,17 +4159,17 @@ void G_CheckForDismemberment(gentity_t* ent, gentity_t* enemy, vec3_t point, int
 
 			if (hitSurface[0])
 			{
-				G_GetHitLocFromSurfName(ent, hitSurface, &hitLoc, point, vec3_origin, vec3_origin, MOD_UNKNOWN);
+				G_GetHitLocFromSurfName(ent, hitSurface, &hit_loc, point, vec3_origin, vec3_origin, MOD_UNKNOWN);
 			}
 		}
 
-		if (hitLoc == -1)
+		if (hit_loc == -1)
 		{
-			hitLoc = G_GetHitLocation(ent, point);
+			hit_loc = G_GetHitLocation(ent, point);
 		}
 	}
 
-	switch (hitLoc)
+	switch (hit_loc)
 	{
 	case HL_FOOT_RT:
 	case HL_LEG_RT:
@@ -4221,7 +4221,7 @@ void G_CheckForDismemberment(gentity_t* ent, gentity_t* enemy, vec3_t point, int
 		if (g_austrian.integer
 			&& (level.gametype == GT_DUEL || level.gametype == GT_POWERDUEL))
 		{
-			G_LogPrintf("Duel Dismemberment: %s dismembered at %s\n", ent->client->pers.netname, hitLocName[hitLoc]);
+			G_LogPrintf("Duel Dismemberment: %s dismembered at %s\n", ent->client->pers.netname, hitLocName[hit_loc]);
 		}
 	}
 	else
@@ -4233,7 +4233,7 @@ void G_CheckForDismemberment(gentity_t* ent, gentity_t* enemy, vec3_t point, int
 
 void G_LocationBasedDamageModifier(gentity_t* ent, vec3_t point, int mod, int dflags, int* damage)
 {
-	int hitLoc = -1;
+	int hit_loc = -1;
 
 	if (!g_locationBasedDamage.integer)
 	{ //then leave it alone
@@ -4269,16 +4269,16 @@ void G_LocationBasedDamageModifier(gentity_t* ent, vec3_t point, int mod, int df
 
 		if (hitSurface[0])
 		{
-			G_GetHitLocFromSurfName(ent, hitSurface, &hitLoc, point, vec3_origin, vec3_origin, MOD_UNKNOWN);
+			G_GetHitLocFromSurfName(ent, hitSurface, &hit_loc, point, vec3_origin, vec3_origin, MOD_UNKNOWN);
 		}
 	}
 
-	if (hitLoc == -1)
+	if (hit_loc == -1)
 	{
-		hitLoc = G_GetHitLocation(ent, point);
+		hit_loc = G_GetHitLocation(ent, point);
 	}
 
-	switch (hitLoc)
+	switch (hit_loc)
 	{
 	case HL_FOOT_RT:
 	case HL_FOOT_LT:

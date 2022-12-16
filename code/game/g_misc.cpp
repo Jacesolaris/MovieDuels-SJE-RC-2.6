@@ -743,7 +743,7 @@ extern qboolean G_ClearViewEntity(gentity_t* ent);
 extern void G_SetViewEntity(gentity_t* self, gentity_t* view_entity);
 extern void SP_fx_runner(gentity_t* ent);
 
-void camera_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags, int hitLoc)
+void camera_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags, int hit_loc)
 {
 	if (player && player->client && player->client->ps.viewEntity == self->s.number)
 	{
@@ -1201,7 +1201,7 @@ void misc_dlight_think(gentity_t* ent)
 }
 
 void station_pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
-	int hitLoc)
+	int hit_loc)
 {
 	//	self->s.modelindex = G_ModelIndex("/models/mapobjects/stasis/plugin2_in.md3");
 	//	self->s.eFlags &= ~ EF_ANIM_ALLFAST;
@@ -1916,7 +1916,7 @@ NOTE: place these half-way in the door to make it flush with the door's surface.
 "health"	default is 10
 */
 void maglock_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
-	int hitLoc)
+	int hit_loc)
 {
 	//unlock our door if we're the last lock pointed at the door
 	if (self->activator)
@@ -2855,7 +2855,7 @@ void gas_random_jet(gentity_t* self)
 
 //------------------------------------------------------------
 void GasBurst(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage, int mod,
-	int hitLoc)
+	int hit_loc)
 {
 	vec3_t pt;
 
@@ -2912,7 +2912,7 @@ void SP_misc_gas_tank(gentity_t* ent)
 
 //------------------------------------------------------------
 void CrystalCratePain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage,
-	int mod, int hitLoc)
+	int mod, int hit_loc)
 {
 	vec3_t pt;
 
@@ -3013,7 +3013,7 @@ void misc_atst_setanim(gentity_t* self, const int bone, const int anim)
 }
 
 void misc_atst_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
-	int hitLoc)
+	int hit_loc)
 {
 	//ATST was destroyed while you weren't in it
 	//can't be used anymore
@@ -3148,11 +3148,10 @@ void misc_atst_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 		G_Sound(self, G_SoundIndex("sound/chars/atst/atst_hatch_open"));
 	}
 }
-
+extern void NPC_ATST_Precache();
+extern void NPC_PrecacheAnimationCFG(const char* npc_type);
 void SP_misc_atst_drivable(gentity_t* ent)
 {
-	extern void NPC_ATST_Precache(void);
-	extern void NPC_PrecacheAnimationCFG(const char* NPC_type);
 
 	ent->s.modelindex = G_ModelIndex("models/players/atst/model.glm");
 	ent->playerModel = gi.G2API_InitGhoul2Model(ent->ghoul2, "models/players/atst/model.glm", ent->s.modelindex,

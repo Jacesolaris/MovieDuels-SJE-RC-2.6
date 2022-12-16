@@ -63,7 +63,7 @@ extern void ForceRage(gentity_t* self);
 extern void ForceProtect(gentity_t* self);
 extern void ForceAbsorb(gentity_t* self);
 extern int WP_MissileBlockForBlock(int saber_block);
-extern qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hitLoc, vec3_t point, vec3_t dir, vec3_t bladeDir, int mod);
+extern qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hit_loc, vec3_t point, vec3_t dir, vec3_t bladeDir, int mod);
 extern qboolean WP_ForcePowerUsable(gentity_t* self, forcePowers_t forcePower);
 extern qboolean WP_ForcePowerAvailable(gentity_t* self, forcePowers_t forcePower, int overrideAmt);
 extern void WP_ForcePowerStop(gentity_t* self, forcePowers_t forcePower);
@@ -1908,7 +1908,7 @@ static void Jedi_FaceEntity( gentity_t *self, gentity_t *other, qboolean doPitch
 */
 
 /*
-qboolean Jedi_DodgeEvasion( gentity_t *self, gentity_t *shooter, trace_t *tr, int hitLoc )
+qboolean Jedi_DodgeEvasion( gentity_t *self, gentity_t *shooter, trace_t *tr, int hit_loc )
 
 Jedi will play a dodge anim, blur, and make the force speed noise.
 
@@ -1917,7 +1917,7 @@ Right now used to dodge instant-hit weapons.
 FIXME: possibly call this for saber melee evasion and/or missile evasion?
 FIXME: possibly let player do this too?
 */
-//rwwFIXMEFIXME: Going to use qboolean Jedi_DodgeEvasion( gentity_t *self, gentity_t *shooter, trace_t *tr, int hitLoc ) from
+//rwwFIXMEFIXME: Going to use qboolean Jedi_DodgeEvasion( gentity_t *self, gentity_t *shooter, trace_t *tr, int hit_loc ) from
 //w_saber.c.. maybe use seperate one for NPCs or add cases to that one?
 
 evasionType_t Jedi_CheckFlipEvasions(gentity_t* self, float rightdot, float zdiff)

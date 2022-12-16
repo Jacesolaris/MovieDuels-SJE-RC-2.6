@@ -127,7 +127,7 @@ void Rancor_Patrol(void)
 Rancor_Move
 -------------------------
 */
-void Rancor_Move(qboolean visible)
+void Rancor_Move()
 {
 	if (NPCS.NPCInfo->localState != LSTATE_WAITING)
 	{
@@ -413,19 +413,19 @@ void Rancor_Bite(void)
 			{//killed them, chance of dismembering
 				if (!Q_irand(0, 1))
 				{//bite something off
-					const int hitLoc = Q_irand(G2_MODELPART_HEAD, G2_MODELPART_RLEG);
-					if (hitLoc == G2_MODELPART_HEAD)
+					const int hit_loc = Q_irand(G2_MODELPART_HEAD, G2_MODELPART_RLEG);
+					if (hit_loc == G2_MODELPART_HEAD)
 					{
 						NPC_SetAnim(radiusEnt, SETANIM_BOTH, BOTH_DEATH17, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
-					else if (hitLoc == G2_MODELPART_WAIST)
+					else if (hit_loc == G2_MODELPART_WAIST)
 					{
 						NPC_SetAnim(radiusEnt, SETANIM_BOTH, BOTH_DEATHBACKWARD2, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					//radiusEnt->client->dismembered = qfalse;
 					//FIXME: the limb should just disappear, cuz I ate it
-					G_Dismember(radiusEnt, NPCS.NPC, radiusEnt->r.currentOrigin, hitLoc, 90, 0, radiusEnt->client->ps.torsoAnim, qtrue);
-					//G_DoDismemberment( radiusEnt, radiusEnt->r.currentOrigin, MOD_SABER, 1000, hitLoc, qtrue );
+					G_Dismember(radiusEnt, NPCS.NPC, radiusEnt->r.currentOrigin, hit_loc, 90, 0, radiusEnt->client->ps.torsoAnim, qtrue);
+					//G_DoDismemberment( radiusEnt, radiusEnt->r.currentOrigin, MOD_SABER, 1000, hit_loc, qtrue );
 				}
 			}
 			G_Sound(radiusEnt, CHAN_AUTO, G_SoundIndex("sound/chars/rancor/chomp.wav"));
@@ -686,7 +686,7 @@ void Rancor_Combat(void)
 			}
 			else
 			{
-				Rancor_Move(qtrue);
+				Rancor_Move();
 			}
 		}
 		else

@@ -63,7 +63,7 @@ void WP_FireBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qbool
 		}
 	}
 
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	WP_MissileTargetHint(ent, start, dir);
@@ -260,7 +260,7 @@ void WP_FireBattleDroidMissile(gentity_t* ent, vec3_t start, vec3_t dir, const q
 		}
 	}
 
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	WP_MissileTargetHint(ent, start, dir);
@@ -467,7 +467,7 @@ void WP_FireFirstOrderMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qb
 		}
 	}
 
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	WP_MissileTargetHint(ent, start, dir);
@@ -671,7 +671,7 @@ void WP_FireRebelBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, const 
 		}
 	}
 
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	WP_MissileTargetHint(ent, start, dir);
@@ -979,7 +979,7 @@ void WP_FireRebelRifleMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qb
 		}
 	}
 
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	WP_MissileTargetHint(ent, start, dir);
@@ -1183,7 +1183,7 @@ void WP_FireJangoPistolMissile(gentity_t* ent, vec3_t start, vec3_t dir, const q
 		}
 	}
 
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	WP_MissileTargetHint(ent, start, dir);
@@ -1274,7 +1274,7 @@ void WP_FireJangoWristMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qb
 		}
 	}
 
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	WP_MissileTargetHint(ent, start, dir);
@@ -1359,7 +1359,7 @@ void WP_FireJangoDualPistolMissile(gentity_t* ent, vec3_t start, vec3_t dir, con
 		}
 	}
 
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	WP_MissileTargetHint(ent, start, dir);
@@ -1452,7 +1452,7 @@ void WP_FireJangoDualPistolMissileDuals(gentity_t* ent, vec3_t start, vec3_t dir
 		}
 	}
 
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	WP_MissileTargetHint(ent, start, dir);
@@ -2000,7 +2000,7 @@ void WP_FireBobaRifleMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qbo
 		}
 	}
 
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	WP_MissileTargetHint(ent, start, dir);

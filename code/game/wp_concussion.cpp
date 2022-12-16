@@ -103,7 +103,7 @@ static void WP_FireConcussionAlt(gentity_t* ent)
 		}
 	}
 	VectorCopy(muzzle, start);
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 
 	int skip = ent->s.number;
 
@@ -189,18 +189,18 @@ static void WP_FireConcussionAlt(gentity_t* ent)
 						ent->client->ps.persistant[PERS_ACCURACY_HITS]++;
 					}
 
-					const int hitLoc = G_GetHitLocFromTrace(&tr, MOD_CONC_ALT);
+					const int hit_loc = G_GetHitLocFromTrace(&tr, MOD_CONC_ALT);
 					const auto noKnockBack = static_cast<qboolean>((trace_ent->flags & FL_NO_KNOCKBACK) != 0);
 					//will be set if they die, I want to know if it was on *before* they died
 					if (trace_ent && trace_ent->client && trace_ent->client->NPC_class == CLASS_GALAKMECH)
 					{
 						//hehe
 						G_Damage(trace_ent, ent, ent, forwardVec, tr.endpos, 10, DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC,
-							MOD_CONC_ALT, hitLoc);
+							MOD_CONC_ALT, hit_loc);
 						break;
 					}
 					G_Damage(trace_ent, ent, ent, forwardVec, tr.endpos, damage, DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC,
-						MOD_CONC_ALT, hitLoc);
+						MOD_CONC_ALT, hit_loc);
 
 					//do knockback and knockdown manually
 					if (trace_ent->client)
@@ -317,7 +317,7 @@ static void WP_FireConcussion(gentity_t* ent)
 	}
 
 	VectorCopy(muzzle, start);
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	gentity_t* missile = CreateMissile(start, forwardVec, vel, 10000, ent, qfalse);

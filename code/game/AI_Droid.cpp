@@ -43,7 +43,7 @@ enum
 R2D2_PartsMove
 -------------------------
 */
-void R2D2_PartsMove(void)
+void R2D2_PartsMove()
 {
 	// Front 'eye' lense
 	if (TIMER_Done(NPC, "eyeDelay"))
@@ -68,7 +68,7 @@ void R2D2_PartsMove(void)
 NPC_BSDroid_Idle
 -------------------------
 */
-void Droid_Idle(void)
+void Droid_Idle()
 {
 	//	VectorCopy( NPCInfo->investigateGoal, lookPos );
 
@@ -80,7 +80,7 @@ void Droid_Idle(void)
 R2D2_TurnAnims
 -------------------------
 */
-void R2D2_TurnAnims(void)
+void R2D2_TurnAnims()
 {
 	const float turndelta = AngleDelta(NPC->currentAngles[YAW], NPCInfo->desiredYaw);
 
@@ -113,7 +113,7 @@ void R2D2_TurnAnims(void)
 Droid_Patrol
 -------------------------
 */
-void Droid_Patrol(void)
+void Droid_Patrol()
 {
 	NPC->pos1[1] = AngleNormalize360(NPC->pos1[1]);
 
@@ -167,10 +167,6 @@ void Droid_Patrol(void)
 				TIMER_Set(NPC, "patrolNoise", Q_irand(2000, 4000));
 			}
 		}
-		//		else
-		//		{
-		//			R5D2_LookAround();
-		//		}
 	}
 
 	NPC_UpdateAngles(qtrue, qtrue);
@@ -181,7 +177,7 @@ void Droid_Patrol(void)
 Droid_Run
 -------------------------
 */
-void Droid_Run(void)
+void Droid_Run()
 {
 	R2D2_PartsMove();
 
@@ -213,7 +209,7 @@ void Droid_Run(void)
 void Droid_Spin( void )
 -------------------------
 */
-void Droid_Spin(void)
+void Droid_Spin()
 {
 	constexpr vec3_t dir = { 0, 0, 1 };
 
@@ -277,8 +273,8 @@ void Droid_Spin(void)
 NPC_BSDroid_Pain
 -------------------------
 */
-void NPC_Droid_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage, const int mod,
-	int hitLoc)
+void NPC_Droid_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, const int damage, const int mod,
+	int hit_loc)
 {
 	int anim;
 	float pain_chance;
@@ -381,18 +377,18 @@ void NPC_Droid_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, con
 			TIMER_Set(self, "roam", Q_irand(1000, 2000));
 		}
 	}
-	else if (self->client->NPC_class == CLASS_INTERROGATOR && (mod == MOD_DEMP2 || mod == MOD_DEMP2_ALT) && other)
+	else if (self->client->NPC_class == CLASS_INTERROGATOR && (mod == MOD_DEMP2 || mod == MOD_DEMP2_ALT) && attacker)
 	{
 		vec3_t dir;
 
-		VectorSubtract(self->currentOrigin, other->currentOrigin, dir);
+		VectorSubtract(self->currentOrigin, attacker->currentOrigin, dir);
 		VectorNormalize(dir);
 
 		VectorMA(self->client->ps.velocity, 550, dir, self->client->ps.velocity);
 		self->client->ps.velocity[2] -= 127;
 	}
 
-	NPC_Pain(self, inflictor, other, point, damage, mod);
+	NPC_Pain(self, inflictor, attacker, point, damage, mod);
 }
 
 /*
@@ -400,7 +396,7 @@ void NPC_Droid_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, con
 Droid_Pain
 -------------------------
 */
-void Droid_Pain(void)
+void Droid_Pain()
 {
 	if (TIMER_Done(NPC, "droidpain")) //He's done jumping around
 	{
@@ -413,7 +409,7 @@ void Droid_Pain(void)
 NPC_Mouse_Precache
 -------------------------
 */
-void NPC_Mouse_Precache(void)
+void NPC_Mouse_Precache()
 {
 	for (int i = 1; i < 4; i++)
 	{
@@ -430,7 +426,7 @@ void NPC_Mouse_Precache(void)
 NPC_R5D2_Precache
 -------------------------
 */
-void NPC_R5D2_Precache(void)
+void NPC_R5D2_Precache()
 {
 	for (int i = 1; i < 5; i++)
 	{
@@ -448,7 +444,7 @@ void NPC_R5D2_Precache(void)
 NPC_R2D2_Precache
 -------------------------
 */
-void NPC_R2D2_Precache(void)
+void NPC_R2D2_Precache()
 {
 	for (int i = 1; i < 4; i++)
 	{
@@ -481,7 +477,7 @@ void NPC_Gonk_Precache()
 NPC_Protocol_Precache
 -------------------------
 */
-void NPC_Protocol_Precache(void)
+void NPC_Protocol_Precache()
 {
 	G_SoundIndex("sound/chars/mark2/misc/mark2_explo");
 	G_EffectIndex("env/med_explode");
@@ -541,7 +537,7 @@ static void R5D2_LookAround( void )
 NPC_BSDroid_Default
 -------------------------
 */
-void NPC_BSDroid_Default(void)
+void NPC_BSDroid_Default()
 {
 	if (NPCInfo->localState == LSTATE_SPINNING)
 	{

@@ -243,28 +243,28 @@ void Wampa_Slash(const int boltIndex, const qboolean backhand)
 				if (!Q_irand(0, 1))
 				{
 					//bite something off
-					int hitLoc;
+					int hit_loc;
 					if (g_dismemberment->integer < 4)
 					{
-						hitLoc = Q_irand(HL_BACK_RT, HL_HAND_LT);
+						hit_loc = Q_irand(HL_BACK_RT, HL_HAND_LT);
 					}
 					else
 					{
-						hitLoc = Q_irand(HL_WAIST, HL_HEAD);
+						hit_loc = Q_irand(HL_WAIST, HL_HEAD);
 					}
-					if (hitLoc == HL_HEAD)
+					if (hit_loc == HL_HEAD)
 					{
 						NPC_SetAnim(radiusEnts[i], SETANIM_BOTH, BOTH_DEATH17,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
-					else if (hitLoc == HL_WAIST)
+					else if (hit_loc == HL_WAIST)
 					{
 						NPC_SetAnim(radiusEnts[i], SETANIM_BOTH, BOTH_DEATHBACKWARD2,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					radiusEnts[i]->client->dismembered = false;
 					//FIXME: the limb should just disappear, cuz I ate it
-					G_DoDismemberment(radiusEnts[i], radiusEnts[i]->currentOrigin, MOD_SABER, hitLoc, qtrue);
+					G_DoDismemberment(radiusEnts[i], radiusEnts[i]->currentOrigin, MOD_SABER, hit_loc, qtrue);
 				}
 			}
 			else if (!Q_irand(0, 3) && radiusEnts[i]->health > 0)
@@ -463,7 +463,7 @@ NPC_Wampa_Pain
 -------------------------
 */
 void NPC_Wampa_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage, int mod,
-	int hitLoc)
+	int hit_loc)
 {
 	qboolean hitByWampa = qfalse;
 	if (self->count)
@@ -831,18 +831,18 @@ void NPC_BSWampa_Default(void)
 								if (NPC->activator->health <= 0)
 								{
 									//killed them, chance of dismembering
-									int hitLoc;
+									int hit_loc;
 									if (g_dismemberment->integer < 4)
 									{
-										hitLoc = Q_irand(HL_BACK_RT, HL_HAND_LT);
+										hit_loc = Q_irand(HL_BACK_RT, HL_HAND_LT);
 									}
 									else
 									{
-										hitLoc = Q_irand(HL_WAIST, HL_HEAD);
+										hit_loc = Q_irand(HL_WAIST, HL_HEAD);
 									}
 									NPC->activator->client->dismembered = false;
 									//FIXME: the limb should just disappear, cuz I ate it
-									G_DoDismemberment(NPC->activator, NPC->activator->currentOrigin, MOD_SABER, hitLoc,
+									G_DoDismemberment(NPC->activator, NPC->activator->currentOrigin, MOD_SABER, hit_loc,
 									                  qtrue);
 									TIMER_Set(NPC, "sniffCorpse", Q_irand(2000, 5000));
 								}

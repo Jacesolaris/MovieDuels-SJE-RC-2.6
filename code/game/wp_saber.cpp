@@ -50,7 +50,7 @@ static vec3_t dmgNormal[MAX_SABER_VICTIMS];
 static vec3_t dmgBladeVec[MAX_SABER_VICTIMS];
 static vec3_t dmgSpot[MAX_SABER_VICTIMS];
 static float dmgFraction[MAX_SABER_VICTIMS];
-static int hitLoc[MAX_SABER_VICTIMS];
+static int hit_loc[MAX_SABER_VICTIMS];
 static qboolean hitDismember[MAX_SABER_VICTIMS];
 static int hitDismemberLoc[MAX_SABER_VICTIMS];
 static vec3_t saberHitLocation, saberHitNormal = { 0, 0, 1.0 };
@@ -96,7 +96,7 @@ extern int G_CheckLedgeDive(gentity_t* self, float check_dist, const vec3_t chec
 extern void G_BounceMissile(gentity_t* ent, trace_t* trace);
 extern qboolean G_PointInBounds(const vec3_t point, const vec3_t mins, const vec3_t maxs);
 extern void NPC_UseResponse(gentity_t* self, const gentity_t* user, qboolean useWhenDone);
-extern void G_MissileImpacted(gentity_t* ent, gentity_t* other, vec3_t impactPos, vec3_t normal, int hitLoc = HL_NONE);
+extern void G_MissileImpacted(gentity_t* ent, gentity_t* other, vec3_t impactPos, vec3_t normal, int hit_loc = HL_NONE);
 extern evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitloc, vec3_t phit_dir,
 	const gentity_t* incoming, float dist = 0.0f);
 extern void jedi_rage_stop(const gentity_t* self);
@@ -781,7 +781,7 @@ void WP_SaberAddG2SaberModels(gentity_t* ent, const int specific_saber_num)
 
 qboolean GalenHolster(const gentity_t* ent)
 {
-	if ((ent->client->ps.saber[0].type == SABER_STAFF)
+	if (ent->client->ps.saber[0].type == SABER_STAFF
 		&& (!Q_stricmp("md_galen", ent->NPC_type) ||
 			!Q_stricmp("md_galen_jt", ent->NPC_type) ||
 			!Q_stricmp("md_galencjr", ent->NPC_type) ||
@@ -2546,7 +2546,7 @@ void WP_SaberClearDamageForEntNum(gentity_t* attacker, const int entity_num, con
 			}
 			//now clear everything
 			totalDmg[i] = 0; //no damage
-			hitLoc[i] = HL_NONE;
+			hit_loc[i] = HL_NONE;
 			hitDismemberLoc[i] = HL_NONE;
 			hitDismember[i] = qfalse;
 			victimEntityNum[i] = ENTITYNUM_NONE; //like we never hit him
@@ -2665,14 +2665,14 @@ qboolean WP_SaberApplyDamageJKA(gentity_t* ent, const float base_damage, const i
 							&& (victim->s.weapon == WP_SABER || victim->client->NPC_class == CLASS_REBORN || victim->client->NPC_class == CLASS_WAMPA)
 							&& !g_saberRealisticCombat->integer)
 						{//dmg vs other saber fighters is modded by hitloc and capped
-							totalDmg[i] *= damageModifier[hitLoc[i]];
-							if (hitLoc[i] == HL_NONE)
+							totalDmg[i] *= damageModifier[hit_loc[i]];
+							if (hit_loc[i] == HL_NONE)
 							{
 								max_dmg = 33 * base_damage;
 							}
 							else
 							{
-								max_dmg = 50 * hitLocHealthPercentage[hitLoc[i]] * base_damage;//*victim->client->ps.stats[STAT_MAX_HEALTH]*2.0f;
+								max_dmg = 50 * hitLocHealthPercentage[hit_loc[i]] * base_damage;//*victim->client->ps.stats[STAT_MAX_HEALTH]*2.0f;
 							}
 							if (max_dmg < totalDmg[i])
 							{
@@ -2829,7 +2829,7 @@ qboolean WP_SaberApplyDamageJKA(gentity_t* ent, const float base_damage, const i
 								}
 							}
 						}
-						//victim->hitLoc = hitLoc[i];
+						//victim->hit_loc = hit_loc[i];
 
 						d_flags |= DAMAGE_NO_KNOCKBACK;//okay, let's try no knockback whatsoever...
 						d_flags &= ~DAMAGE_DEATH_KNOCKBACK;
@@ -2841,7 +2841,7 @@ qboolean WP_SaberApplyDamageJKA(gentity_t* ent, const float base_damage, const i
 						}
 						if (ent->client && !ent->s.number)
 						{
-							switch (hitLoc[i])
+							switch (hit_loc[i])
 							{
 							case HL_FOOT_RT:
 							case HL_FOOT_LT:
@@ -2948,11 +2948,11 @@ qboolean WP_SaberApplyDamageJKA(gentity_t* ent, const float base_damage, const i
 						{
 							if ((dFlags & DAMAGE_NO_DAMAGE))
 							{
-								gi.Printf(S_COLOR_RED"damage: fake, hitLoc %d\n", hitLoc[i]);
+								gi.Printf(S_COLOR_RED"damage: fake, hit_loc %d\n", hit_loc[i]);
 							}
 							else
 							{
-								gi.Printf(S_COLOR_RED"damage: %4.2f, hitLoc %d\n", totalDmg[i], hitLoc[i]);
+								gi.Printf(S_COLOR_RED"damage: %4.2f, hit_loc %d\n", totalDmg[i], hit_loc[i]);
 							}
 						}
 #endif
@@ -3097,14 +3097,14 @@ qboolean WP_SaberApplyDamageMD(gentity_t* ent, const float base_damage, const in
 							&& !g_saberRealisticCombat->integer)
 						{
 							//dmg vs other saber fighters is modded by hitloc and capped
-							totalDmg[i] *= damageModifier[hitLoc[i]];
-							if (hitLoc[i] == HL_NONE)
+							totalDmg[i] *= damageModifier[hit_loc[i]];
+							if (hit_loc[i] == HL_NONE)
 							{
 								max_dmg = 33 * base_damage;
 							}
 							else
 							{
-								max_dmg = 50 * hitLocHealthPercentage[hitLoc[i]] * base_damage;
+								max_dmg = 50 * hitLocHealthPercentage[hit_loc[i]] * base_damage;
 							}
 							if (max_dmg < totalDmg[i])
 							{
@@ -3565,7 +3565,7 @@ qboolean WP_SaberApplyDamageMD(gentity_t* ent, const float base_damage, const in
 						}
 						if (ent->client && !ent->s.number)
 						{
-							switch (hitLoc[i])
+							switch (hit_loc[i])
 							{
 							case HL_FOOT_RT:
 							case HL_FOOT_LT:
@@ -3677,11 +3677,11 @@ qboolean WP_SaberApplyDamageMD(gentity_t* ent, const float base_damage, const in
 						{
 							if ((dFlags & DAMAGE_NO_DAMAGE))
 							{
-								gi.Printf(S_COLOR_RED"damage: fake, hitLoc %d\n", hitLoc[i]);
+								gi.Printf(S_COLOR_RED"damage: fake, hit_loc %d\n", hit_loc[i]);
 							}
 							else
 							{
-								gi.Printf(S_COLOR_RED"damage: %4.2f, hitLoc %d\n", totalDmg[i], hitLoc[i]);
+								gi.Printf(S_COLOR_RED"damage: %4.2f, hit_loc %d\n", totalDmg[i], hit_loc[i]);
 							}
 						}
 #endif
@@ -3752,11 +3752,11 @@ void WP_SaberDamageAdd(const float tr_dmg, const int tr_victim_entity_num, vec3_
 		}
 
 		const float add_dmg = tr_dmg * dmg;
-		if (tr_hit_loc != HL_NONE && (hitLoc[cur_victim] == HL_NONE || hitLocHealthPercentage[tr_hit_loc] >
-			hitLocHealthPercentage[hitLoc[cur_victim]]))
+		if (tr_hit_loc != HL_NONE && (hit_loc[cur_victim] == HL_NONE || hitLocHealthPercentage[tr_hit_loc] >
+			hitLocHealthPercentage[hit_loc[cur_victim]]))
 		{
-			//this hitLoc is more critical than the previous one this frame
-			hitLoc[cur_victim] = tr_hit_loc;
+			//this hit_loc is more critical than the previous one this frame
+			hit_loc[cur_victim] = tr_hit_loc;
 		}
 
 		totalDmg[cur_victim] += add_dmg;
@@ -4362,7 +4362,7 @@ qboolean WP_SaberDamageEffects(trace_t* tr, const float length, const float dmg,
 			}
 
 			//Get the hit location based on surface name
-			if (hitLoc[hit_ent_num[num_hit_ents]] == HL_NONE && tr_hit_loc[num_hit_ents] == HL_NONE
+			if (hit_loc[hit_ent_num[num_hit_ents]] == HL_NONE && tr_hit_loc[num_hit_ents] == HL_NONE
 				|| hitDismemberLoc[hit_ent_num[num_hit_ents]] == HL_NONE && tr_dismember_loc[num_hit_ents] == HL_NONE
 				|| !hitDismember[hit_ent_num[num_hit_ents]] && !tr_dismember[num_hit_ents])
 			{
@@ -7165,7 +7165,7 @@ void WP_SaberDamageTrace(gentity_t* ent, int saber_num, int blade_num)
 	memset(dmgNormal, 0, sizeof dmgNormal);
 	memset(dmgSpot, 0, sizeof dmgSpot);
 	memset(dmgFraction, 0, sizeof dmgFraction);
-	memset(hitLoc, HL_NONE, sizeof hitLoc);
+	memset(hit_loc, HL_NONE, sizeof hit_loc);
 	memset(hitDismemberLoc, HL_NONE, sizeof hitDismemberLoc);
 	memset(hitDismember, qfalse, sizeof hitDismember);
 	numVictims = 0;
@@ -8777,7 +8777,7 @@ void wp_saber_damage_trace_amd(gentity_t* ent, int saber_num, int blade_num)
 	memset(dmgNormal, 0, sizeof dmgNormal);
 	memset(dmgSpot, 0, sizeof dmgSpot);
 	memset(dmgFraction, 0, sizeof dmgFraction);
-	memset(hitLoc, HL_NONE, sizeof hitLoc);
+	memset(hit_loc, HL_NONE, sizeof hit_loc);
 	memset(hitDismemberLoc, HL_NONE, sizeof hitDismemberLoc);
 	memset(hitDismember, qfalse, sizeof hitDismember);
 	numVictims = 0;
@@ -10155,7 +10155,7 @@ void WP_SaberDamageTrace_MD(gentity_t* ent, int saber_num, int blade_num)
 	memset(dmgNormal, 0, sizeof dmgNormal);
 	memset(dmgSpot, 0, sizeof dmgSpot);
 	memset(dmgFraction, 0, sizeof dmgFraction);
-	memset(hitLoc, HL_NONE, sizeof hitLoc);
+	memset(hit_loc, HL_NONE, sizeof hit_loc);
 	memset(hitDismemberLoc, HL_NONE, sizeof hitDismemberLoc);
 	memset(hitDismember, qfalse, sizeof hitDismember);
 	numVictims = 0;
@@ -13807,7 +13807,7 @@ qboolean Manual_NPCSaberblocking(const gentity_t* defender) //Is this guy blocki
 
 qboolean NPC_Can_Do_Blocking_stances_In_SJE_Mode(const gentity_t* defender)
 {
-	if ((g_SerenityJediEngineMode->integer <= 2))
+	if (g_SerenityJediEngineMode->integer <= 2)
 	{
 		return qfalse;
 	}
@@ -31800,7 +31800,7 @@ void ForceLightningDamage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, con
 				}
 
 				if (!in_camera && (trace_ent->NPC || (trace_ent->s.number < MAX_CLIENTS ||
-					G_ControlledByPlayer(trace_ent))) && (trace_ent->s.weapon != WP_EMPLACED_GUN)
+					G_ControlledByPlayer(trace_ent))) && trace_ent->s.weapon != WP_EMPLACED_GUN
 					&& !PM_SaberInKata(static_cast<saberMoveName_t>(trace_ent->client->ps.saberMove)))
 				{
 					if (PM_RunningAnim(trace_ent->client->ps.legsAnim) && trace_ent->client->ps.stats[STAT_HEALTH] > 1 || is_class_guard)
@@ -31890,8 +31890,8 @@ void ForceLightningDamage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, con
 
 void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, const float dist, const float dot, vec3_t impact_point)
 {
-	qboolean LightningBlocked = qfalse;
-	qboolean IsClassGuard = qfalse;
+	qboolean lightning_blocked = qfalse;
+	qboolean is_class_guard = qfalse;
 
 	if (trace_ent->NPC && trace_ent->NPC->scriptFlags & SCF_NO_FORCE)
 	{
@@ -31935,7 +31935,6 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 				//make them do a parry
 				const float chance_of_fizz = Q_flrand(0.0f, 1.0f);
 				vec3_t fwd, right, up;
-				LightningBlocked = qtrue;
 				VectorNegate(dir, fwd);
 
 				//randomize direction a bit
@@ -31973,6 +31972,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 					NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P1_S1_T_, SETANIM_AFLAG_PACE);
 					break;
 				}
+				lightning_blocked = qtrue;
 				trace_ent->client->ps.weaponTime = Q_irand(300, 600);
 				if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
 				{
@@ -32010,7 +32010,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 			{
 				NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_FORCE_2HANDEDLIGHTNING_HOLD, SETANIM_AFLAG_PACE);
 				trace_ent->client->ps.weaponTime = Q_irand(300, 600);
-				LightningBlocked = qtrue;
+				lightning_blocked = qtrue;
 
 				if (trace_ent->enemy
 					&& trace_ent->ghoul2.size())
@@ -32036,7 +32036,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 			{
 				NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_WIND, SETANIM_AFLAG_PACE);
 				trace_ent->client->ps.weaponTime = Q_irand(300, 600);
-				LightningBlocked = qtrue;
+				lightning_blocked = qtrue;
 				trace_ent->client->ps.powerups[PW_MEDITATE] = level.time + trace_ent->client->ps.torsoAnimTimer + 5000;
 				if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
 				{
@@ -32056,13 +32056,13 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 	{
 		if (trace_ent && trace_ent->client && trace_ent->client->NPC_class == CLASS_GUARD)
 		{
-			IsClassGuard = qtrue;
+			is_class_guard = qtrue;
 		}
 		if (!trace_ent->client || trace_ent->client->playerTeam != self->client->playerTeam || self->enemy == trace_ent ||
 			trace_ent->enemy == self || trace_ent->client->playerTeam == TEAM_SOLO || self->client->playerTeam ==
-			TEAM_SOLO || IsClassGuard)
+			TEAM_SOLO || is_class_guard)
 		{
-			int fpBlockCost;
+			int fp_block_cost;
 			//an enemy or object
 			int dmg;
 
@@ -32114,25 +32114,25 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 			{
 				if (jedi_win_po(trace_ent))
 				{
-					fpBlockCost = Q_irand(0, 1);
+					fp_block_cost = Q_irand(0, 1);
 				}
 				else
 				{
-					fpBlockCost = Q_irand(1, 2);
+					fp_block_cost = Q_irand(1, 2);
 				}
 			}
 			else
 			{
-				fpBlockCost = 1;
+				fp_block_cost = 1;
 			}
-			const int NPCfpBlockCost = Q_irand(1, 3);
+			const int np_cfp_block_cost = Q_irand(1, 3);
 
 			if (trace_ent->client && trace_ent->health > 0)
 			{
 				if (trace_ent->client
 					&& trace_ent->health > 0
 					&& trace_ent->NPC
-					&& !in_camera && !IsClassGuard)
+					&& !in_camera && !is_class_guard)
 				{
 					if (trace_ent->s.weapon == WP_SABER
 						&& trace_ent->client->ps.SaberActive()
@@ -32153,7 +32153,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 						//make them do a parry
 						const float chance_of_fizz = Q_flrand(0.0f, 1.0f);
 						vec3_t fwd, right, up;
-						LightningBlocked = qtrue;
+						lightning_blocked = qtrue;
 						VectorNegate(dir, fwd);
 
 						//randomize direction a bit
@@ -32192,14 +32192,16 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 							break;
 						}
 						trace_ent->client->ps.weaponTime = Q_irand(300, 600);
-						if (trace_ent->client->ps.blockPoints < BLOCKPOINTS_HALF)
+
+						if (trace_ent->client->ps.blockPoints < BLOCKPOINTS_HALF && jedi_win_po(trace_ent))
 						{
-							WP_ForcePowerDrain(trace_ent, FP_ABSORB, fpBlockCost);
+							WP_ForcePowerDrain(trace_ent, FP_ABSORB, fp_block_cost);
 						}
 						else
 						{
-							WP_BlockPointsDrain(trace_ent, fpBlockCost);
+							WP_BlockPointsDrain(trace_ent, fp_block_cost);
 						}
+
 						dmg = Q_irand(0, 1);
 						if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
 						{
@@ -32218,7 +32220,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 					{
 						NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_FORCE_2HANDEDLIGHTNING_HOLD, SETANIM_AFLAG_PACE);
 						trace_ent->client->ps.weaponTime = Q_irand(300, 600);
-						LightningBlocked = qtrue;
+						lightning_blocked = qtrue;
 
 						if (trace_ent->ghoul2.size())
 						{
@@ -32237,7 +32239,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 						}
 						trace_ent->client->ps.powerups[PW_MEDITATE] = level.time + trace_ent->client->ps.torsoAnimTimer + 5000;
 
-						WP_ForcePowerDrain(trace_ent, FP_ABSORB, NPCfpBlockCost);
+						WP_ForcePowerDrain(trace_ent, FP_ABSORB, np_cfp_block_cost);
 
 						dmg = Q_irand(0, 1);
 						if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
@@ -32248,17 +32250,17 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 				}
 				else if (trace_ent->s.weapon == WP_SABER && trace_ent->client->ps.SaberActive())
 				{
-					if (!in_camera && !IsClassGuard && manual_saberblocking(trace_ent)
+					if (!in_camera && !is_class_guard && manual_saberblocking(trace_ent)
 						&& InFOV(self->currentOrigin, trace_ent->currentOrigin, trace_ent->client->ps.viewangles, 20, 35)
 						&& !PM_SaberInKata(static_cast<saberMoveName_t>(trace_ent->client->ps.saberMove))
 						&& trace_ent->client->ps.blockPoints > 5)
 					{
 						//saber can block lightning
-						const qboolean ActiveBlocking = trace_ent->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;//Active Blocking
+						const qboolean active_blocking = trace_ent->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;//Active Blocking
 						//make them do a parry
 						const float chance_of_fizz = Q_flrand(0.0f, 1.0f);
 						vec3_t fwd, right, up;
-						LightningBlocked = qtrue;
+						lightning_blocked = qtrue;
 						VectorNegate(dir, fwd);
 						//randomize direction a bit
 						MakeNormalVectors(fwd, right, up);
@@ -32287,7 +32289,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 						switch (trace_ent->client->ps.saberAnimLevel)
 						{
 						case SS_DUAL:
-							if (ActiveBlocking)
+							if (active_blocking)
 							{
 								NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P6_S6_T__MD, SETANIM_AFLAG_PACE);
 								trace_ent->client->IsBlockingLightning = qtrue;
@@ -32306,7 +32308,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 							}
 							break;
 						case SS_STAFF:
-							if (ActiveBlocking)
+							if (active_blocking)
 							{
 								NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P7_S7_T__MD, SETANIM_AFLAG_PACE);
 								trace_ent->client->IsBlockingLightning = qtrue;
@@ -32329,7 +32331,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 						case SS_STRONG:
 						case SS_DESANN:
 						case SS_MEDIUM:
-							if (ActiveBlocking)
+							if (active_blocking)
 							{
 								NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P1_S1_T__MD, SETANIM_AFLAG_PACE);
 								trace_ent->client->IsBlockingLightning = qtrue;
@@ -32349,7 +32351,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 							break;
 						case SS_NONE:
 						default:
-							if (ActiveBlocking)
+							if (active_blocking)
 							{
 								NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_P1_S1_T__MD, SETANIM_AFLAG_PACE);
 								trace_ent->client->IsBlockingLightning = qtrue;
@@ -32371,13 +32373,13 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 						trace_ent->client->ps.weaponTime = Q_irand(300, 600);
 						dmg = 0;
 
-						if (ActiveBlocking)
+						if (active_blocking)
 						{
-							PM_AddBlockFatigue(&trace_ent->client->ps, fpBlockCost);
+							PM_AddBlockFatigue(&trace_ent->client->ps, fp_block_cost);
 						}
 						else
 						{
-							WP_ForcePowerDrain(trace_ent, FP_ABSORB, fpBlockCost);
+							WP_ForcePowerDrain(trace_ent, FP_ABSORB, fp_block_cost);
 						}
 
 						if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
@@ -32385,7 +32387,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 							Com_Printf(S_COLOR_RED"AMD Mode Player Saber Lightning Block Correct\n");
 						}
 					}
-					else if (in_camera && !IsClassGuard
+					else if (in_camera && !is_class_guard
 						&& trace_ent->NPC
 						&& trace_ent->client->ps.SaberActive()
 						&& !trace_ent->client->ps.saberInFlight
@@ -32394,7 +32396,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 					{
 						const float chance_of_fizz = Q_flrand(0.0f, 1.0f);
 						vec3_t fwd, right, up;
-						LightningBlocked = qtrue;
+						lightning_blocked = qtrue;
 						VectorNegate(dir, fwd);
 						//randomize direction a bit
 						MakeNormalVectors(fwd, right, up);
@@ -32440,7 +32442,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 							Com_Printf(S_COLOR_RED"AMD Mode NPC Saber Lightning Block CIN Correct\n");
 						}
 					}
-					else if (!in_camera && !IsClassGuard && (trace_ent->client->ps.forcePowersActive & 1 << FP_ABSORB &&
+					else if (!in_camera && !is_class_guard && (trace_ent->client->ps.forcePowersActive & 1 << FP_ABSORB &&
 						trace_ent->client->ps.forcePowerLevel[FP_ABSORB] > FORCE_LEVEL_2)
 						&& trace_ent->client->ps.forcePower > 20
 						&& !PM_InKnockDown(&trace_ent->client->ps)
@@ -32452,7 +32454,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 						//make them do a parry
 						const float chance_of_fizz = Q_flrand(0.0f, 1.0f);
 						vec3_t fwd, right, up;
-						LightningBlocked = qtrue;
+						lightning_blocked = qtrue;
 						VectorNegate(dir, fwd);
 						//randomize direction a bit
 						MakeNormalVectors(fwd, right, up);
@@ -32500,7 +32502,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 						}
 						trace_ent->client->ps.weaponTime = Q_irand(300, 600);
 						dmg = 0;
-						WP_ForcePowerDrain(trace_ent, FP_ABSORB, fpBlockCost);
+						WP_ForcePowerDrain(trace_ent, FP_ABSORB, fp_block_cost);
 						if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
 						{
 							Com_Printf(S_COLOR_RED"AMD Mode Player Saber Absorb Lightning Block Correct\n");
@@ -32514,7 +32516,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 				else if (trace_ent->s.weapon == WP_MELEE || trace_ent->s.weapon == WP_NONE || trace_ent->client->ps.weapon
 					== WP_SABER && !trace_ent->client->ps.SaberActive())
 				{
-					if (!in_camera && !IsClassGuard
+					if (!in_camera && !is_class_guard
 						&& (Manual_HandBlocking(trace_ent) || trace_ent->client->ps.forcePowersActive & 1 << FP_ABSORB &&
 							trace_ent->client->ps.forcePowerLevel[FP_ABSORB] > FORCE_LEVEL_2)
 						&& !PM_InKnockDown(&trace_ent->client->ps)
@@ -32526,7 +32528,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 					{
 						NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_FORCE_2HANDEDLIGHTNING_HOLD, SETANIM_AFLAG_PACE);
 						trace_ent->client->ps.weaponTime = Q_irand(300, 600);
-						LightningBlocked = qtrue;
+						lightning_blocked = qtrue;
 
 						if (trace_ent->ghoul2.size())
 						{
@@ -32544,7 +32546,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 							}
 						}
 						trace_ent->client->ps.powerups[PW_MEDITATE] = level.time + trace_ent->client->ps.torsoAnimTimer + 5000;
-						WP_ForcePowerDrain(trace_ent, FP_ABSORB, fpBlockCost);
+						WP_ForcePowerDrain(trace_ent, FP_ABSORB, fp_block_cost);
 						if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
 						{
 							Com_Printf(S_COLOR_RED"AMD Mode Player Hand Lightning Block Correct\n");
@@ -32561,46 +32563,46 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 			{
 				//has shield up
 				dmg = 0;
-				LightningBlocked = qtrue;
+				lightning_blocked = qtrue;
 			}
 
 			if (trace_ent && trace_ent->client && trace_ent->client->NPC_class == CLASS_OBJECT)
 			{
 				dmg = 0;
-				LightningBlocked = qtrue;
+				lightning_blocked = qtrue;
 			}
 
-			if (IsClassGuard)
+			if (is_class_guard)
 			{
 				dmg = 1;
-				LightningBlocked = qfalse;
+				lightning_blocked = qfalse;
 			}
 
-			int modPowerLevel = -1;
+			int mod_power_level = -1;
 
 			if (trace_ent->client)
 			{
-				modPowerLevel = WP_AbsorbConversion(trace_ent, trace_ent->client->ps.forcePowerLevel[FP_ABSORB], FP_LIGHTNING,
+				mod_power_level = WP_AbsorbConversion(trace_ent, trace_ent->client->ps.forcePowerLevel[FP_ABSORB], FP_LIGHTNING,
 					self->client->ps.forcePowerLevel[FP_LIGHTNING], 1);
 			}
 
-			if (modPowerLevel != -1)
+			if (mod_power_level != -1)
 			{
-				if (!modPowerLevel)
+				if (!mod_power_level)
 				{
 					dmg = 0;
 				}
-				else if (modPowerLevel == 1)
+				else if (mod_power_level == 1)
 				{
 					dmg = floor(static_cast<float>(dmg) / 4.0f);
 				}
-				else if (modPowerLevel == 2)
+				else if (mod_power_level == 2)
 				{
 					dmg = floor(static_cast<float>(dmg) / 2.0f);
 				}
 			}
 
-			if (dmg && !LightningBlocked || IsClassGuard) //amd
+			if (dmg && !lightning_blocked || is_class_guard) //amd
 			{
 				if (jedi_win_po(trace_ent))
 				{
@@ -32622,7 +32624,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 				if (!in_camera && (trace_ent->NPC || (trace_ent->s.number < MAX_CLIENTS ||
 					G_ControlledByPlayer(trace_ent)))
 					&& !PM_SaberInKata(static_cast<saberMoveName_t>(trace_ent->client->ps.saberMove))
-					&& (trace_ent->s.weapon != WP_EMPLACED_GUN))
+					&& trace_ent->s.weapon != WP_EMPLACED_GUN)
 				{
 					if (trace_ent && trace_ent->client && trace_ent->client->ps.stats[STAT_HEALTH] <= 35)
 					{
@@ -32633,7 +32635,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 						tent->owner = trace_ent;
 					}
 
-					if (PM_RunningAnim(trace_ent->client->ps.legsAnim) && (trace_ent->client->ps.stats[STAT_HEALTH] > 1 || IsClassGuard))
+					if (PM_RunningAnim(trace_ent->client->ps.legsAnim) && (trace_ent->client->ps.stats[STAT_HEALTH] > 1 || is_class_guard))
 					{
 						G_KnockOver(trace_ent, self, dir, 25, qtrue);
 					}
@@ -32705,7 +32707,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 					// special droid only behaviors
 					trace_ent->client->ps.powerups[PW_SHOCKED] = level.time + 4000;
 				}
-				else if (LightningBlocked)
+				else if (lightning_blocked)
 				{
 					trace_ent->client->ps.powerups[PW_SHOCKED] = 0;
 				}
@@ -32720,8 +32722,8 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 
 void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, const float dist, const float dot, vec3_t impact_point)
 {
-	qboolean LightningBlocked = qfalse;
-	qboolean IsClassGuard = qfalse;
+	qboolean lightning_blocked = qfalse;
+	qboolean is_class_guard = qfalse;
 
 	if (trace_ent->NPC && trace_ent->NPC->scriptFlags & SCF_NO_FORCE)
 	{
@@ -32765,7 +32767,7 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, 
 				//make them do a parry
 				const float chance_of_fizz = Q_flrand(0.0f, 1.0f);
 				vec3_t fwd, right, up;
-				LightningBlocked = qtrue;
+				lightning_blocked = qtrue;
 				VectorNegate(dir, fwd);
 
 				//randomize direction a bit
@@ -32840,7 +32842,7 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, 
 			{
 				NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_FORCE_2HANDEDLIGHTNING_HOLD, SETANIM_AFLAG_PACE);
 				trace_ent->client->ps.weaponTime = Q_irand(300, 600);
-				LightningBlocked = qtrue;
+				lightning_blocked = qtrue;
 
 				if (trace_ent->enemy
 					&& trace_ent->ghoul2.size())
@@ -32866,7 +32868,7 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, 
 			{
 				NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_WIND, SETANIM_AFLAG_PACE);
 				trace_ent->client->ps.weaponTime = Q_irand(300, 600);
-				LightningBlocked = qtrue;
+				lightning_blocked = qtrue;
 				trace_ent->client->ps.powerups[PW_MEDITATE] = level.time + trace_ent->client->ps.torsoAnimTimer + 5000;
 				if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
 				{
@@ -32886,11 +32888,11 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, 
 	{
 		if (trace_ent && trace_ent->client && trace_ent->client->NPC_class == CLASS_GUARD)
 		{
-			IsClassGuard = qtrue;
+			is_class_guard = qtrue;
 		}
 		if (!trace_ent->client || trace_ent->client->playerTeam != self->client->playerTeam || self->enemy == trace_ent ||
 			trace_ent->enemy == self || trace_ent->client->playerTeam == TEAM_SOLO || self->client->playerTeam ==
-			TEAM_SOLO || IsClassGuard)
+			TEAM_SOLO || is_class_guard)
 		{
 			int fpBlockCost;
 			//an enemy or object
@@ -32955,14 +32957,14 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, 
 			{
 				fpBlockCost = 1;
 			}
-			const int NPCfpBlockCost = Q_irand(1, 3);
+			const int np_cfp_block_cost = Q_irand(1, 3);
 
 			if (trace_ent->client && trace_ent->health > 0)
 			{
 				if (trace_ent->client
 					&& trace_ent->health > 0
 					&& trace_ent->NPC
-					&& !in_camera && !IsClassGuard)
+					&& !in_camera && !is_class_guard)
 				{
 					if (trace_ent->s.weapon == WP_SABER
 						&& trace_ent->client->ps.SaberActive()
@@ -32983,7 +32985,7 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, 
 						//make them do a parry
 						const float chance_of_fizz = Q_flrand(0.0f, 1.0f);
 						vec3_t fwd, right, up;
-						LightningBlocked = qtrue;
+						lightning_blocked = qtrue;
 						VectorNegate(dir, fwd);
 
 						//randomize direction a bit
@@ -33041,7 +33043,7 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, 
 					{
 						NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_FORCE_2HANDEDLIGHTNING_HOLD, SETANIM_AFLAG_PACE);
 						trace_ent->client->ps.weaponTime = Q_irand(300, 600);
-						LightningBlocked = qtrue;
+						lightning_blocked = qtrue;
 
 						if (trace_ent->ghoul2.size())
 						{
@@ -33060,7 +33062,7 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, 
 						}
 						trace_ent->client->ps.powerups[PW_MEDITATE] = level.time + trace_ent->client->ps.torsoAnimTimer +
 							5000;
-						WP_ForcePowerDrain(trace_ent, FP_ABSORB, NPCfpBlockCost);
+						WP_ForcePowerDrain(trace_ent, FP_ABSORB, np_cfp_block_cost);
 						dmg = Q_irand(0, 1);
 						if (d_combatinfo->integer || g_DebugSaberCombat->integer || g_lightningdamage->integer)
 						{
@@ -33070,7 +33072,7 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, 
 				}
 				else if (trace_ent->s.weapon == WP_SABER && trace_ent->client->ps.SaberActive())
 				{
-					if (!in_camera && !IsClassGuard && manual_saberblocking(trace_ent)
+					if (!in_camera && !is_class_guard && manual_saberblocking(trace_ent)
 						&& InFOV(self->currentOrigin, trace_ent->currentOrigin, trace_ent->client->ps.viewangles, 20, 35)
 						&& !PM_SaberInKata(static_cast<saberMoveName_t>(trace_ent->client->ps.saberMove))
 						&& trace_ent->client->ps.forcePower > 20)
@@ -33079,7 +33081,7 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, 
 						//make them do a parry
 						const float chance_of_fizz = Q_flrand(0.0f, 1.0f);
 						vec3_t fwd, right, up;
-						LightningBlocked = qtrue;
+						lightning_blocked = qtrue;
 						VectorNegate(dir, fwd);
 						//randomize direction a bit
 						MakeNormalVectors(fwd, right, up);
@@ -33131,7 +33133,7 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, 
 							Com_Printf(S_COLOR_RED"MD Mode Player Saber Lightning Block Correct\n");
 						}
 					}
-					else if (in_camera && !IsClassGuard
+					else if (in_camera && !is_class_guard
 						&& trace_ent->NPC
 						&& trace_ent->client->ps.SaberActive()
 						&& !trace_ent->client->ps.saberInFlight
@@ -33140,7 +33142,7 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, 
 					{
 						const float chance_of_fizz = Q_flrand(0.0f, 1.0f);
 						vec3_t fwd, right, up;
-						LightningBlocked = qtrue;
+						lightning_blocked = qtrue;
 						VectorNegate(dir, fwd);
 						//randomize direction a bit
 						MakeNormalVectors(fwd, right, up);
@@ -33186,7 +33188,7 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, 
 							Com_Printf(S_COLOR_RED"MD Mode NPC Saber Lightning Block CIN Correct\n");
 						}
 					}
-					else if (!in_camera && !IsClassGuard && (trace_ent->client->ps.forcePowersActive & 1 << FP_ABSORB &&
+					else if (!in_camera && !is_class_guard && (trace_ent->client->ps.forcePowersActive & 1 << FP_ABSORB &&
 						trace_ent->client->ps.forcePowerLevel[FP_ABSORB] > FORCE_LEVEL_2)
 						&& trace_ent->client->ps.forcePower > 20
 						&& !PM_InKnockDown(&trace_ent->client->ps)
@@ -33198,7 +33200,7 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, 
 						//make them do a parry
 						const float chance_of_fizz = Q_flrand(0.0f, 1.0f);
 						vec3_t fwd, right, up;
-						LightningBlocked = qtrue;
+						lightning_blocked = qtrue;
 						VectorNegate(dir, fwd);
 						//randomize direction a bit
 						MakeNormalVectors(fwd, right, up);
@@ -33258,7 +33260,7 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, 
 				else if (trace_ent->s.weapon == WP_MELEE || trace_ent->s.weapon == WP_NONE || trace_ent->client->ps.weapon
 					== WP_SABER && !trace_ent->client->ps.SaberActive())
 				{
-					if (!in_camera && !IsClassGuard
+					if (!in_camera && !is_class_guard
 						&& (Manual_HandBlocking(trace_ent) || trace_ent->client->ps.forcePowersActive & 1 << FP_ABSORB &&
 							trace_ent->client->ps.forcePowerLevel[FP_ABSORB] > FORCE_LEVEL_2)
 						&& !PM_InKnockDown(&trace_ent->client->ps)
@@ -33270,7 +33272,7 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, 
 					{
 						NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_FORCE_2HANDEDLIGHTNING_HOLD, SETANIM_AFLAG_PACE);
 						trace_ent->client->ps.weaponTime = Q_irand(300, 600);
-						LightningBlocked = qtrue;
+						lightning_blocked = qtrue;
 
 						if (trace_ent->ghoul2.size())
 						{
@@ -33306,19 +33308,19 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, 
 			{
 				//has shield up
 				dmg = 0;
-				LightningBlocked = qtrue;
+				lightning_blocked = qtrue;
 			}
 
 			if (trace_ent && trace_ent->client && trace_ent->client->NPC_class == CLASS_OBJECT)
 			{
 				dmg = 0;
-				LightningBlocked = qtrue;
+				lightning_blocked = qtrue;
 			}
 
-			if (IsClassGuard)
+			if (is_class_guard)
 			{
 				dmg = 1;
-				LightningBlocked = qfalse;
+				lightning_blocked = qfalse;
 			}
 
 			int modPowerLevel = -1;
@@ -33345,7 +33347,7 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, 
 				}
 			}
 
-			if (dmg && !LightningBlocked || IsClassGuard) //md
+			if (dmg && !lightning_blocked || is_class_guard) //md
 			{
 				if (jedi_win_po(trace_ent))
 				{
@@ -33367,7 +33369,7 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, 
 
 				if (!in_camera && (trace_ent->NPC
 					|| (trace_ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(trace_ent)))
-					&& (trace_ent->s.weapon != WP_EMPLACED_GUN)
+					&& trace_ent->s.weapon != WP_EMPLACED_GUN
 					&& !PM_SaberInKata(static_cast<saberMoveName_t>(trace_ent->client->ps.saberMove)))
 				{
 					if (trace_ent->client->ps.stats[STAT_HEALTH] <= 20)
@@ -33379,7 +33381,7 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, 
 						tent->owner = trace_ent;
 					}
 
-					if (PM_RunningAnim(trace_ent->client->ps.legsAnim) && (trace_ent->client->ps.stats[STAT_HEALTH] > 1 || IsClassGuard))
+					if (PM_RunningAnim(trace_ent->client->ps.legsAnim) && (trace_ent->client->ps.stats[STAT_HEALTH] > 1 || is_class_guard))
 					{
 						G_KnockOver(trace_ent, self, dir, 25, qtrue);
 					}
@@ -33451,7 +33453,7 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, 
 					// special droid only behaviors
 					trace_ent->client->ps.powerups[PW_SHOCKED] = level.time + 4000;
 				}
-				else if (LightningBlocked)
+				else if (lightning_blocked)
 				{
 					trace_ent->client->ps.powerups[PW_SHOCKED] = 0;
 				}
@@ -35246,7 +35248,7 @@ constexpr auto DESTRUCTION_NPC_DAMAGE_NORMAL = 60;
 constexpr auto DESTRUCTION_NPC_DAMAGE_HARD = 90;
 constexpr auto DESTRUCTION_SIZE = 3;
 
-gentity_t* CreateMissile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner, qboolean altFire = qfalse);
+gentity_t* CreateMissile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner, qboolean alt_fire = qfalse);
 //---------------------------------------------------------
 void WP_FireDestruction(gentity_t* ent, const int force_level)
 //---------------------------------------------------------

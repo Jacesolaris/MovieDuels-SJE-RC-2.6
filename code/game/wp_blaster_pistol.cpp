@@ -40,7 +40,7 @@ void WP_FireBryarPistol(gentity_t* ent, const qboolean alt_fire)
 	int damage = !alt_fire ? weaponData[WP_BRYAR_PISTOL].damage : weaponData[WP_BRYAR_PISTOL].altDamage;
 
 	VectorCopy(muzzle, start);
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	if (ent->client && ent->client->NPC_class == CLASS_VEHICLE)
@@ -211,7 +211,7 @@ void WP_FireBryarPistolDuals(gentity_t* ent, const qboolean alt_fire, const qboo
 		VectorCopy(muzzle, start);
 	}
 
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	if (ent->client && ent->client->NPC_class == CLASS_VEHICLE)
@@ -378,7 +378,7 @@ void WP_FireReyPistol(gentity_t* ent, const qboolean alt_fire)
 	int damage = !alt_fire ? weaponData[WP_REY].damage : weaponData[WP_REY].altDamage;
 
 	VectorCopy(muzzle, start);
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	if (ent->client && ent->client->NPC_class == CLASS_VEHICLE)
@@ -548,7 +548,7 @@ void WP_FireReyPistolDuals(gentity_t* ent, const qboolean alt_fire, const qboole
 		VectorCopy(muzzle, start);
 	}
 
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	if (ent->client && ent->client->NPC_class == CLASS_VEHICLE)
@@ -714,7 +714,7 @@ void WP_FireClonePistol(gentity_t* ent, const qboolean alt_fire)
 	int damage = !alt_fire ? weaponData[WP_CLONEPISTOL].damage : weaponData[WP_CLONEPISTOL].altDamage;
 
 	VectorCopy(muzzle, start);
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	if (ent->client && ent->client->NPC_class == CLASS_VEHICLE)
@@ -884,7 +884,7 @@ void WP_FireClonePistolDuals(gentity_t* ent, const qboolean alt_fire, const qboo
 		VectorCopy(muzzle, start);
 	}
 
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	if (ent->client && ent->client->NPC_class == CLASS_VEHICLE)
@@ -1046,7 +1046,7 @@ void WP_FireSBDPistol(gentity_t* ent, const qboolean alt_fire)
 	int damage = !alt_fire ? weaponData[WP_SBD_BLASTER].damage : weaponData[WP_SBD_BLASTER].altDamage;
 
 	VectorCopy(muzzle, start);
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	if (ent->client && ent->client->NPC_class == CLASS_VEHICLE)
@@ -1194,7 +1194,7 @@ void WP_FireJawaPistol(gentity_t* ent, const qboolean alt_fire)
 	int damage = !alt_fire ? weaponData[WP_JAWA].damage : weaponData[WP_JAWA].altDamage;
 
 	VectorCopy(muzzle, start);
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	if (ent->client && ent->client->NPC_class == CLASS_VEHICLE)

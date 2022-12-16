@@ -1620,7 +1620,7 @@ void G_SpawnNoghriGasCloud(gentity_t* ent)
 extern void laserTrapStick(gentity_t* ent, vec3_t endpos, vec3_t normal);
 extern qboolean W_AccuracyLoggableWeapon(int weapon, qboolean alt_fire, int mod);
 
-void G_MissileImpacted(gentity_t* ent, gentity_t* other, vec3_t impactPos, vec3_t normal, const int hitLoc = HL_NONE)
+void G_MissileImpacted(gentity_t* ent, gentity_t* other, vec3_t impactPos, vec3_t normal, const int hit_loc = HL_NONE)
 {
 	// impact damage
 	if (other->takedamage)
@@ -1662,7 +1662,7 @@ void G_MissileImpacted(gentity_t* ent, gentity_t* other, vec3_t impactPos, vec3_
 				}
 			}
 
-			G_Damage(other, ent, ent->owner, velocity, impactPos, damage, ent->dflags, ent->methodOfDeath, hitLoc);
+			G_Damage(other, ent, ent->owner, velocity, impactPos, damage, ent->dflags, ent->methodOfDeath, hit_loc);
 
 			if (ent->s.weapon == WP_DEMP2)
 			{
@@ -1802,7 +1802,7 @@ static void G_MissileAddAlerts(gentity_t* ent)
 }
 
 //------------------------------------------------------
-void G_MissileImpact_MD(gentity_t* ent, trace_t* trace, const int hitLoc = HL_NONE)
+void G_MissileImpact_MD(gentity_t* ent, trace_t* trace, const int hit_loc = HL_NONE)
 {
 	vec3_t diff;
 
@@ -2252,10 +2252,10 @@ void G_MissileImpact_MD(gentity_t* ent, trace_t* trace, const int hitLoc = HL_NO
 			G_MissileReflectEffect(ent, trace->endpos, trace->plane.normal);
 		}
 	}
-	G_MissileImpacted(ent, other, trace->endpos, trace->plane.normal, hitLoc);
+	G_MissileImpacted(ent, other, trace->endpos, trace->plane.normal, hit_loc);
 }
 
-void G_MissileImpactJKA(gentity_t* ent, trace_t* trace, const int hitLoc = HL_NONE)
+void G_MissileImpactJKA(gentity_t* ent, trace_t* trace, const int hit_loc = HL_NONE)
 {
 	vec3_t diff;
 
@@ -2537,7 +2537,7 @@ void G_MissileImpactJKA(gentity_t* ent, trace_t* trace, const int hitLoc = HL_NO
 		}
 	}
 
-	G_MissileImpacted(ent, other, trace->endpos, trace->plane.normal, hitLoc);
+	G_MissileImpacted(ent, other, trace->endpos, trace->plane.normal, hit_loc);
 }
 
 /*

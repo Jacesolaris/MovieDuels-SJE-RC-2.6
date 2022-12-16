@@ -187,7 +187,7 @@ constexpr auto EMPLACED_PLAYERUSE = 8;
 */
 //----------------------------------------------------------
 void eweb_pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage, int mod,
-	int hitLoc)
+	int hit_loc)
 {
 	if (self->health <= 0)
 	{
@@ -206,7 +206,7 @@ void eweb_pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const
 }
 
 //----------------------------------------------------------
-void eweb_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags, int hitLoc)
+void eweb_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags, int hit_loc)
 {
 	vec3_t org;
 
@@ -699,7 +699,7 @@ void emplaced_gun_use(gentity_t* self, const gentity_t* other, gentity_t* activa
 
 //----------------------------------------------------------
 void emplaced_gun_pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage,
-	int mod, int hitLoc)
+	int mod, int hit_loc)
 {
 	if (self->health <= 0)
 	{
@@ -726,7 +726,7 @@ void emplaced_blow(gentity_t* ent)
 
 //----------------------------------------------------------
 void emplaced_gun_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
-	int hitLoc)
+	int hit_loc)
 {
 	vec3_t org;
 

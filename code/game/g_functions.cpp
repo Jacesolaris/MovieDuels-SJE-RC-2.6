@@ -347,9 +347,9 @@ void GEntity_UseFunc(gentity_t* self, gentity_t* other, gentity_t* activator)
 }
 
 void GEntity_PainFunc(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, const int damage,
-                      const int mod, const int hitLoc)
+                      const int mod, const int hit_loc)
 {
-#define PAINCASE(blah) case painF_ ## blah: blah(self,inflictor,attacker,point,damage,mod,hitLoc); break;
+#define PAINCASE(blah) case painF_ ## blah: blah(self,inflictor,attacker,point,damage,mod,hit_loc); break;
 
 	switch (self->e_PainFunc)
 	{
@@ -390,9 +390,9 @@ void GEntity_PainFunc(gentity_t* self, gentity_t* inflictor, gentity_t* attacker
 }
 
 void GEntity_DieFunc(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const int damage, const int mod, const int dFlags,
-                     const int hitLoc)
+                     const int hit_loc)
 {
-#define DIECASE(blah) case dieF_ ## blah: blah(self,inflictor,attacker,damage,mod,dFlags,hitLoc); break;
+#define DIECASE(blah) case dieF_ ## blah: blah(self,inflictor,attacker,damage,mod,dFlags,hit_loc); break;
 
 	switch (self->e_DieFunc)
 	{

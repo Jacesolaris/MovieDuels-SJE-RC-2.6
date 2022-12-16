@@ -1582,9 +1582,9 @@ NPC_BehaviorSet_Stormtrooper
 -------------------------
 */
 
-void NPC_BehaviorSet_Stormtrooper(const int bState)
+void NPC_BehaviorSet_Stormtrooper(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1603,7 +1603,7 @@ void NPC_BehaviorSet_Stormtrooper(const int bState)
 		break;
 
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }

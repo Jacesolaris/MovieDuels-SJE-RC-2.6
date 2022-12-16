@@ -51,7 +51,7 @@ enum
 };
 
 qboolean NPC_CheckPlayerTeamStealth();
-gentity_t* CreateMissile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner, qboolean altFire = qfalse);
+gentity_t* CreateMissile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner, qboolean alt_fire = qfalse);
 void Mark1_BlasterAttack(qboolean advance);
 void DeathFX(const gentity_t* ent);
 extern gitem_t* FindItemForAmmo(ammo_t ammo);
@@ -61,7 +61,7 @@ extern gitem_t* FindItemForAmmo(ammo_t ammo);
 NPC_Mark1_Precache
 -------------------------
 */
-void NPC_Mark1_Precache(void)
+void NPC_Mark1_Precache()
 {
 	G_SoundIndex("sound/chars/mark1/misc/mark1_wakeup");
 	G_SoundIndex("sound/chars/mark1/misc/shutdown");
@@ -96,16 +96,16 @@ void NPC_Mark1_Part_Explode(gentity_t* self, const int bolt)
 {
 	if (bolt >= 0)
 	{
-		mdxaBone_t boltMatrix;
+		mdxaBone_t bolt_matrix;
 		vec3_t org, dir;
 
 		gi.G2API_GetBoltMatrix(self->ghoul2, self->playerModel,
 			bolt,
-			&boltMatrix, self->currentAngles, self->currentOrigin, cg.time ? cg.time : level.time,
+			&bolt_matrix, self->currentAngles, self->currentOrigin, cg.time ? cg.time : level.time,
 			nullptr, self->s.modelScale);
 
-		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, org);
-		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, NEGATIVE_Y, dir);
+		gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, org);
+		gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, NEGATIVE_Y, dir);
 
 		G_PlayEffect("env/med_explode2", org, dir);
 		G_PlayEffect(G_EffectIndex("blaster/smoke_bolton"), self->playerModel, bolt, self->s.number, org);
@@ -117,7 +117,7 @@ void NPC_Mark1_Part_Explode(gentity_t* self, const int bolt)
 Mark1_Idle
 -------------------------
 */
-void Mark1_Idle(void)
+void Mark1_Idle()
 {
 	NPC_BSIdle();
 
@@ -130,20 +130,20 @@ Mark1Dead_FireRocket
 - Shoot the left weapon, the multi-blaster
 -------------------------
 */
-void Mark1Dead_FireRocket(void)
+void Mark1Dead_FireRocket()
 {
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 	vec3_t muzzle1, muzzle_dir;
 
 	constexpr int damage = 50;
 
 	gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->playerModel,
 		NPC->genericBolt5,
-		&boltMatrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
+		&bolt_matrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
 		nullptr, NPC->s.modelScale);
 
-	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, muzzle1);
-	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, NEGATIVE_Y, muzzle_dir);
+	gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, muzzle1);
+	gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, NEGATIVE_Y, muzzle_dir);
 
 	G_PlayEffect("bryar/muzzle_flash", muzzle1, muzzle_dir);
 
@@ -174,20 +174,20 @@ Mark1Dead_FireBlaster
 - Shoot the left weapon, the multi-blaster
 -------------------------
 */
-void Mark1Dead_FireBlaster(void)
+void Mark1Dead_FireBlaster()
 {
 	vec3_t muzzle1, muzzle_dir;
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 
 	const int bolt = NPC->genericBolt1;
 
 	gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->playerModel,
 		bolt,
-		&boltMatrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
+		&bolt_matrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
 		nullptr, NPC->s.modelScale);
 
-	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, muzzle1);
-	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, NEGATIVE_Y, muzzle_dir);
+	gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, muzzle1);
+	gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, NEGATIVE_Y, muzzle_dir);
 
 	G_PlayEffect("bryar/muzzle_flash", muzzle1, muzzle_dir);
 
@@ -209,7 +209,7 @@ void Mark1Dead_FireBlaster(void)
 Mark1_die
 -------------------------
 */
-void Mark1_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags, int hitLoc)
+void Mark1_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags, int hit_loc)
 {
 	/*
 	int	anim;
@@ -319,17 +319,17 @@ NPC_Mark1_Pain
 - look at what was hit and see if it should be removed from the model.
 -------------------------
 */
-void NPC_Mark1_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage, const int mod,
-                    const int hitLoc)
+void NPC_Mark1_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, const int damage, const int mod,
+                    const int hit_loc)
 {
-	int newBolt;
+	int new_bolt;
 
-	NPC_Pain(self, inflictor, other, point, damage, mod);
+	NPC_Pain(self, inflictor, attacker, point, damage, mod);
 
 	G_Sound(self, G_SoundIndex("sound/chars/mark1/misc/mark1_pain"));
 
 	// Hit in the CHEST???
-	if (hitLoc == HL_CHEST)
+	if (hit_loc == HL_CHEST)
 	{
 		const int chance = Q_irand(1, 4);
 
@@ -339,29 +339,29 @@ void NPC_Mark1_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, con
 		}
 	}
 	// Hit in the left arm?
-	else if (hitLoc == HL_ARM_LT && self->locationDamage[HL_ARM_LT] > LEFT_ARM_HEALTH)
+	else if (hit_loc == HL_ARM_LT && self->locationDamage[HL_ARM_LT] > LEFT_ARM_HEALTH)
 	{
-		if (self->locationDamage[hitLoc] >= LEFT_ARM_HEALTH) // Blow it up?
+		if (self->locationDamage[hit_loc] >= LEFT_ARM_HEALTH) // Blow it up?
 		{
-			newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*flash3");
-			if (newBolt != -1)
+			new_bolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*flash3");
+			if (new_bolt != -1)
 			{
-				NPC_Mark1_Part_Explode(self, newBolt);
+				NPC_Mark1_Part_Explode(self, new_bolt);
 			}
 
 			gi.G2API_SetSurfaceOnOff(&self->ghoul2[self->playerModel], "l_arm", TURN_OFF);
 		}
 	}
 	// Hit in the right arm?
-	else if (hitLoc == HL_ARM_RT && self->locationDamage[HL_ARM_RT] > RIGHT_ARM_HEALTH) // Blow it up?
+	else if (hit_loc == HL_ARM_RT && self->locationDamage[HL_ARM_RT] > RIGHT_ARM_HEALTH) // Blow it up?
 	{
-		if (self->locationDamage[hitLoc] >= RIGHT_ARM_HEALTH)
+		if (self->locationDamage[hit_loc] >= RIGHT_ARM_HEALTH)
 		{
-			newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*flash4");
-			if (newBolt != -1)
+			new_bolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*flash4");
+			if (new_bolt != -1)
 			{
 				//				G_PlayEffect( "small_chunks", self->playerModel, self->genericBolt2, self->s.number);
-				NPC_Mark1_Part_Explode(self, newBolt);
+				NPC_Mark1_Part_Explode(self, new_bolt);
 			}
 
 			gi.G2API_SetSurfaceOnOff(&self->ghoul2[self->playerModel], "r_arm", TURN_OFF);
@@ -372,14 +372,14 @@ void NPC_Mark1_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, con
 	{
 		for (int i = 0; i < 6; i++)
 		{
-			if (hitLoc == HL_GENERIC1 + i && self->locationDamage[HL_GENERIC1 + i] > AMMO_POD_HEALTH) // Blow it up?
+			if (hit_loc == HL_GENERIC1 + i && self->locationDamage[HL_GENERIC1 + i] > AMMO_POD_HEALTH) // Blow it up?
 			{
-				if (self->locationDamage[hitLoc] >= AMMO_POD_HEALTH)
+				if (self->locationDamage[hit_loc] >= AMMO_POD_HEALTH)
 				{
-					newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], va("*torso_tube%d", i + 1));
-					if (newBolt != -1)
+					new_bolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], va("*torso_tube%d", i + 1));
+					if (new_bolt != -1)
 					{
-						NPC_Mark1_Part_Explode(self, newBolt);
+						NPC_Mark1_Part_Explode(self, new_bolt);
 					}
 					gi.G2API_SetSurfaceOnOff(&self->ghoul2[self->playerModel], va("torso_tube%d", i + 1), TURN_OFF);
 					NPC_SetAnim(self, SETANIM_BOTH, BOTH_PAIN1, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
@@ -403,7 +403,7 @@ Mark1_Hunt
 - look for enemy.
 -------------------------`
 */
-void Mark1_Hunt(void)
+void Mark1_Hunt()
 {
 	if (NPCInfo->goalEntity == nullptr)
 	{
@@ -422,11 +422,11 @@ Mark1_FireBlaster
 - Shoot the left weapon, the multi-blaster
 -------------------------
 */
-void Mark1_FireBlaster(void)
+void Mark1_FireBlaster()
 {
 	vec3_t muzzle1;
 	static vec3_t forward, vright, up;
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 	int bolt;
 
 	// Which muzzle to fire from?
@@ -453,20 +453,20 @@ void Mark1_FireBlaster(void)
 
 	gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->playerModel,
 		bolt,
-		&boltMatrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
+		&bolt_matrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
 		nullptr, NPC->s.modelScale);
 
-	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, muzzle1);
+	gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, muzzle1);
 
 	if (NPC->health)
 	{
-		vec3_t angleToEnemy1;
+		vec3_t angle_to_enemy1;
 		vec3_t delta1;
 		vec3_t enemy_org1;
 		CalcEntitySpot(NPC->enemy, SPOT_HEAD, enemy_org1);
 		VectorSubtract(enemy_org1, muzzle1, delta1);
-		vectoangles(delta1, angleToEnemy1);
-		AngleVectors(angleToEnemy1, forward, vright, up);
+		vectoangles(delta1, angle_to_enemy1);
+		AngleVectors(angle_to_enemy1, forward, vright, up);
 	}
 	else
 	{
@@ -550,27 +550,27 @@ void Mark1_BlasterAttack(const qboolean advance)
 Mark1_FireRocket
 -------------------------
 */
-void Mark1_FireRocket(void)
+void Mark1_FireRocket()
 {
-	mdxaBone_t boltMatrix;
-	vec3_t muzzle1, enemy_org1, delta1, angleToEnemy1;
+	mdxaBone_t bolt_matrix;
+	vec3_t muzzle1, enemy_org1, delta1, angle_to_enemy1;
 	static vec3_t forward, vright, up;
 
 	constexpr int damage = 50;
 
 	gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->playerModel,
 		NPC->genericBolt5,
-		&boltMatrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
+		&bolt_matrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
 		nullptr, NPC->s.modelScale);
 
-	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, muzzle1);
+	gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, muzzle1);
 
 	//	G_PlayEffect( "blaster/muzzle_flash", muzzle1 );
 
 	CalcEntitySpot(NPC->enemy, SPOT_HEAD, enemy_org1);
 	VectorSubtract(enemy_org1, muzzle1, delta1);
-	vectoangles(delta1, angleToEnemy1);
-	AngleVectors(angleToEnemy1, forward, vright, up);
+	vectoangles(delta1, angle_to_enemy1);
+	AngleVectors(angle_to_enemy1, forward, vright, up);
 
 	G_Sound(NPC, G_SoundIndex("sound/chars/mark1/misc/mark1_fire"));
 
@@ -617,7 +617,7 @@ void Mark1_RocketAttack(const qboolean advance)
 Mark1_AttackDecision
 -------------------------
 */
-void Mark1_AttackDecision(void)
+void Mark1_AttackDecision()
 {
 	//randomly talk
 	if (TIMER_Done(NPC, "patrolNoise"))
@@ -638,7 +638,7 @@ void Mark1_AttackDecision(void)
 
 	// Rate our distance to the target and visibility
 	const float distance = static_cast<int>(DistanceHorizontalSquared(NPC->currentOrigin, NPC->enemy->currentOrigin));
-	distance_e distRate = distance > MIN_MELEE_RANGE_SQR ? DIST_LONG : DIST_MELEE;
+	distance_e dist_rate = distance > MIN_MELEE_RANGE_SQR ? DIST_LONG : DIST_MELEE;
 	const qboolean visible = NPC_ClearLOS(NPC->enemy);
 	const auto advance = static_cast<qboolean>(distance > MIN_DISTANCE_SQR);
 
@@ -650,20 +650,20 @@ void Mark1_AttackDecision(void)
 	}
 
 	// See if the side weapons are there
-	const int blasterTest = gi.G2API_GetSurfaceRenderStatus(&NPC->ghoul2[NPC->playerModel], "l_arm");
-	const int rocketTest = gi.G2API_GetSurfaceRenderStatus(&NPC->ghoul2[NPC->playerModel], "r_arm");
+	const int blaster_test = gi.G2API_GetSurfaceRenderStatus(&NPC->ghoul2[NPC->playerModel], "l_arm");
+	const int rocket_test = gi.G2API_GetSurfaceRenderStatus(&NPC->ghoul2[NPC->playerModel], "r_arm");
 
 	// It has both side weapons
-	if (!blasterTest && !rocketTest)
+	if (!blaster_test && !rocket_test)
 	{
 	}
-	else if (blasterTest)
+	else if (blaster_test)
 	{
-		distRate = DIST_LONG;
+		dist_rate = DIST_LONG;
 	}
-	else if (rocketTest)
+	else if (rocket_test)
 	{
-		distRate = DIST_MELEE;
+		dist_rate = DIST_MELEE;
 	}
 	else // It should never get here, but just in case
 	{
@@ -675,11 +675,11 @@ void Mark1_AttackDecision(void)
 	// We can see enemy so shoot him if timers let you.
 	NPC_FaceEnemy(qtrue);
 
-	if (distRate == DIST_MELEE)
+	if (dist_rate == DIST_MELEE)
 	{
 		Mark1_BlasterAttack(advance);
 	}
-	else if (distRate == DIST_LONG)
+	else if (dist_rate == DIST_LONG)
 	{
 		Mark1_RocketAttack(advance);
 	}
@@ -690,7 +690,7 @@ void Mark1_AttackDecision(void)
 Mark1_Patrol
 -------------------------
 */
-void Mark1_Patrol(void)
+void Mark1_Patrol()
 {
 	if (NPC_CheckPlayerTeamStealth())
 	{
@@ -724,7 +724,7 @@ void Mark1_Patrol(void)
 NPC_BSMark1_Default
 -------------------------
 */
-void NPC_BSMark1_Default(void)
+void NPC_BSMark1_Default()
 {
 	//NPC->e_DieFunc = dieF_Mark1_die;
 

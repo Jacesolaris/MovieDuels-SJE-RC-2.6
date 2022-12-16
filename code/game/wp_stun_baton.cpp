@@ -44,7 +44,7 @@ void WP_FireStunBaton(gentity_t* ent, const qboolean alt_fire)
 			G_Sound(ent, G_SoundIndex("sound/weapons/baton/fire"));
 
 			VectorCopy(muzzle, start);
-			WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+			WP_TraceSetStart(ent, start);
 
 			VectorMA(start, STUN_BATON_RANGE, forwardVec, end);
 
@@ -85,7 +85,7 @@ void WP_FireStunBaton(gentity_t* ent, const qboolean alt_fire)
 		G_Sound(ent, G_SoundIndex("sound/weapons/baton/fire"));
 
 		VectorCopy(muzzle, start);
-		WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+		WP_TraceSetStart(ent, start);
 
 		VectorMA(start, STUN_BATON_RANGE, forwardVec, end);
 

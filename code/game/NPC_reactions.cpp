@@ -221,7 +221,7 @@ constexpr auto MIN_PAIN_TIME = 200;
 
 extern int G_PickPainAnim(const gentity_t* self, const vec3_t point, int hit_loc);
 
-void NPC_ChoosePainAnimation(gentity_t* self, const gentity_t* other, const vec3_t point, const int damage, const int mod, const int hitLoc,
+void NPC_ChoosePainAnimation(gentity_t* self, const gentity_t* other, const vec3_t point, const int damage, const int mod, const int hit_loc,
                              const int voiceEvent = -1)
 {
 	//If we've already taken pain, then don't take it again
@@ -245,7 +245,7 @@ void NPC_ChoosePainAnimation(gentity_t* self, const gentity_t* other, const vec3
 	}
 	if (self->client->NPC_class == CLASS_GALAKMECH)
 	{
-		if (hitLoc == HL_GENERIC1)
+		if (hit_loc == HL_GENERIC1)
 		{
 			//hit the antenna!
 			pain_chance = 1.0f;
@@ -376,7 +376,7 @@ void NPC_ChoosePainAnimation(gentity_t* self, const gentity_t* other, const vec3
 			}
 			else if (mod != MOD_ELECTROCUTE)
 			{
-				pain_anim = G_PickPainAnim(self, point, hitLoc);
+				pain_anim = G_PickPainAnim(self, point, hit_loc);
 			}
 
 			if (pain_anim == -1)
@@ -448,7 +448,7 @@ NPC_Pain
 ===============
 */
 void NPC_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage, const int mod,
-              const int hitLoc)
+              const int hit_loc)
 {
 	team_t otherTeam = TEAM_FREE;
 	int voiceEvent = -1;
@@ -515,11 +515,11 @@ void NPC_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec
 					//Set our proper pain animation
 					if (Q_irand(0, 1))
 					{
-						NPC_ChoosePainAnimation(self, other, point, damage, mod, hitLoc, EV_FFWARN);
+						NPC_ChoosePainAnimation(self, other, point, damage, mod, hit_loc, EV_FFWARN);
 					}
 					else
 					{
-						NPC_ChoosePainAnimation(self, other, point, damage, mod, hitLoc);
+						NPC_ChoosePainAnimation(self, other, point, damage, mod, hit_loc);
 					}
 				}
 				return;
@@ -542,11 +542,11 @@ void NPC_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec
 						//Set our proper pain animation
 						if (Q_irand(0, 1))
 						{
-							NPC_ChoosePainAnimation(self, other, point, damage, mod, hitLoc, EV_FFWARN);
+							NPC_ChoosePainAnimation(self, other, point, damage, mod, hit_loc, EV_FFWARN);
 						}
 						else
 						{
-							NPC_ChoosePainAnimation(self, other, point, damage, mod, hitLoc);
+							NPC_ChoosePainAnimation(self, other, point, damage, mod, hit_loc);
 						}
 					}
 					return;
@@ -592,7 +592,7 @@ void NPC_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec
 		{
 			//-1 == don't play pain anim
 			//Set our proper pain animation
-			NPC_ChoosePainAnimation(self, other, point, damage, mod, hitLoc, voiceEvent);
+			NPC_ChoosePainAnimation(self, other, point, damage, mod, hit_loc, voiceEvent);
 		}
 		//Check to take a new enemy
 		if (NPC->enemy != other && NPC != other)
