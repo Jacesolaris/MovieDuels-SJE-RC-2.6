@@ -101,7 +101,7 @@ void NPC_StandIdle(void)
 	*/
 }
 
-qboolean NPC_StandTrackAndShoot(const gentity_t* NPC, qboolean canDuck)
+qboolean NPC_StandTrackAndShoot(const gentity_t* npc, qboolean can_duck)
 {
 	qboolean	attack_ok = qfalse;
 	qboolean	duck_ok = qfalse;
@@ -111,9 +111,9 @@ qboolean NPC_StandTrackAndShoot(const gentity_t* NPC, qboolean canDuck)
 	//First see if we're hurt bad- if so, duck
 	//FIXME: if even when ducked, we can shoot someone, we should.
 	//Maybe is can be shot even when ducked, we should run away to the nearest cover?
-	if (canDuck)
+	if (can_duck)
 	{
-		if (NPC->health < 20)
+		if (npc->health < 20)
 		{
 			//	if( NPC->svFlags&SVF_HEALING || Q_flrand(0.0f, 1.0f) )
 			if (Q_flrand(0.0f, 1.0f))
@@ -121,7 +121,7 @@ qboolean NPC_StandTrackAndShoot(const gentity_t* NPC, qboolean canDuck)
 				duck_ok = qtrue;
 			}
 		}
-		else if (NPC->health < 40)
+		else if (npc->health < 40)
 		{
 			//			if ( NPC->svFlags&SVF_HEALING )
 			//			{//Medic is on the way, get down!
@@ -138,15 +138,15 @@ qboolean NPC_StandTrackAndShoot(const gentity_t* NPC, qboolean canDuck)
 		faced = qtrue;
 	}
 
-	if (canDuck && (duck_ok || (!attack_ok && NPCS.client->ps.weaponTime <= 0)) && NPCS.ucmd.upmove != -127)
+	if (can_duck && (duck_ok || (!attack_ok && NPCS.client->ps.weaponTime <= 0)) && NPCS.ucmd.upmove != -127)
 	{//if we didn't attack check to duck if we're not already
 		if (!duck_ok)
 		{
-			if (NPC->enemy->client)
+			if (npc->enemy->client)
 			{
-				if (NPC->enemy->enemy == NPC)
+				if (npc->enemy->enemy == npc)
 				{
-					if (NPC->enemy->client->buttons & BUTTON_ATTACK)
+					if (npc->enemy->client->buttons & BUTTON_ATTACK)
 					{//FIXME: determine if enemy fire angles would hit me or get close
 						if (NPC_CheckDefend(1.0))//FIXME: Check self-preservation?  Health?
 						{

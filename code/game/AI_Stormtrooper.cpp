@@ -28,7 +28,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "g_functions.h"
 
 extern void CG_DrawAlert(vec3_t origin, float rating);
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern void AI_GroupUpdateSquadstates(AIGroupInfo_t* group, const gentity_t* member, int newSquadState);
 extern qboolean AI_GroupContainsEntNum(const AIGroupInfo_t* group, int entNum);
 extern void AI_GroupUpdateEnemyLastSeen(AIGroupInfo_t* group, vec3_t spot);
@@ -52,6 +52,7 @@ extern cvar_t* g_allowgunnerbash;
 extern qboolean WP_AbsorbKick(gentity_t* self, const gentity_t* pusher, const vec3_t push_dir);
 
 extern cvar_t* d_asynchronousGroupAI;
+extern void npc_check_speak(gentity_t* speaker_npc);
 
 constexpr auto MAX_VIEW_DIST = 1024;
 constexpr auto MAX_VIEW_SPEED = 250;
@@ -3954,31 +3955,6 @@ void NPC_BSST_Default()
 		NPC_CheckGetNewWeapon();
 		NPC_BSST_Attack();
 
-		if (TIMER_Done(NPC, "TalkTime"))
-		{
-			if (NPC_IsGunner(NPC))
-			{
-				// Do taunt...
-				const int call_out = Q_irand(0, 3);
-
-				switch (call_out)
-				{
-				case 0:
-				default:
-					G_AddVoiceEvent(NPC, Q_irand(EV_TAUNT1, EV_TAUNT3), 3000);
-					break;
-				case 1:
-					G_AddVoiceEvent(NPC, Q_irand(EV_ANGER1, EV_ANGER1), 3000);
-					break;
-				case 2:
-					G_AddVoiceEvent(NPC, Q_irand(EV_COMBAT1, EV_COMBAT3), 3000);
-					break;
-				case 3:
-					G_AddVoiceEvent(NPC, Q_irand(EV_JCHASE1, EV_JCHASE3), 3000);
-					break;
-				}
-			}
-			TIMER_Set(NPC, "TalkTime", 5000);
-		}
+		npc_check_speak(NPC);
 	}
 }

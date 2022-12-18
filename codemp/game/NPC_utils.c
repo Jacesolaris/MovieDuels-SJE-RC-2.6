@@ -1669,7 +1669,7 @@ qboolean NPC_CheckLookTarget(const gentity_t* self)
 NPC_CheckCharmed
 -------------------------
 */
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 void NPC_CheckCharmed(void)
 {
 	if (NPCS.NPCInfo->charmedTime && NPCS.NPCInfo->charmedTime < level.time && NPCS.NPC->client)

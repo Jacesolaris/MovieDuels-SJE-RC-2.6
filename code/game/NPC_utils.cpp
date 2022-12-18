@@ -37,7 +37,7 @@ int teamCounter[TEAM_NUM_TEAMS];
 #define	VALID_ATTACK_CONE	2.0f	//Degrees
 void GetAnglesForDirection(const vec3_t p1, const vec3_t p2, vec3_t out);
 extern void WP_DeactivateSaber(const gentity_t* self, qboolean clear_length = qfalse);
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern qboolean InFront(vec3_t spot, vec3_t from, vec3_t fromAngles, float threshHold = 0.0f);
 extern qboolean PM_SaberInAttack(int move);
 extern qboolean PM_SaberInStart(int move);
@@ -1423,7 +1423,7 @@ qboolean NPC_CheckLookTarget(const gentity_t* self)
 NPC_CheckCharmed
 -------------------------
 */
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 
 void G_CheckCharmed(gentity_t* self)
 {

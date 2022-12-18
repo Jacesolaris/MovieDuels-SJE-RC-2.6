@@ -61,7 +61,7 @@ extern qboolean rocket_trooper_player(const gentity_t* self);
 extern qboolean G_EntIsUnlockedDoor(int entityNum);
 extern qboolean G_EntIsDoor(int entityNum);
 extern qboolean InFront(vec3_t spot, vec3_t from, vec3_t fromAngles, float threshHold = 0.0f);
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
 extern qboolean WP_SaberLose(gentity_t* self, vec3_t throw_dir);
 extern qboolean PM_HasAnimation(const gentity_t* ent, int animation);

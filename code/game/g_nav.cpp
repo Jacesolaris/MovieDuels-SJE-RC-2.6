@@ -31,7 +31,7 @@ extern qboolean G_EntIsUnlockedDoor(int entityNum);
 extern qboolean G_EntIsDoor(int entityNum);
 extern qboolean G_EntIsRemovableUsable(int entNum);
 extern qboolean G_FindClosestPointOnLineSegment(const vec3_t start, const vec3_t end, const vec3_t from, vec3_t result);
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 //For debug graphics
 extern void CG_Cube(vec3_t mins, vec3_t maxs, vec3_t color, float alpha);
 extern qboolean FlyingCreature(const gentity_t* ent);

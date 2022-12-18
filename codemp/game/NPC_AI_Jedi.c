@@ -28,7 +28,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern qboolean BG_SabersOff(playerState_t* ps);
 
 extern void CG_DrawAlert(vec3_t origin, float rating);
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern void ForceJump(gentity_t* self, const usercmd_t* ucmd);
 
 #define	MAX_VIEW_DIST		2048
@@ -1013,7 +1013,7 @@ static qboolean jedi_battle_taunt(void)
 MOVEMENT
 ==========================================================================================
 */
-static qboolean jedi_clear_path_to_spot(vec3_t dest, int impactEntNum)
+static qboolean jedi_clear_path_to_spot(vec3_t dest, int impact_ent_num)
 {
 	trace_t	trace;
 	vec3_t	mins, start, end, dir;
@@ -1033,7 +1033,7 @@ static qboolean jedi_clear_path_to_spot(vec3_t dest, int impactEntNum)
 	if (trace.fraction < 1.0f)
 	{
 		//hit something
-		if (impactEntNum != ENTITYNUM_NONE && trace.entityNum == impactEntNum)
+		if (impact_ent_num != ENTITYNUM_NONE && trace.entityNum == impact_ent_num)
 		{//hit what we're going after
 			return qtrue;
 		}

@@ -28,7 +28,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "wp_saber.h"
 #include "g_functions.h"
 
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern void G_SetEnemy(gentity_t* self, gentity_t* enemy);
 extern qboolean NPC_CheckLookTarget(const gentity_t* self);
 extern void NPC_ClearLookTarget(const gentity_t* self);
@@ -2576,6 +2576,9 @@ gentity_t* NPC_CheckEnemy(const qboolean findNew, const qboolean tooFarOk, const
 			}
 		}
 	}
+
+	npc_check_speak(NPC);
+
 	return new_enemy;
 }
 

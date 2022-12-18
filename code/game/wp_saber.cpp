@@ -73,14 +73,14 @@ extern cvar_t* debug_subdivision;
 extern cvar_t* d_slowmoaction;
 void wp_block_points_regenerate_over_ride(const gentity_t* self, int override_amt);
 extern qboolean NPC_IsOversized(const gentity_t* self);
-
+extern void npc_check_speak(gentity_t* speaker_npc);
 extern qboolean WP_SaberBladeUseSecondBladeStyle(const saberInfo_t* saber, int blade_num);
 extern qboolean WP_SaberBladeDoTransitionDamage(const saberInfo_t* saber, int blade_num);
 extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
 extern qboolean G_ClearViewEntity(gentity_t* ent);
 extern void G_SetViewEntity(gentity_t* self, gentity_t* view_entity);
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern void CG_ChangeWeapon(int num);
 extern void CG_SaberDoWeaponHitMarks(const gclient_t* client, const gentity_t* saber_ent,
 	gentity_t* hit_ent, int saber_num, int blade_num, vec3_t hit_pos, vec3_t hit_dir, vec3_t uaxis, float size_time_scale);
@@ -41045,24 +41045,7 @@ void AnimateStun(gentity_t* self, gentity_t* inflictor)
 		}
 	}
 
-	const int call_out = Q_irand(0, 3);
-
-	switch (call_out)
-	{
-	case 0:
-	default:
-		G_AddVoiceEvent(self, Q_irand(EV_TAUNT1, EV_TAUNT3), 3000);
-		break;
-	case 1:
-		G_AddVoiceEvent(self, Q_irand(EV_ANGER1, EV_ANGER1), 3000);
-		break;
-	case 2:
-		G_AddVoiceEvent(self, Q_irand(EV_COMBAT1, EV_COMBAT3), 3000);
-		break;
-	case 3:
-		G_AddVoiceEvent(self, Q_irand(EV_JCHASE1, EV_JCHASE3), 3000);
-		break;
-	}
+	npc_check_speak(self);
 }
 
 void player_StopFreeze(gentity_t* self)

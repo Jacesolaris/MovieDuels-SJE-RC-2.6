@@ -27,14 +27,188 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 extern int g_crosshairEntNum;
 extern void npc_check_evasion();
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
+extern cvar_t* g_Advancedaitalk;
 
-/*
-void NPC_LostEnemyDecideChase(void)
 
-  We lost our enemy and want to drop him but see if we should chase him if we are in the proper bState
-*/
+//
+extern qboolean npc_is_dark_jedi(const gentity_t* self);
+extern qboolean npc_is_light_jedi(const gentity_t* self);
+extern void jedi_set_enemy_info(vec3_t enemy_dest, vec3_t enemy_dir, float* enemy_dist, vec3_t enemy_movedir, float* enemy_movespeed, const int prediction);
 
-void NPC_LostEnemyDecideChase(void)
+void npc_check_speak(gentity_t* speaker_npc)
+{
+	vec3_t enemy_dir, enemy_movedir, enemy_dest;
+	float enemy_dist, enemy_movespeed;
+
+	//See where enemy will be 300 ms from now
+	jedi_set_enemy_info(enemy_dest, enemy_dir, &enemy_dist, enemy_movedir, &enemy_movespeed, 300);
+
+	if (g_Advancedaitalk->integer < 1)
+	{
+		return; // no
+	}
+
+	if (speaker_npc->check_speach_time > level.time)
+	{
+		return; // not yet...
+	}
+
+	speaker_npc->check_speach_time = level.time + 5000 + irand(0, 10000);
+
+	if (NPC->enemy && NPC_ClearLOS(NPC->enemy)
+		&& enemy_dist < 512 && enemy_dist > 64) // Have enemy...
+	{
+		if (npc_is_dark_jedi(speaker_npc))
+		{
+			// Do taunt/anger...
+			const int voice_event = Q_irand(0, 8);
+
+			switch (voice_event)
+			{
+			case 0:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_ANGER1, EV_ANGER3), 10000);
+				break;
+			case 1:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_COMBAT1, EV_COMBAT3), 10000);
+				break;
+			case 2:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_DEFLECT1, EV_DEFLECT3), 10000);
+				break;
+			case 3:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_GLOAT1, EV_GLOAT3), 10000);
+				break;
+			case 4:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_JCHASE1, EV_JCHASE3), 10000);
+				break;
+			case 5:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_JDETECTED1, EV_JDETECTED3), 10000);
+				break;
+			case 6:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_JLOST1, EV_JLOST3), 10000);
+				break;
+			case 7:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_TAUNT1, EV_TAUNT3), 10000);
+				break;
+			default:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_VICTORY1, EV_VICTORY3), 10000);
+				break;
+			}
+		}
+		else if (npc_is_light_jedi(speaker_npc))
+		{
+			// Do taunt...
+			const int voice_event = Q_irand(0, 9);
+
+			switch (voice_event)
+			{
+			case 0:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_ANGER1, EV_ANGER3), 10000);
+				break;
+			case 1:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_COMBAT1, EV_COMBAT3), 10000);
+				break;
+			case 2:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_CONFUSE1, EV_CONFUSE3), 10000);
+				break;
+			case 3:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_DEFLECT1, EV_DEFLECT3), 10000);
+				break;
+			case 4:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_GLOAT1, EV_GLOAT3), 10000);
+				break;
+			case 5:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_JCHASE1, EV_JCHASE3), 10000);
+				break;
+			case 6:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_JDETECTED1, EV_JDETECTED3), 10000);
+				break;
+			case 7:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_JLOST1, EV_JLOST3), 10000);
+				break;
+			case 8:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_TAUNT1, EV_TAUNT3), 10000);
+				break;
+			default:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_VICTORY1, EV_VICTORY3), 10000);
+				break;
+			}
+		}
+		else
+		{
+			// Do taunt/anger...
+			const int voice_event = Q_irand(0, 9);
+
+			switch (voice_event)
+			{
+			case 0:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_ANGER1, EV_ANGER3), 10000);
+				break;
+			case 1:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_CHASE1, EV_CHASE3), 10000);
+				break;
+			case 2:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_COVER1, EV_COVER5), 10000);
+				break;
+			case 3:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_DETECTED1, EV_DETECTED5), 10000);
+				break;
+			case 4:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_ESCAPING1, EV_ESCAPING3), 10000);
+				break;
+			case 5:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_GIVEUP1, EV_GIVEUP4), 10000);
+				break;
+			case 6:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_SIGHT1, EV_SIGHT3), 10000);
+				break;
+			case 7:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_LOOK1, EV_LOOK2), 10000);
+				break;
+			case 8:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_SUSPICIOUS1, EV_SUSPICIOUS5), 10000);
+				break;
+			default:
+				G_AddVoiceEvent(speaker_npc, Q_irand(EV_TAUNT1, EV_TAUNT3), 10000);
+				break;
+			}
+		}
+	}
+}
+
+void g_do_m_block_response(const gentity_t* speaker_npc_self)
+{
+	const int voice_event = Q_irand(0, 5);
+
+	if (g_Advancedaitalk->integer < 1)
+	{
+		return; // no
+	}
+
+	switch (voice_event)
+	{
+	case 0:
+		G_AddVoiceEvent(speaker_npc_self, Q_irand(EV_GLOAT1, EV_GLOAT3), 1000);
+		break;
+	case 1:
+		G_AddVoiceEvent(speaker_npc_self, Q_irand(EV_JCHASE1, EV_JCHASE3), 1000);
+		break;
+	case 2:
+		G_AddVoiceEvent(speaker_npc_self, Q_irand(EV_COMBAT1, EV_COMBAT3), 1000);
+		break;
+	case 3:
+		G_AddVoiceEvent(speaker_npc_self, Q_irand(EV_ANGER1, EV_ANGER3), 1000);
+		break;
+	case 4:
+		G_AddVoiceEvent(speaker_npc_self, Q_irand(EV_TAUNT1, EV_TAUNT3), 1000);
+		break;
+	default:
+		G_AddVoiceEvent(speaker_npc_self, Q_irand(EV_PUSHED1, EV_PUSHED3), 1000);
+		break;
+	}
+}
+
+void NPC_LostEnemyDecideChase()
 {
 	switch (NPCInfo->behaviorState)
 	{
@@ -60,7 +234,7 @@ NPC_StandIdle
 -------------------------
 */
 
-void NPC_StandIdle(void)
+void NPC_StandIdle()
 {
 	if (!in_camera)
 	{
@@ -68,7 +242,7 @@ void NPC_StandIdle(void)
 	}
 }
 
-qboolean NPC_StandTrackAndShoot(const gentity_t* NPC, const qboolean canDuck)
+qboolean NPC_StandTrackAndShoot(const gentity_t* npc, const qboolean can_duck)
 {
 	qboolean attack_ok = qfalse;
 	qboolean duck_ok = qfalse;
@@ -77,9 +251,9 @@ qboolean NPC_StandTrackAndShoot(const gentity_t* NPC, const qboolean canDuck)
 	//First see if we're hurt bad- if so, duck
 	//FIXME: if even when ducked, we can shoot someone, we should.
 	//Maybe is can be shot even when ducked, we should run away to the nearest cover?
-	if (canDuck)
+	if (can_duck)
 	{
-		if (NPC->health < 20)
+		if (npc->health < 20)
 		{
 			//	if( NPC->svFlags&SVF_HEALING || Q_flrand(0.0f, 1.0f) )
 			if (Q_flrand(0.0f, 1.0f))
@@ -87,7 +261,7 @@ qboolean NPC_StandTrackAndShoot(const gentity_t* NPC, const qboolean canDuck)
 				duck_ok = qtrue;
 			}
 		}
-		else if (NPC->health < 40)
+		else if (npc->health < 40)
 		{
 			//			if ( NPC->svFlags&SVF_HEALING )
 			//			{//Medic is on the way, get down!
@@ -106,16 +280,16 @@ qboolean NPC_StandTrackAndShoot(const gentity_t* NPC, const qboolean canDuck)
 		faced = qtrue;
 	}
 
-	if (canDuck && (duck_ok || !attack_ok && client->fireDelay == 0) && ucmd.upmove != -127)
+	if (can_duck && (duck_ok || !attack_ok && client->fireDelay == 0) && ucmd.upmove != -127)
 	{
 		//if we didn't attack check to duck if we're not already
 		if (!duck_ok)
 		{
-			if (NPC->enemy->client)
+			if (npc->enemy->client)
 			{
-				if (NPC->enemy->enemy == NPC)
+				if (npc->enemy->enemy == npc)
 				{
-					if (NPC->enemy->client->buttons & BUTTON_ATTACK)
+					if (npc->enemy->client->buttons & BUTTON_ATTACK)
 					{
 						//FIXME: determine if enemy fire angles would hit me or get close
 						if (NPC_CheckDefend(1.0)) //FIXME: Check self-preservation?  Health?
@@ -129,8 +303,6 @@ qboolean NPC_StandTrackAndShoot(const gentity_t* NPC, const qboolean canDuck)
 
 		if (duck_ok)
 		{
-			//duck and don't shoot
-			attack_ok = qfalse;
 			ucmd.upmove = -127;
 			NPCInfo->duckDebounceTime = level.time + 1000; //duck for a full second
 		}
@@ -139,7 +311,7 @@ qboolean NPC_StandTrackAndShoot(const gentity_t* NPC, const qboolean canDuck)
 	return faced;
 }
 
-void NPC_BSIdle(void)
+void NPC_BSIdle()
 {
 	//FIXME if there is no nav data, we need to do something else
 	// if we're stuck, try to move around it
@@ -157,7 +329,7 @@ void NPC_BSIdle(void)
 	ucmd.buttons |= BUTTON_WALKING;
 }
 
-void NPC_BSRun(void)
+void NPC_BSRun()
 {
 	//FIXME if there is no nav data, we need to do something else
 	// if we're stuck, try to move around it
@@ -169,7 +341,7 @@ void NPC_BSRun(void)
 	NPC_UpdateAngles(qtrue, qtrue);
 }
 
-void NPC_BSStandGuard(void)
+void NPC_BSStandGuard()
 {
 	//FIXME: Use Snapshot info
 	if (NPC->enemy == nullptr)
@@ -194,6 +366,8 @@ void NPC_BSStandGuard(void)
 		}
 	}
 
+	npc_check_speak(NPC);
+
 	if (NPC->enemy != nullptr)
 	{
 		if (NPCInfo->tempBehavior == BS_STAND_GUARD)
@@ -216,7 +390,7 @@ NPC_BSHuntAndKill
 -------------------------
 */
 
-void NPC_BSHuntAndKill(void)
+void NPC_BSHuntAndKill()
 {
 	qboolean turned = qfalse;
 
@@ -230,7 +404,7 @@ void NPC_BSHuntAndKill(void)
 
 	if (NPC->enemy)
 	{
-		const visibility_t oEVis = enemyVisibility = NPC_CheckVisibility(NPC->enemy, CHECK_FOV | CHECK_SHOOT);
+		const visibility_t o_e_vis = enemyVisibility = NPC_CheckVisibility(NPC->enemy, CHECK_FOV | CHECK_SHOOT);
 		//CHECK_360|//CHECK_PVS|
 		if (enemyVisibility > VIS_PVS)
 		{
@@ -250,18 +424,18 @@ void NPC_BSHuntAndKill(void)
 			//Don't move toward enemy if we're in a full-body attack anim
 			//FIXME, use IdealDistance to determin if we need to close distance
 			VectorSubtract(NPC->enemy->currentOrigin, NPC->currentOrigin, vec);
-			const float enemyDist = VectorLength(vec);
-			if (enemyDist > 48 && (enemyDist * 1.5 * (enemyDist * 1.5) >= NPC_MaxDistSquaredForWeapon() ||
-				oEVis != VIS_SHOOT ||
+			const float enemy_dist = VectorLength(vec);
+			if (enemy_dist > 48 && (enemy_dist * 1.5 * (enemy_dist * 1.5) >= NPC_MaxDistSquaredForWeapon() ||
+				o_e_vis != VIS_SHOOT ||
 				//!(ucmd.buttons & BUTTON_ATTACK) ||
-				enemyDist > IdealDistance() * 3))
+				enemy_dist > IdealDistance() * 3))
 			{
 				//We should close in?
 				NPCInfo->goalEntity = NPC->enemy;
 
 				NPC_MoveToGoal(qtrue);
 			}
-			else if (enemyDist < IdealDistance())
+			else if (enemy_dist < IdealDistance())
 			{
 				//We should back off?
 				//if(ucmd.buttons & BUTTON_ATTACK)
@@ -304,7 +478,7 @@ void NPC_BSHuntAndKill(void)
 	}
 }
 
-void NPC_BSStandAndShoot(void)
+void NPC_BSStandAndShoot()
 {
 	if (NPC->client->playerTeam && NPC->client->enemyTeam)
 	{
@@ -347,7 +521,7 @@ void NPC_BSStandAndShoot(void)
 	}
 }
 
-void NPC_BSRunAndShoot(void)
+void NPC_BSRunAndShoot()
 {
 	if (!in_camera)
 	{
@@ -355,6 +529,8 @@ void NPC_BSRunAndShoot(void)
 	}
 
 	NPC_CheckEnemy(qtrue, qfalse);
+
+	npc_check_speak(NPC);
 
 	if (NPCInfo->duckDebounceTime > level.time)
 	{
@@ -432,7 +608,7 @@ void NPC_BSRunAndShoot(void)
 }
 
 //Simply turn until facing desired angles
-void NPC_BSFace(void)
+void NPC_BSFace()
 {
 	//FIXME: once you stop sending turning info, they reset to whatever their delta_angles was last????
 	//Once this is over, it snaps back to what it was facing before- WHY???
@@ -530,24 +706,24 @@ void NPC_BSPointShoot(const qboolean shoot)
 		*/
 		{
 			const float dist = VectorLength(dir);
-			float yawMissAllow = NPC->enemy->maxs[0];
-			float pitchMissAllow = (NPC->enemy->maxs[2] - NPC->enemy->mins[2]) / 2;
+			float yaw_miss_allow = NPC->enemy->maxs[0];
+			float pitch_miss_allow = (NPC->enemy->maxs[2] - NPC->enemy->mins[2]) / 2;
 
-			if (yawMissAllow < 8.0f)
+			if (yaw_miss_allow < 8.0f)
 			{
-				yawMissAllow = 8.0f;
+				yaw_miss_allow = 8.0f;
 			}
 
-			if (pitchMissAllow < 8.0f)
+			if (pitch_miss_allow < 8.0f)
 			{
-				pitchMissAllow = 8.0f;
+				pitch_miss_allow = 8.0f;
 			}
 
 			const float yawMiss = tan(DEG2RAD(AngleDelta(NPC->client->ps.viewangles[YAW], NPCInfo->desiredYaw))) * dist;
 			const float pitchMiss = tan(DEG2RAD(AngleDelta(NPC->client->ps.viewangles[PITCH], NPCInfo->desiredPitch))) *
 				dist;
 
-			if (yawMissAllow >= yawMiss && pitchMissAllow > pitchMiss)
+			if (yaw_miss_allow >= yawMiss && pitch_miss_allow > pitchMiss)
 			{
 				ucmd.buttons |= BUTTON_ATTACK;
 			}
@@ -567,7 +743,7 @@ finished:
 void NPC_BSMove(void)
 Move in a direction, face another
 */
-void NPC_BSMove(void)
+void NPC_BSMove()
 {
 	NPC_CheckEnemy(qtrue, qfalse);
 	if (NPC->enemy)
@@ -595,7 +771,7 @@ void NPC_BSShoot(void)
 Move in a direction, face another
 */
 
-void NPC_BSShoot(void)
+void NPC_BSShoot()
 {
 	if (!in_camera)
 	{
@@ -618,7 +794,7 @@ void NPC_BSPatrol( void )
   Same as idle, but you look for enemies every "vigilance"
   using your angles, HFOV, VFOV and visrange, and listen for sounds within earshot...
 */
-void NPC_BSPatrol(void)
+void NPC_BSPatrol()
 {
 	if (!in_camera)
 	{
@@ -670,9 +846,9 @@ void NPC_BSDefault(void)
 extern void NPC_CheckGetNewWeapon();
 extern void NPC_BSST_Attack();
 extern qboolean NPC_IsGunner(const gentity_t* self);
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 
-void NPC_BSDefault(void)
+void NPC_BSDefault()
 {
 	//	vec3_t		enemyDir;
 	//	float		enemyDist;
@@ -750,135 +926,10 @@ void NPC_BSDefault(void)
 		}
 		NPC_BSST_Attack();
 
-		if (TIMER_Done(NPC, "TalkTime"))
-		{
-			if (NPC_IsGunner(NPC))
-			{
-				// Do taunt...
-				const int CallOut = Q_irand(0, 3);
 
-				switch (CallOut)
-				{
-				case 0:
-				default:
-					G_AddVoiceEvent(NPC, Q_irand(EV_TAUNT1, EV_TAUNT3), 3000);
-					break;
-				case 1:
-					G_AddVoiceEvent(NPC, Q_irand(EV_ANGER1, EV_ANGER1), 3000);
-					break;
-				case 2:
-					G_AddVoiceEvent(NPC, Q_irand(EV_COMBAT1, EV_COMBAT3), 3000);
-					break;
-				case 3:
-					G_AddVoiceEvent(NPC, Q_irand(EV_JCHASE1, EV_JCHASE3), 3000);
-					break;
-				}
-			}
-			TIMER_Set(NPC, "TalkTime", 5000);
-		}
+		npc_check_speak(NPC);
+
 		return;
-		/*
-				//have an enemy
-				//FIXME: if one of these fails, meaning we can't shoot, do we really need to do the rest?
-				VectorSubtract( NPC->enemy->currentOrigin, NPC->currentOrigin, enemyDir );
-				enemyDist = VectorNormalize( enemyDir );
-				enemyDist *= enemyDist;
-				shootDist = NPC_MaxDistSquaredForWeapon();
-
-				enemyFOV = InFOV( NPC->enemy, NPC, NPCInfo->stats.hfov, NPCInfo->stats.vfov );
-				enemyShotFOV = InFOV( NPC->enemy, NPC, 20, 20 );
-				enemyPVS = gi.inPVS( NPC->enemy->currentOrigin, NPC->currentOrigin );
-
-				if ( enemyPVS )
-				{//in the pvs
-					trace_t	tr;
-
-					CalcEntitySpot( NPC->enemy, SPOT_HEAD, enemyHead );
-					enemyHead[2] -= Q_flrand( 0.0f, NPC->enemy->maxs[2]*0.5f );
-					CalcEntitySpot( NPC, SPOT_WEAPON, muzzle );
-					enemyLOS = NPC_ClearLOS( muzzle, enemyHead );
-
-					gi.trace ( &tr, muzzle, vec3_origin, vec3_origin, enemyHead, NPC->s.number, MASK_SHOT );
-					enemyCS = NPC_EvaluateShot( tr.entityNum, qtrue );
-				}
-				else
-				{//skip thr 2 traces since they would have to fail
-					enemyLOS = qfalse;
-					enemyCS = qfalse;
-				}
-
-				if ( enemyCS && enemyShotFOV )
-				{//can hit enemy if we want
-					NPC->cantHitEnemyCounter = 0;
-				}
-				else
-				{//can't hit
-					NPC->cantHitEnemyCounter++;
-				}
-
-				if ( enemyCS && enemyShotFOV && enemyDist < shootDist )
-				{//can shoot
-					shoot = qtrue;
-					if ( NPCInfo->goalEntity == NPC->enemy )
-					{//my goal is my enemy and I have a clear shot, no need to chase right now
-						move = qfalse;
-					}
-				}
-				else
-				{//don't shoot yet, keep chasing
-					shoot = qfalse;
-					move = qtrue;
-				}
-
-				//shoot decision
-				if ( !(NPCInfo->scriptFlags&SCF_DONT_FIRE) )
-				{//try to shoot
-					if ( NPC->enemy )
-					{
-						if ( shoot )
-						{
-							if( !(NPCInfo->scriptFlags & SCF_FIRE_WEAPON) ) // we've already fired, no need to do it again here
-							{
-								WeaponThink( qtrue );
-							}
-						}
-					}
-				}
-
-				//chase decision
-				if ( NPCInfo->scriptFlags & SCF_CHASE_ENEMIES )
-				{//go after him
-					NPCInfo->goalEntity = NPC->enemy;
-					//FIXME: don't need to chase when have a clear shot and in range?
-					if ( !enemyCS && NPC->cantHitEnemyCounter > 60 )
-					{//haven't been able to shoot enemy for about 6 seconds, need to do something
-						//FIXME: combat points?  Just chase?
-						if ( enemyPVS )
-						{//in my PVS, just pick a combat point
-							//FIXME: implement
-						}
-						else
-						{//just chase him
-						}
-					}
-					//FIXME: in normal behavior, should we use combat Points?  Do we care?  Is anyone actually going to ever use this AI?
-				}
-				else if ( NPC->cantHitEnemyCounter > 60 )
-				{//pick a new one
-					NPC_CheckEnemy( qtrue, qfalse );
-				}
-
-				if ( enemyPVS && enemyLOS )//&& !enemyShotFOV )
-				{//have a clear LOS to him//, but not looking at him
-					//Find the desired angles
-					vec3_t	angles;
-
-					GetAnglesForDirection( muzzle, enemyHead, angles );
-
-					NPCInfo->desiredYaw		= AngleNormalize180( angles[YAW] );
-					NPCInfo->desiredPitch	= AngleNormalize180( angles[PITCH] );
-				}
-				*/
 	}
 
 	if (UpdateGoal())

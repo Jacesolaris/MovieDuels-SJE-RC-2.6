@@ -78,6 +78,7 @@ extern qboolean WP_SaberNPCMBlock(gentity_t* victim, gentity_t* attacker, int sa
 extern qboolean WP_SaberSlowBounceBlock(gentity_t* victim, gentity_t* attacker, int saber_num, int blade_num,
 	vec3_t hit_loc);
 extern cvar_t* g_saberAutoBlocking;
+extern void g_do_m_block_response(const gentity_t* speaker_npc_self);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -960,6 +961,11 @@ qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, const 
 								attacker->client->ps.userInt3 |= 1 << FLAG_MBLOCKBOUNCE;
 							}
 
+							if (attacker->NPC && !G_ControlledByPlayer(attacker)) //NPC only
+							{
+								g_do_m_block_response(attacker);
+							}
+
 							SabBeh_AddBalance(attacker, MPCOST_MBLOCKED);
 
 							if (blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker))
@@ -1128,6 +1134,8 @@ qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, const 
 							{
 								WP_SaberNPCMBlock(blocker, attacker, saber_num, blade_num, hit_loc);
 
+								g_do_m_block_response(blocker);
+
 								if ((d_blockinfo->integer || g_DebugSaberCombat->integer) && (blocker->NPC && !
 									G_ControlledByPlayer(blocker)))
 								{
@@ -1288,6 +1296,11 @@ qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, const 
 							{
 								SabBeh_AnimateHeavySlowBounceAttacker(attacker);
 								attacker->client->ps.userInt3 |= 1 << FLAG_MBLOCKBOUNCE;
+							}
+
+							if (attacker->NPC && !G_ControlledByPlayer(attacker)) //NPC only
+							{
+								g_do_m_block_response(attacker);
 							}
 
 							SabBeh_AddBalance(attacker, MPCOST_MBLOCKED);
@@ -1454,6 +1467,8 @@ qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, const 
 							else
 							{
 								WP_SaberNPCMBlock(blocker, attacker, saber_num, blade_num, hit_loc);
+
+								g_do_m_block_response(blocker);
 
 								if ((d_blockinfo->integer || g_DebugSaberCombat->integer) && (blocker->NPC && !
 									G_ControlledByPlayer(blocker)))

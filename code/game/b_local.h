@@ -143,6 +143,7 @@ extern void NPC_LostEnemyDecideChase(void);
 extern float NPC_MaxDistSquaredForWeapon();
 extern qboolean NPC_EvaluateShot(const int hit);
 extern int NPC_ShotEntity(const gentity_t* ent, vec3_t impactPos = nullptr);
+extern void npc_check_speak(gentity_t* speaker_npc);
 
 //NPC_formation
 extern qboolean NPC_SlideMoveToGoal(void);

@@ -37,12 +37,12 @@ extern vec3_t playerMaxs;
 extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torso_anim_timer, int time);
 extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legs_anim_timer, int time);
 extern void NPC_BSNoClip(void);
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern void NPC_ApplyRoff(void);
 extern void NPC_TempLookTarget(const gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
 extern void NPC_CheckPlayerAim(void);
 extern void NPC_CheckAllClear(void);
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern qboolean NPC_CheckLookTarget(const gentity_t* self);
 extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
 extern void Mark1_dying(gentity_t* self);
@@ -1153,6 +1153,8 @@ void NPC_HandleAIFlags()
 			//We can't nav to our enemy
 			//Drop enemy and see if we should search for him
 			NPC_LostEnemyDecideChase();
+
+			npc_check_speak(NPC);
 		}
 	}
 

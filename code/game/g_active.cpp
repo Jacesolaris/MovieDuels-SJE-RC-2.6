@@ -142,7 +142,7 @@ extern void Weapon_GrapplingHook_Fire(gentity_t* ent);
 extern qboolean JET_Flying(const gentity_t* self);
 extern cvar_t* g_allowcallout;
 extern qboolean PM_KickMove(int move);
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern void AddFatigueMeleeBonus(const gentity_t* attacker, const gentity_t* victim);
 extern void WP_BlockPointsDrain(const gentity_t* self, int fatigue);
 extern qboolean IsSurrendering(const gentity_t* self);

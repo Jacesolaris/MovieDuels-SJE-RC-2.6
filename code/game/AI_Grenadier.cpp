@@ -27,7 +27,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "g_functions.h"
 
 extern void CG_DrawAlert(vec3_t origin, float rating);
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern void NPC_TempLookTarget(const gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
 extern qboolean G_ExpandPointToBBox(vec3_t point, const vec3_t mins, const vec3_t maxs, int ignore, int clipmask);
 extern void NPC_AimAdjust(int change);
@@ -46,6 +46,7 @@ constexpr auto LIGHT_SCALE = 0.25f;
 
 constexpr auto REALIZE_THRESHOLD = 0.6f;
 #define CAUTIOUS_THRESHOLD	( REALIZE_THRESHOLD * 0.75 )
+extern void npc_check_speak(gentity_t* speaker_npc);
 
 qboolean NPC_CheckPlayerTeamStealth();
 
@@ -168,13 +169,13 @@ static qboolean Grenadier_Move()
 		{
 			//we were running after enemy
 			//Try to find a combat point that can hit the enemy
-			int cpFlags = CP_CLEAR | CP_HAS_ROUTE;
+			int cp_flags = CP_CLEAR | CP_HAS_ROUTE;
 			if (NPCInfo->scriptFlags & SCF_USE_CP_NEAREST)
 			{
-				cpFlags &= ~(CP_FLANK | CP_APPROACH_ENEMY | CP_CLOSEST);
-				cpFlags |= CP_NEAREST;
+				cp_flags &= ~(CP_FLANK | CP_APPROACH_ENEMY | CP_CLOSEST);
+				cp_flags |= CP_NEAREST;
 			}
-			int cp = NPC_FindCombatPoint(NPC->currentOrigin, NPC->currentOrigin, NPC->currentOrigin, cpFlags, 32);
+			int cp = NPC_FindCombatPoint(NPC->currentOrigin, NPC->currentOrigin, NPC->currentOrigin, cp_flags, 32);
 			if (cp == -1 && !(NPCInfo->scriptFlags & SCF_USE_CP_NEAREST))
 			{
 				//okay, try one by the enemy
@@ -716,5 +717,7 @@ void NPC_BSGrenadier_Default()
 	{
 		//have an enemy
 		NPC_BSGrenadier_Attack();
+
+		npc_check_speak(NPC);
 	}
 }

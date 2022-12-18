@@ -26,7 +26,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "g_functions.h"
 
 extern qboolean g_standard_humanoid(gentity_t* ent);
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
 extern void NPC_AimAdjust(int change);
 extern qboolean WP_LobFire(const gentity_t* self, vec3_t start, vec3_t target, vec3_t mins, vec3_t maxs, int clipmask,
@@ -39,6 +39,7 @@ extern qboolean PM_CrouchAnim(int anim);
 extern qboolean NAV_HitNavGoal(vec3_t point, vec3_t mins, vec3_t maxs, vec3_t dest, int radius, qboolean flying);
 extern void NAV_GetLastMove(navInfo_t& info);
 extern qboolean NPC_IsGunner(const gentity_t* self);
+extern void npc_check_speak(gentity_t* speaker_npc);
 
 constexpr auto ARMOR_EFFECT_TIME = 500;
 constexpr auto MELEE_DIST_SQUARED = 6400; //80*80;
@@ -1349,31 +1350,6 @@ void NPC_BSGM_Default()
 		//have an enemy
 		NPC_BSGM_Attack();
 
-		if (TIMER_Done(NPC, "TalkTime"))
-		{
-			if (NPC_IsGunner(NPC))
-			{
-				// Do taunt...
-				const int CallOut = Q_irand(0, 3);
-
-				switch (CallOut)
-				{
-				case 0:
-				default:
-					G_AddVoiceEvent(NPC, Q_irand(EV_TAUNT1, EV_TAUNT3), 3000);
-					break;
-				case 1:
-					G_AddVoiceEvent(NPC, Q_irand(EV_ANGER1, EV_ANGER1), 3000);
-					break;
-				case 2:
-					G_AddVoiceEvent(NPC, Q_irand(EV_COMBAT1, EV_COMBAT3), 3000);
-					break;
-				case 3:
-					G_AddVoiceEvent(NPC, Q_irand(EV_JCHASE1, EV_JCHASE3), 3000);
-					break;
-				}
-			}
-			TIMER_Set(NPC, "TalkTime", 5000);
-		}
+		npc_check_speak(NPC);
 	}
 }

@@ -315,6 +315,8 @@ cvar_t* g_RealisticBlockingMode;
 
 cvar_t* g_debugFatigueBars;
 
+cvar_t* g_Advancedaitalk;
+
 extern char* G_GetLocationForEnt(const gentity_t* ent);
 extern void CP_FindCombatPointWaypoints();
 extern qboolean InFront(vec3_t spot, vec3_t from, vec3_t fromAngles, float threshHold = 0.0f);
@@ -942,6 +944,8 @@ void G_InitCvars(void)
 	g_debugFatigueBars = gi.cvar("cg_drawfatiguepointbar", "0", CVAR_ARCHIVE);
 
 	g_AdvancedWeaponPickup = gi.cvar("g_AdvancedWeaponPickup", "1", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
+
+	g_Advancedaitalk = gi.cvar("g_Advancedaitalk", "0", CVAR_ARCHIVE);
 }
 
 /*

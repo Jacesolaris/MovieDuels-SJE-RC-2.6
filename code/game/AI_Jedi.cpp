@@ -42,7 +42,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 //Externs
 extern qboolean G_ValidEnemy(const gentity_t* self, const gentity_t* enemy);
 extern void CG_DrawAlert(vec3_t origin, float rating);
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern qboolean InFront(vec3_t spot, vec3_t from, vec3_t fromAngles, float threshHold = 0.0f);
 extern void G_StartMatrixEffect(const gentity_t* ent, int me_flags = 0, int length = 1000, float time_scale = 0.0f, int spin_time = 0);
 extern void ForceJump(gentity_t* self, const usercmd_t* ucmd);
@@ -205,6 +205,47 @@ qboolean npc_is_projected(const gentity_t* self)
 	case CLASS_PROJECTION:
 		return qtrue;
 	default:
+		break;
+	}
+
+	return qfalse;
+}
+
+qboolean npc_is_light_jedi(const gentity_t* self)
+{
+	switch (self->client->NPC_class)
+	{
+	case CLASS_JEDI:
+	case CLASS_KYLE:
+	case CLASS_LUKE:
+	case CLASS_MONMOTHA:
+	case CLASS_MORGANKATARN:
+	case CLASS_YODA:
+		// Is Jedi...
+		return qtrue;
+	default:
+		// NOT Jedi...
+		break;
+	}
+
+	return qfalse;
+}
+
+qboolean npc_is_dark_jedi(const gentity_t* self)
+{
+	switch (self->client->NPC_class)
+	{
+	case CLASS_ALORA:
+	case CLASS_DESANN:
+	case CLASS_REBORN:
+	case CLASS_SHADOWTROOPER:
+	case CLASS_TAVION:
+	case CLASS_VADER:
+	case CLASS_SITHLORD:
+		// Is Jedi...
+		return qtrue;
+	default:
+		// NOT Jedi...
 		break;
 	}
 
@@ -521,7 +562,7 @@ qboolean jedi_is_kick_resistant(gentity_t* self)
 
 qboolean jedi_win_po(const gentity_t* self)
 {
-	if ((Q_stricmp("md_win_po", self->NPC_type) == 0))
+	if (Q_stricmp("md_win_po", self->NPC_type) == 0)
 	{
 		return qtrue;
 	}
@@ -1395,7 +1436,7 @@ static qboolean jedi_battle_taunt()
 MOVEMENT
 ==========================================================================================
 */
-static qboolean jedi_clear_path_to_spot(vec3_t dest, const int impactEntNum)
+static qboolean jedi_clear_path_to_spot(vec3_t dest, const int impact_ent_num)
 {
 	trace_t trace;
 	vec3_t mins, end, dir;
@@ -1417,7 +1458,7 @@ static qboolean jedi_clear_path_to_spot(vec3_t dest, const int impactEntNum)
 	if (trace.fraction < 1.0f)
 	{
 		//hit something
-		if (impactEntNum != ENTITYNUM_NONE && trace.entityNum == impactEntNum)
+		if (impact_ent_num != ENTITYNUM_NONE && trace.entityNum == impact_ent_num)
 		{
 			//hit what we're going after
 			return qtrue;
@@ -2149,8 +2190,8 @@ static void jedi_check_decrease_saber_anim_level()
 				|| NPC->client->ps.saberAnimLevel == SS_DESANN
 				|| NPC->client->ps.saberAnimLevel == SS_FAST
 				|| NPC->client->ps.saberAnimLevel == SS_TAVION
-				&& !(NPC->client->ps.saberAnimLevel == SS_STAFF)
-				&& !(NPC->client->ps.saberAnimLevel == SS_DUAL)
+				&& NPC->client->ps.saberAnimLevel != SS_STAFF
+				&& NPC->client->ps.saberAnimLevel != SS_DUAL
 				&& !npc_is_staff_style(NPC)
 				&& !npc_is_dual_style(NPC))
 			{
@@ -6712,7 +6753,7 @@ gentity_t* jedi_find_enemy_in_cone(const gentity_t* self, gentity_t* fallback, c
 	return enemy;
 }
 
-static void jedi_set_enemy_info(vec3_t enemy_dest, vec3_t enemy_dir, float* enemy_dist, vec3_t enemy_movedir, float* enemy_movespeed, const int prediction)
+void jedi_set_enemy_info(vec3_t enemy_dest, vec3_t enemy_dir, float* enemy_dist, vec3_t enemy_movedir, float* enemy_movespeed, const int prediction)
 {
 	if (!NPC || !NPC->enemy)
 	{//no valid enemy
@@ -7279,8 +7320,8 @@ static void jedi_combat_timers_update(const int enemy_dist)
 					|| NPC->client->ps.saberAnimLevel == SS_DESANN
 					|| NPC->client->ps.saberAnimLevel == SS_FAST
 					|| NPC->client->ps.saberAnimLevel == SS_TAVION
-					&& !(NPC->client->ps.saberAnimLevel == SS_STAFF)
-					&& !(NPC->client->ps.saberAnimLevel == SS_DUAL)
+					&& NPC->client->ps.saberAnimLevel != SS_STAFF
+					&& NPC->client->ps.saberAnimLevel != SS_DUAL
 					&& !npc_is_staff_style(NPC)
 					&& !npc_is_dual_style(NPC))
 				{
@@ -7302,8 +7343,8 @@ static void jedi_combat_timers_update(const int enemy_dist)
 						|| NPC->client->ps.saberAnimLevel == SS_DESANN
 						|| NPC->client->ps.saberAnimLevel == SS_FAST
 						|| NPC->client->ps.saberAnimLevel == SS_TAVION
-						&& !(NPC->client->ps.saberAnimLevel == SS_STAFF)
-						&& !(NPC->client->ps.saberAnimLevel == SS_DUAL)
+						&& NPC->client->ps.saberAnimLevel != SS_STAFF
+						&& NPC->client->ps.saberAnimLevel != SS_DUAL
 						&& !npc_is_staff_style(NPC)
 						&& !npc_is_dual_style(NPC))
 					{
@@ -7347,8 +7388,8 @@ static void jedi_combat_timers_update(const int enemy_dist)
 					|| NPC->client->ps.saberAnimLevel == SS_DESANN
 					|| NPC->client->ps.saberAnimLevel == SS_FAST
 					|| NPC->client->ps.saberAnimLevel == SS_TAVION
-					&& !(NPC->client->ps.saberAnimLevel == SS_STAFF)
-					&& !(NPC->client->ps.saberAnimLevel == SS_DUAL)
+					&& NPC->client->ps.saberAnimLevel != SS_STAFF
+					&& NPC->client->ps.saberAnimLevel != SS_DUAL
 					&& !npc_is_staff_style(NPC)
 					&& !npc_is_dual_style(NPC))
 				{
@@ -7378,8 +7419,8 @@ static void jedi_combat_timers_update(const int enemy_dist)
 					|| NPC->client->ps.saberAnimLevel == SS_DESANN
 					|| NPC->client->ps.saberAnimLevel == SS_FAST
 					|| NPC->client->ps.saberAnimLevel == SS_TAVION
-					&& !(NPC->client->ps.saberAnimLevel == SS_STAFF)
-					&& !(NPC->client->ps.saberAnimLevel == SS_DUAL)
+					&& NPC->client->ps.saberAnimLevel != SS_STAFF
+					&& NPC->client->ps.saberAnimLevel != SS_DUAL
 					&& !npc_is_staff_style(NPC)
 					&& !npc_is_dual_style(NPC))
 				{
@@ -7409,8 +7450,8 @@ static void jedi_combat_timers_update(const int enemy_dist)
 						|| NPC->client->ps.saberAnimLevel == SS_DESANN
 						|| NPC->client->ps.saberAnimLevel == SS_FAST
 						|| NPC->client->ps.saberAnimLevel == SS_TAVION
-						&& !(NPC->client->ps.saberAnimLevel == SS_STAFF)
-						&& !(NPC->client->ps.saberAnimLevel == SS_DUAL)
+						&& NPC->client->ps.saberAnimLevel != SS_STAFF
+						&& NPC->client->ps.saberAnimLevel != SS_DUAL
 						&& !npc_is_staff_style(NPC)
 						&& !npc_is_dual_style(NPC))
 					{
@@ -7432,8 +7473,8 @@ static void jedi_combat_timers_update(const int enemy_dist)
 					|| NPC->client->ps.saberAnimLevel == SS_DESANN
 					|| NPC->client->ps.saberAnimLevel == SS_FAST
 					|| NPC->client->ps.saberAnimLevel == SS_TAVION
-					&& !(NPC->client->ps.saberAnimLevel == SS_STAFF)
-					&& !(NPC->client->ps.saberAnimLevel == SS_DUAL)
+					&& NPC->client->ps.saberAnimLevel != SS_STAFF
+					&& NPC->client->ps.saberAnimLevel != SS_DUAL
 					&& !npc_is_staff_style(NPC)
 					&& !npc_is_dual_style(NPC))
 				{
@@ -7457,8 +7498,8 @@ static void jedi_combat_timers_update(const int enemy_dist)
 					|| NPC->client->ps.saberAnimLevel == SS_DESANN
 					|| NPC->client->ps.saberAnimLevel == SS_FAST
 					|| NPC->client->ps.saberAnimLevel == SS_TAVION
-					&& !(NPC->client->ps.saberAnimLevel == SS_STAFF)
-					&& !(NPC->client->ps.saberAnimLevel == SS_DUAL)
+					&& NPC->client->ps.saberAnimLevel != SS_STAFF
+					&& NPC->client->ps.saberAnimLevel != SS_DUAL
 					&& !npc_is_staff_style(NPC)
 					&& !npc_is_dual_style(NPC))
 				{
@@ -8379,8 +8420,8 @@ void npc_jedi_pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, c
 				|| self->client->ps.saberAnimLevel == SS_DESANN
 				|| self->client->ps.saberAnimLevel == SS_FAST
 				|| self->client->ps.saberAnimLevel == SS_TAVION
-				&& !(self->client->ps.saberAnimLevel == SS_STAFF)
-				&& !(self->client->ps.saberAnimLevel == SS_DUAL)
+				&& self->client->ps.saberAnimLevel != SS_STAFF
+				&& self->client->ps.saberAnimLevel != SS_DUAL
 				&& !npc_is_staff_style(self)
 				&& !npc_is_dual_style(self))
 			{
@@ -9054,7 +9095,7 @@ static void jedi_attack()
 			}
 			else
 			{//the escalation in difficulty is nice, here, but cap it so it doesn't get *impossible* on hard
-				const float max_chance = static_cast<float>(RANK_LT) / 2.0f + 3.0f;//5?
+				constexpr float max_chance = static_cast<float>(RANK_LT) / 2.0f + 3.0f;//5?
 				if (!g_spskill->value)
 				{
 					chance = static_cast<float>(NPCInfo->rank) / 2.0f;
@@ -10418,6 +10459,7 @@ void npc_check_evasion()
 extern void NPC_BSST_Patrol();
 extern void NPC_BSSniper_Default();
 extern void G_UcmdMoveForDir(const gentity_t* self, usercmd_t* cmd, vec3_t dir);
+extern void npc_check_speak(gentity_t* speaker_npc);
 
 void npc_bs_jedi_default()
 {
@@ -10468,6 +10510,9 @@ void npc_bs_jedi_default()
 		}
 
 		jedi_attack();
+
+		npc_check_speak(NPC);
+
 		//if we have multiple-jedi combat, probably need to keep checking (at certain debounce intervals) for a better (closer, more active) enemy and switch if needbe...
 		if ((!ucmd.buttons && !NPC->client->ps.forcePowersActive || NPC->enemy && NPC->enemy->health <= 0) && NPCInfo->enemyCheckDebounceTime < level.time)
 		{//not doing anything (or walking toward a vanquished enemy - fixme: always taunt the player?), not using force powers and it's time to look again
