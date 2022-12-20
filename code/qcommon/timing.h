@@ -33,6 +33,7 @@ class timing_c
 	uint64_t end;
 
 	int reset;
+
 public:
 	timing_c() : start(0), end(0), reset(0)
 	{

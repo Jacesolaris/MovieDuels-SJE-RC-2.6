@@ -110,6 +110,7 @@ public:
 
 	// moved to public on 2/12/2 to allow calling during shutdown
 	int Recall(const CIcarus* icarus);
+
 protected:
 	int EvaluateConditional(CBlock* block, CIcarus* icarus) const;
 

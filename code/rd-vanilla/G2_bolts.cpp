@@ -76,7 +76,7 @@ int G2_Find_Bolt_Surface_Num(boltInfo_v& bltlist, const int surfaceNum, const in
 int G2_Add_Bolt_Surf_Num(CGhoul2Info* ghlInfo, boltInfo_v& bltlist, surfaceInfo_v& slist, const int surfNum)
 {
 	assert(ghlInfo && ghlInfo->mValid);
-	boltInfo_t			tempBolt;
+	boltInfo_t tempBolt;
 
 	assert(surfNum >= 0 && surfNum < static_cast<int>(slist.size()));
 	// ensure surface num is valid
@@ -122,11 +122,12 @@ int G2_Add_Bolt_Surf_Num(CGhoul2Info* ghlInfo, boltInfo_v& bltlist, surfaceInfo_
 }
 
 void G2_Bolt_Not_Found(const char* boneName, const char* modName);
+
 int G2_Add_Bolt(CGhoul2Info* ghlInfo, boltInfo_v& bltlist, surfaceInfo_v& slist, const char* boneName)
 {
 	assert(ghlInfo && ghlInfo->mValid);
-	boltInfo_t			tempBolt;
-	uint32_t			flags;
+	boltInfo_t tempBolt;
+	uint32_t flags;
 
 	assert(G2_MODEL_OK(ghlInfo));
 

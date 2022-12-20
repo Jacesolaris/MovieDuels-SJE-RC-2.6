@@ -316,7 +316,7 @@ using pmove_t = struct
 	// callbacks to test the world
 	// these will be different functions during game and cgame
 	void (*trace)(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-		int passEntityNum, int contentMask, EG2_Collision eG2TraceType, int useLod);
+	              int passEntityNum, int contentMask, EG2_Collision eG2TraceType, int useLod);
 	int (*pointcontents)(const vec3_t point, int passEntityNum);
 };
 
@@ -326,7 +326,7 @@ void Pmove(pmove_t* pmove);
 
 constexpr auto SETANIM_TORSO = 1;
 constexpr auto SETANIM_LEGS = 2;
-constexpr auto SETANIM_BOTH = SETANIM_TORSO | SETANIM_LEGS;//3
+constexpr auto SETANIM_BOTH = SETANIM_TORSO | SETANIM_LEGS; //3
 
 constexpr auto SETANIM_FLAG_NORMAL = 0; //Only set if timer is 0;
 constexpr auto SETANIM_FLAG_OVERRIDE = 1; //Override previous;
@@ -335,14 +335,15 @@ constexpr auto SETANIM_FLAG_RESTART = 4; //Allow restarting the anim if playing 
 constexpr auto SETANIM_FLAG_HOLDLESS = 8; //Set the new timer;
 constexpr auto SETANIM_FLAG_PACE = 16;
 //Switch to this animation and keep repeating this animation while updating its timers
-constexpr auto	SETANIM_AFLAG_BLOCKPACE = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART;
-constexpr auto	SETANIM_AFLAG_PACE = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD;
-constexpr auto	AFLAG_LEDGE = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_HOLDLESS | SETANIM_FLAG_PACE;
+constexpr auto SETANIM_AFLAG_BLOCKPACE = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART;
+constexpr auto SETANIM_AFLAG_PACE = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD;
+constexpr auto AFLAG_LEDGE = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_HOLDLESS | SETANIM_FLAG_PACE;
 constexpr auto SETANIM_BLEND_DEFAULT = 100;
 
-void PM_SetAnim(const pmove_t* pm, int set_anim_parts, int anim, int set_anim_flags, int blend_time = SETANIM_BLEND_DEFAULT);
+void PM_SetAnim(const pmove_t* pm, int set_anim_parts, int anim, int set_anim_flags,
+                int blend_time = SETANIM_BLEND_DEFAULT);
 void PM_SetAnimFinal(int* torso_anim, int* legs_anim, int type, int anim, int priority, int* torso_anim_timer,
-	int* legs_anim_timer, gentity_t* gent, int blend_time = SETANIM_BLEND_DEFAULT);
+                     int* legs_anim_timer, gentity_t* gent, int blend_time = SETANIM_BLEND_DEFAULT);
 
 //===================================================================================
 

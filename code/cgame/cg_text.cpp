@@ -215,7 +215,7 @@ static int cg_SP_GetStringTextStringWithRetry(const char* psReference, char* psD
 //
 void CG_CaptionText(const char* str, const int sound)
 {
-	char text[8192] = { 0 };
+	char text[8192] = {0};
 
 	const float fFontScale = cgi_Language_IsAsian() ? 0.8f : 1.0f;
 

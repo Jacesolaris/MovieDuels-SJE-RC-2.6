@@ -165,9 +165,9 @@ void hstring::init(const char* str)
 //
 ////////////////////////////////////////////////////////////////////////////////////
 #ifdef _DEBUG
-float		hstring::ave_collisions() { return Pool().average_collisions(); }
-int			hstring::total_strings() { return Pool().total_allocs(); }
-int			hstring::total_bytes() { return Pool().size(); }
-int			hstring::total_finds() { return Pool().total_finds(); }
-int			hstring::total_collisions() { return Pool().total_collisions(); }
+float hstring::ave_collisions() { return Pool().average_collisions(); }
+int hstring::total_strings() { return Pool().total_allocs(); }
+int hstring::total_bytes() { return Pool().size(); }
+int hstring::total_finds() { return Pool().total_finds(); }
+int hstring::total_collisions() { return Pool().total_collisions(); }
 #endif

@@ -189,7 +189,7 @@ void WP_FireBlaster(gentity_t* ent, const qboolean alt_fire)
 				}
 			}
 			else if (!WalkCheck(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angs[PITCH] += Q_flrand(-1.0f, 1.0f) * RUNNING_SPREAD;
 				angs[YAW] += Q_flrand(-1.0f, 1.0f) * RUNNING_SPREAD;
@@ -218,10 +218,10 @@ void WP_FireBlaster(gentity_t* ent, const qboolean alt_fire)
 		}
 	}
 
-		AngleVectors(angs, dir, nullptr, nullptr);
+	AngleVectors(angs, dir, nullptr, nullptr);
 
-		// FIXME: if temp_org does not have clear trace to inside the bbox, don't shoot!
-		WP_FireBlasterMissile(ent, muzzle, dir, alt_fire);
+	// FIXME: if temp_org does not have clear trace to inside the bbox, don't shoot!
+	WP_FireBlasterMissile(ent, muzzle, dir, alt_fire);
 }
 
 //---------------
@@ -396,7 +396,7 @@ void WP_FireBattleDroid(gentity_t* ent, const qboolean alt_fire)
 				}
 			}
 			else if (!WalkCheck(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angs[PITCH] += Q_flrand(-1.0f, 1.0f) * RUNNING_SPREAD;
 				angs[YAW] += Q_flrand(-1.0f, 1.0f) * RUNNING_SPREAD;
@@ -425,10 +425,10 @@ void WP_FireBattleDroid(gentity_t* ent, const qboolean alt_fire)
 		}
 	}
 
-		AngleVectors(angs, dir, nullptr, nullptr);
+	AngleVectors(angs, dir, nullptr, nullptr);
 
-		// FIXME: if temp_org does not have clear trace to inside the bbox, don't shoot!
-		WP_FireBattleDroidMissile(ent, muzzle, dir, alt_fire);
+	// FIXME: if temp_org does not have clear trace to inside the bbox, don't shoot!
+	WP_FireBattleDroidMissile(ent, muzzle, dir, alt_fire);
 }
 
 //---------------
@@ -600,7 +600,7 @@ void WP_FireFirstOrder(gentity_t* ent, const qboolean alt_fire)
 				}
 			}
 			else if (!WalkCheck(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angs[PITCH] += Q_flrand(-1.0f, 1.0f) * RUNNING_SPREAD;
 				angs[YAW] += Q_flrand(-1.0f, 1.0f) * RUNNING_SPREAD;
@@ -629,10 +629,10 @@ void WP_FireFirstOrder(gentity_t* ent, const qboolean alt_fire)
 		}
 	}
 
-		AngleVectors(angs, dir, nullptr, nullptr);
+	AngleVectors(angs, dir, nullptr, nullptr);
 
-		// FIXME: if temp_org does not have clear trace to inside the bbox, don't shoot!
-		WP_FireFirstOrderMissile(ent, muzzle, dir, alt_fire);
+	// FIXME: if temp_org does not have clear trace to inside the bbox, don't shoot!
+	WP_FireFirstOrderMissile(ent, muzzle, dir, alt_fire);
 }
 
 //---------------
@@ -800,7 +800,7 @@ void WP_FireRebelBlaster(gentity_t* ent, const qboolean alt_fire)
 				}
 			}
 			else if (!WalkCheck(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angs[PITCH] += Q_flrand(-1.0f, 1.0f) * RUNNING_SPREAD;
 				angs[YAW] += Q_flrand(-1.0f, 1.0f) * RUNNING_SPREAD;
@@ -829,10 +829,10 @@ void WP_FireRebelBlaster(gentity_t* ent, const qboolean alt_fire)
 		}
 	}
 
-		AngleVectors(angs, dir, nullptr, nullptr);
+	AngleVectors(angs, dir, nullptr, nullptr);
 
-		// FIXME: if temp_org does not have clear trace to inside the bbox, don't shoot!
-		WP_FireRebelBlasterMissile(ent, muzzle, dir, alt_fire);
+	// FIXME: if temp_org does not have clear trace to inside the bbox, don't shoot!
+	WP_FireRebelBlasterMissile(ent, muzzle, dir, alt_fire);
 }
 
 //---------------------------------------------------------
@@ -903,7 +903,7 @@ void WP_FireRebelBlasterDuals(gentity_t* ent, const qboolean alt_fire, const qbo
 				}
 			}
 			else if (!WalkCheck(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angs[PITCH] += Q_flrand(-1.0f, 1.0f) * CLONERIFLE_MAIN_SPREAD;
 				angs[YAW] += Q_flrand(-1.0f, 1.0f) * CLONERIFLE_MAIN_SPREAD;
@@ -931,16 +931,16 @@ void WP_FireRebelBlasterDuals(gentity_t* ent, const qboolean alt_fire, const qbo
 		}
 	}
 
-		AngleVectors(angs, dir, nullptr, nullptr);
+	AngleVectors(angs, dir, nullptr, nullptr);
 
-		if (secondPistol)
-		{
-			WP_FireRebelBlasterMissile(ent, muzzle2, dir, alt_fire);
-		}
-		else
-		{
-			WP_FireRebelBlasterMissile(ent, muzzle, dir, alt_fire);
-		}
+	if (secondPistol)
+	{
+		WP_FireRebelBlasterMissile(ent, muzzle2, dir, alt_fire);
+	}
+	else
+	{
+		WP_FireRebelBlasterMissile(ent, muzzle, dir, alt_fire);
+	}
 }
 
 //---------------
@@ -1112,7 +1112,7 @@ void WP_FireRebelRifle(gentity_t* ent, const qboolean alt_fire)
 				}
 			}
 			else if (!WalkCheck(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angs[PITCH] += Q_flrand(-1.0f, 1.0f) * RUNNING_SPREAD;
 				angs[YAW] += Q_flrand(-1.0f, 1.0f) * RUNNING_SPREAD;
@@ -1141,10 +1141,10 @@ void WP_FireRebelRifle(gentity_t* ent, const qboolean alt_fire)
 		}
 	}
 
-		AngleVectors(angs, dir, nullptr, nullptr);
+	AngleVectors(angs, dir, nullptr, nullptr);
 
-		// FIXME: if temp_org does not have clear trace to inside the bbox, don't shoot!
-		WP_FireRebelRifleMissile(ent, muzzle, dir, alt_fire);
+	// FIXME: if temp_org does not have clear trace to inside the bbox, don't shoot!
+	WP_FireRebelRifleMissile(ent, muzzle, dir, alt_fire);
 }
 
 //---------------
@@ -1586,7 +1586,7 @@ void WP_FireJangoPistol(gentity_t* ent, const qboolean alt_fire, const qboolean 
 				}
 			}
 			else if (!WalkCheck(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angles[PITCH] += Q_flrand(-1.0f, 1.0f) * CLONERIFLE_MAIN_SPREAD;
 				angles[YAW] += Q_flrand(-1.0f, 1.0f) * CLONERIFLE_MAIN_SPREAD;
@@ -1616,16 +1616,16 @@ void WP_FireJangoPistol(gentity_t* ent, const qboolean alt_fire, const qboolean 
 		AngleVectors(angles, forwardVec, nullptr, nullptr);
 	}
 
-		AngleVectors(angs, dir, nullptr, nullptr);
+	AngleVectors(angs, dir, nullptr, nullptr);
 
-		if (secondPistol)
-		{
-			WP_FireJangoPistolMissile(ent, muzzle2, dir, alt_fire);
-		}
-		else
-		{
-			WP_FireJangoPistolMissile(ent, muzzle, dir, alt_fire);
-		}
+	if (secondPistol)
+	{
+		WP_FireJangoPistolMissile(ent, muzzle2, dir, alt_fire);
+	}
+	else
+	{
+		WP_FireJangoPistolMissile(ent, muzzle, dir, alt_fire);
+	}
 }
 
 //---------------------------------------------------------
@@ -1701,7 +1701,7 @@ void WP_FireWristPistol(gentity_t* ent, const qboolean alt_fire)
 				}
 			}
 			else if (!WalkCheck(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angles[PITCH] += Q_flrand(-1.0f, 1.0f) * CLONERIFLE_MAIN_SPREAD;
 				angles[YAW] += Q_flrand(-1.0f, 1.0f) * CLONERIFLE_MAIN_SPREAD;
@@ -1731,9 +1731,9 @@ void WP_FireWristPistol(gentity_t* ent, const qboolean alt_fire)
 		AngleVectors(angles, forwardVec, nullptr, nullptr);
 	}
 
-		AngleVectors(angs, dir, nullptr, nullptr);
+	AngleVectors(angs, dir, nullptr, nullptr);
 
-		WP_FireJangoWristMissile(ent, muzzle, dir, alt_fire);
+	WP_FireJangoWristMissile(ent, muzzle, dir, alt_fire);
 }
 
 //---------------------------------------------------------
@@ -1809,7 +1809,7 @@ void WP_FireJangoDualPistol(gentity_t* ent, const qboolean alt_fire)
 				}
 			}
 			else if (!WalkCheck(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angles[PITCH] += Q_flrand(-1.0f, 1.0f) * CLONERIFLE_MAIN_SPREAD;
 				angles[YAW] += Q_flrand(-1.0f, 1.0f) * CLONERIFLE_MAIN_SPREAD;
@@ -1839,9 +1839,9 @@ void WP_FireJangoDualPistol(gentity_t* ent, const qboolean alt_fire)
 		AngleVectors(angles, forwardVec, nullptr, nullptr);
 	}
 
-		AngleVectors(angs, dir, nullptr, nullptr);
+	AngleVectors(angs, dir, nullptr, nullptr);
 
-		WP_FireJangoDualPistolMissile(ent, muzzle, dir, alt_fire);
+	WP_FireJangoDualPistolMissile(ent, muzzle, dir, alt_fire);
 }
 
 //---------------------------------------------------------
@@ -1917,7 +1917,7 @@ void WP_FireJangoFPPistolDuals(gentity_t* ent, const qboolean alt_fire, const qb
 				}
 			}
 			else if (!WalkCheck(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angles[PITCH] += Q_flrand(-1.0f, 1.0f) * CLONERIFLE_MAIN_SPREAD;
 				angles[YAW] += Q_flrand(-1.0f, 1.0f) * CLONERIFLE_MAIN_SPREAD;
@@ -1947,16 +1947,16 @@ void WP_FireJangoFPPistolDuals(gentity_t* ent, const qboolean alt_fire, const qb
 		AngleVectors(angles, forwardVec, nullptr, nullptr);
 	}
 
-		AngleVectors(angs, dir, nullptr, nullptr);
+	AngleVectors(angs, dir, nullptr, nullptr);
 
-		if (secondPistol)
-		{
-			WP_FireJangoDualPistolMissileDuals(ent, muzzle2, dir, alt_fire);
-		}
-		else
-		{
-			WP_FireJangoDualPistolMissileDuals(ent, muzzle, dir, alt_fire);
-		}
+	if (secondPistol)
+	{
+		WP_FireJangoDualPistolMissileDuals(ent, muzzle2, dir, alt_fire);
+	}
+	else
+	{
+		WP_FireJangoDualPistolMissileDuals(ent, muzzle, dir, alt_fire);
+	}
 }
 
 //---------------
@@ -2046,7 +2046,7 @@ void WP_FireBobaRifleMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qbo
 			missile->methodOfDeath = MOD_BOBA_ALT;
 		}
 		else*/
-		//	{
+	//	{
 	missile->methodOfDeath = MOD_BOBA;
 	//	}
 
@@ -2125,7 +2125,7 @@ void WP_FireBobaRifle(gentity_t* ent, const qboolean alt_fire)
 				}
 			}
 			else if (!WalkCheck(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angs[PITCH] += Q_flrand(-1.0f, 1.0f) * RUNNING_SPREAD;
 				angs[YAW] += Q_flrand(-1.0f, 1.0f) * RUNNING_SPREAD;
@@ -2154,8 +2154,8 @@ void WP_FireBobaRifle(gentity_t* ent, const qboolean alt_fire)
 		}
 	}
 
-		AngleVectors(angs, dir, nullptr, nullptr);
+	AngleVectors(angs, dir, nullptr, nullptr);
 
-		// FIXME: if temp_org does not have clear trace to inside the bbox, don't shoot!
-		WP_FireBobaRifleMissile(ent, muzzle, dir, alt_fire);
+	// FIXME: if temp_org does not have clear trace to inside the bbox, don't shoot!
+	WP_FireBobaRifleMissile(ent, muzzle, dir, alt_fire);
 }

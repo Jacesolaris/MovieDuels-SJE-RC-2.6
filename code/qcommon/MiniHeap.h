@@ -27,12 +27,12 @@ class CMiniHeap
 {
 	char* mHeap;
 	char* mCurrentHeap;
-	int		mSize;
+	int mSize;
 #if _DEBUG
-	int		mMaxAlloc;
+	int mMaxAlloc;
 #endif
-public:
 
+public:
 	// reset the heap back to the start
 	void ResetHeap()
 	{

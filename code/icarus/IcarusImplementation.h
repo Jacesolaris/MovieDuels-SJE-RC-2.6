@@ -75,12 +75,12 @@ protected:
 
 #ifdef _DEBUG
 
-	int	m_DEBUG_NumSequencerAlloc;
-	int	m_DEBUG_NumSequencerFreed;
+	int m_DEBUG_NumSequencerAlloc;
+	int m_DEBUG_NumSequencerFreed;
 	int m_DEBUG_NumSequencerResidual;
 
-	int	m_DEBUG_NumSequenceAlloc;
-	int	m_DEBUG_NumSequenceFreed;
+	int m_DEBUG_NumSequenceAlloc;
+	int m_DEBUG_NumSequenceFreed;
 	int m_DEBUG_NumSequenceResidual;
 
 #endif

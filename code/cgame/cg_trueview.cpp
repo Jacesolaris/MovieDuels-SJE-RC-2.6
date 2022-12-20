@@ -92,8 +92,8 @@ int BG_SiegeGetPairedValue(const char* buf, char* key, char* outbuf)
 						if (openB < 0)
 						{
 							Com_Error(ERR_DROP,
-								"Unexpected closing bracket (too many) while parsing to end of group '%s'",
-								check_key);
+							          "Unexpected closing bracket (too many) while parsing to end of group '%s'",
+							          check_key);
 						}
 
 						if (buf[i] == '}' && !openB)
@@ -137,7 +137,8 @@ int BG_SiegeGetPairedValue(const char* buf, char* key, char* outbuf)
 								}
 
 								j = 0;
-								while (!parse_to_quote && buf[i] != ' ' && buf[i] != '\n' && buf[i] != '\r' || parse_to_quote && buf[i] != '\"')
+								while (!parse_to_quote && buf[i] != ' ' && buf[i] != '\n' && buf[i] != '\r' ||
+									parse_to_quote && buf[i] != '\"')
 								{
 									if (buf[i] == '/' &&
 										buf[i + 1] == '/')
@@ -154,12 +155,12 @@ int BG_SiegeGetPairedValue(const char* buf, char* key, char* outbuf)
 										if (parse_to_quote)
 										{
 											Com_Error(ERR_DROP,
-												"Unexpected EOF while looking for endquote, error finding paired value for '%s'",
-												key);
+											          "Unexpected EOF while looking for endquote, error finding paired value for '%s'",
+											          key);
 										}
 										Com_Error(ERR_DROP,
-											"Unexpected EOF while looking for space or endline, error finding paired value for '%s'",
-											key);
+										          "Unexpected EOF while looking for space or endline, error finding paired value for '%s'",
+										          key);
 									}
 								}
 								outbuf[j] = 0;

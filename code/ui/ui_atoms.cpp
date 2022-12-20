@@ -33,8 +33,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "gameinfo.h"
 #include "../qcommon/stv_version.h"
 
-uiimport_t	ui;
-uiStatic_t	uis;
+uiimport_t ui;
+uiStatic_t uis;
 
 //externs
 static void UI_LoadMenu_f(void);
@@ -65,12 +65,13 @@ void UI_SetActiveMenu(const char* menuname, const char* menuID)
 {
 	// this should be the ONLY way the menu system is brought up (besides the UI_ConsoleCommand below)
 
-	if (cls.state != CA_DISCONNECTED && !ui.SG_GameAllowedToSaveHere(qtrue))	//don't check full sytem, only if incamera
+	if (cls.state != CA_DISCONNECTED && !ui.SG_GameAllowedToSaveHere(qtrue)) //don't check full sytem, only if incamera
 	{
 		return;
 	}
 
-	if (!menuname) {
+	if (!menuname)
+	{
 		UI_ForceMenuOff();
 		return;
 	}
@@ -119,7 +120,7 @@ UI_Argv
 */
 static char* UI_Argv(int arg)
 {
-	static char	buffer[MAX_STRING_CHARS];
+	static char buffer[MAX_STRING_CHARS];
 
 	ui.Argv(arg, buffer, sizeof(buffer));
 
@@ -133,7 +134,7 @@ UI_Cvar_VariableString
 */
 char* UI_Cvar_VariableString(const char* var_name)
 {
-	static char	buffer[MAX_STRING_CHARS];
+	static char buffer[MAX_STRING_CHARS];
 
 	ui.Cvar_VariableStringBuffer(var_name, buffer, sizeof(buffer));
 
@@ -189,12 +190,12 @@ UI_ConsoleCommand
 =================
 */
 #ifndef JK2_MODE
-void UI_Load(void);	//in UI_main.cpp
+void UI_Load(void); //in UI_main.cpp
 #endif
 
 qboolean UI_ConsoleCommand(void)
 {
-	if (!ui.SG_GameAllowedToSaveHere(qtrue))	//only check if incamera
+	if (!ui.SG_GameAllowedToSaveHere(qtrue)) //only check if incamera
 	{
 		return qfalse;
 	}
@@ -248,7 +249,8 @@ void UI_Init(int apiVersion, const uiimport_t* uiimport, qboolean inGameLoad)
 {
 	ui = *uiimport;
 
-	if (apiVersion != UI_API_VERSION) {
+	if (apiVersion != UI_API_VERSION)
+	{
 		ui.Error(ERR_FATAL, "Bad UI_API_VERSION: expected %i, got %i\n", UI_API_VERSION, apiVersion);
 	}
 
@@ -288,7 +290,7 @@ void UI_Init(int apiVersion, const uiimport_t* uiimport, qboolean inGameLoad)
 	ui.Cvar_Create("ui_prisonerobj_currtotal", "0", CVAR_ROM | CVAR_SAVEGAME | CVAR_NORESTART);
 	ui.Cvar_Create("ui_prisonerobj_mintotal", "0", CVAR_ROM | CVAR_SAVEGAME | CVAR_NORESTART);
 
-	ui.Cvar_Create("g_dismemberment", "3", CVAR_ARCHIVE);//0 = none, 1 = arms and hands, 2 = legs, 3 = waist and head
+	ui.Cvar_Create("g_dismemberment", "3", CVAR_ARCHIVE); //0 = none, 1 = arms and hands, 2 = legs, 3 = waist and head
 	ui.Cvar_Create("cg_gunAutoFirst", "1", CVAR_ARCHIVE);
 	ui.Cvar_Create("cg_crosshairIdentifyTarget", "1", CVAR_ARCHIVE);
 	ui.Cvar_Create("g_subtitles", "0", CVAR_ARCHIVE);
@@ -329,27 +331,33 @@ UI_DrawHandlePic
 */
 void UI_DrawHandlePic(float x, float y, float w, float h, qhandle_t hShader)
 {
-	float	s0;
-	float	s1;
-	float	t0;
-	float	t1;
+	float s0;
+	float s1;
+	float t0;
+	float t1;
 
-	if (w < 0) {	// flip about horizontal
+	if (w < 0)
+	{
+		// flip about horizontal
 		w = -w;
 		s0 = 1;
 		s1 = 0;
 	}
-	else {
+	else
+	{
 		s0 = 0;
 		s1 = 1;
 	}
 
-	if (h < 0) {	// flip about vertical
+	if (h < 0)
+	{
+		// flip about vertical
 		h = -h;
 		t0 = 1;
 		t1 = 0;
 	}
-	else {
+	else
+	{
 		t0 = 0;
 		t1 = 1;
 	}
@@ -437,7 +445,7 @@ int UI_RegisterFont(const char* fontName)
 	int iFontIndex = ui.R_RegisterFont(fontName);
 	if (iFontIndex == 0)
 	{
-		iFontIndex = ui.R_RegisterFont("ergoec");	// fall back
+		iFontIndex = ui.R_RegisterFont("ergoec"); // fall back
 	}
 
 	return iFontIndex;

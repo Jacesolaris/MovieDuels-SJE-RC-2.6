@@ -108,7 +108,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "graph_vs.h"
 #endif
 #if !defined(RATL_LIST_VS_INC)
-#include "..\Ratl\list_vs.h"
+#include "../Ratl/list_vs.h"
 #endif
 #include "Ratl/handle_pool_vs.h"
 
@@ -131,7 +131,7 @@ namespace ragl
 			NULLEDGE = -1
 		};
 
-		typedef		graph_vs<TNODE, MAXNODES, TEDGE, MAXEDGES, MAXNODENEIGHBORS>			TGraph;
+		using TGraph = graph_vs<TNODE, MAXNODES, TEDGE, MAXEDGES, MAXNODENEIGHBORS>;
 
 	public:
 		////////////////////////////////////////////////////////////////////////////////////
@@ -145,7 +145,7 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Clear Out All Temp Data So We Can Triangulate Again
 		////////////////////////////////////////////////////////////////////////////////////
-		void	clear()
+		void clear()
 		{
 			mLinks.init(0);
 			mEdges.clear();
@@ -170,9 +170,9 @@ namespace ragl
 		// points on the hull for most common point clouds is more likely to be log n.
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		void	insertion_hull()
+		void insertion_hull()
 		{
-			assert(mGraph.size_nodes() > 3);		// We Need More Than 3 Points To Triangulate
+			assert(mGraph.size_nodes() > 3); // We Need More Than 3 Points To Triangulate
 
 			// STEP ONE: Sort all points along the x axis in increasing order
 			//----------------------------------------------------------------
@@ -207,16 +207,17 @@ namespace ragl
 		// well - much better than n^2 (closer to n log n).
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		void	delaunay_edge_flip()
+		void delaunay_edge_flip()
 		{
-			int	CurFlipped;
-			int	TotalFlipped = 0;
+			int CurFlipped;
+			int TotalFlipped = 0;
 
 			do
 			{
 				CurFlipped = flip();
 				TotalFlipped += CurFlipped;
-			} while (CurFlipped != 0 && TotalFlipped < 10000 /*Sanity Condition*/);
+			}
+			while (CurFlipped != 0 && TotalFlipped < 10000 /*Sanity Condition*/);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
@@ -225,9 +226,9 @@ namespace ragl
 		//
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		void	floor_shape(typename TGraph::user& user, float maxzdelta)
+		void floor_shape(typename TGraph::user& user, float maxzdelta)
 		{
-			ratl::vector_vs<int, MAXEDGES>		CullEdges;
+			ratl::vector_vs<int, MAXEDGES> CullEdges;
 			typename TEdges::iterator stop = mEdges.end();
 			for (typename TEdges::iterator it = mEdges.begin(); it != mEdges.end(); ++it)
 			{
@@ -238,10 +239,10 @@ namespace ragl
 					face& FaceL = mFaces[EdgeAt.mLeft];
 
 					//				int		Edge	= mEdges.index_to_handle(it.index());
-					int		R = FaceR.opposing_node(EdgeAt.mA, EdgeAt.mB);
-					int		L = FaceL.opposing_node(EdgeAt.mA, EdgeAt.mB);
-					int		RInd = mGraph.node_index(R);
-					int		LInd = mGraph.node_index(L);
+					int R = FaceR.opposing_node(EdgeAt.mA, EdgeAt.mB);
+					int L = FaceL.opposing_node(EdgeAt.mA, EdgeAt.mB);
+					int RInd = mGraph.node_index(R);
+					int LInd = mGraph.node_index(L);
 
 					TNODE& PtA = mGraph.get_node(EdgeAt.mA);
 					TNODE& PtB = mGraph.get_node(EdgeAt.mB);
@@ -253,7 +254,7 @@ namespace ragl
 						mLinks.get(RInd, LInd) == 0 &&
 						mLinks.get(LInd, RInd) == 0 &&
 						(!user.on_same_floor(PtL, PtA) || !user.on_same_floor(PtL, PtB))
-						)
+					)
 					{
 						int nEdge = mEdges.alloc();
 
@@ -289,13 +290,13 @@ namespace ragl
 		// This function is a simple routine to prune out any edges which are larger or
 		// smaller than the desired range (min, max).
 		////////////////////////////////////////////////////////////////////////////////////
-		void	alpha_shape(typename TGraph::user& user, const float max, const float min = 0)
+		void alpha_shape(typename TGraph::user& user, const float max, const float min = 0)
 		{
-			ratl::vector_vs<int, MAXEDGES>		CullEdges;
+			ratl::vector_vs<int, MAXEDGES> CullEdges;
 			for (typename TEdges::iterator it = mEdges.begin(); it != mEdges.end(); ++it)
 			{
 				const float cost = user.cost(mGraph.get_node((*it).mA), mGraph.get_node((*it).mB));
-				if (cost<min || cost>max)
+				if (cost < min || cost > max)
 				{
 					mLinks.get(mGraph.node_index((*it).mA), mGraph.node_index((*it).mB)) = 0;
 					mLinks.get(mGraph.node_index((*it).mB), mGraph.node_index((*it).mA)) = 0;
@@ -314,13 +315,14 @@ namespace ragl
 		// Call this function when you are done with the triangulation and want to copy all
 		// the temp data into your graph.
 		////////////////////////////////////////////////////////////////////////////////////
-		void	finish(typename TGraph::user& user)
+		void finish(typename TGraph::user& user)
 		{
 			mGraph.clear_edges();
 			for (typename TEdges::iterator it = mEdges.begin(); it != mEdges.end(); ++it)
 			{
 				TEDGE DefaultEdge;
-				user.setup_edge(DefaultEdge, (*it).mA, (*it).mB, (*it).mOnHull, mGraph.get_node((*it).mA), mGraph.get_node((*it).mB));
+				user.setup_edge(DefaultEdge, (*it).mA, (*it).mB, (*it).mOnHull, mGraph.get_node((*it).mA),
+				                mGraph.get_node((*it).mB));
 				mGraph.connect_node(DefaultEdge, (*it).mA, (*it).mB);
 			}
 		}
@@ -329,9 +331,9 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		typedef ratl::list_vs<int, MAXNODES>						THull;
-		typedef		typename ratl::list_vs<int, MAXNODES>::iterator				THullIter;
-		typedef ratl::grid2_vs<int, MAXNODES, MAXNODES>				TLinks;
+		using THull = ratl::list_vs<int, MAXNODES>;
+		using THullIter = typename ratl::list_vs<int, MAXNODES>::iterator;
+		using TLinks = ratl::grid2_vs<int, MAXNODES, MAXNODES>;
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// The Local Edge Class
@@ -341,20 +343,20 @@ namespace ragl
 		//       LEFT
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		class	edge
+		class edge
 		{
 		public:
-			int			mA;
-			int			mB;
+			int mA;
+			int mB;
 
-			int			mLeft;
-			int			mRight;
-			int			mFlips;
+			int mLeft;
+			int mRight;
+			int mFlips;
 
-			THullIter	mHullLoc;
-			bool		mOnHull;
+			THullIter mHullLoc;
+			bool mOnHull;
 
-			void		flip_face(const int OldFace, const int NewFace)
+			void flip_face(const int OldFace, const int NewFace)
 			{
 				assert(mRight != mLeft);
 				assert(mLeft != NewFace && mRight != NewFace);
@@ -370,7 +372,7 @@ namespace ragl
 				assert(mRight != mLeft);
 			}
 
-			static void	verify(const int PtA, const int PtB, const int Edge)
+			static void verify(const int PtA, const int PtB, const int Edge)
 			{
 				assert(PtA == mA || PtA == mB);
 				assert(PtB == mA || PtB == mB);
@@ -379,7 +381,7 @@ namespace ragl
 				assert(mA != mB);
 			}
 
-			static void	verify(const int PtA, const int PtB, const int PtC, const int Edge)
+			static void verify(const int PtA, const int PtB, const int PtC, const int Edge)
 			{
 				assert(PtC == mA && (PtA == mB || PtB == mB) || PtC == mB && (PtA == mA || PtB == mA));
 
@@ -400,18 +402,18 @@ namespace ragl
 		//       BOTTOM
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		class	face
+		class face
 		{
 		public:
-			int			mA;
-			int			mB;
-			int			mC;
+			int mA;
+			int mB;
+			int mC;
 
-			int			mLeft;
-			int			mRight;
-			int			mBottom;
+			int mLeft;
+			int mRight;
+			int mBottom;
 
-			int			mFlips;
+			int mFlips;
 
 			int& opposing_node(const int A, const int B)
 			{
@@ -437,9 +439,10 @@ namespace ragl
 				{
 					return mBottom;
 				}
-				assert(edge == mBottom);	// If you hit this assert, then the edge is not in this face
+				assert(edge == mBottom); // If you hit this assert, then the edge is not in this face
 				return mLeft;
 			}
+
 			int& relative_right(const int edge)
 			{
 				if (edge == mLeft)
@@ -450,7 +453,7 @@ namespace ragl
 				{
 					return mLeft;
 				}
-				assert(edge == mBottom);	// If you hit this assert, then the edge is not in this face
+				assert(edge == mBottom); // If you hit this assert, then the edge is not in this face
 				return mRight;
 			}
 		};
@@ -460,43 +463,43 @@ namespace ragl
 		//
 		// Used To Sort Nodes In Increasing X Order
 		////////////////////////////////////////////////////////////////////////////////////
-		class	sort_node
+		class sort_node
 		{
 		public:
-			bool			operator<(const sort_node& r) const
+			bool operator<(const sort_node& r) const
 			{
 				return (*r.mNodePointer)[0] < (*mNodePointer)[0];
 			}
 
-			int		mNodeHandle;
+			int mNodeHandle;
 			TNODE* mNodePointer;
 		};
 
 		////////////////////////////////////////////////////////////////////////////////////
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		typedef		ratl::handle_pool_vs<edge, MAXEDGES>				TEdges;
-		typedef		typename ratl::handle_pool_vs<edge, MAXEDGES>::iterator		TEdgesIter;
-		typedef ratl::handle_pool_vs<face, MAXFACES>				TFaces;
-		typedef ratl::vector_vs<sort_node, MAXNODES>				TSortNodes;
+		using TEdges = ratl::handle_pool_vs<edge, MAXEDGES>;
+		using TEdgesIter = typename ratl::handle_pool_vs<edge, MAXEDGES>::iterator;
+		using TFaces = ratl::handle_pool_vs<face, MAXFACES>;
+		using TSortNodes = ratl::vector_vs<sort_node, MAXNODES>;
 
-		TGraph& mGraph;			// A Reference To The Graph Points To Triangulate
+		TGraph& mGraph; // A Reference To The Graph Points To Triangulate
 
-		TLinks		mLinks;
-		TEdges		mEdges;
-		TFaces		mFaces;
+		TLinks mLinks;
+		TEdges mEdges;
+		TFaces mFaces;
 
-		THull		mHull;			// The Convex Hull
-		THullIter	mHullIter;
+		THull mHull; // The Convex Hull
+		THullIter mHullIter;
 
-		TSortNodes	mSortNodes;		// Need To Presort Nodes On (x-Axis) For Insertion Hull
-		sort_node	mSortNode;
+		TSortNodes mSortNodes; // Need To Presort Nodes On (x-Axis) For Insertion Hull
+		sort_node mSortNode;
 
 	private:
 		////////////////////////////////////////////////////////////////////////////////////
 		// Copy All The Graph Nodes To Our Sort Node Class And Run Heap Sort
 		////////////////////////////////////////////////////////////////////////////////////
-		void	sort_points()
+		void sort_points()
 		{
 			mSortNodes.clear();
 			for (typename TGraph::TNodes::iterator i = mGraph.nodes_begin(); i != mGraph.nodes_end(); ++i)
@@ -511,11 +514,11 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Create A New Edge A->B, And Fix Up The Face
 		////////////////////////////////////////////////////////////////////////////////////
-		int		add_edge(int A, int B, int Face = 0, bool OnHull = true)
+		int add_edge(int A, int B, int Face = 0, bool OnHull = true)
 		{
 			assert(A != B);
 
-			int	nEdge = mLinks.get(mGraph.node_index(A), mGraph.node_index(B));
+			int nEdge = mLinks.get(mGraph.node_index(A), mGraph.node_index(B));
 
 			// Apparently This Edge Does Not Exist, So Make A New One
 			//--------------------------------------------------------
@@ -546,7 +549,7 @@ namespace ragl
 
 				if (mHullIter == mEdges[nEdge].mHullLoc)
 				{
-					mHull.erase(mHullIter);					// Make Sure To Fix Up The Hull Iter If That Is What We Are Removing
+					mHull.erase(mHullIter); // Make Sure To Fix Up The Hull Iter If That Is What We Are Removing
 				}
 				else
 				{
@@ -571,10 +574,10 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Create A New Face A->B->C, And Fix Up The Edges & Neighboring Faces
 		////////////////////////////////////////////////////////////////////////////////////
-		int		add_face(int A, int B, int C)
+		int add_face(int A, int B, int C)
 		{
-			int		temp;
-			int		nFace = mFaces.alloc();
+			int temp;
+			int nFace = mFaces.alloc();
 
 			// First, Make Sure Node A.x Is Greater Than B and C.  If Not, Swap With B or C
 			//------------------------------------------------------------------------------
@@ -651,7 +654,7 @@ namespace ragl
 		//                            \       |         \
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		void	insert_point(int nodeHandle)
+		void insert_point(int nodeHandle)
 		{
 			// Iterate Over The Existing Convex Hull
 			//---------------------------------------
@@ -661,7 +664,8 @@ namespace ragl
 
 				// Can This Edge "See" The node Handle We Have Passed In?
 				//---------------------------------------------------------
-				if (mGraph.get_node(nodeHandle).LRTest(mGraph.get_node(curEdge.mA), mGraph.get_node(curEdge.mB)) == Side_Left)
+				if (mGraph.get_node(nodeHandle).LRTest(mGraph.get_node(curEdge.mA), mGraph.get_node(curEdge.mB)) ==
+					Side_Left)
 				{
 					// Then Add The Face And Remove This Edge From The Hull
 					//------------------------------------------------------
@@ -698,9 +702,9 @@ namespace ragl
 		//           (PtL)				           (PtB)
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		int		flip()
+		int flip()
 		{
-			int		Flipped = 0;
+			int Flipped = 0;
 
 			// Iterate Through All The Edges Looking For Potential NON-Delauney Edges
 			//------------------------------------------------------------------------
@@ -728,9 +732,10 @@ namespace ragl
 
 					// Is This Edge Invalid For Delaunay?
 					//-------------------------------------
-					if (!mGraph.get_node(PtB).InCircle(mGraph.get_node(PtR), mGraph.get_node(PtL), mGraph.get_node(PtA)) &&
+					if (!mGraph.get_node(PtB).InCircle(mGraph.get_node(PtR), mGraph.get_node(PtL), mGraph.get_node(PtA))
+						&&
 						!mGraph.get_node(PtA).InCircle(mGraph.get_node(PtR), mGraph.get_node(PtB), mGraph.get_node(PtL))
-						)
+					)
 					{
 						// Change The Link: Remove The Old, Add The New
 						//----------------------------------------------

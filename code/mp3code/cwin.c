@@ -81,7 +81,7 @@ void window(const float* vbuf, int vb_ptr, short* pcm)
 		tmp = -32768;
 	*pcm++ = (short)tmp;
 	/*-- last 15 --*/
-	coef = wincoef + 255;	/* back pass through coefs */
+	coef = wincoef + 255; /* back pass through coefs */
 	for (i = 0; i < 15; i++)
 	{
 		si--;
@@ -106,7 +106,7 @@ void window(const float* vbuf, int vb_ptr, short* pcm)
 /*------------------------------------------------------------*/
 void window_dual(const float* vbuf, int vb_ptr, short* pcm)
 {
-	int i, j;			/* dual window interleaves output */
+	int i, j; /* dual window interleaves output */
 	float sum;
 	long tmp;
 
@@ -150,7 +150,7 @@ void window_dual(const float* vbuf, int vb_ptr, short* pcm)
 	*pcm = (short)tmp;
 	pcm += 2;
 	/*-- last 15 --*/
-	coef = wincoef + 255;	/* back pass through coefs */
+	coef = wincoef + 255; /* back pass through coefs */
 	for (i = 0; i < 15; i++)
 	{
 		si--;
@@ -172,6 +172,7 @@ void window_dual(const float* vbuf, int vb_ptr, short* pcm)
 		pcm += 2;
 	}
 }
+
 /*------------------------------------------------------------*/
 /*------------------- 16 pt window ------------------------------*/
 void window16(const float* vbuf, int vb_ptr, short* pcm)
@@ -219,7 +220,7 @@ void window16(const float* vbuf, int vb_ptr, short* pcm)
 		tmp = -32768;
 	*pcm++ = (short)tmp;
 	/*-- last 7 --*/
-	coef = wincoef + 255;	/* back pass through coefs */
+	coef = wincoef + 255; /* back pass through coefs */
 	for (i = 0; i < 7; i++)
 	{
 		coef -= 16;
@@ -241,6 +242,7 @@ void window16(const float* vbuf, int vb_ptr, short* pcm)
 		*pcm++ = (short)tmp;
 	}
 }
+
 /*--------------- 16 pt dual window (interleaved output) -----------------*/
 void window16_dual(const float* vbuf, int vb_ptr, short* pcm)
 {
@@ -289,7 +291,7 @@ void window16_dual(const float* vbuf, int vb_ptr, short* pcm)
 	*pcm = (short)tmp;
 	pcm += 2;
 	/*-- last 7 --*/
-	coef = wincoef + 255;	/* back pass through coefs */
+	coef = wincoef + 255; /* back pass through coefs */
 	for (i = 0; i < 7; i++)
 	{
 		coef -= 16;
@@ -312,6 +314,7 @@ void window16_dual(const float* vbuf, int vb_ptr, short* pcm)
 		pcm += 2;
 	}
 }
+
 /*------------------- 8 pt window ------------------------------*/
 void window8(const float* vbuf, int vb_ptr, short* pcm)
 {
@@ -358,7 +361,7 @@ void window8(const float* vbuf, int vb_ptr, short* pcm)
 		tmp = -32768;
 	*pcm++ = (short)tmp;
 	/*-- last 3 --*/
-	coef = wincoef + 255;	/* back pass through coefs */
+	coef = wincoef + 255; /* back pass through coefs */
 	for (i = 0; i < 3; i++)
 	{
 		coef -= 48;
@@ -380,6 +383,7 @@ void window8(const float* vbuf, int vb_ptr, short* pcm)
 		*pcm++ = (short)tmp;
 	}
 }
+
 /*--------------- 8 pt dual window (interleaved output) -----------------*/
 void window8_dual(const float* vbuf, int vb_ptr, short* pcm)
 {
@@ -428,7 +432,7 @@ void window8_dual(const float* vbuf, int vb_ptr, short* pcm)
 	*pcm = (short)tmp;
 	pcm += 2;
 	/*-- last 3 --*/
-	coef = wincoef + 255;	/* back pass through coefs */
+	coef = wincoef + 255; /* back pass through coefs */
 	for (i = 0; i < 3; i++)
 	{
 		coef -= 48;
@@ -451,5 +455,6 @@ void window8_dual(const float* vbuf, int vb_ptr, short* pcm)
 		pcm += 2;
 	}
 }
+
 /*------------------------------------------------------------*/
 #endif	// #ifdef COMPILE_ME

@@ -197,7 +197,8 @@ CFxScheduler::CFxScheduler()
 	memset(&mLoopedEffectArray, 0, sizeof mLoopedEffectArray);
 }
 
-int CFxScheduler::ScheduleLoopedEffect(const int id, const int boltInfo, const bool isPortal, const int iLoopTime, const bool isRelative)
+int CFxScheduler::ScheduleLoopedEffect(const int id, const int boltInfo, const bool isPortal, const int iLoopTime,
+                                       const bool isRelative)
 {
 	int i;
 
@@ -209,7 +210,7 @@ int CFxScheduler::ScheduleLoopedEffect(const int id, const int boltInfo, const b
 		if (mLoopedEffectArray[i].mId == id &&
 			mLoopedEffectArray[i].mBoltInfo == boltInfo &&
 			mLoopedEffectArray[i].mPortalEffect == isPortal
-			)
+		)
 		{
 #ifdef _DEBUG
 			//			theFxHelper.Print( "CFxScheduler::ScheduleLoopedEffect- updating %s\n", mEffectTemplates[id].mEffectName);
@@ -234,7 +235,7 @@ int CFxScheduler::ScheduleLoopedEffect(const int id, const int boltInfo, const b
 		//bad
 		assert(i != MAX_LOOPED_FX);
 		theFxHelper.Print("CFxScheduler::AddLoopedEffect- No Free Slots available for %d\n",
-			mEffectTemplates[id].mEffectName);
+		                  mEffectTemplates[id].mEffectName);
 		return -1;
 	}
 	mLoopedEffectArray[i].mId = id;
@@ -266,7 +267,7 @@ void CFxScheduler::StopEffect(const char* file, const int boltInfo, const bool i
 		if (mLoopedEffectArray[i].mId == id &&
 			mLoopedEffectArray[i].mBoltInfo == boltInfo &&
 			mLoopedEffectArray[i].mPortalEffect == isPortal
-			)
+		)
 		{
 			memset(&mLoopedEffectArray[i], 0, sizeof mLoopedEffectArray[i]);
 			return;
@@ -288,8 +289,8 @@ void CFxScheduler::AddLoopedEffects()
 			{
 				// only play the looped effect when the ent is still inUse....
 				PlayEffect(mLoopedEffectArray[i].mId, cg_entities[entNum].lerpOrigin, nullptr,
-					mLoopedEffectArray[i].mBoltInfo, -1, mLoopedEffectArray[i].mPortalEffect, false,
-					mLoopedEffectArray[i].mIsRelative);
+				           mLoopedEffectArray[i].mBoltInfo, -1, mLoopedEffectArray[i].mPortalEffect, false,
+				           mLoopedEffectArray[i].mIsRelative);
 				//very important to send FALSE looptime to not recursively add me!
 				mLoopedEffectArray[i].mNextTime = theFxHelper.mTime + mEffectTemplates[mLoopedEffectArray[i].mId].
 					mRepeatDelay;
@@ -302,7 +303,7 @@ void CFxScheduler::AddLoopedEffects()
 				continue;
 			}
 			if (mLoopedEffectArray[i].mLoopStopTime && mLoopedEffectArray[i].mLoopStopTime < theFxHelper.mTime)
-				//time's up
+			//time's up
 			{
 				//kill this entry
 				memset(&mLoopedEffectArray[i], 0, sizeof mLoopedEffectArray[i]);
@@ -430,7 +431,7 @@ int CFxScheduler::RegisterEffect(const char* path, const bool bHasCorrectPath /*
 	if (bHasCorrectPath)
 	{
 		// FIXME: this is basically COM_SkipPath, except it also accepts '\\' instead of '/'
-		const char* last = path, * p = path;
+		const char *last = path, *p = path;
 		while (*p != '\0')
 		{
 			if (*p == '/' || *p == '\\')
@@ -980,46 +981,46 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const int clientID, int 
 	//------------------------
 	switch (fx->mType)
 	{
-		//---------
+	//---------
 	case Particle:
 		//---------
 
 		FX_AddParticle(clientID, org, vel, accel, fx->mGravity.GetVal(),
-			fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
-			fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
-			sRGB, eRGB, fx->mRGBParm.GetVal(),
-			fx->mRotation.GetVal(), fx->mRotationDelta.GetVal(),
-			fx->mMin, fx->mMax, fx->mElasticity.GetVal(),
-			fx->mDeathFxHandles.GetHandle(), fx->mImpactFxHandles.GetHandle(),
-			fx->mLife.GetVal(), fx->mMediaHandles.GetHandle(), flags);
+		               fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
+		               fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
+		               sRGB, eRGB, fx->mRGBParm.GetVal(),
+		               fx->mRotation.GetVal(), fx->mRotationDelta.GetVal(),
+		               fx->mMin, fx->mMax, fx->mElasticity.GetVal(),
+		               fx->mDeathFxHandles.GetHandle(), fx->mImpactFxHandles.GetHandle(),
+		               fx->mLife.GetVal(), fx->mMediaHandles.GetHandle(), flags);
 		break;
 
-		//---------
+	//---------
 	case Line:
 		//---------
 
 		FX_AddLine(clientID, org, org2,
-			fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
-			fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
-			sRGB, eRGB, fx->mRGBParm.GetVal(),
-			fx->mLife.GetVal(), fx->mMediaHandles.GetHandle(), fx->mImpactFxHandles.GetHandle(), flags);
+		           fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
+		           fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
+		           sRGB, eRGB, fx->mRGBParm.GetVal(),
+		           fx->mLife.GetVal(), fx->mMediaHandles.GetHandle(), fx->mImpactFxHandles.GetHandle(), flags);
 		break;
 
-		//---------
+	//---------
 	case Tail:
 		//---------
 
 		FX_AddTail(clientID, org, vel, accel,
-			fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
-			fx->mLengthStart.GetVal(), fx->mLengthEnd.GetVal(), fx->mLengthParm.GetVal(),
-			fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
-			sRGB, eRGB, fx->mRGBParm.GetVal(),
-			fx->mMin, fx->mMax, fx->mElasticity.GetVal(),
-			fx->mDeathFxHandles.GetHandle(), fx->mImpactFxHandles.GetHandle(),
-			fx->mLife.GetVal(), fx->mMediaHandles.GetHandle(), flags);
+		           fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
+		           fx->mLengthStart.GetVal(), fx->mLengthEnd.GetVal(), fx->mLengthParm.GetVal(),
+		           fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
+		           sRGB, eRGB, fx->mRGBParm.GetVal(),
+		           fx->mMin, fx->mMax, fx->mElasticity.GetVal(),
+		           fx->mDeathFxHandles.GetHandle(), fx->mImpactFxHandles.GetHandle(),
+		           fx->mLife.GetVal(), fx->mMediaHandles.GetHandle(), flags);
 		break;
 
-		//---------
+	//---------
 	case Sound:
 		//---------
 
@@ -1034,7 +1035,7 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const int clientID, int 
 			theFxHelper.PlaySound(nullptr, clientID, CHAN_WEAPON, fx->mMediaHandles.GetHandle());
 		}
 		break;
-		//---------
+	//---------
 	case Light:
 		//---------
 
@@ -1047,14 +1048,14 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const int clientID, int 
 			if (cent && cent->gent && cent->gent->client)
 			{
 				FX_AddLight(cent->gent->client->renderInfo.muzzlePoint, fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(),
-					fx->mSizeParm.GetVal(),
-					sRGB, eRGB, fx->mRGBParm.GetVal(),
-					fx->mLife.GetVal(), fx->mFlags);
+				            fx->mSizeParm.GetVal(),
+				            sRGB, eRGB, fx->mRGBParm.GetVal(),
+				            fx->mLife.GetVal(), fx->mFlags);
 			}
 		}
 		break;
 
-		//---------
+	//---------
 	case CameraShake:
 		//---------
 
@@ -1066,7 +1067,7 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const int clientID, int 
 			if (cent && cent->gent && cent->gent->client)
 			{
 				theFxHelper.CameraShake(cent->gent->currentOrigin, fx->mElasticity.GetVal(), fx->mRadius.GetVal(),
-					fx->mLife.GetVal());
+				                        fx->mLife.GetVal());
 			}
 		}
 		break;
@@ -1357,7 +1358,7 @@ void CFxScheduler::AddScheduledEffects(const bool portal)
 			if (effect->mClientID >= 0)
 			{
 				CreateEffect(effect->mpTemplate, effect->mClientID,
-					theFxHelper.mTime - effect->mStartTime);
+				             theFxHelper.mTime - effect->mStartTime);
 			}
 			else if (effect->mBoltNum == -1)
 			{
@@ -1366,14 +1367,14 @@ void CFxScheduler::AddScheduledEffects(const bool portal)
 				{
 					// Find out where the entity currently is
 					CreateEffect(effect->mpTemplate,
-						cg_entities[effect->mEntNum].lerpOrigin, effect->mAxis,
-						theFxHelper.mTime - (*itr)->mStartTime);
+					             cg_entities[effect->mEntNum].lerpOrigin, effect->mAxis,
+					             theFxHelper.mTime - (*itr)->mStartTime);
 				}
 				else
 				{
 					CreateEffect(effect->mpTemplate,
-						effect->mOrigin, effect->mAxis,
-						theFxHelper.mTime - effect->mStartTime);
+					             effect->mOrigin, effect->mAxis,
+					             theFxHelper.mTime - effect->mStartTime);
 				}
 			}
 			else
@@ -1409,14 +1410,14 @@ void CFxScheduler::AddScheduledEffects(const bool portal)
 					if (effect->mIsRelative)
 					{
 						CreateEffect(effect->mpTemplate,
-							vec3_origin, axis,
-							0, effect->mEntNum, effect->mModelNum, effect->mBoltNum);
+						             vec3_origin, axis,
+						             0, effect->mEntNum, effect->mModelNum, effect->mBoltNum);
 					}
 					else
 					{
 						CreateEffect(effect->mpTemplate,
-							origin, axis,
-							theFxHelper.mTime - effect->mStartTime);
+						             origin, axis,
+						             theFxHelper.mTime - effect->mStartTime);
 					}
 				}
 			}
@@ -1449,14 +1450,15 @@ void CFxScheduler::AddScheduledEffects(const bool portal)
 // Return:
 //	none
 //------------------------------------------------------
-void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec3_t axis[3], const int lateTime, const int clientID,
+void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec3_t axis[3], const int lateTime,
+                                const int clientID,
                                 const int modelNum, const int boltNum)
 {
 	vec3_t org, org2, temp,
-		vel, accel,
-		sRGB, eRGB,
-		ang, angDelta,
-		ax[3];
+	       vel, accel,
+	       sRGB, eRGB,
+	       ang, angDelta,
+	       ax[3];
 	trace_t tr;
 	int emitterModel;
 
@@ -1529,7 +1531,7 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec
 
 		if (fx->mSpawnFlags & FX_AXIS_FROM_SPHERE)
 		{
-			vec3_t up = { 0, 0, 1 };
+			vec3_t up = {0, 0, 1};
 
 			// well, we will now override the axis at the users request
 			VectorNormalize2(temp, ax[0]);
@@ -1681,104 +1683,104 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec
 	//------------------------
 	switch (fx->mType)
 	{
-		//---------
+	//---------
 	case Particle:
 		//---------
 
 		FX_AddParticle(clientID, org, vel, accel, fx->mGravity.GetVal(),
-			fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
-			fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
-			sRGB, eRGB, fx->mRGBParm.GetVal(),
-			fx->mRotation.GetVal(), fx->mRotationDelta.GetVal(),
-			fx->mMin, fx->mMax, fx->mElasticity.GetVal(),
-			fx->mDeathFxHandles.GetHandle(), fx->mImpactFxHandles.GetHandle(),
-			fx->mLife.GetVal(), fx->mMediaHandles.GetHandle(), flags, modelNum, boltNum);
+		               fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
+		               fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
+		               sRGB, eRGB, fx->mRGBParm.GetVal(),
+		               fx->mRotation.GetVal(), fx->mRotationDelta.GetVal(),
+		               fx->mMin, fx->mMax, fx->mElasticity.GetVal(),
+		               fx->mDeathFxHandles.GetHandle(), fx->mImpactFxHandles.GetHandle(),
+		               fx->mLife.GetVal(), fx->mMediaHandles.GetHandle(), flags, modelNum, boltNum);
 		break;
 
-		//---------
+	//---------
 	case Line:
 		//---------
 
 		FX_AddLine(clientID, org, org2,
-			fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
-			fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
-			sRGB, eRGB, fx->mRGBParm.GetVal(),
-			fx->mLife.GetVal(), fx->mMediaHandles.GetHandle(), fx->mImpactFxHandles.GetHandle(), flags, modelNum,
-			boltNum);
+		           fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
+		           fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
+		           sRGB, eRGB, fx->mRGBParm.GetVal(),
+		           fx->mLife.GetVal(), fx->mMediaHandles.GetHandle(), fx->mImpactFxHandles.GetHandle(), flags, modelNum,
+		           boltNum);
 		break;
 
-		//---------
+	//---------
 	case Tail:
 		//---------
 
 		FX_AddTail(clientID, org, vel, accel,
-			fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
-			fx->mLengthStart.GetVal(), fx->mLengthEnd.GetVal(), fx->mLengthParm.GetVal(),
-			fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
-			sRGB, eRGB, fx->mRGBParm.GetVal(),
-			fx->mMin, fx->mMax, fx->mElasticity.GetVal(),
-			fx->mDeathFxHandles.GetHandle(), fx->mImpactFxHandles.GetHandle(),
-			fx->mLife.GetVal(), fx->mMediaHandles.GetHandle(), flags, modelNum, boltNum);
+		           fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
+		           fx->mLengthStart.GetVal(), fx->mLengthEnd.GetVal(), fx->mLengthParm.GetVal(),
+		           fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
+		           sRGB, eRGB, fx->mRGBParm.GetVal(),
+		           fx->mMin, fx->mMax, fx->mElasticity.GetVal(),
+		           fx->mDeathFxHandles.GetHandle(), fx->mImpactFxHandles.GetHandle(),
+		           fx->mLife.GetVal(), fx->mMediaHandles.GetHandle(), flags, modelNum, boltNum);
 		break;
 
-		//----------------
+	//----------------
 	case Electricity:
 		//----------------
 
 		FX_AddElectricity(clientID, org, org2,
-			fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
-			fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
-			sRGB, eRGB, fx->mRGBParm.GetVal(),
-			fx->mElasticity.GetVal(), fx->mLife.GetVal(), fx->mMediaHandles.GetHandle(), flags, modelNum,
-			boltNum);
+		                  fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
+		                  fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
+		                  sRGB, eRGB, fx->mRGBParm.GetVal(),
+		                  fx->mElasticity.GetVal(), fx->mLife.GetVal(), fx->mMediaHandles.GetHandle(), flags, modelNum,
+		                  boltNum);
 		break;
 
-		//---------
+	//---------
 	case Cylinder:
 		//---------
 
 		FX_AddCylinder(clientID, org, ax[0],
-			fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
-			fx->mSize2Start.GetVal(), fx->mSize2End.GetVal(), fx->mSize2Parm.GetVal(),
-			fx->mLengthStart.GetVal(), fx->mLengthEnd.GetVal(), fx->mLengthParm.GetVal(),
-			fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
-			sRGB, eRGB, fx->mRGBParm.GetVal(),
-			fx->mLife.GetVal(), fx->mMediaHandles.GetHandle(), flags, modelNum, boltNum);
+		               fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
+		               fx->mSize2Start.GetVal(), fx->mSize2End.GetVal(), fx->mSize2Parm.GetVal(),
+		               fx->mLengthStart.GetVal(), fx->mLengthEnd.GetVal(), fx->mLengthParm.GetVal(),
+		               fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
+		               sRGB, eRGB, fx->mRGBParm.GetVal(),
+		               fx->mLife.GetVal(), fx->mMediaHandles.GetHandle(), flags, modelNum, boltNum);
 		break;
 
-		//---------
+	//---------
 	case Emitter:
 		//---------
 
 		// for chunk angles, you don't really need much control over the end result...you just want variation..
 		VectorSet(ang,
-			fx->mAngle1.GetVal(),
-			fx->mAngle2.GetVal(),
-			fx->mAngle3.GetVal());
+		          fx->mAngle1.GetVal(),
+		          fx->mAngle2.GetVal(),
+		          fx->mAngle3.GetVal());
 
 		vectoangles(ax[0], temp);
 		VectorAdd(ang, temp, ang);
 
 		VectorSet(angDelta,
-			fx->mAngle1Delta.GetVal(),
-			fx->mAngle2Delta.GetVal(),
-			fx->mAngle3Delta.GetVal());
+		          fx->mAngle1Delta.GetVal(),
+		          fx->mAngle2Delta.GetVal(),
+		          fx->mAngle3Delta.GetVal());
 
 		emitterModel = fx->mMediaHandles.GetHandle();
 
 		FX_AddEmitter(org, vel, accel,
-			fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
-			fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
-			sRGB, eRGB, fx->mRGBParm.GetVal(),
-			ang, angDelta,
-			fx->mMin, fx->mMax, fx->mElasticity.GetVal(),
-			fx->mDeathFxHandles.GetHandle(), fx->mImpactFxHandles.GetHandle(),
-			fx->mEmitterFxHandles.GetHandle(),
-			fx->mDensity.GetVal(), fx->mVariance.GetVal(),
-			fx->mLife.GetVal(), emitterModel, flags);
+		              fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
+		              fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
+		              sRGB, eRGB, fx->mRGBParm.GetVal(),
+		              ang, angDelta,
+		              fx->mMin, fx->mMax, fx->mElasticity.GetVal(),
+		              fx->mDeathFxHandles.GetHandle(), fx->mImpactFxHandles.GetHandle(),
+		              fx->mEmitterFxHandles.GetHandle(),
+		              fx->mDensity.GetVal(), fx->mVariance.GetVal(),
+		              fx->mLife.GetVal(), emitterModel, flags);
 		break;
 
-		//---------
+	//---------
 	case Decal:
 		//---------
 
@@ -1786,8 +1788,8 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec
 		//	the decal mark onto the surfaces properly.  This is especially important for large marks.
 		// The downside is that it's much less flexible....
 		CG_ImpactMark(fx->mMediaHandles.GetHandle(), org, ax[0], fx->mRotation.GetVal(),
-			sRGB[0], sRGB[1], sRGB[2], fx->mAlphaStart.GetVal(),
-			qtrue, fx->mSizeStart.GetVal(), qfalse);
+		              sRGB[0], sRGB[1], sRGB[2], fx->mAlphaStart.GetVal(),
+		              qtrue, fx->mSizeStart.GetVal(), qfalse);
 
 		if (fx->mFlags & FX_GHOUL2_DECALS)
 		{
@@ -1841,30 +1843,30 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec
 						*/
 
 						CG_AddGhoul2Mark(fx->mMediaHandles.GetHandle(), fx->mSizeStart.GetVal(), trace.endpos,
-							trace.plane.normal,
-							trace.entityNum, entOrg, entYaw,
-							ent->ghoul2, ent->s.modelScale, Q_irand(40000, 60000), firstModel);
+						                 trace.plane.normal,
+						                 trace.entityNum, entOrg, entYaw,
+						                 ent->ghoul2, ent->s.modelScale, Q_irand(40000, 60000), firstModel);
 					}
 				}
 			}
 		}
 		break;
 
-		//-------------------
+	//-------------------
 	case OrientedParticle:
 		//-------------------
 
 		FX_AddOrientedParticle(clientID, org, ax[0], vel, accel,
-			fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
-			fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
-			sRGB, eRGB, fx->mRGBParm.GetVal(),
-			fx->mRotation.GetVal(), fx->mRotationDelta.GetVal(),
-			fx->mMin, fx->mMax, fx->mElasticity.GetVal(),
-			fx->mDeathFxHandles.GetHandle(), fx->mImpactFxHandles.GetHandle(),
-			fx->mLife.GetVal(), fx->mMediaHandles.GetHandle(), flags, modelNum, boltNum);
+		                       fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
+		                       fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
+		                       sRGB, eRGB, fx->mRGBParm.GetVal(),
+		                       fx->mRotation.GetVal(), fx->mRotationDelta.GetVal(),
+		                       fx->mMin, fx->mMax, fx->mElasticity.GetVal(),
+		                       fx->mDeathFxHandles.GetHandle(), fx->mImpactFxHandles.GetHandle(),
+		                       fx->mLife.GetVal(), fx->mMediaHandles.GetHandle(), flags, modelNum, boltNum);
 		break;
 
-		//---------
+	//---------
 	case Sound:
 		//---------
 		if (gEffectsInPortal)
@@ -1881,23 +1883,23 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec
 			theFxHelper.PlaySound(org, ENTITYNUM_NONE, CHAN_AUTO, fx->mMediaHandles.GetHandle());
 		}
 		break;
-		//---------
+	//---------
 	case FxRunner:
 		//---------
 
 		PlayEffect(fx->mPlayFxHandles.GetHandle(), org, ax);
 		break;
 
-		//---------
+	//---------
 	case Light:
 		//---------
 
 		FX_AddLight(org, fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
-			sRGB, eRGB, fx->mRGBParm.GetVal(),
-			fx->mLife.GetVal(), fx->mFlags);
+		            sRGB, eRGB, fx->mRGBParm.GetVal(),
+		            fx->mLife.GetVal(), fx->mFlags);
 		break;
 
-		//---------
+	//---------
 	case CameraShake:
 		//---------
 		// It calculates how intense the shake should be based on how close you are to the origin you pass in here
@@ -1906,13 +1908,13 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec
 		theFxHelper.CameraShake(org, fx->mElasticity.GetVal(), fx->mRadius.GetVal(), fx->mLife.GetVal());
 		break;
 
-		//--------------
+	//--------------
 	case ScreenFlash:
 		//--------------
 
 		FX_AddFlash(org,
-			sRGB, eRGB, fx->mRGBParm.GetVal(),
-			fx->mLife.GetVal(), fx->mMediaHandles.GetHandle(), fx->mFlags);
+		            sRGB, eRGB, fx->mRGBParm.GetVal(),
+		            fx->mLife.GetVal(), fx->mMediaHandles.GetHandle(), fx->mFlags);
 		break;
 
 	default:

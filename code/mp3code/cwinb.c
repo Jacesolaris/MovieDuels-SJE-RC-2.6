@@ -79,7 +79,7 @@ void windowB(const float* vbuf, int vb_ptr, unsigned char* pcm)
 		tmp = -32768;
 	*pcm++ = ((unsigned char)(tmp >> 8)) ^ 0x80;
 	/*-- last 15 --*/
-	coef = wincoef + 255;	/* back pass through coefs */
+	coef = wincoef + 255; /* back pass through coefs */
 	for (i = 0; i < 15; i++)
 	{
 		si--;
@@ -100,10 +100,11 @@ void windowB(const float* vbuf, int vb_ptr, unsigned char* pcm)
 		*pcm++ = ((unsigned char)(tmp >> 8)) ^ 0x80;
 	}
 }
+
 /*------------------------------------------------------------*/
 void windowB_dual(const float* vbuf, int vb_ptr, unsigned char* pcm)
 {
-	int i, j;			/* dual window interleaves output */
+	int i, j; /* dual window interleaves output */
 	float sum;
 	long tmp;
 
@@ -147,7 +148,7 @@ void windowB_dual(const float* vbuf, int vb_ptr, unsigned char* pcm)
 	*pcm = ((unsigned char)(tmp >> 8)) ^ 0x80;
 	pcm += 2;
 	/*-- last 15 --*/
-	coef = wincoef + 255;	/* back pass through coefs */
+	coef = wincoef + 255; /* back pass through coefs */
 	for (i = 0; i < 15; i++)
 	{
 		si--;
@@ -169,6 +170,7 @@ void windowB_dual(const float* vbuf, int vb_ptr, unsigned char* pcm)
 		pcm += 2;
 	}
 }
+
 /*------------------------------------------------------------*/
 /*------------------- 16 pt window ------------------------------*/
 void windowB16(const float* vbuf, int vb_ptr, unsigned char* pcm)
@@ -216,7 +218,7 @@ void windowB16(const float* vbuf, int vb_ptr, unsigned char* pcm)
 		tmp = -32768;
 	*pcm++ = ((unsigned char)(tmp >> 8)) ^ 0x80;
 	/*-- last 7 --*/
-	coef = wincoef + 255;	/* back pass through coefs */
+	coef = wincoef + 255; /* back pass through coefs */
 	for (i = 0; i < 7; i++)
 	{
 		coef -= 16;
@@ -238,6 +240,7 @@ void windowB16(const float* vbuf, int vb_ptr, unsigned char* pcm)
 		*pcm++ = ((unsigned char)(tmp >> 8)) ^ 0x80;
 	}
 }
+
 /*--------------- 16 pt dual window (interleaved output) -----------------*/
 void windowB16_dual(const float* vbuf, int vb_ptr, unsigned char* pcm)
 {
@@ -286,7 +289,7 @@ void windowB16_dual(const float* vbuf, int vb_ptr, unsigned char* pcm)
 	*pcm = ((unsigned char)(tmp >> 8)) ^ 0x80;
 	pcm += 2;
 	/*-- last 7 --*/
-	coef = wincoef + 255;	/* back pass through coefs */
+	coef = wincoef + 255; /* back pass through coefs */
 	for (i = 0; i < 7; i++)
 	{
 		coef -= 16;
@@ -309,6 +312,7 @@ void windowB16_dual(const float* vbuf, int vb_ptr, unsigned char* pcm)
 		pcm += 2;
 	}
 }
+
 /*------------------- 8 pt window ------------------------------*/
 void windowB8(const float* vbuf, int vb_ptr, unsigned char* pcm)
 {
@@ -355,7 +359,7 @@ void windowB8(const float* vbuf, int vb_ptr, unsigned char* pcm)
 		tmp = -32768;
 	*pcm++ = ((unsigned char)(tmp >> 8)) ^ 0x80;
 	/*-- last 3 --*/
-	coef = wincoef + 255;	/* back pass through coefs */
+	coef = wincoef + 255; /* back pass through coefs */
 	for (i = 0; i < 3; i++)
 	{
 		coef -= 48;
@@ -377,6 +381,7 @@ void windowB8(const float* vbuf, int vb_ptr, unsigned char* pcm)
 		*pcm++ = ((unsigned char)(tmp >> 8)) ^ 0x80;
 	}
 }
+
 /*--------------- 8 pt dual window (interleaved output) -----------------*/
 void windowB8_dual(const float* vbuf, int vb_ptr, unsigned char* pcm)
 {
@@ -425,7 +430,7 @@ void windowB8_dual(const float* vbuf, int vb_ptr, unsigned char* pcm)
 	*pcm = ((unsigned char)(tmp >> 8)) ^ 0x80;
 	pcm += 2;
 	/*-- last 3 --*/
-	coef = wincoef + 255;	/* back pass through coefs */
+	coef = wincoef + 255; /* back pass through coefs */
 	for (i = 0; i < 3; i++)
 	{
 		coef -= 48;
@@ -448,5 +453,6 @@ void windowB8_dual(const float* vbuf, int vb_ptr, unsigned char* pcm)
 		pcm += 2;
 	}
 }
+
 /*------------------------------------------------------------*/
 #endif	// #ifdef COMPILE_ME

@@ -105,7 +105,7 @@ void CSequence::Delete(const CIcarus* icarus)
 	for (auto bi = m_commands.begin(); bi != m_commands.end(); ++bi)
 	{
 		(*bi)->Free(icarus);
-		delete* bi; //Free() handled internally -- not any more!!
+		delete*bi; //Free() handled internally -- not any more!!
 	}
 
 	m_commands.clear();
@@ -482,12 +482,12 @@ int CSequence::LoadCommand(CBlock* block, CIcarus* icarus)
 		switch (bID)
 		{
 		case CIcarus::TK_INT:
-		{
-			assert(0);
-			const int data = *static_cast<int*>(bData);
-			block->Write(CIcarus::TK_FLOAT, static_cast<float>(data), icarus);
-		}
-		break;
+			{
+				assert(0);
+				const int data = *static_cast<int*>(bData);
+				block->Write(CIcarus::TK_FLOAT, static_cast<float>(data), icarus);
+			}
+			break;
 
 		case CIcarus::TK_FLOAT:
 			block->Write(CIcarus::TK_FLOAT, *static_cast<float*>(bData), icarus);

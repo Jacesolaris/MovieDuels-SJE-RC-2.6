@@ -493,7 +493,7 @@ static int G_CheckSoundEvents(gentity_t* self, float maxHearDist, const int igno
 		//See if this one takes precedence over the previous one
 		if (level.alertEvents[i].level >= bestAlert //higher alert level
 			|| level.alertEvents[i].level == bestAlert && level.alertEvents[i].timestamp >= bestTime)
-			//same alert level, but this one is newer
+		//same alert level, but this one is newer
 		{
 			//NOTE: equal is better because it's later in the array
 			bestEvent = i;
@@ -507,7 +507,7 @@ static int G_CheckSoundEvents(gentity_t* self, float maxHearDist, const int igno
 
 float G_GetLightLevel(vec3_t pos, vec3_t fromDir)
 {
-	vec3_t ambient = { 0 }, directed, lightDir;
+	vec3_t ambient = {0}, directed, lightDir;
 
 	cgi_R_GetLighting(pos, ambient, directed, lightDir);
 
@@ -572,7 +572,7 @@ static int G_CheckSightEvents(gentity_t* self, const int hFOV, const int vFOV, f
 		//See if this one takes precedence over the previous one
 		if (level.alertEvents[i].level >= bestAlert //higher alert level
 			|| level.alertEvents[i].level == bestAlert && level.alertEvents[i].timestamp >= bestTime)
-			//same alert level, but this one is newer
+		//same alert level, but this one is newer
 		{
 			//NOTE: equal is better because it's later in the array
 			bestEvent = i;
@@ -638,10 +638,12 @@ NPC_CheckAlertEvents
 -------------------------
 */
 
-int G_CheckAlertEvents(gentity_t* self, const qboolean checkSight, const qboolean checkSound, const float maxSeeDist, const float maxHearDist,
-                       const int ignoreAlert, const qboolean mustHaveOwner, const int minAlertLevel, const qboolean onGroundOnly)
+int G_CheckAlertEvents(gentity_t* self, const qboolean checkSight, const qboolean checkSound, const float maxSeeDist,
+                       const float maxHearDist,
+                       const int ignoreAlert, const qboolean mustHaveOwner, const int minAlertLevel,
+                       const qboolean onGroundOnly)
 {
-	if (&g_entities[0] == nullptr || g_entities[0].health <= 0)
+	if (g_entities[0].health <= 0)
 	{
 		//player is dead
 		return -1;
@@ -669,7 +671,7 @@ int G_CheckAlertEvents(gentity_t* self, const qboolean checkSight, const qboolea
 		if (self->NPC)
 		{
 			bestSightEvent = G_CheckSightEvents(self, self->NPC->stats.hfov, self->NPC->stats.vfov, maxSeeDist,
-				ignoreAlert, mustHaveOwner, minAlertLevel);
+			                                    ignoreAlert, mustHaveOwner, minAlertLevel);
 		}
 		else
 		{
@@ -711,11 +713,12 @@ int G_CheckAlertEvents(gentity_t* self, const qboolean checkSight, const qboolea
 	return -1;
 }
 
-int NPC_CheckAlertEvents(const qboolean checkSight, const qboolean checkSound, const int ignoreAlert, const qboolean mustHaveOwner,
+int NPC_CheckAlertEvents(const qboolean checkSight, const qboolean checkSound, const int ignoreAlert,
+                         const qboolean mustHaveOwner,
                          const int minAlertLevel, const qboolean onGroundOnly)
 {
 	return G_CheckAlertEvents(NPC, checkSight, checkSound, NPCInfo->stats.visrange, NPCInfo->stats.earshot, ignoreAlert,
-		mustHaveOwner, minAlertLevel, onGroundOnly);
+	                          mustHaveOwner, minAlertLevel, onGroundOnly);
 }
 
 extern void WP_ForcePowerStop(gentity_t* self, forcePowers_t force_power);
@@ -732,8 +735,8 @@ qboolean G_CheckForDanger(const gentity_t* self, const int alert_event)
 	{
 		//run away!
 		if (!level.alertEvents[alert_event].owner || !level.alertEvents[alert_event].owner->client || level.alertEvents[
-			alert_event].owner != self && level.alertEvents[alert_event].owner->client->playerTeam != self->client->
-				playerTeam)
+				alert_event].owner != self && level.alertEvents[alert_event].owner->client->playerTeam != self->client->
+			playerTeam)
 		{
 			if (self->NPC)
 			{
@@ -747,14 +750,14 @@ qboolean G_CheckForDanger(const gentity_t* self, const int alert_event)
 				{
 					//flee for a longer period of time
 					NPC_StartFlee(level.alertEvents[alert_event].owner, level.alertEvents[alert_event].position,
-						level.alertEvents[alert_event].level, 3000, 6000);
+					              level.alertEvents[alert_event].level, 3000, 6000);
 				}
 				else if (!Q_irand(0, 10)) //FIXME: base on rank?  aggression?
 				{
 					//just normal danger and I have a weapon, so just a 25% chance of fleeing only for a few seconds
 					//FIXME: used to just find a better combat point, need that functionality back
 					NPC_StartFlee(level.alertEvents[alert_event].owner, level.alertEvents[alert_event].position,
-						level.alertEvents[alert_event].level, 1000, 3000);
+					              level.alertEvents[alert_event].level, 1000, 3000);
 				}
 				else
 				{
@@ -783,7 +786,8 @@ AddSoundEvent
 */
 qboolean RemoveOldestAlert();
 
-void AddSoundEvent(gentity_t* owner, vec3_t position, const float radius, const alertEventLevel_e alertLevel, const qboolean needLOS,
+void AddSoundEvent(gentity_t* owner, vec3_t position, const float radius, const alertEventLevel_e alertLevel,
+                   const qboolean needLOS,
                    const qboolean onGround)
 {
 	//FIXME: Handle this in another manner?
@@ -840,7 +844,8 @@ AddSightEvent
 -------------------------
 */
 
-void AddSightEvent(gentity_t* owner, vec3_t position, const float radius, const alertEventLevel_e alertLevel, const float addLight)
+void AddSightEvent(gentity_t* owner, vec3_t position, const float radius, const alertEventLevel_e alertLevel,
+                   const float addLight)
 {
 	//FIXME: Handle this in another manner?
 	if (level.numAlertEvents >= MAX_ALERT_EVENTS)
@@ -901,7 +906,7 @@ void ClearPlayerAlertEvents()
 				if (i + 1 < MAX_ALERT_EVENTS)
 				{
 					memmove(&level.alertEvents[i], &level.alertEvents[i + 1],
-						sizeof(alertEvent_t) * (MAX_ALERT_EVENTS - (i + 1)));
+					        sizeof(alertEvent_t) * (MAX_ALERT_EVENTS - (i + 1)));
 				}
 			}
 			else
@@ -945,7 +950,7 @@ qboolean RemoveOldestAlert()
 			if (oldestEvent + 1 < MAX_ALERT_EVENTS)
 			{
 				memmove(&level.alertEvents[oldestEvent], &level.alertEvents[oldestEvent + 1],
-					sizeof(alertEvent_t) * (MAX_ALERT_EVENTS - (oldestEvent + 1)));
+				        sizeof(alertEvent_t) * (MAX_ALERT_EVENTS - (oldestEvent + 1)));
 			}
 		}
 		else
@@ -974,8 +979,8 @@ qboolean G_ClearLOS(gentity_t* self, const vec3_t start, const vec3_t end)
 
 	//FIXME: ENTITYNUM_NONE ok?
 	gi.trace(&tr, start, nullptr, nullptr, end, ENTITYNUM_NONE,
-		CONTENTS_OPAQUE/*CONTENTS_SOLID*//*(CONTENTS_SOLID|CONTENTS_MONSTERCLIP)*/, static_cast<EG2_Collision>(0),
-		0);
+	         CONTENTS_OPAQUE/*CONTENTS_SOLID*//*(CONTENTS_SOLID|CONTENTS_MONSTERCLIP)*/, static_cast<EG2_Collision>(0),
+	         0);
 	while (tr.fraction < 1.0 && traceCount < 3)
 	{
 		//can see through 3 panes of glass
@@ -985,7 +990,7 @@ qboolean G_ClearLOS(gentity_t* self, const vec3_t start, const vec3_t end)
 			{
 				//can see through glass, trace again, ignoring me
 				gi.trace(&tr, tr.endpos, nullptr, nullptr, end, tr.entityNum, MASK_OPAQUE,
-					static_cast<EG2_Collision>(0), 0);
+				         static_cast<EG2_Collision>(0), 0);
 				traceCount++;
 				continue;
 			}

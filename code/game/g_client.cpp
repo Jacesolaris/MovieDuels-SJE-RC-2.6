@@ -65,9 +65,9 @@ float DEFAULT_MINS_1 = -16;
 float DEFAULT_MAXS_0 = 16;
 float DEFAULT_MAXS_1 = 16;
 float DEFAULT_PLAYER_RADIUS = sqrt(DEFAULT_MAXS_0 * DEFAULT_MAXS_0 + DEFAULT_MAXS_1 * DEFAULT_MAXS_1);
-vec3_t playerMins = { DEFAULT_MINS_0, DEFAULT_MINS_1, DEFAULT_MINS_2 };
-vec3_t playerMinsStep = { DEFAULT_MINS_0, DEFAULT_MINS_1, DEFAULT_MINS_2 + STEPSIZE };
-vec3_t playerMaxs = { DEFAULT_MAXS_0, DEFAULT_MAXS_1, DEFAULT_MAXS_2 };
+vec3_t playerMins = {DEFAULT_MINS_0, DEFAULT_MINS_1, DEFAULT_MINS_2};
+vec3_t playerMinsStep = {DEFAULT_MINS_0, DEFAULT_MINS_1, DEFAULT_MINS_2 + STEPSIZE};
+vec3_t playerMaxs = {DEFAULT_MAXS_0, DEFAULT_MAXS_1, DEFAULT_MAXS_2};
 extern void Player_CheckBurn(const gentity_t* self);
 extern void Player_CheckFreeze(gentity_t* self);
 extern void RemoveBarrier(gentity_t* ent);
@@ -459,7 +459,7 @@ gentity_t* SelectSpawnPoint(vec3_t avoidPoint, const team_t team, vec3_t origin,
 
 		origin[2] = MIN_WORLD_COORD;
 		gi.trace(&tr, spot->s.origin, playerMins, playerMaxs, origin, ENTITYNUM_NONE, MASK_PLAYERSOLID,
-			static_cast<EG2_Collision>(0), 0);
+		         static_cast<EG2_Collision>(0), 0);
 		if (tr.fraction < 1.0 && !tr.allsolid && !tr.startsolid)
 		{
 			//found a floor
@@ -595,8 +595,8 @@ void ClientUserinfoChanged(const int client_num)
 {
 	const gentity_t* ent = g_entities + client_num;
 	gclient_t* client = ent->client;
-	char userinfo[MAX_INFO_STRING] = { 0 }, buf[MAX_INFO_STRING] = { 0 },
-		sound[MAX_STRING_CHARS] = { 0 }, oldname[34] = { 0 };
+	char userinfo[MAX_INFO_STRING] = {0}, buf[MAX_INFO_STRING] = {0},
+	     sound[MAX_STRING_CHARS] = {0}, oldname[34] = {0};
 
 	gi.GetUserinfo(client_num, userinfo, sizeof userinfo);
 
@@ -650,10 +650,11 @@ to the server machine, but qfalse on map changes and tournement
 restarts.
 ============
 */
-char* ClientConnect(const int client_num, const qboolean first_time, const SavedGameJustLoaded_e e_saved_game_just_loaded)
+char* ClientConnect(const int client_num, const qboolean first_time,
+                    const SavedGameJustLoaded_e e_saved_game_just_loaded)
 {
 	gentity_t* ent = &g_entities[client_num];
-	char userinfo[MAX_INFO_STRING] = { 0 };
+	char userinfo[MAX_INFO_STRING] = {0};
 
 	gi.GetUserinfo(client_num, userinfo, sizeof userinfo);
 
@@ -664,7 +665,7 @@ char* ClientConnect(const int client_num, const qboolean first_time, const Saved
 	if (e_saved_game_just_loaded != eFULL)
 	{
 		const clientSession_t saved_sess = client->sess;
-		memset(client, 0, sizeof * client);
+		memset(client, 0, sizeof *client);
 		client->sess = saved_sess;
 
 		if (first_time)
@@ -781,9 +782,9 @@ void Player_CacheFromPrevLevel()
 		int iDummy, ibits;
 
 		sscanf(s, "%i %i %i",
-			&iDummy, //client->ps.stats[STAT_HEALTH],
-			&iDummy, //client->ps.stats[STAT_ARMOR],
-			&ibits //client->ps.stats[STAT_ITEMS]
+		       &iDummy, //client->ps.stats[STAT_HEALTH],
+		       &iDummy, //client->ps.stats[STAT_ARMOR],
+		       &ibits //client->ps.stats[STAT_ITEMS]
 		);
 
 		for (i = 0; i < 16; i++)
@@ -1017,10 +1018,10 @@ static void G_SetSkin(gentity_t* ent)
 	if (Q_stricmp("hoth2", level.mapname) == 0 //hack, is this the only map?
 		||
 		Q_stricmp("hoth3", level.mapname) == 0 // no! ;-)
-		)
+	)
 	{
 		Com_sprintf(skinName, sizeof skinName, "models/players/%s/|%s|%s|%s", g_char_model->string,
-			g_char_skin_head->string, "torso_g1", "lower_e1");
+		            g_char_skin_head->string, "torso_g1", "lower_e1");
 	}
 	else if (Q_stricmp(g_char_skin_head->string, "model_default") == 0 &&
 		Q_stricmp(g_char_skin_torso->string, "model_default") == 0 && Q_stricmp(
@@ -1031,7 +1032,7 @@ static void G_SetSkin(gentity_t* ent)
 	else
 	{
 		Com_sprintf(skinName, sizeof skinName, "models/players/%s/|%s|%s|%s", g_char_model->string,
-			g_char_skin_head->string, g_char_skin_torso->string, g_char_skin_legs->string);
+		            g_char_skin_head->string, g_char_skin_torso->string, g_char_skin_legs->string);
 	}
 
 	// lets see if it's out there
@@ -1389,7 +1390,7 @@ qboolean G_ClassHasBadBones(const int NPC_class)
 	case CLASS_ASSASSIN_DROID:
 	case CLASS_RANCOR:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -1405,7 +1406,7 @@ const char* AxesNames[] =
 	"NEGATIVE_Y" //NEGATIVE_Y
 };
 
-Eorientations testAxes[3] = { POSITIVE_X, POSITIVE_Z, POSITIVE_Y };
+Eorientations testAxes[3] = {POSITIVE_X, POSITIVE_Z, POSITIVE_Y};
 int axes_0 = POSITIVE_X;
 int axes_1 = POSITIVE_Z;
 int axes_2 = POSITIVE_Y;
@@ -1441,12 +1442,13 @@ void G_NextTestAxes()
 		testAxes[0] = static_cast<Eorientations>(axes_0 % 6 + 1);
 		testAxes[1] = static_cast<Eorientations>(axes_1 % 6 + 1);
 		testAxes[2] = static_cast<Eorientations>(axes_2 % 6 + 1);
-	} while (testAxes[1] == testAxes[0] || testAxes[1] - testAxes[0] == 3 || testAxes[0] - testAxes[1] == 3
+	}
+	while (testAxes[1] == testAxes[0] || testAxes[1] - testAxes[0] == 3 || testAxes[0] - testAxes[1] == 3
 		|| testAxes[2] == testAxes[0] || testAxes[2] - testAxes[0] == 3 || testAxes[0] - testAxes[2] == 3
 		|| testAxes[2] == testAxes[1] || testAxes[2] - testAxes[1] == 3 || testAxes[1] - testAxes[2] == 3);
 
 	Com_Printf("Up: %s\nRight: %s\nForward: %s\n", AxesNames[testAxes[0]], AxesNames[testAxes[1]],
-		AxesNames[testAxes[2]]);
+	           AxesNames[testAxes[2]]);
 	if (testAxes[0] == POSITIVE_X
 		&& testAxes[1] == POSITIVE_Z
 		&& testAxes[2] == POSITIVE_Y)
@@ -1469,9 +1471,9 @@ void G_BoneOrientationsForClass(const int NPC_class, const char* boneName, Eorie
 		*oUp = NEGATIVE_X;
 		*oRt = POSITIVE_Y;
 		*oFwd = POSITIVE_Z;
-		//*oUp = testAxes[0];
-		//*oRt = testAxes[1];
-		//*oFwd = testAxes[2];
+	//*oUp = testAxes[0];
+	//*oRt = testAxes[1];
+	//*oFwd = testAxes[2];
 		break;
 	case CLASS_ROCKETTROOPER:
 	case CLASS_HAZARD_TROOPER:
@@ -1554,7 +1556,7 @@ void G_BoneOrientationsForClass(const int NPC_class, const char* boneName, Eorie
 			*oFwd = POSITIVE_Z;
 		}
 		break;
-	default:;
+	default: ;
 	}
 }
 
@@ -1566,7 +1568,7 @@ qboolean g_set_g2_player_model_info(gentity_t* ent, const char* model_name, cons
 	if (ent->playerModel != -1)
 	{
 		// we found the model ok
-		constexpr vec3_t angles = { 0, 0, 0 };
+		constexpr vec3_t angles = {0, 0, 0};
 		const char* token;
 		const char* p;
 
@@ -1700,7 +1702,8 @@ qboolean g_set_g2_player_model_info(gentity_t* ent, const char* model_name, cons
 				ent->genericBolt1 = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "Tongue01"); // tongue base
 				ent->genericBolt2 = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "Tongue08"); // tongue tip
 			}
-			else if (!Q_stricmp("gonk", model_name) || !Q_stricmp("seeker", model_name) || !Q_stricmp("remote", model_name)
+			else if (!Q_stricmp("gonk", model_name) || !Q_stricmp("seeker", model_name) || !Q_stricmp(
+					"remote", model_name)
 				|| !Q_stricmpn("r2d2", model_name, 4) || !Q_stricmpn("r5d2", model_name, 4))
 			{
 				//TEMP HACK: not a non-humanoid droid
@@ -1861,13 +1864,13 @@ qboolean g_set_g2_player_model_info(gentity_t* ent, const char* model_name, cons
 			if (ent->craniumBone >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->craniumBone, angles,
-					BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 			ent->thoracicBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "pelvis", qtrue);
 			if (ent->thoracicBone >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->thoracicBone, angles,
-					BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 		}
 		else if (!Q_stricmp("interrogator", model_name))
@@ -1876,19 +1879,19 @@ qboolean g_set_g2_player_model_info(gentity_t* ent, const char* model_name, cons
 			if (ent->genericBone1 >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->genericBone1, angles,
-					BONE_ANGLES_POSTMULT, NEGATIVE_Y, NEGATIVE_X, NEGATIVE_Z, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, NEGATIVE_Y, NEGATIVE_X, NEGATIVE_Z, nullptr, 0, 0);
 			}
 			ent->genericBone2 = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "right_arm", qtrue);
 			if (ent->genericBone2 >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->genericBone2, angles,
-					BONE_ANGLES_POSTMULT, NEGATIVE_Y, NEGATIVE_X, NEGATIVE_Z, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, NEGATIVE_Y, NEGATIVE_X, NEGATIVE_Z, nullptr, 0, 0);
 			}
 			ent->genericBone3 = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "claw", qtrue);
 			if (ent->genericBone3 >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->genericBone3, angles,
-					BONE_ANGLES_POSTMULT, NEGATIVE_Y, NEGATIVE_X, NEGATIVE_Z, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, NEGATIVE_Y, NEGATIVE_X, NEGATIVE_Z, nullptr, 0, 0);
 			}
 		}
 		else if (!Q_stricmpn("r2d2", model_name, 4))
@@ -1897,19 +1900,19 @@ qboolean g_set_g2_player_model_info(gentity_t* ent, const char* model_name, cons
 			if (ent->craniumBone >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->craniumBone, angles,
-					BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 			ent->thoracicBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "body", qtrue);
 			if (ent->thoracicBone >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->thoracicBone, angles,
-					BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 			ent->genericBone1 = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "f_eye", qtrue);
 			if (ent->genericBone1 >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->genericBone1, angles,
-					BONE_ANGLES_POSTMULT, NEGATIVE_Y, NEGATIVE_X, NEGATIVE_Z, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, NEGATIVE_Y, NEGATIVE_X, NEGATIVE_Z, nullptr, 0, 0);
 			}
 		}
 		else if (!Q_stricmpn("r5d2", model_name, 4))
@@ -1918,13 +1921,13 @@ qboolean g_set_g2_player_model_info(gentity_t* ent, const char* model_name, cons
 			if (ent->craniumBone >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->craniumBone, angles,
-					BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 			ent->thoracicBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "body", qtrue);
 			if (ent->thoracicBone >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->thoracicBone, angles,
-					BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 		}
 		else if (!Q_stricmp("atst", model_name))
@@ -1933,25 +1936,25 @@ qboolean g_set_g2_player_model_info(gentity_t* ent, const char* model_name, cons
 			if (ent->craniumBone >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->craniumBone, angles,
-					BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 			ent->thoracicBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "thoracic", qtrue);
 			if (ent->thoracicBone >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->thoracicBone, angles,
-					BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 			ent->footLBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "l_tarsal", qtrue);
 			if (ent->footLBone >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->footLBone, angles,
-					BONE_ANGLES_POSTMULT, POSITIVE_Z, NEGATIVE_Y, NEGATIVE_X, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, POSITIVE_Z, NEGATIVE_Y, NEGATIVE_X, nullptr, 0, 0);
 			}
 			ent->footRBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "r_tarsal", qtrue);
 			if (ent->footRBone >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->footRBone, angles,
-					BONE_ANGLES_POSTMULT, POSITIVE_Z, NEGATIVE_Y, NEGATIVE_X, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, POSITIVE_Z, NEGATIVE_Y, NEGATIVE_X, nullptr, 0, 0);
 			}
 		}
 		else if (!Q_stricmp("mark1", model_name))
@@ -1960,13 +1963,13 @@ qboolean g_set_g2_player_model_info(gentity_t* ent, const char* model_name, cons
 			if (ent->craniumBone >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->craniumBone, angles,
-					BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 			ent->upperLumbarBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "cranium", qtrue);
 			if (ent->upperLumbarBone >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->upperLumbarBone, angles,
-					BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 		}
 		else if (!Q_stricmp("mark2", model_name))
@@ -1975,13 +1978,13 @@ qboolean g_set_g2_player_model_info(gentity_t* ent, const char* model_name, cons
 			if (ent->craniumBone >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->craniumBone, angles,
-					BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 			ent->thoracicBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "thoracic", qtrue);
 			if (ent->thoracicBone >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->thoracicBone, angles,
-					BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 		}
 		else if (!Q_stricmp("minemonster", model_name))
@@ -1990,17 +1993,17 @@ qboolean g_set_g2_player_model_info(gentity_t* ent, const char* model_name, cons
 			if (ent->thoracicBone >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->thoracicBone, angles,
-					BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 			ent->craniumBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "cranium", qtrue);
 			if (ent->craniumBone >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->craniumBone, angles,
-					BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 		}
 		else if (ent->client->NPC_class == CLASS_RANCOR)
-			/*!Q_stricmp( "rancor", modelName )	|| !Q_stricmp( "mutant_rancor", modelName ) )*/
+		/*!Q_stricmp( "rancor", modelName )	|| !Q_stricmp( "mutant_rancor", modelName ) )*/
 		{
 			Eorientations oUp, oRt, oFwd;
 			//regular bones we need
@@ -2009,21 +2012,21 @@ qboolean g_set_g2_player_model_info(gentity_t* ent, const char* model_name, cons
 			{
 				G_BoneOrientationsForClass(ent->client->NPC_class, "lower_lumbar", &oUp, &oRt, &oFwd);
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->lowerLumbarBone, angles,
-					BONE_ANGLES_POSTMULT, oUp, oRt, oFwd, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, oUp, oRt, oFwd, nullptr, 0, 0);
 			}
 			ent->upperLumbarBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "mid_spine", qtrue);
 			if (ent->upperLumbarBone >= 0)
 			{
 				G_BoneOrientationsForClass(ent->client->NPC_class, "upper_lumbar", &oUp, &oRt, &oFwd);
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->upperLumbarBone, angles,
-					BONE_ANGLES_POSTMULT, oUp, oRt, oFwd, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, oUp, oRt, oFwd, nullptr, 0, 0);
 			}
 			ent->thoracicBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "upper_spine", qtrue);
 			if (ent->thoracicBone >= 0)
 			{
 				G_BoneOrientationsForClass(ent->client->NPC_class, "thoracic", &oUp, &oRt, &oFwd);
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->thoracicBone, angles,
-					BONE_ANGLES_POSTMULT, oUp, oRt, oFwd, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, oUp, oRt, oFwd, nullptr, 0, 0);
 			}
 		}
 		else if (!Q_stricmp("sand_creature", model_name))
@@ -2094,14 +2097,14 @@ qboolean g_set_g2_player_model_info(gentity_t* ent, const char* model_name, cons
 				{
 					G_BoneOrientationsForClass(ent->client->NPC_class, "upper_lumbar", &oUp, &oRt, &oFwd);
 					gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->upperLumbarBone, angles,
-						BONE_ANGLES_POSTMULT, oUp, oRt, oFwd, nullptr, 0, 0);
+					                            BONE_ANGLES_POSTMULT, oUp, oRt, oFwd, nullptr, 0, 0);
 				}
 				ent->lowerLumbarBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "lower_lumbar", qtrue);
 				if (ent->lowerLumbarBone >= 0)
 				{
 					G_BoneOrientationsForClass(ent->client->NPC_class, "lower_lumbar", &oUp, &oRt, &oFwd);
 					gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->lowerLumbarBone, angles,
-						BONE_ANGLES_POSTMULT, oUp, oRt, oFwd, nullptr, 0, 0);
+					                            BONE_ANGLES_POSTMULT, oUp, oRt, oFwd, nullptr, 0, 0);
 				}
 			}
 			if (Q_stricmp("hazardtrooper", model_name))
@@ -2115,7 +2118,7 @@ qboolean g_set_g2_player_model_info(gentity_t* ent, const char* model_name, cons
 					{
 						G_BoneOrientationsForClass(ent->client->NPC_class, "thoracic", &oUp, &oRt, &oFwd);
 						gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->thoracicBone, angles,
-							BONE_ANGLES_POSTMULT, oUp, oRt, oFwd, nullptr, 0, 0);
+						                            BONE_ANGLES_POSTMULT, oUp, oRt, oFwd, nullptr, 0, 0);
 					}
 				}
 				ent->cervicalBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "cervical", qtrue);
@@ -2123,14 +2126,14 @@ qboolean g_set_g2_player_model_info(gentity_t* ent, const char* model_name, cons
 				{
 					G_BoneOrientationsForClass(ent->client->NPC_class, "cervical", &oUp, &oRt, &oFwd);
 					gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->cervicalBone, angles,
-						BONE_ANGLES_POSTMULT, oUp, oRt, oFwd, nullptr, 0, 0);
+					                            BONE_ANGLES_POSTMULT, oUp, oRt, oFwd, nullptr, 0, 0);
 				}
 				ent->craniumBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "cranium", qtrue);
 				if (ent->craniumBone >= 0)
 				{
 					G_BoneOrientationsForClass(ent->client->NPC_class, "cranium", &oUp, &oRt, &oFwd);
 					gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->craniumBone, angles,
-						BONE_ANGLES_POSTMULT, oUp, oRt, oFwd, nullptr, 0, 0);
+					                            BONE_ANGLES_POSTMULT, oUp, oRt, oFwd, nullptr, 0, 0);
 				}
 			}
 		}
@@ -2141,7 +2144,7 @@ qboolean g_set_g2_player_model_info(gentity_t* ent, const char* model_name, cons
 			if (ent->motionBone >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->motionBone, angles,
-					BONE_ANGLES_POSTMULT, POSITIVE_Z, NEGATIVE_X, NEGATIVE_Y, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, POSITIVE_Z, NEGATIVE_X, NEGATIVE_Y, nullptr, 0, 0);
 			}
 			ent->motionBolt = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "Motion");
 			//bone needed for turning anims
@@ -2149,45 +2152,45 @@ qboolean g_set_g2_player_model_info(gentity_t* ent, const char* model_name, cons
 			if (ent->hipsBone >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->hipsBone, angles, BONE_ANGLES_POSTMULT,
-					POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+				                            POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 			//regular bones we need
 			ent->upperLumbarBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "upper_lumbar", qtrue);
 			if (ent->upperLumbarBone >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->upperLumbarBone, angles,
-					BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 			ent->lowerLumbarBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "lower_lumbar", qtrue);
 			if (ent->lowerLumbarBone >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->lowerLumbarBone, angles,
-					BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 
 			ent->faceBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "face", qtrue);
 			if (ent->faceBone >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->faceBone, angles, BONE_ANGLES_POSTMULT,
-					POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+				                            POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 			ent->craniumBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "cranium", qtrue);
 			if (ent->craniumBone >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->craniumBone, angles,
-					BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 			ent->cervicalBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "cervical", qtrue);
 			if (ent->cervicalBone >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->cervicalBone, angles,
-					BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 			ent->thoracicBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "thoracic", qtrue);
 			if (ent->thoracicBone >= 0)
 			{
 				gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->thoracicBone, angles,
-					BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+				                            BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 		}
 		ent->client->clientInfo.infoValid = qtrue;
@@ -2258,7 +2261,7 @@ qboolean g_set_g2_player_model_info(gentity_t* ent, const char* model_name, cons
 }
 
 void g_set_g2_player_model(gentity_t* ent, const char* model_name, const char* custom_skin, const char* surf_off,
-	const char* surf_on)
+                           const char* surf_on)
 {
 	char skin_name[MAX_QPATH];
 
@@ -2289,15 +2292,15 @@ void g_set_g2_player_model(gentity_t* ent, const char* model_name, const char* c
 		Vehicle_t* pVeh = ent->m_pVehicle;
 		pVeh->m_pVehicleInfo->RegisterAssets(pVeh);
 		ent->playerModel = gi.G2API_InitGhoul2Model(ent->ghoul2, va("models/players/%s/model.glm", model_name),
-			pVeh->m_pVehicleInfo->modelIndex, G_SkinIndex(skin_name),
-			NULL_HANDLE, 0, 0);
+		                                            pVeh->m_pVehicleInfo->modelIndex, G_SkinIndex(skin_name),
+		                                            NULL_HANDLE, 0, 0);
 	}
 	else
 	{
 		//NOTE: it still loads the default skin's tga's because they're referenced in the .glm.
 		ent->playerModel = gi.G2API_InitGhoul2Model(ent->ghoul2, va("models/players/%s/model.glm", model_name),
-			G_ModelIndex(va("models/players/%s/model.glm", model_name)),
-			G_SkinIndex(skin_name), NULL_HANDLE, 0, 0);
+		                                            G_ModelIndex(va("models/players/%s/model.glm", model_name)),
+		                                            G_SkinIndex(skin_name), NULL_HANDLE, 0, 0);
 	}
 	if (ent->playerModel == -1)
 	{
@@ -2307,8 +2310,8 @@ void g_set_g2_player_model(gentity_t* ent, const char* model_name, const char* c
 		Com_sprintf(skin_name, sizeof skin_name, "models/players/%s/model_default.skin", model_name);
 		skin = gi.RE_RegisterSkin(skin_name);
 		ent->playerModel = gi.G2API_InitGhoul2Model(ent->ghoul2, va("models/players/%s/model.glm", model_name),
-			G_ModelIndex(va("models/players/%s/model.glm", model_name)),
-			NULL_HANDLE, NULL_HANDLE, 0, 0);
+		                                            G_ModelIndex(va("models/players/%s/model.glm", model_name)),
+		                                            NULL_HANDLE, NULL_HANDLE, 0, 0);
 	}
 	if (ent->playerModel == -1)
 	{
@@ -2511,7 +2514,7 @@ void G_InitPlayerFromCvars(gentity_t* ent)
 		G_ChangePlayerModel(ent, va("%s|model_default", g_char_model->string));
 	else
 		G_ChangePlayerModel(ent, va("%s|%s|%s|%s", g_char_model->string, g_char_skin_head->string,
-			g_char_skin_torso->string, g_char_skin_legs->string));
+		                            g_char_skin_torso->string, g_char_skin_legs->string));
 
 	//FIXME: parse these 2 from some cvar or require playermodel to be in a *.npc?
 	if (ent->NPC_type && gi.bIsFromZone(ent->NPC_type, TAG_G_ALLOC))
@@ -2524,7 +2527,7 @@ void G_InitPlayerFromCvars(gentity_t* ent)
 	// better options.
 	ent->NPC_type = static_cast<char*>("player"); //default for now
 	if (ent->client->clientInfo.customBasicSoundDir && gi.bIsFromZone(ent->client->clientInfo.customBasicSoundDir,
-		TAG_G_ALLOC))
+	                                                                  TAG_G_ALLOC))
 	{
 		gi.Free(ent->client->clientInfo.customBasicSoundDir);
 	}
@@ -2571,7 +2574,7 @@ qboolean AllowedDualPistol(const gentity_t* ent)
 	case WP_CLONEPISTOL:
 	case WP_REBELBLASTER:
 		break;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -2601,7 +2604,7 @@ void G_ChangePlayerModel(gentity_t* ent, const char* newModel)
 	}
 
 	if (ent->client && (ent->client->moveType == MT_FLYSWIM || ent->s.groundEntityNum == ENTITYNUM_NONE ||
-		JET_Flying(ent) || ent->client->flamethrowerOn)
+			JET_Flying(ent) || ent->client->flamethrowerOn)
 		&& (ent->client->NPC_class == CLASS_BOBAFETT
 			|| ent->client->NPC_class == CLASS_MANDALORIAN
 			|| ent->client->NPC_class == CLASS_JANGO
@@ -3079,8 +3082,8 @@ qboolean ClientSpawn(gentity_t* ent, SavedGameJustLoaded_e eSavedGameJustLoaded)
 		// ranging doesn't count this client
 		// don't spawn near existing origin if possible
 		spawnPoint = SelectSpawnPoint(ent->client->ps.origin,
-			static_cast<team_t>(ent->client->ps.persistant[PERS_TEAM]), spawn_origin,
-			spawn_angles);
+		                              static_cast<team_t>(ent->client->ps.persistant[PERS_TEAM]), spawn_origin,
+		                              spawn_angles);
 
 		ent->client->pers.teamState.state = TEAM_ACTIVE;
 
@@ -3094,7 +3097,7 @@ qboolean ClientSpawn(gentity_t* ent, SavedGameJustLoaded_e eSavedGameJustLoaded)
 		//Preserve clientInfo
 		memcpy(&savedCi, &client->clientInfo, sizeof(clientInfo_t));
 
-		memset(client, 0, sizeof * client);
+		memset(client, 0, sizeof *client);
 
 		memcpy(&client->clientInfo, &savedCi, sizeof(clientInfo_t));
 

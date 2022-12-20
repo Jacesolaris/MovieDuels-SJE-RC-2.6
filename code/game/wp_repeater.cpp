@@ -189,7 +189,7 @@ void WP_FireRepeater(gentity_t* ent, const qboolean alt_fire)
 				}
 			}
 			else if (!WalkCheck(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angs[PITCH] += Q_flrand(-1.0f, 1.0f) * RUNNING_SPREAD;
 				angs[YAW] += Q_flrand(-1.0f, 1.0f) * RUNNING_SPREAD;

@@ -53,7 +53,8 @@ CG_DrawRect
 Coordinates are 640*480 virtual values
 =================
 */
-void CG_DrawRect(const float x, const float y, const float width, const float height, const float size, const float* color)
+void CG_DrawRect(const float x, const float y, const float width, const float height, const float size,
+                 const float* color)
 {
 	cgi_R_SetColor(color);
 
@@ -111,7 +112,8 @@ A width of 0 will draw with the original image width
 Can also specify the exact texture coordinates
 =================
 */
-void CG_DrawPic2(const float x, const float y, const float width, const float height, const float s1, const float t1, const float s2, const float t2, const qhandle_t hShader)
+void CG_DrawPic2(const float x, const float y, const float width, const float height, const float s1, const float t1,
+                 const float s2, const float t2, const qhandle_t hShader)
 {
 	cgi_R_DrawStretchPic(x, y, width, height, s1, t1, s2, t2, hShader);
 }
@@ -125,7 +127,8 @@ A width of 0 will draw with the original image width
 rotates around the upper right corner of the passed in point
 =================
 */
-void CG_DrawRotatePic(const float x, const float y, const float width, const float height, const float angle, const qhandle_t hShader,
+void CG_DrawRotatePic(const float x, const float y, const float width, const float height, const float angle,
+                      const qhandle_t hShader,
                       const float aspectCorrection)
 {
 	cgi_R_DrawRotatePic(x, y, width, height, 0, 0, 1, 1, angle, hShader, aspectCorrection);
@@ -140,7 +143,8 @@ A width of 0 will draw with the original image width
 Actually rotates around the center point of the passed in coordinates
 =================
 */
-void CG_DrawRotatePic2(const float x, const float y, const float width, const float height, const float angle, const qhandle_t hShader,
+void CG_DrawRotatePic2(const float x, const float y, const float width, const float height, const float angle,
+                       const qhandle_t hShader,
                        const float aspectCorrection)
 {
 	cgi_R_DrawRotatePic2(x, y, width, height, 0, 0, 1, 1, angle, hShader, aspectCorrection);
@@ -186,7 +190,7 @@ void CG_DrawChar(const int x, const int y, const int width, const int height, in
 	constexpr float size2 = 0.0625;
 
 	cgi_R_DrawStretchPic(ax, ay, aw, ah, fcol, frow, fcol + size, frow + size2,
-		cgs.media.charsetShader);
+	                     cgs.media.charsetShader);
 }
 
 /*
@@ -380,7 +384,8 @@ Take x,y positions as if 640 x 480 and scales them to the proper resolution
 
 ==============
 */
-void CG_DrawNumField(int x, const int y, int width, int value, const int charWidth, const int charHeight, const int style, const qboolean zeroFill)
+void CG_DrawNumField(int x, const int y, int width, int value, const int charWidth, const int charHeight,
+                     const int style, const qboolean zeroFill)
 {
 	char num[16];
 	int frame;
@@ -415,7 +420,7 @@ void CG_DrawNumField(int x, const int y, int width, int value, const int charWid
 		value = value > 9999 ? 9999 : value;
 		value = value < -999 ? -999 : value;
 		break;
-	default:;
+	default: ;
 	}
 
 	Com_sprintf(num, sizeof num, "%i", value);

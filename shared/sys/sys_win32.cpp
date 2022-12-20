@@ -28,7 +28,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define MEM_THRESHOLD (128*1024*1024)
 
 // Used to determine where to store user-specific files
-static char homePath[MAX_OSPATH] = { 0 };
+static char homePath[MAX_OSPATH] = {0};
 
 static UINT timerResolution = 0;
 
@@ -39,7 +39,7 @@ Sys_Basename
 */
 const char* Sys_Basename(const char* path)
 {
-	static char base[MAX_OSPATH] = { 0 };
+	static char base[MAX_OSPATH] = {0};
 
 	int length = strlen(path) - 1;
 
@@ -68,7 +68,7 @@ Sys_Dirname
 */
 const char* Sys_Dirname(const char* path)
 {
-	static char dir[MAX_OSPATH] = { 0 };
+	static char dir[MAX_OSPATH] = {0};
 
 	Q_strncpyz(dir, path, sizeof(dir));
 	int length = strlen(dir) - 1;
@@ -111,14 +111,16 @@ Sys_RandomBytes
 */
 bool Sys_RandomBytes(byte* string, int len)
 {
-	HCRYPTPROV  prov;
+	HCRYPTPROV prov;
 
 	if (!CryptAcquireContext(&prov, nullptr, nullptr,
-		PROV_RSA_FULL, CRYPT_VERIFYCONTEXT)) {
+	                         PROV_RSA_FULL, CRYPT_VERIFYCONTEXT))
+	{
 		return false;
 	}
 
-	if (!CryptGenRandom(prov, len, (BYTE*)string)) {
+	if (!CryptGenRandom(prov, len, string))
+	{
 		CryptReleaseContext(prov, 0);
 		return false;
 	}
@@ -184,16 +186,20 @@ char* Sys_DefaultHomePath(void)
 #endif
 }
 
-static const char* GetErrorString(DWORD error) {
+static const char* GetErrorString(DWORD error)
+{
 	static char buf[MAX_STRING_CHARS];
 	buf[0] = '\0';
 
-	if (error) {
+	if (error)
+	{
 		LPVOID lpMsgBuf;
-		const DWORD bufLen = FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+		const DWORD bufLen = FormatMessage(
+			FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
 			nullptr, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf, 0, nullptr);
-		if (bufLen) {
-			LPCSTR lpMsgStr = static_cast<LPCSTR>(lpMsgBuf);
+		if (bufLen)
+		{
+			auto lpMsgStr = static_cast<LPCSTR>(lpMsgBuf);
 			Q_strncpyz(buf, lpMsgStr, Q_min((size_t)(lpMsgStr + bufLen), sizeof(buf)));
 			LocalFree(lpMsgBuf);
 		}
@@ -201,7 +207,8 @@ static const char* GetErrorString(DWORD error) {
 	return buf;
 }
 
-void Sys_SetProcessorAffinity(void) {
+void Sys_SetProcessorAffinity(void)
+{
 	DWORD_PTR processMask, processAffinityMask, systemAffinityMask;
 	const HANDLE handle = GetCurrentProcess();
 
@@ -227,13 +234,15 @@ Sys_LowPhysicalMemory()
 ==================
 */
 
-qboolean Sys_LowPhysicalMemory(void) {
+qboolean Sys_LowPhysicalMemory(void)
+{
 	static MEMORYSTATUSEX stat;
 	static qboolean bAsked = qfalse;
 	static cvar_t* sys_lowmem = Cvar_Get("sys_lowmem", "0", 0);
 
-	if (!bAsked)	// just in case it takes a little time for GlobalMemoryStatusEx() to gather stats on
-	{				//	stuff we don't care about such as virtual mem etc.
+	if (!bAsked) // just in case it takes a little time for GlobalMemoryStatusEx() to gather stats on
+	{
+		//	stuff we don't care about such as virtual mem etc.
 		bAsked = qtrue;
 
 		stat.dwLength = sizeof(stat);
@@ -251,7 +260,8 @@ qboolean Sys_LowPhysicalMemory(void) {
 Sys_Mkdir
 ==============
 */
-qboolean Sys_Mkdir(const char* path) {
+qboolean Sys_Mkdir(const char* path)
+{
 	if (!CreateDirectory(path, nullptr))
 	{
 		if (GetLastError() != ERROR_ALREADY_EXISTS)
@@ -265,7 +275,8 @@ qboolean Sys_Mkdir(const char* path) {
 Sys_Cwd
 ==============
 */
-char* Sys_Cwd(void) {
+char* Sys_Cwd(void)
+{
 	static char cwd[MAX_OSPATH];
 
 	_getcwd(cwd, sizeof(cwd) - 1);
@@ -277,7 +288,8 @@ char* Sys_Cwd(void) {
 /* Resolves path names and determines if they are the same */
 /* For use with full OS paths not quake paths */
 /* Returns true if resulting paths are valid and the same, otherwise false */
-bool Sys_PathCmp(const char* path1, const char* path2) {
+bool Sys_PathCmp(const char* path1, const char* path2)
+{
 	char* r1 = _fullpath(nullptr, path1, MAX_OSPATH);
 	char* r2 = _fullpath(nullptr, path2, MAX_OSPATH);
 
@@ -303,41 +315,52 @@ DIRECTORY SCANNING
 
 #define	MAX_FOUND_FILES	0x1000
 
-void Sys_ListFilteredFiles(const char* basedir, char* subdirs, char* filter, char** psList, int* numfiles) {
-	char		search[MAX_OSPATH];
+void Sys_ListFilteredFiles(const char* basedir, char* subdirs, char* filter, char** psList, int* numfiles)
+{
+	char search[MAX_OSPATH];
 	_finddata_t findinfo;
 
-	if (*numfiles >= MAX_FOUND_FILES - 1) {
+	if (*numfiles >= MAX_FOUND_FILES - 1)
+	{
 		return;
 	}
 
-	if (strlen(subdirs)) {
+	if (strlen(subdirs))
+	{
 		Com_sprintf(search, sizeof(search), "%s\\%s\\*", basedir, subdirs);
 	}
-	else {
+	else
+	{
 		Com_sprintf(search, sizeof(search), "%s\\*", basedir);
 	}
 
 	const intptr_t findhandle = _findfirst(search, &findinfo);
-	if (findhandle == -1) {
+	if (findhandle == -1)
+	{
 		return;
 	}
 
-	do {
+	do
+	{
 		char filename[MAX_OSPATH];
-		if (findinfo.attrib & _A_SUBDIR) {
-			if (Q_stricmp(findinfo.name, ".") && Q_stricmp(findinfo.name, "..")) {
+		if (findinfo.attrib & _A_SUBDIR)
+		{
+			if (Q_stricmp(findinfo.name, ".") && Q_stricmp(findinfo.name, ".."))
+			{
 				char newsubdirs[MAX_OSPATH];
-				if (strlen(subdirs)) {
+				if (strlen(subdirs))
+				{
 					Com_sprintf(newsubdirs, sizeof(newsubdirs), "%s\\%s", subdirs, findinfo.name);
 				}
-				else {
+				else
+				{
 					Com_sprintf(newsubdirs, sizeof(newsubdirs), "%s", findinfo.name);
 				}
 				Sys_ListFilteredFiles(basedir, newsubdirs, filter, psList, numfiles);
 			}
 		}
-		if (*numfiles >= MAX_FOUND_FILES - 1) {
+		if (*numfiles >= MAX_FOUND_FILES - 1)
+		{
 			break;
 		}
 		Com_sprintf(filename, sizeof(filename), "%s\\%s", subdirs, findinfo.name);
@@ -345,40 +368,48 @@ void Sys_ListFilteredFiles(const char* basedir, char* subdirs, char* filter, cha
 			continue;
 		psList[*numfiles] = CopyString(filename);
 		(*numfiles)++;
-	} while (_findnext(findhandle, &findinfo) != -1);
+	}
+	while (_findnext(findhandle, &findinfo) != -1);
 
 	_findclose(findhandle);
 }
 
-static qboolean strgtr(const char* s0, const char* s1) {
+static qboolean strgtr(const char* s0, const char* s1)
+{
 	int l0 = strlen(s0);
 	const int l1 = strlen(s1);
 
-	if (l1 < l0) {
+	if (l1 < l0)
+	{
 		l0 = l1;
 	}
 
-	for (int i = 0; i < l0; i++) {
-		if (s1[i] > s0[i]) {
+	for (int i = 0; i < l0; i++)
+	{
+		if (s1[i] > s0[i])
+		{
 			return qtrue;
 		}
-		if (s1[i] < s0[i]) {
+		if (s1[i] < s0[i])
+		{
 			return qfalse;
 		}
 	}
 	return qfalse;
 }
 
-char** Sys_ListFiles(const char* directory, const char* extension, char* filter, int* numfiles, qboolean wantsubs) {
-	char		search[MAX_OSPATH];
-	int			nfiles;
+char** Sys_ListFiles(const char* directory, const char* extension, char* filter, int* numfiles, qboolean wantsubs)
+{
+	char search[MAX_OSPATH];
+	int nfiles;
 	char** listCopy;
 	char* list[MAX_FOUND_FILES];
 	_finddata_t findinfo;
-	int			flag;
-	int			i;
+	int flag;
+	int i;
 
-	if (filter) {
+	if (filter)
+	{
 		nfiles = 0;
 		Sys_ListFilteredFiles(directory, "", filter, list, &nfiles);
 
@@ -389,7 +420,8 @@ char** Sys_ListFiles(const char* directory, const char* extension, char* filter,
 			return nullptr;
 
 		listCopy = static_cast<char**>(Z_Malloc((nfiles + 1) * sizeof(*listCopy), TAG_LISTFILES));
-		for (i = 0; i < nfiles; i++) {
+		for (i = 0; i < nfiles; i++)
+		{
 			listCopy[i] = list[i];
 		}
 		listCopy[i] = nullptr;
@@ -397,16 +429,19 @@ char** Sys_ListFiles(const char* directory, const char* extension, char* filter,
 		return listCopy;
 	}
 
-	if (!extension) {
+	if (!extension)
+	{
 		extension = "";
 	}
 
 	// passing a slash as extension will find directories
-	if (extension[0] == '/' && extension[1] == 0) {
+	if (extension[0] == '/' && extension[1] == 0)
+	{
 		extension = "";
 		flag = 0;
 	}
-	else {
+	else
+	{
 		flag = _A_SUBDIR;
 	}
 
@@ -418,28 +453,35 @@ char** Sys_ListFiles(const char* directory, const char* extension, char* filter,
 	nfiles = 0;
 
 	const intptr_t findhandle = _findfirst(search, &findinfo);
-	if (findhandle == -1) {
+	if (findhandle == -1)
+	{
 		*numfiles = 0;
 		return nullptr;
 	}
 
-	do {
-		if ((!wantsubs && flag ^ (findinfo.attrib & _A_SUBDIR)) || (wantsubs && findinfo.attrib & _A_SUBDIR)) {
-			if (*extension) {
+	do
+	{
+		if ((!wantsubs && flag ^ (findinfo.attrib & _A_SUBDIR)) || (wantsubs && findinfo.attrib & _A_SUBDIR))
+		{
+			if (*extension)
+			{
 				if (strlen(findinfo.name) < extLen ||
 					Q_stricmp(
 						findinfo.name + strlen(findinfo.name) - extLen,
-						extension)) {
+						extension))
+				{
 					continue; // didn't match
 				}
 			}
-			if (nfiles == MAX_FOUND_FILES - 1) {
+			if (nfiles == MAX_FOUND_FILES - 1)
+			{
 				break;
 			}
 			list[nfiles] = CopyString(findinfo.name);
 			nfiles++;
 		}
-	} while (_findnext(findhandle, &findinfo) != -1);
+	}
+	while (_findnext(findhandle, &findinfo) != -1);
 
 	list[nfiles] = nullptr;
 
@@ -448,37 +490,46 @@ char** Sys_ListFiles(const char* directory, const char* extension, char* filter,
 	// return a copy of the list
 	*numfiles = nfiles;
 
-	if (!nfiles) {
+	if (!nfiles)
+	{
 		return nullptr;
 	}
 
 	listCopy = static_cast<char**>(Z_Malloc((nfiles + 1) * sizeof(*listCopy), TAG_LISTFILES));
-	for (i = 0; i < nfiles; i++) {
+	for (i = 0; i < nfiles; i++)
+	{
 		listCopy[i] = list[i];
 	}
 	listCopy[i] = nullptr;
 
-	do {
+	do
+	{
 		flag = 0;
-		for (i = 1; i < nfiles; i++) {
-			if (strgtr(listCopy[i - 1], listCopy[i])) {
+		for (i = 1; i < nfiles; i++)
+		{
+			if (strgtr(listCopy[i - 1], listCopy[i]))
+			{
 				char* temp = listCopy[i];
 				listCopy[i] = listCopy[i - 1];
 				listCopy[i - 1] = temp;
 				flag = 1;
 			}
 		}
-	} while (flag);
+	}
+	while (flag);
 
 	return listCopy;
 }
 
-void	Sys_FreeFileList(char** psList) {
-	if (!psList) {
+void Sys_FreeFileList(char** psList)
+{
+	if (!psList)
+	{
 		return;
 	}
 
-	for (int i = 0; psList[i]; i++) {
+	for (int i = 0; psList[i]; i++)
+	{
 		Z_Free(psList[i]);
 	}
 
@@ -536,7 +587,8 @@ Sys_PlatformInit
 Platform-specific initialization
 ================
 */
-void Sys_PlatformInit(void) {
+void Sys_PlatformInit(void)
+{
 	TIMECAPS ptc;
 	if (timeGetDevCaps(&ptc, sizeof(ptc)) == MMSYSERR_NOERROR)
 	{
@@ -545,7 +597,7 @@ void Sys_PlatformInit(void) {
 		if (timerResolution > 1)
 		{
 			Com_Printf("Warning: Minimum supported timer resolution is %ums "
-				"on this system, recommended resolution 1ms\n", timerResolution);
+			           "on this system, recommended resolution 1ms\n", timerResolution);
 		}
 
 		timeBeginPeriod(timerResolution);

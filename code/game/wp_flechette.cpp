@@ -80,7 +80,7 @@ static void WP_FlechetteMainFire(gentity_t* ent)
 				//was 0.5
 			}
 			else if (!WalkCheck(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angs[PITCH] += Q_flrand(-2.0f, 2.0f) * (RUNNING_SPREAD + 1.5f);
 				angs[YAW] += Q_flrand(-2.0f, 2.0f) * (RUNNING_SPREAD + 1.5f);
@@ -255,7 +255,7 @@ static void WP_CreateFlechetteBouncyThing(vec3_t start, vec3_t fwd, gentity_t* s
 //------------------------------------------------------------------------------
 {
 	gentity_t* missile = CreateMissile(start, fwd, 950 + Q_flrand(0.0f, 1.0f) * 700, 1500 + Q_flrand(0.0f, 1.0f) * 2000,
-		self, qtrue);
+	                                   self, qtrue);
 
 	missile->e_ThinkFunc = thinkF_WP_flechette_alt_blow;
 

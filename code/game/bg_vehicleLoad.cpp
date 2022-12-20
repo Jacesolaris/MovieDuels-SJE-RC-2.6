@@ -247,14 +247,14 @@ static qboolean BG_ParseVehWeaponParm(vehWeaponInfo_t* vehWeapon, const char* pa
 			* (char**)(b + vehWeaponField->ofs) = (char*)BG_Alloc(1024);//(char *)BG_Alloc(strlen(value));
 			strcpy(*(char**)(b + vehWeaponField->ofs), value);
 #else
-			* reinterpret_cast<char**>(b + vehWeaponField->ofs) = G_NewString(value);
+			*reinterpret_cast<char**>(b + vehWeaponField->ofs) = G_NewString(value);
 #endif
 		}
 
 		break;
 	case VF_VECTOR:
 		_iFieldsRead = sscanf(value, "%f %f %f", &vec[0], &vec[1], &vec[2]);
-		//assert(_iFieldsRead==3 );
+	//assert(_iFieldsRead==3 );
 		if (_iFieldsRead != 3)
 		{
 			Com_Printf(
@@ -273,42 +273,42 @@ static qboolean BG_ParseVehWeaponParm(vehWeaponInfo_t* vehWeapon, const char* pa
 		*reinterpret_cast<vehicleType_t*>(b + vehWeaponField->ofs) = vehType;
 		break;
 	case VF_ANIM:
-	{
-		const int anim = GetIDForString(animTable, value);
-		*reinterpret_cast<int*>(b + vehWeaponField->ofs) = anim;
-	}
-	break;
+		{
+			const int anim = GetIDForString(animTable, value);
+			*reinterpret_cast<int*>(b + vehWeaponField->ofs) = anim;
+		}
+		break;
 	case VF_WEAPON: // take string, resolve into index into VehWeaponParms
 		//*(int *)(b+vehWeaponField->ofs) = VEH_VehWeaponIndexForName( value );
 		break;
 	case VF_MODEL: // take the string, get the G_ModelIndex
 #ifdef QAGAME
-		* reinterpret_cast<int*>(b + vehWeaponField->ofs) = G_ModelIndex(value);
+		*reinterpret_cast<int*>(b + vehWeaponField->ofs) = G_ModelIndex(value);
 #else
 		* (int*)(b + vehWeaponField->ofs) = trap_R_RegisterModel(value);
 #endif
 		break;
 	case VF_MODEL_CLIENT: // (MP cgame only) take the string, get the G_ModelIndex
 #ifndef _JK2MP
-		* reinterpret_cast<int*>(b + vehWeaponField->ofs) = G_ModelIndex(value);
+		*reinterpret_cast<int*>(b + vehWeaponField->ofs) = G_ModelIndex(value);
 #elif defined QAGAME
-		//*(int *)(b+vehWeaponField->ofs) = G_ModelIndex( value );
+	//*(int *)(b+vehWeaponField->ofs) = G_ModelIndex( value );
 #else
 		* (int*)(b + vehWeaponField->ofs) = trap_R_RegisterModel(value);
 #endif
 		break;
 	case VF_EFFECT: // take the string, get the G_EffectIndex
 #ifdef QAGAME
-		* reinterpret_cast<int*>(b + vehWeaponField->ofs) = G_EffectIndex(value);
+		*reinterpret_cast<int*>(b + vehWeaponField->ofs) = G_EffectIndex(value);
 #elif defined CGAME
 		* (int*)(b + vehWeaponField->ofs) = trap_FX_RegisterEffect(value);
 #endif
 		break;
 	case VF_EFFECT_CLIENT: // (MP cgame only) take the string, get the index
 #ifndef _JK2MP
-		* reinterpret_cast<int*>(b + vehWeaponField->ofs) = G_EffectIndex(value);
+		*reinterpret_cast<int*>(b + vehWeaponField->ofs) = G_EffectIndex(value);
 #elif defined QAGAME
-		//*(int *)(b+vehWeaponField->ofs) = G_EffectIndex( value );
+	//*(int *)(b+vehWeaponField->ofs) = G_EffectIndex( value );
 #elif defined CGAME
 		* (int*)(b + vehWeaponField->ofs) = trap_FX_RegisterEffect(value);
 #endif
@@ -327,16 +327,16 @@ static qboolean BG_ParseVehWeaponParm(vehWeaponInfo_t* vehWeapon, const char* pa
 		break;
 	case VF_SOUND: // take the string, get the G_SoundIndex
 #ifdef QAGAME
-		* reinterpret_cast<int*>(b + vehWeaponField->ofs) = G_SoundIndex(value);
+		*reinterpret_cast<int*>(b + vehWeaponField->ofs) = G_SoundIndex(value);
 #else
 		* (int*)(b + vehWeaponField->ofs) = trap_S_RegisterSound(value);
 #endif
 		break;
 	case VF_SOUND_CLIENT: // (MP cgame only) take the string, get the index
 #ifndef _JK2MP
-		* reinterpret_cast<int*>(b + vehWeaponField->ofs) = G_SoundIndex(value);
+		*reinterpret_cast<int*>(b + vehWeaponField->ofs) = G_SoundIndex(value);
 #elif defined QAGAME
-		//*(int *)(b+vehWeaponField->ofs) = G_SoundIndex( value );
+	//*(int *)(b+vehWeaponField->ofs) = G_SoundIndex( value );
 #else
 		* (int*)(b + vehWeaponField->ofs) = trap_S_RegisterSound(value);
 #endif
@@ -602,18 +602,18 @@ vehField_t vehicleFields[] =
 
 	{"soundFlyBy", VFOFS(soundFlyBy), VF_SOUND_CLIENT}, //sound to play when they buzz you
 	{"soundFlyBy2", VFOFS(soundFlyBy2), VF_SOUND_CLIENT}, //alternate sound to play when they buzz you
-	{"soundFlyBy3", VFOFS(soundFlyBy3), VF_SOUND_CLIENT }, //alternate sound to play when they buzz you
-	{"soundFlyBy4", VFOFS(soundFlyBy4), VF_SOUND_CLIENT }, //alternate sound to play when they buzz you
-	{"soundFlyBy5", VFOFS(soundFlyBy5), VF_SOUND_CLIENT }, //alternate sound to play when they buzz you
-	{"soundFlyBy6", VFOFS(soundFlyBy6), VF_SOUND_CLIENT }, //alternate sound to play when they buzz you
-	{"soundFlyBy7", VFOFS(soundFlyBy7), VF_SOUND_CLIENT }, //alternate sound to play when they buzz you
-	{"soundFlyBy8", VFOFS(soundFlyBy8), VF_SOUND_CLIENT }, //alternate sound to play when they buzz you
-	{"soundFlyBy9", VFOFS(soundFlyBy9), VF_SOUND_CLIENT }, //alternate sound to play when they buzz you
-	{"soundFlyBy10", VFOFS(soundFlyBy10), VF_SOUND_CLIENT }, //alternate sound to play when they buzz you
-	{"soundFlyBy11", VFOFS(soundFlyBy11), VF_SOUND_CLIENT }, //alternate sound to play when they buzz you
-	{"soundFlyBy12", VFOFS(soundFlyBy12), VF_SOUND_CLIENT }, //alternate sound to play when they buzz you
-	{"soundFlyBy13", VFOFS(soundFlyBy13), VF_SOUND_CLIENT }, //alternate sound to play when they buzz you
-	{"soundFlyBy14", VFOFS(soundFlyBy14), VF_SOUND_CLIENT }, //alternate sound to play when they buzz you
+	{"soundFlyBy3", VFOFS(soundFlyBy3), VF_SOUND_CLIENT}, //alternate sound to play when they buzz you
+	{"soundFlyBy4", VFOFS(soundFlyBy4), VF_SOUND_CLIENT}, //alternate sound to play when they buzz you
+	{"soundFlyBy5", VFOFS(soundFlyBy5), VF_SOUND_CLIENT}, //alternate sound to play when they buzz you
+	{"soundFlyBy6", VFOFS(soundFlyBy6), VF_SOUND_CLIENT}, //alternate sound to play when they buzz you
+	{"soundFlyBy7", VFOFS(soundFlyBy7), VF_SOUND_CLIENT}, //alternate sound to play when they buzz you
+	{"soundFlyBy8", VFOFS(soundFlyBy8), VF_SOUND_CLIENT}, //alternate sound to play when they buzz you
+	{"soundFlyBy9", VFOFS(soundFlyBy9), VF_SOUND_CLIENT}, //alternate sound to play when they buzz you
+	{"soundFlyBy10", VFOFS(soundFlyBy10), VF_SOUND_CLIENT}, //alternate sound to play when they buzz you
+	{"soundFlyBy11", VFOFS(soundFlyBy11), VF_SOUND_CLIENT}, //alternate sound to play when they buzz you
+	{"soundFlyBy12", VFOFS(soundFlyBy12), VF_SOUND_CLIENT}, //alternate sound to play when they buzz you
+	{"soundFlyBy13", VFOFS(soundFlyBy13), VF_SOUND_CLIENT}, //alternate sound to play when they buzz you
+	{"soundFlyBy14", VFOFS(soundFlyBy14), VF_SOUND_CLIENT}, //alternate sound to play when they buzz you
 
 	{"soundShift1", VFOFS(soundShift1), VF_SOUND}, //sound to play when changing speeds
 	{"soundShift2", VFOFS(soundShift2), VF_SOUND}, //sound to play when changing speeds
@@ -623,8 +623,8 @@ vehField_t vehicleFields[] =
 	{"soundShift6", VFOFS(soundShift6), VF_SOUND}, //sound to play when changing speeds
 	{"soundShift7", VFOFS(soundShift7), VF_SOUND}, //sound to play when changing speeds
 	{"soundShift8", VFOFS(soundShift8), VF_SOUND}, //sound to play when changing speeds
-	{"soundShift9", VFOFS(soundShift7), VF_SOUND }, //sound to play when changing speeds
-	{"soundShift10", VFOFS(soundShift8), VF_SOUND }, //sound to play when changing speeds
+	{"soundShift9", VFOFS(soundShift7), VF_SOUND}, //sound to play when changing speeds
+	{"soundShift10", VFOFS(soundShift8), VF_SOUND}, //sound to play when changing speeds
 
 	{"exhaustFX", VFOFS(iExhaustFX), VF_EFFECT_CLIENT}, //exhaust effect, played from "*exhaust" bolt(s)
 	{"turboFX", VFOFS(iTurboFX), VF_EFFECT_CLIENT},
@@ -888,14 +888,14 @@ static qboolean BG_ParseVehicleParm(vehicleInfo_t* vehicle, const char* parmName
 			* (char**)(b + vehField->ofs) = (char*)BG_Alloc(128);//(char *)BG_Alloc(strlen(value));
 			strcpy(*(char**)(b + vehField->ofs), value);
 #else
-			* reinterpret_cast<char**>(b + vehField->ofs) = G_NewString(value);
+			*reinterpret_cast<char**>(b + vehField->ofs) = G_NewString(value);
 #endif
 		}
 
 		break;
 	case VF_VECTOR:
 		_iFieldsRead = sscanf(value, "%f %f %f", &vec[0], &vec[1], &vec[2]);
-		//assert(_iFieldsRead==3 );
+	//assert(_iFieldsRead==3 );
 		if (_iFieldsRead != 3)
 		{
 			Com_Printf(S_COLOR_YELLOW"BG_ParseVehicleParm: VEC3 sscanf() failed to read 3 floats ('angle' key bug?)\n");
@@ -913,42 +913,42 @@ static qboolean BG_ParseVehicleParm(vehicleInfo_t* vehicle, const char* parmName
 		*reinterpret_cast<vehicleType_t*>(b + vehField->ofs) = vehType;
 		break;
 	case VF_ANIM:
-	{
-		const int anim = GetIDForString(animTable, value);
-		*reinterpret_cast<int*>(b + vehField->ofs) = anim;
-	}
-	break;
+		{
+			const int anim = GetIDForString(animTable, value);
+			*reinterpret_cast<int*>(b + vehField->ofs) = anim;
+		}
+		break;
 	case VF_WEAPON: // take string, resolve into index into VehWeaponParms
 		*reinterpret_cast<int*>(b + vehField->ofs) = VEH_VehWeaponIndexForName(value);
 		break;
 	case VF_MODEL: // take the string, get the G_ModelIndex
 #ifdef QAGAME
-		* reinterpret_cast<int*>(b + vehField->ofs) = G_ModelIndex(value);
+		*reinterpret_cast<int*>(b + vehField->ofs) = G_ModelIndex(value);
 #else
 		* (int*)(b + vehField->ofs) = trap_R_RegisterModel(value);
 #endif
 		break;
 	case VF_MODEL_CLIENT: // (MP cgame only) take the string, get the G_ModelIndex
 #ifndef _JK2MP
-		* reinterpret_cast<int*>(b + vehField->ofs) = G_ModelIndex(value);
+		*reinterpret_cast<int*>(b + vehField->ofs) = G_ModelIndex(value);
 #elif defined QAGAME
-		//*(int *)(b+vehField->ofs) = G_ModelIndex( value );
+	//*(int *)(b+vehField->ofs) = G_ModelIndex( value );
 #else
 		* (int*)(b + vehField->ofs) = trap_R_RegisterModel(value);
 #endif
 		break;
 	case VF_EFFECT: // take the string, get the G_EffectIndex
 #ifdef QAGAME
-		* reinterpret_cast<int*>(b + vehField->ofs) = G_EffectIndex(value);
+		*reinterpret_cast<int*>(b + vehField->ofs) = G_EffectIndex(value);
 #elif defined CGAME
 		* (int*)(b + vehField->ofs) = trap_FX_RegisterEffect(value);
 #endif
 		break;
 	case VF_EFFECT_CLIENT: // (MP cgame only) take the string, get the G_EffectIndex
 #ifndef _JK2MP
-		* reinterpret_cast<int*>(b + vehField->ofs) = G_EffectIndex(value);
+		*reinterpret_cast<int*>(b + vehField->ofs) = G_EffectIndex(value);
 #elif defined QAGAME
-		//*(int *)(b+vehField->ofs) = G_EffectIndex( value );
+	//*(int *)(b+vehField->ofs) = G_EffectIndex( value );
 #elif defined CGAME
 		* (int*)(b + vehField->ofs) = trap_FX_RegisterEffect(value);
 #endif
@@ -967,16 +967,16 @@ static qboolean BG_ParseVehicleParm(vehicleInfo_t* vehicle, const char* parmName
 		break;
 	case VF_SOUND: // take the string, get the G_SoundIndex
 #ifdef QAGAME
-		* reinterpret_cast<int*>(b + vehField->ofs) = G_SoundIndex(value);
+		*reinterpret_cast<int*>(b + vehField->ofs) = G_SoundIndex(value);
 #else
 		* (int*)(b + vehField->ofs) = trap_S_RegisterSound(value);
 #endif
 		break;
 	case VF_SOUND_CLIENT: // (MP cgame only) take the string, get the G_SoundIndex
 #ifndef _JK2MP
-		* reinterpret_cast<int*>(b + vehField->ofs) = G_SoundIndex(value);
+		*reinterpret_cast<int*>(b + vehField->ofs) = G_SoundIndex(value);
 #elif defined QAGAME
-		//*(int *)(b+vehField->ofs) = G_SoundIndex( value );
+	//*(int *)(b+vehField->ofs) = G_SoundIndex( value );
 #else
 		* (int*)(b + vehField->ofs) = trap_S_RegisterSound(value);
 #endif
@@ -994,18 +994,18 @@ int VEH_LoadVehicle(const char* vehicleName)
 	//load up specified vehicle and save in array: g_vehicleInfo
 	const char* token;
 	//we'll assume that no parm name is longer than 128
-	char parmName[128] = { 0 };
-	char weap1[128] = { 0 }, weap2[128] = { 0 };
-	char weapMuzzle1[128] = { 0 };
-	char weapMuzzle2[128] = { 0 };
-	char weapMuzzle3[128] = { 0 };
-	char weapMuzzle4[128] = { 0 };
-	char weapMuzzle5[128] = { 0 };
-	char weapMuzzle6[128] = { 0 };
-	char weapMuzzle7[128] = { 0 };
-	char weapMuzzle8[128] = { 0 };
-	char weapMuzzle9[128] = { 0 };
-	char weapMuzzle10[128] = { 0 };
+	char parmName[128] = {0};
+	char weap1[128] = {0}, weap2[128] = {0};
+	char weapMuzzle1[128] = {0};
+	char weapMuzzle2[128] = {0};
+	char weapMuzzle3[128] = {0};
+	char weapMuzzle4[128] = {0};
+	char weapMuzzle5[128] = {0};
+	char weapMuzzle6[128] = {0};
+	char weapMuzzle7[128] = {0};
+	char weapMuzzle8[128] = {0};
+	char weapMuzzle9[128] = {0};
+	char weapMuzzle10[128] = {0};
 	char* value;
 	const char* p;
 	vehicleInfo_t* vehicle;
@@ -1446,7 +1446,7 @@ void BG_VehWeaponLoadParms(void)
 	fileCnt = trap_FS_GetFileList("ext_data/vehicles/weapons", ".vwp", vehWeaponExtensionListBuf, sizeof(vehWeaponExtensionListBuf));
 #else
 	fileCnt = gi.FS_GetFileList("ext_data/vehicles/weapons", ".vwp", vehWeaponExtensionListBuf,
-		sizeof vehWeaponExtensionListBuf);
+	                            sizeof vehWeaponExtensionListBuf);
 #endif
 
 	holdChar = vehWeaponExtensionListBuf;

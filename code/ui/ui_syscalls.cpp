@@ -53,7 +53,8 @@ void trap_R_SetColor(const float* rgba)
 	ui.R_SetColor(rgba);
 }
 
-void trap_R_DrawStretchPic(float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader)
+void trap_R_DrawStretchPic(float x, float y, float w, float h, float s1, float t1, float s2, float t2,
+                           qhandle_t hShader)
 {
 	//	syscall( UI_R_DRAWSTRETCHPIC, PASSFLOAT(x), PASSFLOAT(y), PASSFLOAT(w), PASSFLOAT(h), PASSFLOAT(s1), PASSFLOAT(t1), PASSFLOAT(s2), PASSFLOAT(t2), hShader );
 	//	re.DrawStretchPic( x, y, w, h, s1, t1, s2, t2, hShader  );
@@ -61,7 +62,7 @@ void trap_R_DrawStretchPic(float x, float y, float w, float h, float s1, float t
 	ui.R_DrawStretchPic(x, y, w, h, s1, t1, s2, t2, hShader);
 }
 
-void	trap_R_ModelBounds(clipHandle_t model, vec3_t mins, vec3_t maxs)
+void trap_R_ModelBounds(clipHandle_t model, vec3_t mins, vec3_t maxs)
 {
 	//	syscall( UI_R_MODELBOUNDS, model, mins, maxs );
 	ui.R_ModelBounds(model, mins, maxs);
@@ -78,7 +79,7 @@ void trap_S_StopSounds(void)
 	S_StopSounds();
 }
 
-sfxHandle_t	trap_S_RegisterSound(const char* sample, qboolean compressed)
+sfxHandle_t trap_S_RegisterSound(const char* sample, qboolean compressed)
 {
 	return S_RegisterSound(sample);
 }
@@ -116,6 +117,7 @@ void trap_Key_SetCatcher(int catcher)
 {
 	Key_SetCatcher(catcher);
 }
+
 /*
 void trap_GetClipboardData( char *buf, int bufsize ) {
 	syscall( UI_GETCLIPBOARDDATA, buf, bufsize );
@@ -135,7 +137,9 @@ void trap_GetGlconfig(glconfig_t* glconfig)
 }
 
 // this returns a handle.  arg0 is the name in the format "idlogo.roq", set arg1 to NULL, alteredstates to qfalse (do not alter gamestate)
-int trap_CIN_PlayCinematic(const char* arg0, int xpos, int ypos, int width, int height, int bits, const char* psAudioFile) {
+int trap_CIN_PlayCinematic(const char* arg0, int xpos, int ypos, int width, int height, int bits,
+                           const char* psAudioFile)
+{
 	//  return syscall(UI_CIN_PLAYCINEMATIC, arg0, xpos, ypos, width, height, bits, psAudioFile);
 	return CIN_PlayCinematic(arg0, xpos, ypos, width, height, bits, psAudioFile);
 }

@@ -963,8 +963,10 @@ SavedGameJustLoaded_e g_eSavedGameJustLoaded;
 qboolean g_qbLoadTransition = qfalse;
 extern void R_LoadWeatherParms(void);
 
-void InitGame(const char* mapname, const char* spawntarget, const int checkSum, const char* entities, const int levelTime,
-              const int randomSeed, const int globalTime, const SavedGameJustLoaded_e eSavedGameJustLoaded, const qboolean qbLoadTransition)
+void InitGame(const char* mapname, const char* spawntarget, const int checkSum, const char* entities,
+              const int levelTime,
+              const int randomSeed, const int globalTime, const SavedGameJustLoaded_e eSavedGameJustLoaded,
+              const qboolean qbLoadTransition)
 {
 	//rww - default this to 0, we will auto-set it to 1 if we run into a terrain ent
 	gi.cvar_set("RMG", "0");
@@ -1121,7 +1123,7 @@ and global variables
 */
 extern int PM_ValidateAnimRange(int start_frame, int end_frame, float anim_speed);
 
-extern "C" Q_EXPORT game_export_t * QDECL GetGameAPI(const game_import_t * import)
+extern "C" Q_EXPORT game_export_t* QDECL GetGameAPI(const game_import_t* import)
 {
 	gameinfo_import_t gameinfo_import;
 
@@ -1360,8 +1362,8 @@ static void G_Animate(gentity_t* self)
 
 				// I guess query ghoul2 to find out what the current frame is and see if we are done.
 				gi.G2API_GetBoneAnimIndex(&self->ghoul2[self->playerModel], self->rootBone,
-					cg.time ? cg.time : level.time, &frame, &junk, &junk, &junk, &junk2,
-					nullptr);
+				                          cg.time ? cg.time : level.time, &frame, &junk, &junk, &junk, &junk2,
+				                          nullptr);
 
 				// It NEVER seems to get to what you'd think the last frame would be, so I'm doing this to try and catch when the animation has stopped
 				if (frame + 1 >= self->endFrame)
@@ -1396,7 +1398,7 @@ static void G_Animate(gentity_t* self)
 		self->s.frame = self->endFrame;
 
 		gi.G2API_SetBoneAnimIndex(&self->ghoul2[self->playerModel], self->rootBone,
-			self->startFrame, self->endFrame, BONE_ANIM_OVERRIDE_FREEZE, 1.0f, cg.time, -1, -1);
+		                          self->startFrame, self->endFrame, BONE_ANIM_OVERRIDE_FREEZE, 1.0f, cg.time, -1, -1);
 		return;
 	}
 
@@ -1589,7 +1591,7 @@ class CGameRagDollUpdateParams : public CRagDollUpdateParams
 	}
 
 	void Collision() override
-		// we had a collision, please stop animating and (sometime soon) call SetRagDoll RP_DEATH_COLLISION
+	// we had a collision, please stop animating and (sometime soon) call SetRagDoll RP_DEATH_COLLISION
 	{
 	}
 
@@ -1602,6 +1604,7 @@ class CGameRagDollUpdateParams : public CRagDollUpdateParams
 		}
 	}
 #endif
+
 public:
 	vec3_t effectorTotal;
 	qboolean hasEffectorData;
@@ -1666,13 +1669,13 @@ static int G_RagAnimForPositioning(gentity_t* ent)
 	vec3_t dir;
 	mdxaBone_t matrix;
 	assert(ent->client);
-	const vec3_t G2Angles = { 0, ent->client->ps.viewangles[YAW], 0 };
+	const vec3_t G2Angles = {0, ent->client->ps.viewangles[YAW], 0};
 
 	assert(ent->ghoul2.size() > 0);
 	assert(ent->crotchBolt > -1);
 
 	gi.G2API_GetBoltMatrix(ent->ghoul2, ent->playerModel, ent->crotchBolt, &matrix, G2Angles, ent->client->ps.origin,
-		cg.time ? cg.time : level.time, nullptr, ent->s.modelScale);
+	                       cg.time ? cg.time : level.time, nullptr, ent->s.modelScale);
 	gi.G2API_GiveMeVectorFromMatrix(matrix, NEGATIVE_Z, dir);
 
 	if (dir[2] > 0.1f)
@@ -1874,7 +1877,7 @@ qboolean G_RagDoll(gentity_t* ent, vec3_t forcedAngles)
 		ent->playerModel < 0 ||
 		!ent->ghoul2.size() ||
 		!G_RagWantsHumanoidsOnly(&ent->ghoul2[ent->playerModel])
-		)
+	)
 	{
 		return qfalse;
 	}
@@ -1957,8 +1960,8 @@ qboolean G_RagDoll(gentity_t* ent, vec3_t forcedAngles)
 
 			//Do the head first, because the hands reference it anyway.
 			gi.G2API_GetBoltMatrix(ent->ghoul2, ent->playerModel, boltChecks[2], &boltMatrix, tAng,
-				ent->client->ps.origin, cg.time ? cg.time : level.time, nullptr,
-				ent->s.modelScale);
+			                       ent->client->ps.origin, cg.time ? cg.time : level.time, nullptr,
+			                       ent->s.modelScale);
 			gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, boltPoints[2]);
 
 			while (i < 5)
@@ -1969,8 +1972,8 @@ qboolean G_RagDoll(gentity_t* ent, vec3_t forcedAngles)
 				{
 					//when doing hands, trace to the head instead of origin
 					gi.G2API_GetBoltMatrix(ent->ghoul2, ent->playerModel, boltChecks[i], &boltMatrix, tAng,
-						ent->client->ps.origin, cg.time ? cg.time : level.time, nullptr,
-						ent->s.modelScale);
+					                       ent->client->ps.origin, cg.time ? cg.time : level.time, nullptr,
+					                       ent->s.modelScale);
 					gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, boltPoints[i]);
 					VectorCopy(boltPoints[i], trStart);
 					VectorCopy(boltPoints[2], trEnd);
@@ -1981,8 +1984,8 @@ qboolean G_RagDoll(gentity_t* ent, vec3_t forcedAngles)
 					{
 						//2 is the head, which already has the bolt point.
 						gi.G2API_GetBoltMatrix(ent->ghoul2, ent->playerModel, boltChecks[i], &boltMatrix, tAng,
-							ent->client->ps.origin, cg.time ? cg.time : level.time, nullptr,
-							ent->s.modelScale);
+						                       ent->client->ps.origin, cg.time ? cg.time : level.time, nullptr,
+						                       ent->s.modelScale);
 						gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, boltPoints[i]);
 					}
 					VectorCopy(boltPoints[i], trStart);
@@ -1991,7 +1994,7 @@ qboolean G_RagDoll(gentity_t* ent, vec3_t forcedAngles)
 
 				//Now that we have all that sorted out, trace between the two points we desire.
 				gi.trace(&tr, trStart, nullptr, nullptr, trEnd, ent->s.number, MASK_SOLID,
-					static_cast<EG2_Collision>(0), 0);
+				         static_cast<EG2_Collision>(0), 0);
 
 				if (tr.fraction != 1.0 || tr.startsolid || tr.allsolid)
 				{
@@ -2062,29 +2065,29 @@ qboolean G_RagDoll(gentity_t* ent, vec3_t forcedAngles)
 			float animSpeed;
 
 			if (gi.G2API_GetBoneAnim(&ent->ghoul2[0], "model_root", cg.time ? cg.time : level.time, &currentFrame,
-				&startFrame, &endFrame, &flags, &animSpeed, nullptr))
+			                         &startFrame, &endFrame, &flags, &animSpeed, nullptr))
 			{
 				//lock the anim on the current frame.
 				constexpr int blendTime = 500;
 
 				gi.G2API_SetBoneAnim(&ent->ghoul2[0], "lower_lumbar", currentFrame, currentFrame + 1, flags, animSpeed,
-					cg.time ? cg.time : level.time, currentFrame, blendTime);
+				                     cg.time ? cg.time : level.time, currentFrame, blendTime);
 				gi.G2API_SetBoneAnim(&ent->ghoul2[0], "model_root", currentFrame, currentFrame + 1, flags, animSpeed,
-					cg.time ? cg.time : level.time, currentFrame, blendTime);
+				                     cg.time ? cg.time : level.time, currentFrame, blendTime);
 				gi.G2API_SetBoneAnim(&ent->ghoul2[0], "Motion", currentFrame, currentFrame + 1, flags, animSpeed,
-					cg.time ? cg.time : level.time, currentFrame, blendTime);
+				                     cg.time ? cg.time : level.time, currentFrame, blendTime);
 			}
 		}
 #endif
 
 		gi.G2API_SetBoneAngles(&ent->ghoul2[ent->playerModel], "upper_lumbar", vec3_origin, BONE_ANGLES_POSTMULT,
-			POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 100, cg.time ? cg.time : level.time);
+		                       POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 100, cg.time ? cg.time : level.time);
 		gi.G2API_SetBoneAngles(&ent->ghoul2[ent->playerModel], "lower_lumbar", vec3_origin, BONE_ANGLES_POSTMULT,
-			POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 100, cg.time ? cg.time : level.time);
+		                       POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 100, cg.time ? cg.time : level.time);
 		gi.G2API_SetBoneAngles(&ent->ghoul2[ent->playerModel], "thoracic", vec3_origin, BONE_ANGLES_POSTMULT,
-			POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 100, cg.time ? cg.time : level.time);
+		                       POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 100, cg.time ? cg.time : level.time);
 		gi.G2API_SetBoneAngles(&ent->ghoul2[ent->playerModel], "cervical", vec3_origin, BONE_ANGLES_POSTMULT,
-			POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 100, cg.time ? cg.time : level.time);
+		                       POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 100, cg.time ? cg.time : level.time);
 
 		VectorCopy(G2Angles, tParms.angles);
 		VectorCopy(usedOrg, tParms.position);

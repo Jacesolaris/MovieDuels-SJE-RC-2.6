@@ -49,7 +49,8 @@ extern qboolean rocket_trooper_player(const gentity_t* self);
 void Boba_Precache();
 void Boba_DustFallNear(const vec3_t origin, int dustcount);
 void Boba_ChangeWeapon(int wp);
-qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir, qboolean forceKnockdown = qfalse);
+qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir,
+                            qboolean forceKnockdown = qfalse);
 
 // Flight Related Functions (also used by Rocket Trooper)
 //--------------------------------------------------------
@@ -102,7 +103,7 @@ extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
 extern void WP_ResistForcePush(gentity_t* self, const gentity_t* pusher, qboolean no_penalty);
 extern void ForceJump(gentity_t* self, const usercmd_t* ucmd);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
-	qboolean break_saber_lock);
+                        qboolean break_saber_lock);
 
 extern void CG_DrawEdge(vec3_t start, vec3_t end, int type);
 
@@ -264,7 +265,7 @@ void Boba_DustFallNear(const vec3_t origin, const int dustcount)
 
 		VectorMA(origin, 1000.0f, testDirection, testEndPos);
 		gi.trace(&testTrace, origin, nullptr, nullptr, testEndPos, player && player->inuse ? 0 : ENTITYNUM_NONE,
-			MASK_SHOT, static_cast<EG2_Collision>(0), 0);
+		         MASK_SHOT, static_cast<EG2_Collision>(0), 0);
 
 		if (!testTrace.startsolid &&
 			!testTrace.allsolid &&
@@ -292,7 +293,8 @@ void Boba_ChangeWeapon(const int wp)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Choose an "anti-knockdown" response
 ////////////////////////////////////////////////////////////////////////////////////////
-qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir, const qboolean forceKnockdown)
+qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir,
+                            const qboolean forceKnockdown)
 {
 	if (self->client->NPC_class != CLASS_BOBAFETT && self->client->NPC_class != CLASS_MANDALORIAN && self->client->
 		NPC_class != CLASS_JANGO && self->client->NPC_class != CLASS_JANGODUAL)
@@ -307,7 +309,7 @@ qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3
 	}
 
 	vec3_t pDir, fwd, right;
-	const vec3_t ang = { 0, self->currentAngles[YAW], 0 };
+	const vec3_t ang = {0, self->currentAngles[YAW], 0};
 	const int strafeTime = Q_irand(1000, 2000);
 
 	AngleVectors(ang, fwd, right, nullptr);
@@ -376,7 +378,8 @@ qboolean Boba_Flying(const gentity_t* self)
 {
 	assert(
 		self && self->client && (self->client->NPC_class == CLASS_BOBAFETT || self->client->NPC_class ==
-			CLASS_MANDALORIAN || self->client->NPC_class == CLASS_JANGO || self->client->NPC_class == CLASS_JANGODUAL || rocket_trooper_player(self)));
+			CLASS_MANDALORIAN || self->client->NPC_class == CLASS_JANGO || self->client->NPC_class == CLASS_JANGODUAL ||
+			rocket_trooper_player(self)));
 	//self->NPC &&
 	return static_cast<qboolean>(self->client->moveType == MT_FLYSWIM);
 }
@@ -445,12 +448,12 @@ void Boba_FlyStart(gentity_t* self)
 			if (self->client->NPC_class == CLASS_MANDALORIAN || rocket_trooper_player(self))
 			{
 				G_PlayEffect(G_EffectIndex("rockettrooper/flameNEW"), self->playerModel, self->genericBolt1,
-					self->s.number, self->currentOrigin, qtrue, qtrue);
+				             self->s.number, self->currentOrigin, qtrue, qtrue);
 			}
 			else
 			{
 				G_PlayEffect(G_EffectIndex("boba/jetSP"), self->playerModel, self->genericBolt1, self->s.number,
-					self->currentOrigin, qtrue, qtrue);
+				             self->currentOrigin, qtrue, qtrue);
 			}
 		}
 		if (self->genericBolt2 != -1)
@@ -458,12 +461,12 @@ void Boba_FlyStart(gentity_t* self)
 			if (self->client->NPC_class == CLASS_MANDALORIAN || rocket_trooper_player(self))
 			{
 				G_PlayEffect(G_EffectIndex("rockettrooper/flameNEW"), self->playerModel, self->genericBolt2,
-					self->s.number, self->currentOrigin, qtrue, qtrue);
+				             self->s.number, self->currentOrigin, qtrue, qtrue);
 			}
 			else
 			{
 				G_PlayEffect(G_EffectIndex("boba/jetSP"), self->playerModel, self->genericBolt2, self->s.number,
-					self->currentOrigin, qtrue, qtrue);
+				             self->currentOrigin, qtrue, qtrue);
 			}
 		}
 
@@ -563,12 +566,12 @@ void Boba_FireFlameThrower(gentity_t* self)
 		if (g_SerenityJediEngineMode->integer)
 		{
 			G_Damage(trace_ent, self, self, dir, tr.endpos, damage_md,
-				DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC | DAMAGE_IGNORE_TEAM, MOD_LAVA, HL_NONE);
+			         DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC | DAMAGE_IGNORE_TEAM, MOD_LAVA, HL_NONE);
 		}
 		else
 		{
 			G_Damage(trace_ent, self, self, dir, tr.endpos, damage,
-				DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC | DAMAGE_IGNORE_TEAM, MOD_LAVA, HL_NONE);
+			         DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC | DAMAGE_IGNORE_TEAM, MOD_LAVA, HL_NONE);
 		}
 
 		if (trace_ent->health > 0 && trace_ent->painDebounceTime > level.time)
@@ -582,7 +585,7 @@ void Boba_FireFlameThrower(gentity_t* self)
 					if (trace_ent->chestBolt != -1)
 					{
 						G_PlayEffect(G_EffectIndex("flamethrower/flame_impact"), trace_ent->playerModel,
-							trace_ent->chestBolt, trace_ent->s.number, trace_ent->currentOrigin, 3000, qtrue);
+						             trace_ent->chestBolt, trace_ent->s.number, trace_ent->currentOrigin, 3000, qtrue);
 					}
 				}
 				if (!PM_InRoll(&trace_ent->client->ps)
@@ -637,12 +640,12 @@ void Mando_FireFlameThrower(gentity_t* self)
 		if (g_SerenityJediEngineMode->integer)
 		{
 			G_Damage(trace_ent, self, self, dir, tr.endpos, damage_md,
-				DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC | DAMAGE_IGNORE_TEAM, MOD_LAVA, HL_NONE);
+			         DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC | DAMAGE_IGNORE_TEAM, MOD_LAVA, HL_NONE);
 		}
 		else
 		{
 			G_Damage(trace_ent, self, self, dir, tr.endpos, damage,
-				DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC | DAMAGE_IGNORE_TEAM, MOD_LAVA, HL_NONE);
+			         DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC | DAMAGE_IGNORE_TEAM, MOD_LAVA, HL_NONE);
 		}
 
 		if (trace_ent->health > 0 && trace_ent->painDebounceTime > level.time)
@@ -656,7 +659,7 @@ void Mando_FireFlameThrower(gentity_t* self)
 					if (trace_ent->chestBolt != -1)
 					{
 						G_PlayEffect(G_EffectIndex("flamethrower/flame_impact"), trace_ent->playerModel,
-							trace_ent->chestBolt, trace_ent->s.number, trace_ent->currentOrigin, 3000, qtrue);
+						             trace_ent->chestBolt, trace_ent->s.number, trace_ent->currentOrigin, 3000, qtrue);
 					}
 				}
 				if (!PM_InRoll(&trace_ent->client->ps)
@@ -738,7 +741,7 @@ void Boba_StartFlameThrower(gentity_t* self)
 
 		G_SoundOnEnt(self, CHAN_WEAPON, "sound/weapons/boba/bf_flame.mp3");
 		G_PlayEffect(G_EffectIndex("boba/fthrw"), self->playerModel, self->genericBolt3, self->s.number, self->s.origin,
-			1);
+		             1);
 
 		Boba_Printf("FlameThrower ON");
 	}
@@ -765,7 +768,7 @@ void Boba_DoFlameThrower(gentity_t* self)
 				self->client->ps.torsoAnimTimer = BOBA_FLAMEDURATION;
 				G_SoundOnEnt(self, CHAN_WEAPON, "sound/weapons/boba/bf_flame.mp3");
 				G_PlayEffect(G_EffectIndex("boba/fthrw"), self->playerModel, self->genericBolt3, self->s.number,
-					self->s.origin, 1);
+				             self->s.origin, 1);
 				self->client->ps.forcePowerDuration[FP_LIGHTNING] = 1;
 
 				if (g_SerenityJediEngineMode->integer)
@@ -805,13 +808,13 @@ void Mando_DoFlameThrower(gentity_t* self)
 			if (!self->client->ps.forcePowerDuration[FP_LIGHTNING])
 			{
 				NPC_SetAnim(self, SETANIM_TORSO, BOTH_FLAMETHROWER,
-					SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART);
+				            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART);
 				self->client->ps.torsoAnimTimer = MANDO_FLAMEDURATION;
 				self->client->flamethrowerOn = qtrue;
 
 				G_SoundOnEnt(self, CHAN_WEAPON, "sound/weapons/boba/bf_flame.mp3");
 				G_PlayEffect(G_EffectIndex("boba/fthrw"), self->playerModel, self->genericBolt3, self->s.number,
-					self->s.origin, 1);
+				             self->s.origin, 1);
 				self->client->ps.forcePowerDuration[FP_LIGHTNING] = 1;
 
 				if (g_SerenityJediEngineMode->integer)
@@ -870,8 +873,8 @@ void Boba_VibrobladePunch(gentity_t* self)
 	vec3_t muzzlePoint;
 	vec3_t muzzleDir;
 	gi.G2API_GetBoltMatrix(self->ghoul2, self->playerModel, self->handRBolt, &boltMatrix, self->currentAngles,
-		self->currentOrigin, cg.time ? cg.time : level.time,
-		nullptr, self->s.modelScale);
+	                       self->currentOrigin, cg.time ? cg.time : level.time,
+	                       nullptr, self->s.modelScale);
 	// work the matrix axis stuff into the original axis and origins used.
 	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, muzzlePoint);
 	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, NEGATIVE_Y, muzzleDir);
@@ -929,7 +932,7 @@ void Boba_FireWristMissile(gentity_t* self, const int whichMissile)
 	if (!self->client->ps.forcePowerDuration[dummyForcePower])
 	{
 		NPC_SetAnim(self, SETANIM_TORSO, missileStates[whichMissile].fireAnim,
-			SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+		            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 		self->client->ps.torsoAnimTimer = missileStates[whichMissile].animTimer;
 		self->client->ps.forcePowerDuration[dummyForcePower] = 1;
 		shotsFired = 0;
@@ -965,10 +968,10 @@ void Boba_FireWristMissile(gentity_t* self, const int whichMissile)
 
 	if (shotsFired >= missileStates[whichMissile].maxShots)
 	{
-		constexpr vec3_t ORIGIN = { 0, 0, 0 };
+		constexpr vec3_t ORIGIN = {0, 0, 0};
 		G_PlayEffect(G_EffectIndex("repeater/muzzle_smoke"), self->playerModel,
-			missileStates[whichMissile].leftBolt ? self->genericBolt3 : self->handRBolt, self->s.number,
-			ORIGIN);
+		             missileStates[whichMissile].leftBolt ? self->genericBolt3 : self->handRBolt, self->s.number,
+		             ORIGIN);
 		//play smoke
 		return;
 	}
@@ -1011,9 +1014,9 @@ void Boba_FireWristMissile(gentity_t* self, const int whichMissile)
 		vec3_t muzzlePoint;
 		vec3_t muzzleDir;
 		gi.G2API_GetBoltMatrix(self->ghoul2, self->playerModel,
-			missileStates[whichMissile].leftBolt ? self->genericBolt3 : self->handRBolt, &boltMatrix,
-			self->currentAngles, self->currentOrigin, cg.time ? cg.time : level.time, nullptr,
-			self->s.modelScale);
+		                       missileStates[whichMissile].leftBolt ? self->genericBolt3 : self->handRBolt, &boltMatrix,
+		                       self->currentAngles, self->currentOrigin, cg.time ? cg.time : level.time, nullptr,
+		                       self->s.modelScale);
 		// work the matrix axis stuff into the original axis and origins used.
 		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, muzzlePoint);
 		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, NEGATIVE_Y, muzzleDir);
@@ -1055,8 +1058,8 @@ void Boba_DoSniper(gentity_t* self)
 	{
 		TIMER_Set(NPC, "PickNewSniperPoint", Q_irand(15000, 25000));
 		const int SniperPoint = NPC_FindCombatPoint(NPC->currentOrigin, nullptr, NPC->currentOrigin,
-			CP_SNIPE | CP_CLEAR | CP_HAS_ROUTE | CP_TRYFAR | CP_HORZ_DIST_COLL,
-			0, -1);
+		                                            CP_SNIPE | CP_CLEAR | CP_HAS_ROUTE | CP_TRYFAR | CP_HORZ_DIST_COLL,
+		                                            0, -1);
 		if (SniperPoint != -1)
 		{
 			NPC_SetCombatPoint(SniperPoint);
@@ -1076,7 +1079,7 @@ void Boba_DoSniper(gentity_t* self)
 	if (NPCInfo->aiFlags & NPCAI_BLOCKED &&
 		NPC->client->moveType != MT_FLYSWIM &&
 		level.time - NPCInfo->blockedDebounceTime > 3000
-		)
+	)
 	{
 		Boba_Printf("BLOCKED: Attempting Jump");
 		if (IsOnAPath)
@@ -1108,8 +1111,8 @@ void Boba_Fire()
 		case WP_ROCKET_LAUNCHER:
 			TIMER_Set(NPC, "nextAttackDelay", Q_irand(1000, 2000));
 
-			// Occasionally Shoot A Homing Missile
-			//-------------------------------------
+		// Occasionally Shoot A Homing Missile
+		//-------------------------------------
 			if (!Q_irand(0, 3))
 			{
 				ucmd.buttons &= ~BUTTON_ATTACK;
@@ -1121,8 +1124,8 @@ void Boba_Fire()
 		case WP_DISRUPTOR:
 			TIMER_Set(NPC, "nextAttackDelay", Q_irand(1000, 4000));
 
-			// Occasionally Alt-Fire
-			//-----------------------
+		// Occasionally Alt-Fire
+		//-----------------------
 			if (!Q_irand(0, 3))
 			{
 				ucmd.buttons &= ~BUTTON_ATTACK;
@@ -1157,8 +1160,8 @@ void Boba_Fire()
 				}
 			}
 
-			// Occasionally Alt Fire
-			//-----------------------
+		// Occasionally Alt Fire
+		//-----------------------
 			if (NPCInfo->scriptFlags & SCF_ALT_FIRE && !Q_irand(0, 3))
 			{
 				ucmd.buttons &= ~BUTTON_ATTACK;
@@ -1296,7 +1299,7 @@ void Boba_Fire()
 				}
 			}
 			break;
-		default:;
+		default: ;
 		}
 	}
 }
@@ -1318,7 +1321,7 @@ void Boba_FireDecide()
 		NPC->s.weapon == WP_NONE || // Only If Using A Valid Weapon
 		!TIMER_Done(NPC, "nextAttackDelay") || // Only If Ready To Shoot Again
 		!Boba_CanSeeEnemy(NPC) // Only If Enemy Recently Seen
-		)
+	)
 	{
 		return;
 	}
@@ -1355,7 +1358,7 @@ void Boba_FireDecide()
 		// TODO: Add Conditions Here
 		Boba_Fire();
 		break;
-	default:;
+	default: ;
 	}
 }
 
@@ -1434,8 +1437,8 @@ void Boba_TacticsSelect()
 		if (Q_irand(0, NPC->count) > 0)
 		{
 			const int SniperPoint = NPC_FindCombatPoint(NPC->currentOrigin, nullptr, NPC->currentOrigin,
-				CP_SNIPE | CP_CLEAR | CP_HAS_ROUTE | CP_TRYFAR |
-				CP_HORZ_DIST_COLL, 0, -1);
+			                                            CP_SNIPE | CP_CLEAR | CP_HAS_ROUTE | CP_TRYFAR |
+			                                            CP_HORZ_DIST_COLL, 0, -1);
 			if (SniperPoint != -1)
 			{
 				NPC_SetCombatPoint(SniperPoint);
@@ -1511,7 +1514,7 @@ void Boba_TacticsSelect()
 			Boba_Printf("NEW TACTIC: Ambush");
 			Boba_ChangeWeapon(WP_NONE);
 			break;
-		default:;
+		default: ;
 		}
 	}
 }
@@ -1586,7 +1589,7 @@ bool Boba_Respawn()
 	{
 		vec3_t endPos;
 		VectorMA(NPC->enemy->currentOrigin, 1000.0f / static_cast<float>(AverageEnemyDirectionSamples),
-			AverageEnemyDirection, endPos);
+		         AverageEnemyDirection, endPos);
 		cp = NPC_FindCombatPoint(endPos, nullptr, endPos, CP_FLEE | CP_TRYFAR | CP_HORZ_DIST_COLL, 0, -1);
 		Boba_Printf("Attempting Predictive Spawn Point");
 	}
@@ -1596,7 +1599,7 @@ bool Boba_Respawn()
 	if (cp == -1)
 	{
 		cp = NPC_FindCombatPoint(NPC->enemy->currentOrigin, nullptr, NPC->enemy->currentOrigin,
-			CP_FLEE | CP_TRYFAR | CP_HORZ_DIST_COLL, 0, -1);
+		                         CP_FLEE | CP_TRYFAR | CP_HORZ_DIST_COLL, 0, -1);
 		Boba_Printf("Attempting Closest Current Spawn Point");
 	}
 
@@ -1650,7 +1653,7 @@ void Boba_Update()
 			vec3_t eyes;
 			CalcEntitySpot(NPC, SPOT_HEAD_LEAN, eyes);
 			gi.trace(&testTrace, eyes, nullptr, nullptr, NPC->enemy->currentOrigin, NPC->s.number, MASK_SHOT,
-				static_cast<EG2_Collision>(0), 0);
+			         static_cast<EG2_Collision>(0), 0);
 
 			const bool wasSeen = Boba_CanSeeEnemy(NPC);
 
@@ -1681,7 +1684,7 @@ void Boba_Update()
 					Boba_Printf("Enemy Lost");
 				}
 				CG_DrawEdge(NPC->currentOrigin, NPC->enemy->currentOrigin,
-					nowSeen ? EDGE_IMPACT_SAFE : EDGE_IMPACT_POSSIBLE);
+				            nowSeen ? EDGE_IMPACT_SAFE : EDGE_IMPACT_POSSIBLE);
 			}
 		}
 
@@ -1747,7 +1750,7 @@ void Boba_Update()
 		// Find The Closest Flee Point That I Can Get To
 		//-----------------------------------------------
 		const int cp = NPC_FindCombatPoint(NPC->currentOrigin, nullptr, NPC->currentOrigin,
-			CP_FLEE | CP_HAS_ROUTE | CP_TRYFAR | CP_HORZ_DIST_COLL, 0, -1);
+		                                   CP_FLEE | CP_HAS_ROUTE | CP_TRYFAR | CP_HORZ_DIST_COLL, 0, -1);
 		if (cp != -1)
 		{
 			NPC_SetCombatPoint(cp);
@@ -1820,7 +1823,7 @@ bool Boba_Flee()
 
 					BobaFootStepCount = Q_irand(3, 8);
 					break;
-				default:;
+				default: ;
 				}
 			}
 
@@ -1847,7 +1850,7 @@ bool Boba_Flee()
 			{
 				vec3_t endPos;
 				VectorMA(NPC->enemy->currentOrigin, 500.0f / static_cast<float>(AverageEnemyDirectionSamples),
-					AverageEnemyDirection, endPos);
+				         AverageEnemyDirection, endPos);
 				CG_DrawEdge(NPC->enemy->currentOrigin, endPos, EDGE_IMPACT_POSSIBLE);
 			}
 		}
@@ -1872,7 +1875,7 @@ bool Boba_Flee()
 		NPCInfo->aiFlags & NPCAI_BLOCKED &&
 		NPC->client->moveType != MT_FLYSWIM &&
 		level.time - NPCInfo->blockedDebounceTime > 1000
-		)
+	)
 	{
 		if (!Boba_CanSeeEnemy(NPC) && Distance(NPC->currentOrigin, level.combatPoints[NPCInfo->combatPoint].origin) <
 			200)

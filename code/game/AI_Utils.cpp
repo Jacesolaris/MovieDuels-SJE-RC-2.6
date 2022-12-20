@@ -102,7 +102,7 @@ void AI_SetClosestBuddy(AIGroupInfo_t* group)
 		for (int j = 0; j < group->numGroup; j++)
 		{
 			const int dist = DistanceSquared(g_entities[group->member[i].number].currentOrigin,
-				g_entities[group->member[j].number].currentOrigin);
+			                                 g_entities[group->member[j].number].currentOrigin);
 			if (dist < bestDist)
 			{
 				bestDist = dist;
@@ -623,20 +623,22 @@ void AI_DeleteSelfFromGroup(const gentity_t* self)
 extern void ST_AggressionAdjust(const gentity_t* self, int change);
 extern void ST_MarkToCover(const gentity_t* self);
 extern void ST_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t danger_point, int danger_level, int min_time,
-	int max_time);
+                         int max_time);
 
 void AI_GroupMemberKilled(const gentity_t* self)
 {
 	AIGroupInfo_t* group = self->NPC->group;
 	gentity_t* member;
-	qboolean	noflee = qfalse;
+	qboolean noflee = qfalse;
 
 	if (!group)
-	{//what group?
+	{
+		//what group?
 		return;
 	}
 	if (!self || !self->NPC || self->NPC->rank < RANK_ENSIGN)
-	{//I'm not an officer, let's not really care for now
+	{
+		//I'm not an officer, let's not really care for now
 		return;
 	}
 	//temporarily drop group morale for a few seconds
@@ -650,7 +652,8 @@ void AI_GroupMemberKilled(const gentity_t* self)
 			continue;
 		}
 		if (member->NPC->rank > RANK_ENSIGN)
-		{//officers do not panic
+		{
+			//officers do not panic
 			noflee = qtrue;
 		}
 		else
@@ -661,7 +664,8 @@ void AI_GroupMemberKilled(const gentity_t* self)
 	}
 	//okay, if I'm the group commander, make everyone else flee
 	if (group->commander != self)
-	{//I'm not the commander... hmm, should maybe a couple flee... maybe those near me?
+	{
+		//I'm not the commander... hmm, should maybe a couple flee... maybe those near me?
 		return;
 	}
 	//now see if there is another of sufficient rank to keep them from fleeing
@@ -676,19 +680,25 @@ void AI_GroupMemberKilled(const gentity_t* self)
 				continue;
 			}
 			if (member->NPC->rank < RANK_ENSIGN)
-			{//grunt
-				if (group->enemy && DistanceSquared(member->currentOrigin, group->enemy->currentOrigin) < 65536)//256*256
-				{//those close to enemy run away!
+			{
+				//grunt
+				if (group->enemy && DistanceSquared(member->currentOrigin, group->enemy->currentOrigin) < 65536)
+				//256*256
+				{
+					//those close to enemy run away!
 					ST_StartFlee(member, group->enemy, member->currentOrigin, AEL_DANGER_GREAT, 3000, 5000);
 				}
 				else if (DistanceSquared(member->currentOrigin, self->currentOrigin) < 65536)
-				{//those close to me run away!
+				{
+					//those close to me run away!
 					ST_StartFlee(member, group->enemy, member->currentOrigin, AEL_DANGER_GREAT, 3000, 5000);
 				}
 				else
-				{//else, maybe just a random chance
+				{
+					//else, maybe just a random chance
 					if (Q_irand(0, self->NPC->rank) > member->NPC->rank)
-					{//lower rank they are, higher rank I am, more likely they are to flee
+					{
+						//lower rank they are, higher rank I am, more likely they are to flee
 						ST_StartFlee(member, group->enemy, member->currentOrigin, AEL_DANGER_GREAT, 3000, 5000);
 					}
 					else
@@ -917,7 +927,7 @@ qboolean AI_RefreshGroup(AIGroupInfo_t* group)
 		case WP_ATST_SIDE:
 			group->morale -= 20;
 			break;
-		default:;
+		default: ;
 		}
 	}
 	if (group->moraleDebounce < level.time)

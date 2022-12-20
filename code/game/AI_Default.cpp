@@ -30,11 +30,11 @@ extern void npc_check_evasion();
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern cvar_t* g_Advancedaitalk;
 
-
 //
 extern qboolean npc_is_dark_jedi(const gentity_t* self);
 extern qboolean npc_is_light_jedi(const gentity_t* self);
-extern void jedi_set_enemy_info(vec3_t enemy_dest, vec3_t enemy_dir, float* enemy_dist, vec3_t enemy_movedir, float* enemy_movespeed, const int prediction);
+extern void jedi_set_enemy_info(vec3_t enemy_dest, vec3_t enemy_dir, float* enemy_dist, vec3_t enemy_movedir,
+                                float* enemy_movespeed, int prediction);
 
 void npc_check_speak(gentity_t* speaker_npc)
 {
@@ -208,6 +208,111 @@ void g_do_m_block_response(const gentity_t* speaker_npc_self)
 	}
 }
 
+enum
+{
+	speech_chase,
+	speech_confused,
+	speech_cover,
+	speech_detected,
+	speech_giveup,
+	speech_look,
+	speech_lost,
+	speech_outflank,
+	speech_escaping,
+	speech_sight,
+	speech_sound,
+	speech_suspicious,
+	speech_yell,
+	speech_pushed
+};
+
+void speaker_speech(const gentity_t* self, const int speech_type, const float fail_chance)
+{
+	if (g_Advancedaitalk->integer < 1)
+	{
+		return; // no
+	}
+
+	if (Q_flrand(0.0f, 1.0f) < fail_chance)
+	{
+		return;
+	}
+
+	if (fail_chance >= 0)
+	{
+		//a negative failChance makes it always talk
+		if (self->NPC->group)
+		{
+			if (self->NPC->group->speechDebounceTime > level.time)
+			{
+				return;
+			}
+		}
+		else if (!TIMER_Done(self, "chatter"))
+		{
+			//personal timer
+			return;
+		}
+	}
+
+	TIMER_Set(self, "chatter", Q_irand(2000, 4000));
+
+	if (self->NPC->blockedSpeechDebounceTime > level.time)
+	{
+		return;
+	}
+
+	switch (speech_type)
+	{
+	case speech_chase:
+		G_AddVoiceEvent(self, Q_irand(EV_CHASE1, EV_CHASE3), 2000);
+		break;
+	case speech_confused:
+		G_AddVoiceEvent(self, Q_irand(EV_CONFUSE1, EV_CONFUSE3), 2000);
+		break;
+	case speech_cover:
+		G_AddVoiceEvent(self, Q_irand(EV_COVER1, EV_COVER5), 2000);
+		break;
+	case speech_detected:
+		G_AddVoiceEvent(self, Q_irand(EV_DETECTED1, EV_DETECTED5), 2000);
+		break;
+	case speech_giveup:
+		G_AddVoiceEvent(self, Q_irand(EV_GIVEUP1, EV_GIVEUP4), 2000);
+		break;
+	case speech_look:
+		G_AddVoiceEvent(self, Q_irand(EV_LOOK1, EV_LOOK2), 2000);
+		break;
+	case speech_lost:
+		G_AddVoiceEvent(self, EV_LOST1, 2000);
+		break;
+	case speech_outflank:
+		G_AddVoiceEvent(self, Q_irand(EV_OUTFLANK1, EV_OUTFLANK2), 2000);
+		break;
+	case speech_escaping:
+		G_AddVoiceEvent(self, Q_irand(EV_ESCAPING1, EV_ESCAPING3), 2000);
+		break;
+	case speech_sight:
+		G_AddVoiceEvent(self, Q_irand(EV_SIGHT1, EV_SIGHT3), 2000);
+		break;
+	case speech_sound:
+		G_AddVoiceEvent(self, Q_irand(EV_SOUND1, EV_SOUND3), 2000);
+		break;
+	case speech_suspicious:
+		G_AddVoiceEvent(self, Q_irand(EV_SUSPICIOUS1, EV_SUSPICIOUS5), 2000);
+		break;
+	case speech_yell:
+		G_AddVoiceEvent(self, Q_irand(EV_ANGER1, EV_ANGER3), 2000);
+		break;
+	case speech_pushed:
+		G_AddVoiceEvent(self, Q_irand(EV_PUSHED1, EV_PUSHED3), 2000);
+		break;
+	default:
+		break;
+	}
+
+	self->NPC->blockedSpeechDebounceTime = level.time + 2000;
+}
+
 void NPC_LostEnemyDecideChase()
 {
 	switch (NPCInfo->behaviorState)
@@ -220,7 +325,7 @@ void NPC_LostEnemyDecideChase()
 			//FIXME: Should we only do this if there's no other enemies or we've got LOCKED_ENEMY on?
 			NPC_BSSearchStart(NPC->enemy->lastWaypoint, BS_SEARCH);
 		}
-		//If he's not our goalEntity, we're running somewhere else, so lose him
+	//If he's not our goalEntity, we're running somewhere else, so lose him
 		break;
 	default:
 		break;
@@ -925,7 +1030,6 @@ void NPC_BSDefault()
 			NPC_ClearGoal();
 		}
 		NPC_BSST_Attack();
-
 
 		npc_check_speak(NPC);
 

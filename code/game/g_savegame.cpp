@@ -42,87 +42,87 @@ extern void FX_Write(void);
 
 static const save_field_t savefields_gEntity[] =
 {
-	{strFOFS(client),			F_GCLIENT},
-	{strFOFS(owner),			F_GENTITY},
-	{strFOFS(classname),		F_STRING},
-	{strFOFS(model),			F_STRING},
-	{strFOFS(model2),			F_STRING},
-		{strFOFS(nextTrain),		F_GENTITY},
-		{strFOFS(prevTrain),		F_GENTITY},
-		{strFOFS(message),			F_STRING},
-		{strFOFS(target),			F_STRING},
-		{strFOFS(target2),			F_STRING},
-		{strFOFS(target3),			F_STRING},
-		{strFOFS(target4),			F_STRING},
-		{strFOFS(targetJump),		F_STRING},
-		{strFOFS(targetname),		F_STRING},
-		{strFOFS(team),				F_STRING},
-		{strFOFS(roff),				F_STRING},
-			{strFOFS(chain),			F_GENTITY},
-			{strFOFS(enemy),			F_GENTITY},
-			{strFOFS(activator),		F_GENTITY},
-			{strFOFS(teamchain),		F_GENTITY},
-			{strFOFS(teammaster),		F_GENTITY},
-			{strFOFS(item),				F_ITEM},
-			{strFOFS(NPC_type),			F_STRING},
-			{strFOFS(closetarget),		F_STRING},
-			{strFOFS(opentarget),		F_STRING},
-			{strFOFS(paintarget),		F_STRING},
-			{strFOFS(NPC_targetname),	F_STRING},
-			{strFOFS(NPC_target),		F_STRING},
-			{strFOFS(ownername),		F_STRING},
-			{strFOFS(lastEnemy),		F_GENTITY},
-			{strFOFS(behaviorSet),		F_BEHAVIORSET},
-			{strFOFS(script_targetname),F_STRING},
-			{strFOFS(m_iIcarusID),		F_NULL},
-			{strFOFS(NPC),				F_BOOLPTR},
-			{strFOFS(soundSet),			F_STRING},
-			{strFOFS(cameraGroup),		F_STRING},
-			{strFOFS(parms),			F_BOOLPTR},
-			{strFOFS(m_pVehicle),		F_BOOLPTR},
+	{strFOFS(client), F_GCLIENT},
+	{strFOFS(owner), F_GENTITY},
+	{strFOFS(classname), F_STRING},
+	{strFOFS(model), F_STRING},
+	{strFOFS(model2), F_STRING},
+	{strFOFS(nextTrain), F_GENTITY},
+	{strFOFS(prevTrain), F_GENTITY},
+	{strFOFS(message), F_STRING},
+	{strFOFS(target), F_STRING},
+	{strFOFS(target2), F_STRING},
+	{strFOFS(target3), F_STRING},
+	{strFOFS(target4), F_STRING},
+	{strFOFS(targetJump), F_STRING},
+	{strFOFS(targetname), F_STRING},
+	{strFOFS(team), F_STRING},
+	{strFOFS(roff), F_STRING},
+	{strFOFS(chain), F_GENTITY},
+	{strFOFS(enemy), F_GENTITY},
+	{strFOFS(activator), F_GENTITY},
+	{strFOFS(teamchain), F_GENTITY},
+	{strFOFS(teammaster), F_GENTITY},
+	{strFOFS(item), F_ITEM},
+	{strFOFS(NPC_type), F_STRING},
+	{strFOFS(closetarget), F_STRING},
+	{strFOFS(opentarget), F_STRING},
+	{strFOFS(paintarget), F_STRING},
+	{strFOFS(NPC_targetname), F_STRING},
+	{strFOFS(NPC_target), F_STRING},
+	{strFOFS(ownername), F_STRING},
+	{strFOFS(lastEnemy), F_GENTITY},
+	{strFOFS(behaviorSet), F_BEHAVIORSET},
+	{strFOFS(script_targetname), F_STRING},
+	{strFOFS(m_iIcarusID), F_NULL},
+	{strFOFS(NPC), F_BOOLPTR},
+	{strFOFS(soundSet), F_STRING},
+	{strFOFS(cameraGroup), F_STRING},
+	{strFOFS(parms), F_BOOLPTR},
+	{strFOFS(m_pVehicle), F_BOOLPTR},
 
-			{nullptr, 0, F_IGNORE}
+	{nullptr, 0, F_IGNORE}
 };
 
 static const save_field_t savefields_gNPC[] =
 {
-		{strNPCOFS(touchedByPlayer),	F_GENTITY},
-		{strNPCOFS(aimingBeam),			F_GENTITY},
-		{strNPCOFS(eventOwner),			F_GENTITY},
-		{strNPCOFS(coverTarg),			F_GENTITY},
-		{strNPCOFS(tempGoal),			F_GENTITY},
-		{strNPCOFS(goalEntity),			F_GENTITY},
-		{strNPCOFS(lastGoalEntity),		F_GENTITY},
-		{strNPCOFS(eventualGoal),		F_GENTITY},
-		{strNPCOFS(captureGoal),		F_GENTITY},
-		{strNPCOFS(defendEnt),			F_GENTITY},
-		{strNPCOFS(greetEnt),			F_GENTITY},
-		{strNPCOFS(group),				F_GROUP},
-		{strNPCOFS(blockedEntity),		F_GENTITY},
-		{strNPCOFS(blockedTargetEntity),F_GENTITY},
-		{strNPCOFS(jumpTarget),			F_GENTITY},
-		{strNPCOFS(watchTarget),		F_GENTITY},
-		{nullptr, 0, F_IGNORE}
+	{strNPCOFS(touchedByPlayer), F_GENTITY},
+	{strNPCOFS(aimingBeam), F_GENTITY},
+	{strNPCOFS(eventOwner), F_GENTITY},
+	{strNPCOFS(coverTarg), F_GENTITY},
+	{strNPCOFS(tempGoal), F_GENTITY},
+	{strNPCOFS(goalEntity), F_GENTITY},
+	{strNPCOFS(lastGoalEntity), F_GENTITY},
+	{strNPCOFS(eventualGoal), F_GENTITY},
+	{strNPCOFS(captureGoal), F_GENTITY},
+	{strNPCOFS(defendEnt), F_GENTITY},
+	{strNPCOFS(greetEnt), F_GENTITY},
+	{strNPCOFS(group), F_GROUP},
+	{strNPCOFS(blockedEntity), F_GENTITY},
+	{strNPCOFS(blockedTargetEntity), F_GENTITY},
+	{strNPCOFS(jumpTarget), F_GENTITY},
+	{strNPCOFS(watchTarget), F_GENTITY},
+	{nullptr, 0, F_IGNORE}
 };
 
 static const save_field_t savefields_LevelLocals[] =
 {
-	{strLLOFS(locationHead),	F_GENTITY},
-	{strLLOFS(alertEvents),		F_ALERTEVENT},
-	{strLLOFS(groups),			F_AIGROUPS},
-	{strLLOFS(knownAnimFileSets),F_ANIMFILESETS},
+	{strLLOFS(locationHead), F_GENTITY},
+	{strLLOFS(alertEvents), F_ALERTEVENT},
+	{strLLOFS(groups), F_AIGROUPS},
+	{strLLOFS(knownAnimFileSets), F_ANIMFILESETS},
 	{nullptr, 0, F_IGNORE}
 };
 
 static const save_field_t savefields_gVHIC[] =
 {
-	{strVHICOFS(m_pPilot),			F_GENTITY},
-	{strVHICOFS(m_pOldPilot),		F_GENTITY},
-	{strVHICOFS(m_pDroidUnit),		F_GENTITY},
-	{strVHICOFS(m_pParentEntity),	F_GENTITY},
+	{strVHICOFS(m_pPilot), F_GENTITY},
+	{strVHICOFS(m_pOldPilot), F_GENTITY},
+	{strVHICOFS(m_pDroidUnit), F_GENTITY},
+	{strVHICOFS(m_pParentEntity), F_GENTITY},
 
 	//m_ppPassengers	//!ptr array?!
-	{strVHICOFS(m_pVehicleInfo),	F_VEHINFO}, //!another ptr! store name field instead and re-hook on load?
+	{strVHICOFS(m_pVehicleInfo), F_VEHINFO}, //!another ptr! store name field instead and re-hook on load?
 
 	{nullptr, 0, F_IGNORE}
 };
@@ -131,15 +131,15 @@ static const save_field_t savefields_gClient[] =
 {
 	// sabers are stomped over by specific code elsewhere, it seems, but the first two fields MUST be saved
 	//	or it crashes on reload
-	{strCLOFS(ps.saber[0].name),F_STRING},
-		{strCLOFS(ps.saber[1].name),F_STRING},
-			{strCLOFS(leader),			F_GENTITY},
-			{strCLOFS(clientInfo.customBasicSoundDir),F_STRING},
-			{strCLOFS(clientInfo.customCombatSoundDir),F_STRING},
-			{strCLOFS(clientInfo.customExtraSoundDir),F_STRING},
-			{strCLOFS(clientInfo.customJediSoundDir),F_STRING},
+	{strCLOFS(ps.saber[0].name), F_STRING},
+	{strCLOFS(ps.saber[1].name), F_STRING},
+	{strCLOFS(leader), F_GENTITY},
+	{strCLOFS(clientInfo.customBasicSoundDir), F_STRING},
+	{strCLOFS(clientInfo.customCombatSoundDir), F_STRING},
+	{strCLOFS(clientInfo.customExtraSoundDir), F_STRING},
+	{strCLOFS(clientInfo.customJediSoundDir), F_STRING},
 
-			{nullptr, 0, F_IGNORE}
+	{nullptr, 0, F_IGNORE}
 };
 
 static std::list<sstring_t> strList;
@@ -159,21 +159,21 @@ static int GetStringNum(const char* psString)
 	}
 
 	strList.emplace_back(psString);
-	return strlen(psString) + 1;	// this gives us the chunk length for the reader later
+	return strlen(psString) + 1; // this gives us the chunk length for the reader later
 }
 
 static char* GetStringPtr(const int iStrlen, char* psOriginal/*may be NULL*/)
 {
 	if (iStrlen != -1)
 	{
-		char sString[768];	// arb, inc if nec.
+		char sString[768]; // arb, inc if nec.
 
 		sString[0] = 0;
 
 		assert(iStrlen + 1 <= static_cast<int>(sizeof sString));
 
 		ojk::SavedGameHelper saved_game(
-			::gi.saved_game);
+			gi.saved_game);
 
 		saved_game.read_chunk(
 			INT_ID('S', 'T', 'R', 'G'),
@@ -181,9 +181,11 @@ static char* GetStringPtr(const int iStrlen, char* psOriginal/*may be NULL*/)
 			iStrlen);
 
 		// TAG_G_ALLOC is always blown away, we can never recycle
-		if (psOriginal && gi.bIsFromZone(psOriginal, TAG_G_ALLOC)) {
+		if (psOriginal && gi.bIsFromZone(psOriginal, TAG_G_ALLOC))
+		{
 			if (strcmp(psOriginal, sString) == 0)
-			{//it's a legal ptr and they're the same so let's just reuse it instead of free/alloc
+			{
+				//it's a legal ptr and they're the same so let's just reuse it instead of free/alloc
 				return psOriginal;
 			}
 			gi.Free(psOriginal);
@@ -194,6 +196,7 @@ static char* GetStringPtr(const int iStrlen, char* psOriginal/*may be NULL*/)
 
 	return nullptr;
 }
+
 //
 //
 ////////////////////////////////
@@ -218,7 +221,7 @@ static intptr_t GetGEntityNum(const gentity_t* ent)
 
 	if (iReturnIndex < 0 || iReturnIndex >= MAX_GENTITIES)
 	{
-		iReturnIndex = -1;	// will get a NULL ptr on reload
+		iReturnIndex = -1; // will get a NULL ptr on reload
 	}
 	return iReturnIndex;
 }
@@ -233,6 +236,7 @@ static gentity_t* GetGEntityPtr(const intptr_t iEntNum)
 	assert(iEntNum < MAX_GENTITIES);
 	return g_entities + iEntNum;
 }
+
 //
 //
 ////////////////////////////////
@@ -249,7 +253,7 @@ static intptr_t GetGroupNumber(const AIGroupInfo_t* pGroup)
 	int iReturnIndex = pGroup - level.groups;
 	if (iReturnIndex < 0 || iReturnIndex >= static_cast<int>(std::size(level.groups)))
 	{
-		iReturnIndex = -1;	// will get a NULL ptr on reload
+		iReturnIndex = -1; // will get a NULL ptr on reload
 	}
 	return iReturnIndex;
 }
@@ -281,11 +285,12 @@ static intptr_t GetGclient_num(const gclient_t* c, const gentity_t* ent)
 	}
 
 	if (ent->s.number < MAX_CLIENTS)
-	{	// regular client...
+	{
+		// regular client...
 		return c - level.clients;
 	}
 	// this must be an NPC or weapon_shooter, so mark it as special...
-	return -2;	// yeuch, but distinguishes it from a valid 0 index, or -1 for client==NULL
+	return -2; // yeuch, but distinguishes it from a valid 0 index, or -1 for client==NULL
 }
 
 static gclient_t* GetGClientPtr(const intptr_t c)
@@ -296,13 +301,15 @@ static gclient_t* GetGClientPtr(const intptr_t c)
 	}
 	if (c == -2)
 	{
-		return reinterpret_cast<gclient_t*>(-2);	// preserve this value so that I know to load in one of Mike's private NPC clients later
+		return reinterpret_cast<gclient_t*>(-2);
+		// preserve this value so that I know to load in one of Mike's private NPC clients later
 	}
 
 	assert(c >= 0);
 	assert(c < level.maxclients);
 	return level.clients + c;
 }
+
 //
 //
 ////////////////////////////////
@@ -333,6 +340,7 @@ static gitem_t* GetGItemPtr(const int iItem)
 	assert(iItem < bg_numItems);
 	return &bg_itemlist[iItem];
 }
+
 //
 //
 ////////////////////////////////
@@ -363,13 +371,14 @@ static vehicleInfo_t* GetVehicleInfoPtr(const int iVehicleIndex)
 	assert(iVehicleIndex < numVehicles);
 	return &g_vehicleInfo[iVehicleIndex];
 }
+
 //
 //
 ////////////////////////////////
 
 static void EnumerateField(const save_field_t* pField, const byte* pbBase)
 {
-	void* pv = (void*)(pbBase + pField->iOffset);
+	auto pv = (void*)(pbBase + pField->iOffset);
 
 	switch (pField->eFieldType)
 	{
@@ -398,15 +407,15 @@ static void EnumerateField(const save_field_t* pField, const byte* pbBase)
 		break;
 
 	case F_BEHAVIORSET:
-	{
-		const char** p = static_cast<const char**>(pv);
-		for (int i = 0; i < NUM_BSETS; i++)
 		{
-			pv = &p[i];	// since you can't ++ a void ptr
-			*static_cast<int*>(pv) = GetStringNum(*static_cast<char**>(pv));
+			auto p = static_cast<const char**>(pv);
+			for (int i = 0; i < NUM_BSETS; i++)
+			{
+				pv = &p[i]; // since you can't ++ a void ptr
+				*static_cast<int*>(pv) = GetStringNum(*static_cast<char**>(pv));
+			}
 		}
-	}
-	break;
+		break;
 
 	/*MCG
 		case F_BODYQUEUE:
@@ -421,51 +430,53 @@ static void EnumerateField(const save_field_t* pField, const byte* pbBase)
 			break;
 	*/
 
-	case F_ALERTEVENT:	// convert all gentity_t ptrs in an alert_event array into indexes...
-	{
-		alertEvent_t* p = static_cast<alertEvent_t*>(pv);
-
-		for (int i = 0; i < MAX_ALERT_EVENTS; i++)
+	case F_ALERTEVENT: // convert all gentity_t ptrs in an alert_event array into indexes...
 		{
-			p[i].owner = reinterpret_cast<gentity_t*>(GetGEntityNum(p[i].owner));
-		}
-	}
-	break;
+			auto p = static_cast<alertEvent_t*>(pv);
 
-	case F_AIGROUPS:	// convert to ptrs within this into indexes...
-	{
-		AIGroupInfo_t* p = static_cast<AIGroupInfo_t*>(pv);
-
-		for (int i = 0; i < MAX_FRAME_GROUPS; i++)
-		{
-			p[i].enemy = reinterpret_cast<gentity_t*>(GetGEntityNum(p[i].enemy));
-			p[i].commander = reinterpret_cast<gentity_t*>(GetGEntityNum(p[i].commander));
-		}
-	}
-	break;
-
-	case F_ANIMFILESETS:
-	{
-		animFileSet_t* p = static_cast<animFileSet_t*>(pv);
-
-		for (int i = 0; i < MAX_ANIM_FILES; i++) {
-			for (int j = 0; j < MAX_ANIM_EVENTS; j++) {
-				byteAlias_t* baTorso = reinterpret_cast<byteAlias_t*>(&p[i].torsoAnimEvents[j].stringData),
-					* baLegs = reinterpret_cast<byteAlias_t*>(&p[i].legsAnimEvents[j].stringData);
-				const char* ptAnimEventStringData = p[i].torsoAnimEvents[j].stringData;
-				baTorso->i = GetStringNum(ptAnimEventStringData);
-				const char* plAnimEventStringData = p[i].legsAnimEvents[j].stringData;
-				baLegs->i = GetStringNum(plAnimEventStringData);
+			for (int i = 0; i < MAX_ALERT_EVENTS; i++)
+			{
+				p[i].owner = reinterpret_cast<gentity_t*>(GetGEntityNum(p[i].owner));
 			}
 		}
-	}
-	break;
+		break;
+
+	case F_AIGROUPS: // convert to ptrs within this into indexes...
+		{
+			auto p = static_cast<AIGroupInfo_t*>(pv);
+
+			for (int i = 0; i < MAX_FRAME_GROUPS; i++)
+			{
+				p[i].enemy = reinterpret_cast<gentity_t*>(GetGEntityNum(p[i].enemy));
+				p[i].commander = reinterpret_cast<gentity_t*>(GetGEntityNum(p[i].commander));
+			}
+		}
+		break;
+
+	case F_ANIMFILESETS:
+		{
+			auto p = static_cast<animFileSet_t*>(pv);
+
+			for (int i = 0; i < MAX_ANIM_FILES; i++)
+			{
+				for (int j = 0; j < MAX_ANIM_EVENTS; j++)
+				{
+					auto baTorso = reinterpret_cast<byteAlias_t*>(&p[i].torsoAnimEvents[j].stringData),
+					     baLegs = reinterpret_cast<byteAlias_t*>(&p[i].legsAnimEvents[j].stringData);
+					const char* ptAnimEventStringData = p[i].torsoAnimEvents[j].stringData;
+					baTorso->i = GetStringNum(ptAnimEventStringData);
+					const char* plAnimEventStringData = p[i].legsAnimEvents[j].stringData;
+					baLegs->i = GetStringNum(plAnimEventStringData);
+				}
+			}
+		}
+		break;
 
 	case F_BOOLPTR:
 		*static_cast<qboolean*>(pv) = static_cast<qboolean>(*static_cast<int*>(pv) != 0);
 		break;
 
-		// These are pointers that are always recreated
+	// These are pointers that are always recreated
 	case F_NULL:
 		*static_cast<void**>(pv) = nullptr;
 		break;
@@ -478,7 +489,7 @@ static void EnumerateField(const save_field_t* pField, const byte* pbBase)
 	}
 }
 
-template<typename T>
+template <typename T>
 static void EnumerateFields(
 	const save_field_t* pFields,
 	const T* src_instance,
@@ -486,7 +497,7 @@ static void EnumerateFields(
 {
 	strList.clear();
 
-	const byte* pbData = reinterpret_cast<const byte*>(
+	auto pbData = reinterpret_cast<const byte*>(
 		src_instance);
 
 	// enumerate all the fields...
@@ -496,12 +507,12 @@ static void EnumerateFields(
 		for (auto pField = pFields; pField->psName; ++pField)
 		{
 			assert(pField->iOffset < sizeof(T));
-			::EnumerateField(pField, pbData);
+			EnumerateField(pField, pbData);
 		}
 	}
 
 	ojk::SavedGameHelper saved_game(
-		::gi.saved_game);
+		gi.saved_game);
 
 	// save out raw data...
 	//
@@ -532,7 +543,8 @@ static void EvaluateField(const save_field_t* pField, byte* pbBase, byte* pbOrig
 	switch (pField->eFieldType)
 	{
 	case F_STRING:
-		*static_cast<char**>(pv) = GetStringPtr(*static_cast<int*>(pv), pbOriginalRefData ? *static_cast<char**>(pvOriginal) : nullptr);
+		*static_cast<char**>(pv) = GetStringPtr(*static_cast<int*>(pv),
+		                                        pbOriginalRefData ? *static_cast<char**>(pvOriginal) : nullptr);
 		break;
 
 	case F_GENTITY:
@@ -556,15 +568,15 @@ static void EvaluateField(const save_field_t* pField, byte* pbBase, byte* pbOrig
 		break;
 
 	case F_BEHAVIORSET:
-	{
-		char** p = static_cast<char**>(pv);
-		char** pO = static_cast<char**>(pvOriginal);
-		for (int i = 0; i < NUM_BSETS; i++, p++, pO++)
 		{
-			*p = GetStringPtr(*reinterpret_cast<int*>(p), pbOriginalRefData ? *pO : nullptr);
+			auto p = static_cast<char**>(pv);
+			auto pO = static_cast<char**>(pvOriginal);
+			for (int i = 0; i < NUM_BSETS; i++, p++, pO++)
+			{
+				*p = GetStringPtr(*reinterpret_cast<int*>(p), pbOriginalRefData ? *pO : nullptr);
+			}
 		}
-	}
-	break;
+		break;
 
 	/*MCG
 		case F_BODYQUEUE:
@@ -579,43 +591,45 @@ static void EvaluateField(const save_field_t* pField, byte* pbBase, byte* pbOrig
 	*/
 
 	case F_ALERTEVENT:
-	{
-		alertEvent_t* p = static_cast<alertEvent_t*>(pv);
-
-		for (int i = 0; i < MAX_ALERT_EVENTS; i++)
 		{
-			p[i].owner = GetGEntityPtr(reinterpret_cast<intptr_t>(p[i].owner));
-		}
-	}
-	break;
+			auto p = static_cast<alertEvent_t*>(pv);
 
-	case F_AIGROUPS:	// convert to ptrs within this into indexes...
-	{
-		AIGroupInfo_t* p = static_cast<AIGroupInfo_t*>(pv);
-
-		for (int i = 0; i < MAX_FRAME_GROUPS; i++)
-		{
-			p[i].enemy = GetGEntityPtr(reinterpret_cast<intptr_t>(p[i].enemy));
-			p[i].commander = GetGEntityPtr(reinterpret_cast<intptr_t>(p[i].commander));
-		}
-	}
-	break;
-
-	case F_ANIMFILESETS:
-	{
-		animFileSet_t* p = static_cast<animFileSet_t*>(pv);
-		for (int i = 0; i < MAX_ANIM_FILES; i++)
-		{
-			for (int j = 0; j < MAX_ANIM_EVENTS; j++)
+			for (int i = 0; i < MAX_ALERT_EVENTS; i++)
 			{
-				char* pO = pbOriginalRefData ? level.knownAnimFileSets[i].torsoAnimEvents[j].stringData : nullptr;
-				p[i].torsoAnimEvents[j].stringData = GetStringPtr(reinterpret_cast<intptr_t>(p[i].torsoAnimEvents[j].stringData), pO);
-				pO = pbOriginalRefData ? level.knownAnimFileSets[i].legsAnimEvents[j].stringData : nullptr;
-				p[i].legsAnimEvents[j].stringData = GetStringPtr(reinterpret_cast<intptr_t>(p[i].legsAnimEvents[j].stringData), pO);
+				p[i].owner = GetGEntityPtr(reinterpret_cast<intptr_t>(p[i].owner));
 			}
 		}
-	}
-	break;
+		break;
+
+	case F_AIGROUPS: // convert to ptrs within this into indexes...
+		{
+			auto p = static_cast<AIGroupInfo_t*>(pv);
+
+			for (int i = 0; i < MAX_FRAME_GROUPS; i++)
+			{
+				p[i].enemy = GetGEntityPtr(reinterpret_cast<intptr_t>(p[i].enemy));
+				p[i].commander = GetGEntityPtr(reinterpret_cast<intptr_t>(p[i].commander));
+			}
+		}
+		break;
+
+	case F_ANIMFILESETS:
+		{
+			auto p = static_cast<animFileSet_t*>(pv);
+			for (int i = 0; i < MAX_ANIM_FILES; i++)
+			{
+				for (int j = 0; j < MAX_ANIM_EVENTS; j++)
+				{
+					char* pO = pbOriginalRefData ? level.knownAnimFileSets[i].torsoAnimEvents[j].stringData : nullptr;
+					p[i].torsoAnimEvents[j].stringData = GetStringPtr(
+						reinterpret_cast<intptr_t>(p[i].torsoAnimEvents[j].stringData), pO);
+					pO = pbOriginalRefData ? level.knownAnimFileSets[i].legsAnimEvents[j].stringData : nullptr;
+					p[i].legsAnimEvents[j].stringData = GetStringPtr(
+						reinterpret_cast<intptr_t>(p[i].legsAnimEvents[j].stringData), pO);
+				}
+			}
+		}
+		break;
 	//	// These fields are patched in when their relevant owners are loaded
 	case F_BOOLPTR:
 	case F_NULL:
@@ -630,10 +644,11 @@ static void EvaluateField(const save_field_t* pField, byte* pbBase, byte* pbOrig
 }
 
 // copy of function in sv_savegame
-static const char* SG_GetChidText(const unsigned int chid) {
-	static char	chidtext[5];
+static const char* SG_GetChidText(const unsigned int chid)
+{
+	static char chidtext[5];
 
-	byteAlias_t* ba = reinterpret_cast<byteAlias_t*>(&chidtext);
+	auto ba = reinterpret_cast<byteAlias_t*>(&chidtext);
 	ba->ui = BigLong(chid);
 	chidtext[4] = '\0';
 
@@ -645,7 +660,7 @@ extern void WP_SaberSetDefaults(saberInfo_t* saber, qboolean setColors);
 void saberInfoRetail_t::sg_export(
 	saberInfo_t& dst) const
 {
-	::WP_SaberSetDefaults(
+	WP_SaberSetDefaults(
 		&dst,
 		qfalse);
 
@@ -654,7 +669,7 @@ void saberInfoRetail_t::sg_export(
 		dst.saberFlags |= SFL_NOT_ACTIVE_BLOCKING;
 	}
 
-	::memcpy(
+	memcpy(
 		dst.blade,
 		blade,
 		sizeof blade);
@@ -740,7 +755,7 @@ static void copy_retail_gclient_to_current(
 	const size_t src_post_size = sizeof(RetailGClient) - src_post_offset;
 	const size_t dst_post_offset = offsetof(gclient_t, ps.dualSabers);
 
-	::memcpy(
+	memcpy(
 		&dst,
 		&src,
 		src_pre_size);
@@ -751,13 +766,13 @@ static void copy_retail_gclient_to_current(
 			dst.ps.saber[i]);
 	}
 
-	::memcpy(
+	memcpy(
 		reinterpret_cast<char*>(&dst) + src_post_offset,
 		reinterpret_cast<const char*>(&src) + dst_post_offset,
 		src_post_size);
 }
 
-template<typename T>
+template <typename T>
 static void EvaluateFields(
 	const save_field_t* pFields,
 	T* pbData,
@@ -767,7 +782,7 @@ static void EvaluateFields(
 	T& instance = *pbData;
 
 	ojk::SavedGameHelper saved_game(
-		::gi.saved_game);
+		gi.saved_game);
 
 	if (ulChid != INT_ID('G', 'C', 'L', 'I'))
 	{
@@ -794,9 +809,9 @@ static void EvaluateFields(
 			}
 			else
 			{
-				::G_Error(
-					::va("EvaluateFields(): variable-sized chunk '%s' without handler!",
-						::SG_GetChidText(ulChid)));
+				G_Error(
+					va("EvaluateFields(): variable-sized chunk '%s' without handler!",
+					   SG_GetChidText(ulChid)));
 			}
 		}
 	}
@@ -805,7 +820,7 @@ static void EvaluateFields(
 	{
 		for (const save_field_t* pField = pFields; pField->psName; ++pField)
 		{
-			::EvaluateField(
+			EvaluateField(
 				pField,
 				reinterpret_cast<byte*>(pbData),
 				pbOriginalRefData);
@@ -822,8 +837,8 @@ All pointer variables (except function pointers) must be handled specially.
 */
 static void WriteLevelLocals()
 {
-	level_locals_t* temp = static_cast<level_locals_t*>(gi.Malloc(sizeof(level_locals_t), TAG_TEMP_WORKSPACE, qfalse));
-	*temp = level;	// copy out all data into a temp space
+	auto temp = static_cast<level_locals_t*>(gi.Malloc(sizeof(level_locals_t), TAG_TEMP_WORKSPACE, qfalse));
+	*temp = level; // copy out all data into a temp space
 
 	EnumerateFields(savefields_LevelLocals, temp, INT_ID('L', 'V', 'L', 'C'));
 	gi.Free(temp);
@@ -840,14 +855,14 @@ static void ReadLevelLocals()
 {
 	// preserve client ptr either side of the load, because clients are already saved/loaded through Read/Writegame...
 	//
-	gclient_t* pClients = level.clients;	// save clients
+	gclient_t* pClients = level.clients; // save clients
 
-	level_locals_t* temp = static_cast<level_locals_t*>(gi.Malloc(sizeof(level_locals_t), TAG_TEMP_WORKSPACE, qfalse));
-	*temp = level;	// struct copy
+	auto temp = static_cast<level_locals_t*>(gi.Malloc(sizeof(level_locals_t), TAG_TEMP_WORKSPACE, qfalse));
+	*temp = level; // struct copy
 	EvaluateFields(savefields_LevelLocals, temp, reinterpret_cast<byte*>(&level), INT_ID('L', 'V', 'L', 'C'));
-	level = *temp;					// struct copy
+	level = *temp; // struct copy
 
-	level.clients = pClients;				// restore clients
+	level.clients = pClients; // restore clients
 	gi.Free(temp);
 }
 
@@ -867,7 +882,7 @@ static void WriteGEntities(const qboolean qbAutosave)
 	}
 
 	ojk::SavedGameHelper saved_game(
-		::gi.saved_game);
+		gi.saved_game);
 
 	saved_game.write_chunk<int32_t>(
 		INT_ID('N', 'M', 'E', 'D'),
@@ -885,7 +900,7 @@ static void WriteGEntities(const qboolean qbAutosave)
 
 			const qboolean qbLinked = ent->linked;
 			gi.unlinkentity(ent);
-			gentity_t tempEnt = *ent;	// make local copy
+			gentity_t tempEnt = *ent; // make local copy
 			tempEnt.linked = qbLinked;
 
 			if (qbLinked)
@@ -899,14 +914,14 @@ static void WriteGEntities(const qboolean qbAutosave)
 			//
 			if (tempEnt.NPC)
 			{
-				gNPC_t npc = *ent->NPC;	// NOT *tempEnt.NPC; !! :-)
+				gNPC_t npc = *ent->NPC; // NOT *tempEnt.NPC; !! :-)
 
 				EnumerateFields(savefields_gNPC, &npc, INT_ID('G', 'N', 'P', 'C'));
 			}
 
-			if (tempEnt.client == reinterpret_cast<gclient_t*>(-2))	// I know, I know...
+			if (tempEnt.client == reinterpret_cast<gclient_t*>(-2)) // I know, I know...
 			{
-				gclient_t client = *ent->client;	// NOT *tempEnt.client!!
+				gclient_t client = *ent->client; // NOT *tempEnt.client!!
 				EnumerateFields(savefields_gClient, &client, INT_ID('G', 'C', 'L', 'I'));
 			}
 
@@ -919,7 +934,7 @@ static void WriteGEntities(const qboolean qbAutosave)
 
 			if (tempEnt.m_pVehicle)
 			{
-				Vehicle_t vehicle = *ent->m_pVehicle;	// NOT *tempEnt.m_pVehicle!!
+				Vehicle_t vehicle = *ent->m_pVehicle; // NOT *tempEnt.m_pVehicle!!
 				EnumerateFields(savefields_gVHIC, &vehicle, INT_ID('V', 'H', 'I', 'C'));
 			}
 
@@ -931,7 +946,7 @@ static void WriteGEntities(const qboolean qbAutosave)
 	}
 
 	//Write out all entity timers
-	TIMER_Save();//WriteEntityTimers();
+	TIMER_Save(); //WriteEntityTimers();
 
 	if (!qbAutosave)
 	{
@@ -948,7 +963,7 @@ static void WriteGEntities(const qboolean qbAutosave)
 			INT_ID('I', 'C', 'O', 'K'),
 			iBlah);
 	}
-	if (!qbAutosave)//really shouldn't need to write these bits at all, just restore them from the ents...
+	if (!qbAutosave) //really shouldn't need to write these bits at all, just restore them from the ents...
 	{
 		WriteInUseBits();
 	}
@@ -956,11 +971,11 @@ static void WriteGEntities(const qboolean qbAutosave)
 
 static void ReadGEntities(const qboolean qbAutosave)
 {
-	int		iCount = 0;
-	int		i;
+	int iCount = 0;
+	int i;
 
 	ojk::SavedGameHelper saved_game(
-		::gi.saved_game);
+		gi.saved_game);
 
 	saved_game.read_chunk<int32_t>(
 		INT_ID('N', 'M', 'E', 'D'),
@@ -984,7 +999,7 @@ static void ReadGEntities(const qboolean qbAutosave)
 		{
 			for (int j = iPreviousEntRead + 1; j != iEntIndex; j++)
 			{
-				if (g_entities[j].inuse)		// not actually necessary
+				if (g_entities[j].inuse) // not actually necessary
 				{
 					G_FreeEntity(&g_entities[j]);
 				}
@@ -994,10 +1009,10 @@ static void ReadGEntities(const qboolean qbAutosave)
 
 		// slightly naff syntax here, but makes a few ops clearer later...
 		//
-		gentity_t  entity;
+		gentity_t entity;
 		gentity_t* pEntOriginal = &entity;
 		gentity_t* pEnt = &g_entities[iEntIndex];
-		*pEntOriginal = *pEnt;	// struct copy, so we can refer to original
+		*pEntOriginal = *pEnt; // struct copy, so we can refer to original
 
 		pEntOriginal->ghoul2.kill();
 		gi.unlinkentity(pEnt);
@@ -1013,11 +1028,12 @@ static void ReadGEntities(const qboolean qbAutosave)
 
 		// now for any fiddly bits...
 		//
-		if (pEnt->NPC)	// will be qtrue/qfalse
+		if (pEnt->NPC) // will be qtrue/qfalse
 		{
 			gNPC_t tempNPC;
 
-			EvaluateFields(savefields_gNPC, &tempNPC, reinterpret_cast<byte*>(pEntOriginal->NPC), INT_ID('G', 'N', 'P', 'C'));
+			EvaluateFields(savefields_gNPC, &tempNPC, reinterpret_cast<byte*>(pEntOriginal->NPC),
+			               INT_ID('G', 'N', 'P', 'C'));
 
 			// so can we pinch the original's one or do we have to alloc a new one?...
 			//
@@ -1032,7 +1048,7 @@ static void ReadGEntities(const qboolean qbAutosave)
 				// original didn't have one (hmmm...), so make a new one...
 				//
 				//assert(0);	// I want to know about this, though not in release
-				pEnt->NPC = static_cast<gNPC_t*>(G_Alloc(sizeof * pEnt->NPC));
+				pEnt->NPC = static_cast<gNPC_t*>(G_Alloc(sizeof *pEnt->NPC));
 			}
 
 			// copy over the one we've just loaded...
@@ -1040,11 +1056,12 @@ static void ReadGEntities(const qboolean qbAutosave)
 			*pEnt->NPC = tempNPC;
 		}
 
-		if (pEnt->client == reinterpret_cast<gclient_t*>(-2))	// one of Mike G's NPC clients?
+		if (pEnt->client == reinterpret_cast<gclient_t*>(-2)) // one of Mike G's NPC clients?
 		{
 			gclient_t tempGClient;
 
-			EvaluateFields(savefields_gClient, &tempGClient, reinterpret_cast<byte*>(pEntOriginal->client), INT_ID('G', 'C', 'L', 'I'));
+			EvaluateFields(savefields_gClient, &tempGClient, reinterpret_cast<byte*>(pEntOriginal->client),
+			               INT_ID('G', 'C', 'L', 'I'));
 
 			// can we pinch the original's client handle or do we have to alloc a new one?...
 			//
@@ -1058,22 +1075,23 @@ static void ReadGEntities(const qboolean qbAutosave)
 			{
 				// original didn't have one (hmmm...) so make a new one...
 				//
-				pEnt->client = static_cast<gclient_t*>(G_Alloc(sizeof * pEnt->client));
+				pEnt->client = static_cast<gclient_t*>(G_Alloc(sizeof *pEnt->client));
 			}
 
 			// copy over the one we've just loaded....
 			//
-			*pEnt->client = tempGClient;	// struct copy
+			*pEnt->client = tempGClient; // struct copy
 
 			if (pEnt->s.number)
-			{//not player
+			{
+				//not player
 				G_ReloadSaberData(pEnt);
 			}
 		}
 
 		// Some Icarus thing... (probably)
 		//
-		if (pEnt->parms)	// will be qtrue/qfalse
+		if (pEnt->parms) // will be qtrue/qfalse
 		{
 			parms_t tempParms;
 
@@ -1093,19 +1111,20 @@ static void ReadGEntities(const qboolean qbAutosave)
 			{
 				// original didn't have one, so make a new one...
 				//
-				pEnt->parms = static_cast<parms_t*>(G_Alloc(sizeof * pEnt->parms));
+				pEnt->parms = static_cast<parms_t*>(G_Alloc(sizeof *pEnt->parms));
 			}
 
 			// copy over the one we've just loaded...
 			//
-			*pEnt->parms = tempParms;	// struct copy
+			*pEnt->parms = tempParms; // struct copy
 		}
 
-		if (pEnt->m_pVehicle)	// will be qtrue/qfalse
+		if (pEnt->m_pVehicle) // will be qtrue/qfalse
 		{
 			Vehicle_t tempVehicle;
 
-			EvaluateFields(savefields_gVHIC, &tempVehicle, reinterpret_cast<byte*>(pEntOriginal->m_pVehicle), INT_ID('V', 'H', 'I', 'C'));
+			EvaluateFields(savefields_gVHIC, &tempVehicle, reinterpret_cast<byte*>(pEntOriginal->m_pVehicle),
+			               INT_ID('V', 'H', 'I', 'C'));
 
 			// so can we pinch the original's one or do we have to alloc a new one?...
 			//
@@ -1124,7 +1143,7 @@ static void ReadGEntities(const qboolean qbAutosave)
 
 			// copy over the one we've just loaded...
 			//
-			*pEnt->m_pVehicle = tempVehicle;	// struct copy
+			*pEnt->m_pVehicle = tempVehicle; // struct copy
 		}
 
 		// the scary ghoul2 stuff...  (fingers crossed)
@@ -1146,13 +1165,13 @@ static void ReadGEntities(const qboolean qbAutosave)
 		//			gi.linkentity (pEntOriginal);
 		//		}
 
-				// because the sytem stores sfx_t handles directly instead of the set, we have to reget the set's sfx_t...
-				//
+		// because the sytem stores sfx_t handles directly instead of the set, we have to reget the set's sfx_t...
+		//
 		if (pEnt->s.eType == ET_MOVER && pEnt->s.loopSound > 0)
 		{
 			if (VALIDSTRING(pEnt->soundSet))
 			{
-				extern int BMS_MID;	// from g_mover
+				extern int BMS_MID; // from g_mover
 				pEnt->s.loopSound = CAS_GetBModelSound(pEnt->soundSet, BMS_MID);
 				if (pEnt->s.loopSound == -1)
 				{
@@ -1173,7 +1192,7 @@ static void ReadGEntities(const qboolean qbAutosave)
 	}
 
 	//Read in all the entity timers
-	TIMER_Load();//ReadEntityTimers();
+	TIMER_Load(); //ReadEntityTimers();
 
 	if (!qbAutosave)
 	{
@@ -1182,7 +1201,7 @@ static void ReadGEntities(const qboolean qbAutosave)
 		//
 		for (i = iPreviousEntRead + 1; i < globals.num_entities; i++)
 		{
-			if (g_entities[i].inuse)	// not actually necessary
+			if (g_entities[i].inuse) // not actually necessary
 			{
 				G_FreeEntity(&g_entities[i]);
 			}
@@ -1203,7 +1222,7 @@ static void ReadGEntities(const qboolean qbAutosave)
 	}
 	if (!qbAutosave)
 	{
-		ReadInUseBits();//really shouldn't need to read these bits in at all, just restore them from the ents...
+		ReadInUseBits(); //really shouldn't need to read these bits in at all, just restore them from the ents...
 	}
 }
 
@@ -1213,10 +1232,11 @@ void WriteLevel(const qboolean qbAutosave)
 	{
 		// write out one client - us!
 		//
-		assert(level.maxclients == 1);	// I'll need to know if this changes, otherwise I'll need to change the way ReadGame works
+		assert(level.maxclients == 1);
+		// I'll need to know if this changes, otherwise I'll need to change the way ReadGame works
 		const gclient_t client = level.clients[0];
 		EnumerateFields(savefields_gClient, &client, INT_ID('G', 'C', 'L', 'I'));
-		WriteLevelLocals();	// level_locals_t level
+		WriteLevelLocals(); // level_locals_t level
 	}
 
 	OBJ_SaveObjectiveData();
@@ -1237,7 +1257,7 @@ void WriteLevel(const qboolean qbAutosave)
 	static int iDONE = 1234;
 
 	ojk::SavedGameHelper saved_game(
-		::gi.saved_game);
+		gi.saved_game);
 
 	saved_game.write_chunk<int32_t>(
 		INT_ID('D', 'O', 'N', 'E'),
@@ -1247,7 +1267,7 @@ void WriteLevel(const qboolean qbAutosave)
 void ReadLevel(const qboolean qbAutosave, const qboolean qbLoadTransition)
 {
 	ojk::SavedGameHelper saved_game(
-		::gi.saved_game);
+		gi.saved_game);
 
 	if (qbLoadTransition)
 	{
@@ -1270,9 +1290,10 @@ void ReadLevel(const qboolean qbAutosave, const qboolean qbLoadTransition)
 
 		//Read & throw away gclient info
 		gclient_t junkClient;
-		EvaluateFields(savefields_gClient, &junkClient, reinterpret_cast<byte*>(&level.clients[0]), INT_ID('G', 'C', 'L', 'I'));
+		EvaluateFields(savefields_gClient, &junkClient, reinterpret_cast<byte*>(&level.clients[0]),
+		               INT_ID('G', 'C', 'L', 'I'));
 
-		ReadLevelLocals();	// level_locals_t level
+		ReadLevelLocals(); // level_locals_t level
 
 		//Read & throw away objective info
 		saved_game.read_chunk(
@@ -1280,17 +1301,19 @@ void ReadLevel(const qboolean qbAutosave, const qboolean qbLoadTransition)
 	}
 	else
 	{
-		if (!qbAutosave)//always load the client unless it's an autosave
+		if (!qbAutosave) //always load the client unless it's an autosave
 		{
-			assert(level.maxclients == 1);	// I'll need to know if this changes, otherwise I'll need to change the way things work
+			assert(level.maxclients == 1);
+			// I'll need to know if this changes, otherwise I'll need to change the way things work
 
 			gclient_t GClient;
-			EvaluateFields(savefields_gClient, &GClient, reinterpret_cast<byte*>(&level.clients[0]), INT_ID('G', 'C', 'L', 'I'));
-			level.clients[0] = GClient;	// struct copy
-			ReadLevelLocals();	// level_locals_t level
+			EvaluateFields(savefields_gClient, &GClient, reinterpret_cast<byte*>(&level.clients[0]),
+			               INT_ID('G', 'C', 'L', 'I'));
+			level.clients[0] = GClient; // struct copy
+			ReadLevelLocals(); // level_locals_t level
 		}
 
-		OBJ_LoadObjectiveData();//loads mission objectives AND tactical info
+		OBJ_LoadObjectiveData(); //loads mission objectives AND tactical info
 	}
 
 	FX_Read();
@@ -1316,6 +1339,7 @@ void ReadLevel(const qboolean qbAutosave, const qboolean qbLoadTransition)
 }
 
 extern int killPlayerTimer;
+
 qboolean GameAllowedToSaveHere(void)
 {
 	return static_cast<qboolean>(!in_camera && !killPlayerTimer);

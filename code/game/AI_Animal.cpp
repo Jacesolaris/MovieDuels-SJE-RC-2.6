@@ -251,7 +251,8 @@ void NPC_BSAnimal_Default()
 				STEER::FollowLeader(NPC, leader, follow_dist);
 
 				const bool in_seek_range = cur_dist < follow_dist * 10.0f;
-				const bool on_nbr_points = NAV::OnNeighboringPoints(NAV::GetNearestNode(NPC), leader->followPosWaypoint);
+				const bool on_nbr_points =
+					NAV::OnNeighboringPoints(NAV::GetNearestNode(NPC), leader->followPosWaypoint);
 				const bool leader_stop = level.time - leader->lastMoveTime > 500;
 
 				// If Close Enough, Dump Any Existing Path
@@ -271,8 +272,9 @@ void NPC_BSAnimal_Default()
 					//----------------------------------------------
 					else
 					{
-						STEER::Seek(NPC, leader->followPos, fabsf(follow_dist) / 2.0f/*slowing distance*/, 1.0f/*wight*/,
-							leader->resultspeed);
+						STEER::Seek(NPC, leader->followPos, fabsf(follow_dist) / 2.0f/*slowing distance*/,
+						            1.0f/*wight*/,
+						            leader->resultspeed);
 					}
 				}
 

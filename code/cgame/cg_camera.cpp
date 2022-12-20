@@ -98,7 +98,7 @@ void CGCam_Enable(void)
 
 	client_camera.next_roff_time = 0;
 
-	if (&g_entities[0] && g_entities[0].client)
+	if (g_entities[0].client)
 	{
 		//Player zero not allowed to do anything
 		VectorClear(g_entities[0].client->ps.velocity);
@@ -138,7 +138,7 @@ void CGCam_Enable(void)
 		{
 			//deactivate any active force powers
 			g_entities[0].client->ps.forcePowerDuration[i] = 0;
-			extern void WP_ForcePowerStop(gentity_t * self, forcePowers_t forcePower);
+			extern void WP_ForcePowerStop(gentity_t* self, forcePowers_t forcePower);
 			if (g_entities[0].client->ps.forcePowerDuration[i] || g_entities[0].client->ps.forcePowersActive & 1 <<
 				i)
 			{
@@ -169,7 +169,7 @@ void CGCam_Disable(void)
 
 	client_camera.info_state |= CAMERA_BAR_FADING;
 
-	if (&g_entities[0] && g_entities[0].client)
+	if (g_entities[0].client)
 	{
 		g_entities[0].contents = CONTENTS_BODY; //MASK_PLAYERSOLID;
 	}
@@ -751,15 +751,15 @@ void CGCam_FollowUpdate(void)
 			if (from->client && client_camera.cameraGroupTag[0] && fromCent->gent->ghoul2.size())
 			{
 				const int newBolt = gi.G2API_AddBolt(&fromCent->gent->ghoul2[from->playerModel],
-					client_camera.cameraGroupTag);
+				                                     client_camera.cameraGroupTag);
 				if (newBolt != -1)
 				{
 					mdxaBone_t boltMatrix;
-					const vec3_t fromAngles = { 0, from->client->ps.legsYaw, 0 };
+					const vec3_t fromAngles = {0, from->client->ps.legsYaw, 0};
 
 					gi.G2API_GetBoltMatrix(fromCent->gent->ghoul2, from->playerModel, newBolt, &boltMatrix, fromAngles,
-						fromCent->lerpOrigin, cg.time, cgs.model_draw,
-						fromCent->currentState.modelScale);
+					                       fromCent->lerpOrigin, cg.time, cgs.model_draw,
+					                       fromCent->currentState.modelScale);
 					gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, focus[num_subjects]);
 
 					focused = qtrue;
@@ -768,7 +768,7 @@ void CGCam_FollowUpdate(void)
 			if (!focused)
 			{
 				if (from->s.pos.trType != TR_STATIONARY)
-					//				if ( from->s.pos.trType == TR_INTERPOLATE )
+				//				if ( from->s.pos.trType == TR_INTERPOLATE )
 				{
 					//use interpolated origin?
 					if (!VectorCompare(vec3_origin, fromCent->lerpOrigin))
@@ -1186,7 +1186,7 @@ void CGCam_Update(void)
 			if (cg_roffdebug.integer)
 			{
 				Com_Printf("%d: fovaccel from %2.1f using vel = %2.4f, acc = %2.4f (current fov calc = %5.6f)\n",
-					cg.time, initialPosVal, velVal, accVal, actualFOV_X);
+				           cg.time, initialPosVal, velVal, accVal, actualFOV_X);
 			}
 
 			if (actualFOV_X < sanityMin)
@@ -1378,7 +1378,7 @@ void CGCam_DrawWideScreen(void)
 
 			CG_FillRect(cg.refdef.x, cg.refdef.y, 640, client_camera.bar_height, modulate);
 			CG_FillRect(cg.refdef.x, cg.refdef.y + 480 - client_camera.bar_height, 640, client_camera.bar_height,
-				modulate);
+			            modulate);
 		}
 	}
 
@@ -1453,7 +1453,7 @@ void CGCam_UpdateShake(vec3_t origin, vec3_t angles)
 
 	//intensity_scale now also takes into account FOV with 90.0 as normal
 	const float intensity_scale = 1.0f - static_cast<float>(cg.time - client_camera.shake_start) / static_cast<float>(
-		client_camera.shake_duration)
+			client_camera.shake_duration)
 		* ((client_camera.FOV + client_camera.FOV2) / 2.0f / 90.0f);
 
 	const float intensity = client_camera.shake_intensity * intensity_scale;
@@ -1651,7 +1651,7 @@ void CGCam_NotetrackProcessFovZoom(const char* addlArg)
 		if (cg_roffdebug.integer)
 		{
 			Com_Printf("notetrack: 'fovzoom %2.2f %2.2f %5.1f' on frame %d\n", beginFOV, endFOV, fov_time,
-				client_camera.roff_frame);
+			           client_camera.roff_frame);
 		}
 		CGCam_Zoom2(beginFOV, endFOV, fov_time);
 	}
@@ -1752,7 +1752,7 @@ void CGCam_NotetrackProcessFovAccel(const char* addlArg)
 			if (cg_roffdebug.integer)
 			{
 				Com_Printf("notetrack: 'fovaccel %2.2f %3.5f %3.5f %d' on frame %d\n", beginFOV, fovDelta, fovDelta2,
-					fov_time, client_camera.roff_frame);
+				           fov_time, client_camera.roff_frame);
 			}
 			CGCam_ZoomAccel(beginFOV, fovDelta, fovDelta2, fov_time);
 		}
@@ -1978,9 +1978,9 @@ static void CGCam_Roff(void)
 		if (cg_developer.integer)
 		{
 			Com_Printf(S_COLOR_GREEN"CamROFF: frame: %d o:<%.2f %.2f %.2f> a:<%.2f %.2f %.2f>\n",
-				client_camera.roff_frame,
-				org[0], org[1], org[2],
-				ang[0], ang[1], ang[2]);
+			           client_camera.roff_frame,
+			           org[0], org[1], org[2],
+			           ang[0], ang[1], ang[2]);
 		}
 
 		if (client_camera.roff_frame)
@@ -2020,7 +2020,7 @@ static void CGCam_Roff(void)
 
 void CMD_CGCam_Disable()
 {
-	vec4_t fade = { 0, 0, 0, 0 };
+	vec4_t fade = {0, 0, 0, 0};
 
 	CGCam_Disable();
 	CGCam_SetFade(fade);

@@ -123,7 +123,7 @@ ReadMember
 int CBlockMember::ReadMember(char** stream, long* streamPos, const CIcarus* icarus)
 {
 	IGameInterface* game = icarus->GetGame();
-	m_id = LittleLong * reinterpret_cast<int*>(*stream + *streamPos);
+	m_id = LittleLong *reinterpret_cast<int*>(*stream + *streamPos);
 	*streamPos += sizeof(int);
 
 	if (m_id == CIcarus::ID_RANDOM)
@@ -137,7 +137,7 @@ int CBlockMember::ReadMember(char** stream, long* streamPos, const CIcarus* icar
 	}
 	else
 	{
-		m_size = LittleLong * reinterpret_cast<int*>(*stream + *streamPos);
+		m_size = LittleLong *reinterpret_cast<int*>(*stream + *streamPos);
 		*streamPos += sizeof(int);
 		m_data = game->Malloc(m_size);
 		memcpy(m_data, *stream + *streamPos, m_size);

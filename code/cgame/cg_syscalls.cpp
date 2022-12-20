@@ -28,9 +28,9 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 //prototypes
 extern void CG_PreInit();
 
-static intptr_t(QDECL* Q_syscall)(intptr_t arg, ...) = reinterpret_cast<intptr_t(__cdecl*)(intptr_t, ...)>(-1);
+static intptr_t (QDECL* Q_syscall)(intptr_t arg, ...) = reinterpret_cast<intptr_t(__cdecl*)(intptr_t, ...)>(-1);
 
-extern "C" Q_EXPORT void QDECL dllEntry(intptr_t(QDECL * syscallptr)(intptr_t arg, ...))
+extern "C" Q_EXPORT void QDECL dllEntry(intptr_t (QDECL * syscallptr)(intptr_t arg, ...))
 {
 	Q_syscall = syscallptr;
 	CG_PreInit();
@@ -180,16 +180,16 @@ int cgi_CM_TransformedPointContents(const vec3_t p, const clipHandle_t model, co
 }
 
 void cgi_CM_BoxTrace(trace_t* results, const vec3_t start, const vec3_t end,
-	const vec3_t mins, const vec3_t maxs,
-	const clipHandle_t model, const int brushmask)
+                     const vec3_t mins, const vec3_t maxs,
+                     const clipHandle_t model, const int brushmask)
 {
 	Q_syscall(CG_CM_BOXTRACE, results, start, end, mins, maxs, model, brushmask);
 }
 
 void cgi_CM_TransformedBoxTrace(trace_t* results, const vec3_t start, const vec3_t end,
-	const vec3_t mins, const vec3_t maxs,
-	const clipHandle_t model, const int brushmask,
-	const vec3_t origin, const vec3_t angles)
+                                const vec3_t mins, const vec3_t maxs,
+                                const clipHandle_t model, const int brushmask,
+                                const vec3_t origin, const vec3_t angles)
 {
 	Q_syscall(CG_CM_TRANSFORMEDBOXTRACE, results, start, end, mins, maxs, model, brushmask, origin, angles);
 }
@@ -200,7 +200,7 @@ int cgi_CM_MarkFragments(const int numPoints, const vec3_t* points,
                          const int maxFragments, markFragment_t* fragmentBuffer)
 {
 	return Q_syscall(CG_CM_MARKFRAGMENTS, numPoints, points, projection, maxPoints, pointBuffer, maxFragments,
-		fragmentBuffer);
+	                 fragmentBuffer);
 }
 
 void cgi_CM_SnapPVS(vec3_t origin, byte* buffer)
@@ -253,7 +253,8 @@ void cgi_S_ClearLoopingSounds(void)
 	Q_syscall(CG_S_CLEARLOOPINGSOUNDS);
 }
 
-void cgi_S_AddLoopingSound(const int entityNum, const vec3_t origin, const vec3_t velocity, const sfxHandle_t sfx, const soundChannel_t chan)
+void cgi_S_AddLoopingSound(const int entityNum, const vec3_t origin, const vec3_t velocity, const sfxHandle_t sfx,
+                           const soundChannel_t chan)
 {
 	Q_syscall(CG_S_ADDLOOPINGSOUND, entityNum, origin, velocity, sfx, chan);
 }
@@ -339,12 +340,13 @@ qboolean cgi_Language_UsesSpaces(void)
 }
 
 unsigned int cgi_AnyLanguage_ReadCharFromString(const char* psText, int* piAdvanceCount,
-	qboolean* pbIsTrailingPunctuation /* = NULL */)
+                                                qboolean* pbIsTrailingPunctuation /* = NULL */)
 {
 	return Q_syscall(CG_ANYLANGUAGE_READFROMSTRING, psText, piAdvanceCount, pbIsTrailingPunctuation);
 }
 
-void cgi_R_Font_DrawString(const int ox, const int oy, const char* text, const float* rgba, const int setIndex, const int iMaxPixelWidth,
+void cgi_R_Font_DrawString(const int ox, const int oy, const char* text, const float* rgba, const int setIndex,
+                           const int iMaxPixelWidth,
                            const float scale /*= 1.0f*/)
 {
 	Q_syscall(CG_R_FONTDRAWSTRING, ox, oy, text, rgba, setIndex, iMaxPixelWidth, PASSFLOAT(scale));
@@ -400,7 +402,7 @@ void cgi_R_DrawStretchPic(const float x, const float y, const float w, const flo
                           const float s1, const float t1, const float s2, const float t2, const qhandle_t hShader)
 {
 	Q_syscall(CG_R_DRAWSTRETCHPIC, PASSFLOAT(x), PASSFLOAT(y), PASSFLOAT(w), PASSFLOAT(h), PASSFLOAT(s1), PASSFLOAT(t1),
-		PASSFLOAT(s2), PASSFLOAT(t2), hShader);
+	          PASSFLOAT(s2), PASSFLOAT(t2), hShader);
 }
 
 void cgi_R_ModelBounds(const qhandle_t model, vec3_t mins, vec3_t maxs)
@@ -415,17 +417,19 @@ void cgi_R_LerpTag(orientation_t* tag, const qhandle_t mod, const int startFrame
 }
 
 void cgi_R_DrawRotatePic(const float x, const float y, const float w, const float h,
-                         const float s1, const float t1, const float s2, const float t2, const float a, const qhandle_t hShader, const float aspectCorrection)
+                         const float s1, const float t1, const float s2, const float t2, const float a,
+                         const qhandle_t hShader, const float aspectCorrection)
 {
 	Q_syscall(CG_R_DRAWROTATEPIC, PASSFLOAT(x), PASSFLOAT(y), PASSFLOAT(w), PASSFLOAT(h), PASSFLOAT(s1), PASSFLOAT(t1),
-		PASSFLOAT(s2), PASSFLOAT(t2), PASSFLOAT(a), hShader, PASSFLOAT(aspectCorrection));
+	          PASSFLOAT(s2), PASSFLOAT(t2), PASSFLOAT(a), hShader, PASSFLOAT(aspectCorrection));
 }
 
 void cgi_R_DrawRotatePic2(const float x, const float y, const float w, const float h,
-                          const float s1, const float t1, const float s2, const float t2, const float a, const qhandle_t hShader, const float aspectCorrection)
+                          const float s1, const float t1, const float s2, const float t2, const float a,
+                          const qhandle_t hShader, const float aspectCorrection)
 {
 	Q_syscall(CG_R_DRAWROTATEPIC2, PASSFLOAT(x), PASSFLOAT(y), PASSFLOAT(w), PASSFLOAT(h), PASSFLOAT(s1), PASSFLOAT(t1),
-		PASSFLOAT(s2), PASSFLOAT(t2), PASSFLOAT(a), hShader, PASSFLOAT(aspectCorrection));
+	          PASSFLOAT(s2), PASSFLOAT(t2), PASSFLOAT(a), hShader, PASSFLOAT(aspectCorrection));
 }
 
 //linear fogging, with settable range -rww
@@ -484,10 +488,11 @@ qboolean cgi_GetUserCmd(const int cmdNumber, usercmd_t* ucmd)
 	return static_cast<qboolean>(Q_syscall(CG_GETUSERCMD, cmdNumber, ucmd) != 0);
 }
 
-void cgi_SetUserCmdValue(const int stateValue, const float sensitivityScale, const float mPitchOverride, const float mYawOverride)
+void cgi_SetUserCmdValue(const int stateValue, const float sensitivityScale, const float mPitchOverride,
+                         const float mYawOverride)
 {
 	Q_syscall(CG_SETUSERCMDVALUE, stateValue, PASSFLOAT(sensitivityScale), PASSFLOAT(mPitchOverride),
-		PASSFLOAT(mYawOverride));
+	          PASSFLOAT(mYawOverride));
 }
 
 void cgi_SetUserCmdAngles(const float pitchOverride, const float yawOverride, const float rollOverride)
@@ -534,8 +539,9 @@ void cgi_R_WorldEffectCommand(const char* command)
 }
 
 // this returns a handle.  arg0 is the name in the format "idlogo.roq", set arg1 to NULL, alteredstates to qfalse (do not alter gamestate)
-int trap_CIN_PlayCinematic(const char* arg0, const int xpos, const int ypos, const int width, const int height, const int bits,
-	const char* psAudioFile /* = NULL */)
+int trap_CIN_PlayCinematic(const char* arg0, const int xpos, const int ypos, const int width, const int height,
+                           const int bits,
+                           const char* psAudioFile /* = NULL */)
 {
 	return Q_syscall(CG_CIN_PLAYCINEMATIC, arg0, xpos, ypos, width, height, bits, psAudioFile);
 }
@@ -646,7 +652,7 @@ int cgi_UI_GetMenuInfo(char* menuFile, int* x, int* y, int* w, int* h)
 }
 
 int cgi_UI_GetMenuItemInfo(const char* menuFile, const char* itemName, int* x, int* y, int* w, int* h, vec4_t color,
-	qhandle_t* background)
+                           qhandle_t* background)
 {
 	return Q_syscall(CG_UI_GETITEMINFO, menuFile, itemName, x, y, w, h, color, background);
 }

@@ -52,7 +52,7 @@ IIcarusInterface* IIcarusInterface::GetIcarus(const int flavor, const bool const
 		{
 			return nullptr;
 		}
-		CIcarus::s_instances = new CIcarus * [CIcarus::s_flavorsAvailable];
+		CIcarus::s_instances = new CIcarus*[CIcarus::s_flavorsAvailable];
 		for (int index = 0; index < CIcarus::s_flavorsAvailable; index++)
 		{
 			CIcarus::s_instances[index] = new CIcarus(index);
@@ -180,7 +180,7 @@ void CIcarus::Free(void)
 	STL_ITERATE(si, m_sequences)
 	{
 		(*si)->Delete(this);
-		delete* si;
+		delete*si;
 
 #ifdef _DEBUG
 
@@ -229,7 +229,7 @@ void CIcarus::DeleteIcarusID(int& icarusID)
 	if (taskManager->IsResident())
 	{
 		IGameInterface::GetGame()->DebugPrint(IGameInterface::WL_ERROR,
-			"Refusing DeleteIcarusID(%d) because it is running!\n", icarusID);
+		                                      "Refusing DeleteIcarusID(%d) because it is running!\n", icarusID);
 		assert(0);
 		return;
 	}
@@ -345,17 +345,17 @@ void CIcarus::Precache(char* buffer, const long length)
 		switch (block.GetBlockID())
 		{
 		case ID_CAMERA: // to cache ROFF files
-		{
-			const float f = *static_cast<float*>(block.GetMemberData(0));
-
-			if (f == TYPE_PATH)
 			{
-				sVal1 = static_cast<const char*>(block.GetMemberData(1));
+				const float f = *static_cast<float*>(block.GetMemberData(0));
 
-				game->PrecacheRoff(sVal1);
+				if (f == TYPE_PATH)
+				{
+					sVal1 = static_cast<const char*>(block.GetMemberData(1));
+
+					game->PrecacheRoff(sVal1);
+				}
 			}
-		}
-		break;
+			break;
 
 		case ID_PLAY: // to cache ROFF files
 
@@ -369,7 +369,7 @@ void CIcarus::Precache(char* buffer, const long length)
 			}
 			break;
 
-			//Run commands
+		//Run commands
 		case ID_RUN:
 			sVal1 = static_cast<const char*>(block.GetMemberData(0));
 			game->PrecacheScript(sVal1);
@@ -383,9 +383,9 @@ void CIcarus::Precache(char* buffer, const long length)
 		case ID_SET:
 			blockMember = block.GetMember(0);
 
-			//NOTENOTE: This will not catch special case get() inlines! (There's not really a good way to do that)
+		//NOTENOTE: This will not catch special case get() inlines! (There's not really a good way to do that)
 
-			//Make sure we're testing against strings
+		//Make sure we're testing against strings
 			if (blockMember->GetID() == TK_STRING)
 			{
 				sVal1 = static_cast<const char*>(block.GetMemberData(0));
@@ -511,7 +511,7 @@ int CIcarus::SaveSignals()
 		BufferWrite(&length, sizeof length);
 
 		//Write out the string
-		BufferWrite((void*)name, length);
+		BufferWrite(name, length);
 	}
 
 	return true;
@@ -838,7 +838,7 @@ void CIcarus::BufferRead(void* pDstBuff, const unsigned long ulNumBytesToRead)
 	{
 		// We've tried to read past the buffer...
 		IGameInterface::GetGame()->DebugPrint(IGameInterface::WL_ERROR,
-			"BufferRead: Buffer underflow, Looking for new block.");
+		                                      "BufferRead: Buffer underflow, Looking for new block.");
 		// Read in the next block.
 
 		const ojk::SavedGameHelper saved_game(
@@ -855,7 +855,7 @@ void CIcarus::BufferRead(void* pDstBuff, const unsigned long ulNumBytesToRead)
 		if (sg_buffer_size < 0 || static_cast<size_t>(sg_buffer_size) > MAX_BUFFER_SIZE)
 		{
 			IGameInterface::GetGame()->DebugPrint(IGameInterface::WL_ERROR, "invalid ISEQ length: %d bytes\n",
-				sg_buffer_size);
+			                                      sg_buffer_size);
 			return;
 		}
 

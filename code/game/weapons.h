@@ -223,6 +223,8 @@ using ammoData_t = struct ammoData_s
 #define BRYAR_PISTOL_DAMAGE			14
 #define BRYAR_CHARGE_UNIT			200.0f	// bryar charging gives us one more unit every 200ms--if you change this, you'll have to do the same in bg_pmove
 
+
+
 // E11 Blaster
 //---------
 #define BLASTER_MAIN_SPREAD			0.8f
@@ -340,6 +342,8 @@ using ammoData_t = struct ammoData_s
 #define DISRUPTOR_ALT_TRACES			3		// can go through a max of 3 entities
 #define DISRUPTOR_CHARGE_UNIT			150.0f	// distruptor charging gives us one more unit every 150ms--if you change this, you'll have to do the same in bg_pmove
 
+
+
 // Wookie Bowcaster
 //----------
 #define	BOWCASTER_DAMAGE			45
@@ -354,6 +358,8 @@ using ammoData_t = struct ammoData_s
 #define BOWCASTER_ALT_SPREAD		2.0f
 #define BOWCASTER_VEL_RANGE			0.3f
 #define BOWCASTER_CHARGE_UNIT		200.0f	// bowcaster charging gives us one more unit every 200ms--if you change this, you'll have to do the same in bg_pmove
+
+
 
 // Heavy Repeater
 //----------
@@ -385,6 +391,8 @@ using ammoData_t = struct ammoData_s
 
 #define DEMP2_ALT_DAMAGE			15
 #define DEMP2_CHARGE_UNIT			500.0f	// demp2 charging gives us one more unit every 500ms--if you change this, you'll have to do the same in bg_pmove
+
+
 
 #define DEMP2_ALT_RANGE				4096
 #define DEMP2_ALT_SPLASHRADIUS		256
@@ -508,6 +516,8 @@ using ammoData_t = struct ammoData_s
 #define TD_TIME				4000
 #define TD_THINK_TIME		300		// don't think too often?
 #define TD_TEST_RAD			(TD_SPLASH_RAD * 0.8f) // no sense in auto-blowing up if exactly on the radius edge--it would hardly do any damage
+
+
 
 #define TD_ALT_TIME			3000
 

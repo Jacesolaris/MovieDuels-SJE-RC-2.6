@@ -80,7 +80,7 @@ void WP_FireTuskenRifle(gentity_t* ent)
 				angs[YAW] += Q_flrand(-2.0f, 2.0f) * BLASTER_MAIN_SPREAD;
 			}
 			else if (!WalkCheck(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angs[PITCH] += Q_flrand(-3.0f, 3.0f) * (RUNNING_SPREAD + 1.5f);
 				angs[YAW] += Q_flrand(-3.0f, 3.0f) * (RUNNING_SPREAD + 1.5f);

@@ -110,7 +110,7 @@ static void WP_BowcasterMainFire(gentity_t* ent)
 				//was 0.5
 			}
 			else if (!WalkCheck(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angs[PITCH] += Q_flrand(-1.0f, 1.0f) * BOWCASTER_ALT_SPREAD;
 				angs[YAW] += Q_flrand(-1.0f, 1.0f) * BOWCASTER_ALT_SPREAD;

@@ -188,7 +188,7 @@ void WP_FireClone(gentity_t* ent, const qboolean alt_fire)
 				}
 			}
 			else if (!WalkCheck(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angs[PITCH] += Q_flrand(-1.0f, 1.0f) * CLONERIFLE_MAIN_SPREAD;
 				angs[YAW] += Q_flrand(-1.0f, 1.0f) * CLONERIFLE_MAIN_SPREAD;
@@ -216,10 +216,10 @@ void WP_FireClone(gentity_t* ent, const qboolean alt_fire)
 		}
 	}
 
-		AngleVectors(angs, dir, nullptr, nullptr);
+	AngleVectors(angs, dir, nullptr, nullptr);
 
-		// FIXME: if temp_org does not have clear trace to inside the bbox, don't shoot!
-		WP_FireCloneMissile(ent, muzzle, dir, alt_fire);
+	// FIXME: if temp_org does not have clear trace to inside the bbox, don't shoot!
+	WP_FireCloneMissile(ent, muzzle, dir, alt_fire);
 }
 
 //---------------
@@ -378,7 +378,7 @@ void WP_FireCloneRifle(gentity_t* ent, const qboolean alt_fire)
 				}
 			}
 			else if (!WalkCheck(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angs[PITCH] += Q_flrand(-1.0f, 1.0f) * CLONERIFLE_MAIN_SPREAD;
 				angs[YAW] += Q_flrand(-1.0f, 1.0f) * CLONERIFLE_MAIN_SPREAD;
@@ -406,10 +406,10 @@ void WP_FireCloneRifle(gentity_t* ent, const qboolean alt_fire)
 		}
 	}
 
-		AngleVectors(angs, dir, nullptr, nullptr);
+	AngleVectors(angs, dir, nullptr, nullptr);
 
-		// FIXME: if temp_org does not have clear trace to inside the bbox, don't shoot!
-		WP_FireCloneRifleMissile(ent, muzzle, dir, alt_fire);
+	// FIXME: if temp_org does not have clear trace to inside the bbox, don't shoot!
+	WP_FireCloneRifleMissile(ent, muzzle, dir, alt_fire);
 }
 
 //---------------
@@ -568,7 +568,7 @@ void WP_FireCloneCommando(gentity_t* ent, const qboolean alt_fire)
 				}
 			}
 			else if (!WalkCheck(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angs[PITCH] += Q_flrand(-1.0f, 1.0f) * CLONERIFLE_MAIN_SPREAD;
 				angs[YAW] += Q_flrand(-1.0f, 1.0f) * CLONERIFLE_MAIN_SPREAD;
@@ -596,7 +596,7 @@ void WP_FireCloneCommando(gentity_t* ent, const qboolean alt_fire)
 		}
 	}
 
-		AngleVectors(angs, dir, nullptr, nullptr);
+	AngleVectors(angs, dir, nullptr, nullptr);
 
-		WP_FireCloneCommandoMissile(ent, muzzle, dir, alt_fire);
+	WP_FireCloneCommandoMissile(ent, muzzle, dir, alt_fire);
 }

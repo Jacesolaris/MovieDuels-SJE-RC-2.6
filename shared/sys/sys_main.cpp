@@ -32,8 +32,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "sys_public.h"
 #include "con_local.h"
 
-static char binaryPath[MAX_OSPATH] = { 0 };
-static char installPath[MAX_OSPATH] = { 0 };
+static char binaryPath[MAX_OSPATH] = {0};
+static char installPath[MAX_OSPATH] = {0};
 
 cvar_t* com_minimized;
 cvar_t* com_unfocused;
@@ -98,7 +98,8 @@ char* Sys_DefaultAppPath()
 Sys_GetClipboardData
 ==================
 */
-char* Sys_GetClipboardData() {
+char* Sys_GetClipboardData()
+{
 #ifdef DEDICATED
 	return nullptr;
 #else
@@ -128,13 +129,16 @@ char* Sys_ConsoleInput()
 	return CON_Input();
 }
 
-void Sys_Print(const char* msg) {
+void Sys_Print(const char* msg)
+{
 	// TTimo - prefix for text that shows up in console but not in notify
 	// backported from RTCW
-	if (!Q_strncmp(msg, "[skipnotify]", 12)) {
+	if (!Q_strncmp(msg, "[skipnotify]", 12))
+	{
 		msg += 12;
 	}
-	if (msg[0] == '*') {
+	if (msg[0] == '*')
+	{
 		msg += 1;
 	}
 	ConsoleLogAppend(msg);
@@ -149,7 +153,8 @@ Called after the common systems (cvars, files, etc)
 are initialized
 ================
 */
-void Sys_Init(void) {
+void Sys_Init(void)
+{
 	Cmd_AddCommand("in_restart", IN_Restart);
 	Cvar_Get("arch", OS_STRING " " ARCH_STRING, CVAR_ROM);
 	Cvar_Get("username", Sys_GetCurrentUser(), CVAR_ROM);
@@ -165,7 +170,8 @@ void Sys_Init(void) {
 	com_maxfpsMinimized = Cvar_Get("com_maxfpsMinimized", "50", CVAR_ARCHIVE_ND);
 }
 
-static void NORETURN Sys_Exit(int ex) {
+static void NORETURN Sys_Exit(int ex)
+{
 	IN_Shutdown();
 #ifndef DEDICATED
 	SDL_Quit();
@@ -193,8 +199,8 @@ static void Sys_ErrorDialog(const char* error)
 	time(&rawtime);
 	strftime(timeStr, sizeof(timeStr), "%Y-%m-%d_%H-%M-%S", localtime(&rawtime)); // or gmtime
 	Com_sprintf(crashLogPath, sizeof(crashLogPath),
-		"%s%ccrashlog-%s.txt",
-		Sys_DefaultHomePath(), PATH_SEP, timeStr);
+	            "%s%ccrashlog-%s.txt",
+	            Sys_DefaultHomePath(), PATH_SEP, timeStr);
 
 	Sys_Mkdir(Sys_DefaultHomePath());
 
@@ -217,7 +223,7 @@ static void Sys_ErrorDialog(const char* error)
 		fflush(stderr);
 
 		const char* errorMessage = va("%s\nCould not write the crash log file, but we printed it to stderr.\n"
-			"Try running the game using a command line interface.", error);
+		                              "Try running the game using a command line interface.", error);
 		if (SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", errorMessage, nullptr) < 0)
 		{
 			// We really have hit rock bottom here :(
@@ -230,7 +236,7 @@ static void Sys_ErrorDialog(const char* error)
 void NORETURN QDECL Sys_Error(const char* error, ...)
 {
 	va_list argptr;
-	char    string[1024];
+	char string[1024];
 
 	va_start(argptr, error);
 	Q_vsnprintf(string, sizeof(string), error, argptr);
@@ -248,7 +254,8 @@ void NORETURN QDECL Sys_Error(const char* error, ...)
 	Sys_Exit(3);
 }
 
-void NORETURN Sys_Quit(void) {
+void NORETURN Sys_Quit(void)
+{
 	Sys_Exit(0);
 }
 
@@ -376,7 +383,7 @@ enum SearchPathFlag
 };
 
 static void* Sys_LoadDllFromPaths(const char* filename, const char* gamedir, const char** searchPaths,
-	size_t numPaths, uint32_t searchFlags, const char* callerName)
+                                  size_t numPaths, uint32_t searchFlags, const char* callerName)
 {
 	char* fn;
 	void* libHandle;
@@ -461,7 +468,7 @@ static void FreeUnpackDLLResult(const UnpackDLLResult* result)
 void* Sys_LoadLegacyGameDll(const char* name, VMMainProc** vmMain, SystemCallProc* systemcalls)
 {
 	void* libHandle = nullptr;
-	char	filename[MAX_OSPATH];
+	char filename[MAX_OSPATH];
 
 	Com_sprintf(filename, sizeof(filename), "%s" ARCH_STRING DLL_EXT, name);
 
@@ -495,7 +502,8 @@ void* Sys_LoadLegacyGameDll(const char* name, VMMainProc** vmMain, SystemCallPro
 			libHandle = Sys_LoadMachOBundle(name);
 #endif
 
-			if (!libHandle) {
+			if (!libHandle)
+			{
 				char* basepath = Cvar_VariableString("fs_basepath");
 				char* homepath = Cvar_VariableString("fs_homepath");
 				char* cdpath = Cvar_VariableString("fs_cdpath");
@@ -506,15 +514,16 @@ void* Sys_LoadLegacyGameDll(const char* name, VMMainProc** vmMain, SystemCallPro
 
 				const char* searchPaths[] = {
 					homepath,
-		#ifdef MACOS_X
+#ifdef MACOS_X
 					apppath,
-		#endif
+#endif
 					basepath,
 					cdpath,
 				};
 				constexpr size_t numPaths = ARRAY_LEN(searchPaths);
 
-				libHandle = Sys_LoadDllFromPaths(filename, gamedir, searchPaths, numPaths, SEARCH_PATH_BASE | SEARCH_PATH_MOD, __FUNCTION__);
+				libHandle = Sys_LoadDllFromPaths(filename, gamedir, searchPaths, numPaths,
+				                                 SEARCH_PATH_BASE | SEARCH_PATH_MOD, __FUNCTION__);
 				if (!libHandle)
 					return nullptr;
 			}
@@ -526,7 +535,8 @@ void* Sys_LoadLegacyGameDll(const char* name, VMMainProc** vmMain, SystemCallPro
 	auto* dllEntry = static_cast<DllEntryProc*>(Sys_LoadFunction(libHandle, "dllEntry"));
 	*vmMain = static_cast<VMMainProc*>(Sys_LoadFunction(libHandle, "vmMain"));
 
-	if (!*vmMain || !dllEntry) {
+	if (!*vmMain || !dllEntry)
+	{
 		Com_DPrintf("Sys_LoadLegacyGameDll(%s) failed to find vmMain function:\n...%s!\n", name, Sys_LibraryError());
 		Sys_UnloadLibrary(libHandle);
 		return nullptr;
@@ -541,7 +551,7 @@ void* Sys_LoadLegacyGameDll(const char* name, VMMainProc** vmMain, SystemCallPro
 void* Sys_LoadSPGameDll(const char* name, GetGameAPIProc** GetGameAPI)
 {
 	void* libHandle = nullptr;
-	char	filename[MAX_OSPATH];
+	char filename[MAX_OSPATH];
 
 	assert(GetGameAPI);
 
@@ -553,7 +563,8 @@ void* Sys_LoadSPGameDll(const char* name, GetGameAPIProc** GetGameAPI)
 	libHandle = Sys_LoadMachOBundle(filename);
 #endif
 
-	if (!libHandle) {
+	if (!libHandle)
+	{
 		char* basepath = Cvar_VariableString("fs_basepath");
 		char* homepath = Cvar_VariableString("fs_homepath");
 		char* cdpath = Cvar_VariableString("fs_cdpath");
@@ -573,14 +584,15 @@ void* Sys_LoadSPGameDll(const char* name, GetGameAPIProc** GetGameAPI)
 		constexpr size_t numPaths = ARRAY_LEN(searchPaths);
 
 		libHandle = Sys_LoadDllFromPaths(filename, gamedir, searchPaths, numPaths,
-			SEARCH_PATH_BASE | SEARCH_PATH_MOD | SEARCH_PATH_OPENJK | SEARCH_PATH_ROOT,
-			__FUNCTION__);
+		                                 SEARCH_PATH_BASE | SEARCH_PATH_MOD | SEARCH_PATH_OPENJK | SEARCH_PATH_ROOT,
+		                                 __FUNCTION__);
 		if (!libHandle)
 			return nullptr;
 	}
 
 	*GetGameAPI = static_cast<GetGameAPIProc*>(Sys_LoadFunction(libHandle, "GetGameAPI"));
-	if (!*GetGameAPI) {
+	if (!*GetGameAPI)
+	{
 		Com_DPrintf("%s(%s) failed to find GetGameAPI function:\n...%s!\n", __FUNCTION__, name, Sys_LibraryError());
 		Sys_UnloadLibrary(libHandle);
 		return nullptr;
@@ -592,7 +604,7 @@ void* Sys_LoadSPGameDll(const char* name, GetGameAPIProc** GetGameAPI)
 void* Sys_LoadGameDll(const char* name, GetModuleAPIProc** moduleAPI)
 {
 	void* libHandle = nullptr;
-	char	filename[MAX_OSPATH];
+	char filename[MAX_OSPATH];
 
 	Com_sprintf(filename, sizeof(filename), "%s" ARCH_STRING DLL_EXT, name);
 
@@ -626,7 +638,8 @@ void* Sys_LoadGameDll(const char* name, GetModuleAPIProc** moduleAPI)
 			libHandle = Sys_LoadMachOBundle(name);
 #endif
 
-			if (!libHandle) {
+			if (!libHandle)
+			{
 				char* basepath = Cvar_VariableString("fs_basepath");
 				char* homepath = Cvar_VariableString("fs_homepath");
 				char* cdpath = Cvar_VariableString("fs_cdpath");
@@ -645,7 +658,8 @@ void* Sys_LoadGameDll(const char* name, GetModuleAPIProc** moduleAPI)
 				};
 				constexpr size_t numPaths = ARRAY_LEN(searchPaths);
 
-				libHandle = Sys_LoadDllFromPaths(filename, gamedir, searchPaths, numPaths, SEARCH_PATH_BASE | SEARCH_PATH_MOD, __FUNCTION__);
+				libHandle = Sys_LoadDllFromPaths(filename, gamedir, searchPaths, numPaths,
+				                                 SEARCH_PATH_BASE | SEARCH_PATH_MOD, __FUNCTION__);
 				if (!libHandle)
 					return nullptr;
 			}
@@ -653,7 +667,8 @@ void* Sys_LoadGameDll(const char* name, GetModuleAPIProc** moduleAPI)
 	}
 
 	*moduleAPI = static_cast<GetModuleAPIProc*>(Sys_LoadFunction(libHandle, "GetModuleAPI"));
-	if (!*moduleAPI) {
+	if (!*moduleAPI)
+	{
 		Com_DPrintf("Sys_LoadGameDll(%s) failed to find GetModuleAPI function:\n...%s!\n", name, Sys_LibraryError());
 		Sys_UnloadLibrary(libHandle);
 		return nullptr;
@@ -674,7 +689,7 @@ void Sys_SigHandler(int signal)
 	if (signalcaught)
 	{
 		fprintf(stderr, "DOUBLE SIGNAL FAULT: Received signal %d, exiting...\n",
-			signal);
+		        signal);
 	}
 	else
 	{
@@ -731,7 +746,7 @@ char* Sys_StripAppBundle(char* dir)
 
 int main(int argc, char* argv[])
 {
-	char	commandLine[MAX_STRING_CHARS] = { 0 };
+	char commandLine[MAX_STRING_CHARS] = {0};
 
 	Sys_PlatformInit();
 	CON_Init();

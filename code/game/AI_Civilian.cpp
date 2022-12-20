@@ -46,7 +46,7 @@ void NPC_BSCivilian_Default(const int bState)
 			|| NPC_BSFlee() //have reached our flee goal
 			&& NPC->enemy //still have enemy (NPC_BSFlee checks enemy and can clear it)
 			&& DistanceSquared(NPC->currentOrigin, NPC->enemy->currentOrigin) < 16384 //enemy within 128
-			)
+		)
 		{
 			//run away!
 			NPC_StartFlee(NPC->enemy, NPC->enemy->currentOrigin, AEL_DANGER_GREAT, 5000, 10000);

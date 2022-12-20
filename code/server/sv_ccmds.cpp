@@ -47,7 +47,7 @@ extern vmCvar_t r_ratiofix;
 //
 static bool SV_Map_(ForceReload_e eForceReload)
 {
-	char		expanded[MAX_QPATH] = { 0 };
+	char expanded[MAX_QPATH] = {0};
 
 	char* JKO_Maps[] =
 	{
@@ -117,7 +117,7 @@ static bool SV_Map_(ForceReload_e eForceReload)
 		"vjun3",
 		"yavin1",
 		"yavin1b",
-		"yavin2" ,
+		"yavin2",
 		"ladder"
 	};
 
@@ -141,9 +141,10 @@ static bool SV_Map_(ForceReload_e eForceReload)
 	if (FS_ReadFile(expanded, nullptr) == -1)
 	{
 		Com_Printf("Can't find map %s\n", expanded);
-		extern	cvar_t* com_buildScript;
+		extern cvar_t* com_buildScript;
 		if (com_buildScript && com_buildScript->integer)
-		{//yes, it's happened, someone deleted a map during my build...
+		{
+			//yes, it's happened, someone deleted a map during my build...
 			Com_Error(ERR_FATAL, "Can't find map %s\n", expanded);
 		}
 		return false;
@@ -204,7 +205,7 @@ static bool SV_Map_(ForceReload_e eForceReload)
 		SG_WipeSavegame("auto");
 	}
 
-	SV_SpawnServer(map, eForceReload, qtrue);	// start up the map
+	SV_SpawnServer(map, eForceReload, qtrue); // start up the map
 	return true;
 }
 
@@ -216,16 +217,16 @@ void SV_Player_EndOfLevelSave(void)
 	// I could just call GetClientState() but that's in sv_bot.cpp, and I'm not sure if that's going to be deleted for
 	//	the single player build, so here's the guts again...
 	//
-	const client_t* cl = &svs.clients[0];	// 0 because only ever us as a player
+	const client_t* cl = &svs.clients[0]; // 0 because only ever us as a player
 
 	if (cl
 		&&
-		cl->gentity && cl->gentity->client	// crash fix for voy4->brig transition when you kill Foster.
+		cl->gentity && cl->gentity->client // crash fix for voy4->brig transition when you kill Foster.
 		//	Shouldn't happen, but does sometimes...
-		)
+	)
 	{
 		int i;
-		Cvar_Set(sCVARNAME_PLAYERSAVE, "");	// default to blank
+		Cvar_Set(sCVARNAME_PLAYERSAVE, ""); // default to blank
 
 		//		clientSnapshot_t*	pFrame = &cl->frames[cl->netchan.outgoingSequence & PACKET_MASK];
 		playerState_t* pState = cl->gentity->client;
@@ -252,7 +253,8 @@ void SV_Player_EndOfLevelSave(void)
 		);
 #else
 		//				|general info				  |-force powers |-saber 1		|-saber 2										  |-general saber
-		s = va("%i %i %i %i %i %i %f %f %f %i %i %i %i %i %s %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %s %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",
+		s = va(
+			"%i %i %i %i %i %i %f %f %f %i %i %i %i %i %s %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %s %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",
 			pState->stats[STAT_HEALTH],
 			pState->stats[STAT_ARMOR],
 			pState->stats[STAT_ITEMS],
@@ -394,7 +396,7 @@ static void SV_Map_f(void)
 	SCR_UnprecacheScreenshot();
 #endif
 
-	ForceReload_e eForceReload = eForceReload_NOTHING;	// default for normal load
+	ForceReload_e eForceReload = eForceReload_NOTHING; // default for normal load
 
 	const char* cmd = Cmd_Argv(0);
 	if (!Q_stricmp(cmd, "devmapbsp"))
@@ -404,7 +406,7 @@ static void SV_Map_f(void)
 	else if (!Q_stricmp(cmd, "devmapall"))
 		eForceReload = eForceReload_ALL;
 
-	qboolean cheat = static_cast<qboolean>(!Q_stricmpn(cmd, "devmap", 6));
+	auto cheat = static_cast<qboolean>(!Q_stricmpn(cmd, "devmap", 6));
 
 	// retain old cheat state
 	if (!cheat && Cvar_VariableIntegerValue("helpUsObi"))
@@ -433,7 +435,8 @@ void SV_LoadTransition_f(void)
 	const char* spawntarget;
 
 	const char* map = Cmd_Argv(1);
-	if (!*map) {
+	if (!*map)
+	{
 		return;
 	}
 
@@ -459,16 +462,19 @@ void SV_LoadTransition_f(void)
 	}
 
 	if (!SV_TryLoadTransition(map))
-	{//couldn't load a savegame
+	{
+		//couldn't load a savegame
 		SV_Map_(eForceReload_NOTHING);
 	}
 	qbLoadTransition = qfalse;
 }
+
 //===============================================================
 
-char* ivtos(const vec3_t v) {
-	static	int		index;
-	static	char	str[8][32];
+char* ivtos(const vec3_t v)
+{
+	static int index;
+	static char str[8][32];
 
 	// use an array so that multiple vtos won't collide
 	char* s = str[index];
@@ -484,16 +490,19 @@ char* ivtos(const vec3_t v) {
 SV_Status_f
 ================
 */
-static void SV_Status_f(void) {
+static void SV_Status_f(void)
+{
 	// make sure server is running
-	if (!com_sv_running->integer) {
+	if (!com_sv_running->integer)
+	{
 		Com_Printf("Server is not running.\n");
 		return;
 	}
 
 	client_t* cl = &svs.clients[0];
 
-	if (!cl) {
+	if (!cl)
+	{
 		Com_Printf("Server is not running.\n");
 		return;
 	}
@@ -526,7 +535,8 @@ SV_Serverinfo_f
 Examine the serverinfo string
 ===========
 */
-static void SV_Serverinfo_f(void) {
+static void SV_Serverinfo_f(void)
+{
 	Com_Printf("Server info settings:\n");
 	Info_Print(Cvar_InfoString(CVAR_SERVERINFO));
 }
@@ -538,7 +548,8 @@ SV_Systeminfo_f
 Examine or change the serverinfo string
 ===========
 */
-static void SV_Systeminfo_f(void) {
+static void SV_Systeminfo_f(void)
+{
 	Com_Printf("System info settings:\n");
 	Info_Print(Cvar_InfoString(CVAR_SYSTEMINFO));
 }
@@ -550,20 +561,24 @@ SV_DumpUser_f
 Examine all a users info strings FIXME: move to game
 ===========
 */
-static void SV_DumpUser_f(void) {
+static void SV_DumpUser_f(void)
+{
 	// make sure server is running
-	if (!com_sv_running->integer) {
+	if (!com_sv_running->integer)
+	{
 		Com_Printf("Server is not running.\n");
 		return;
 	}
 
-	if (Cmd_Argc() != 1) {
+	if (Cmd_Argc() != 1)
+	{
 		Com_Printf("Usage: info\n");
 		return;
 	}
 
 	const client_t* cl = &svs.clients[0];
-	if (!cl->state) {
+	if (!cl->state)
+	{
 		Com_Printf("Client is not active\n");
 		return;
 	}
@@ -580,7 +595,8 @@ static void SV_DumpUser_f(void) {
 SV_CompleteMapName
 ==================
 */
-static void SV_CompleteMapName(char* args, int argNum) {
+static void SV_CompleteMapName(char* args, int argNum)
+{
 	if (argNum == 2)
 		Field_CompleteFilename("maps", "bsp", qtrue, qfalse);
 }
@@ -603,10 +619,12 @@ static void SV_CompleteSaveName(char* args, int argNum)
 SV_AddOperatorCommands
 ==================
 */
-void SV_AddOperatorCommands(void) {
-	static qboolean	initialized;
+void SV_AddOperatorCommands(void)
+{
+	static qboolean initialized;
 
-	if (initialized) {
+	if (initialized)
+	{
 		return;
 	}
 	initialized = qtrue;
@@ -646,7 +664,8 @@ void SV_AddOperatorCommands(void) {
 SV_RemoveOperatorCommands
 ==================
 */
-void SV_RemoveOperatorCommands(void) {
+void SV_RemoveOperatorCommands(void)
+{
 #if 0
 	// removing these won't let the server start again
 	Cmd_RemoveCommand("status");

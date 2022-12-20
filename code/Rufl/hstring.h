@@ -81,11 +81,11 @@ public:
 	// Debug Statistics Routines
 	////////////////////////////////////////////////////////////////////////////////////
 #ifdef _DEBUG
-	static	float		ave_collisions();
-	static	int			total_strings();
-	static	int			total_bytes();
-	static	int			total_finds();
-	static	int			total_collisions();
+	static float ave_collisions();
+	static int total_strings();
+	static int total_bytes();
+	static int total_finds();
+	static int total_collisions();
 #endif
 
 private:

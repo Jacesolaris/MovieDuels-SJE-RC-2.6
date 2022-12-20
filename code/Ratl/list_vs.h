@@ -59,8 +59,8 @@ namespace ratl
 	class list_node
 	{
 	public:
-		int		mNext;
-		int		mPrev;
+		int mNext;
+		int mPrev;
 	};
 
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -70,20 +70,21 @@ namespace ratl
 	class list_base : public ratl_base
 	{
 	public:
-		typedef T TStorageTraits;
-		typedef typename T::TValue TTValue;
+		using TStorageTraits = T;
+		using TTValue = typename T::TValue;
 		////////////////////////////////////////////////////////////////////////////////////
 		// Capacity Enum
 		////////////////////////////////////////////////////////////////////////////////////
 		static const int CAPACITY = T::CAPACITY;
+
 	private:
 		////////////////////////////////////////////////////////////////////////////////////
 		// Data
 		////////////////////////////////////////////////////////////////////////////////////
-		pool_base<TStorageTraits>		mPool;				// The Allocation Data Pool
+		pool_base<TStorageTraits> mPool; // The Allocation Data Pool
 
-		int				mFront;				// The Beginning Of The List
-		int				mBack;				// The End Of The List
+		int mFront; // The Beginning Of The List
+		int mBack; // The End Of The List
 		static constexpr int NULL_NODE = -1;
 
 	public:
@@ -97,7 +98,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// How Many Objects Are In This List
 		////////////////////////////////////////////////////////////////////////////////////
-		int			size() const
+		int size() const
 		{
 			return mPool.size();
 		}
@@ -105,7 +106,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Are There Any Objects In This List?
 		////////////////////////////////////////////////////////////////////////////////////
-		bool		empty() const
+		bool empty() const
 		{
 			assert(mFront != NULL_NODE || size() == 0);
 			return mFront == NULL_NODE;
@@ -114,7 +115,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Is This List Filled?
 		////////////////////////////////////////////////////////////////////////////////////
-		bool		full() const
+		bool full() const
 		{
 			return mPool.full();
 		}
@@ -122,7 +123,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Clear All Elements
 		////////////////////////////////////////////////////////////////////////////////////
-		void		clear()
+		void clear()
 		{
 			mFront = NULL_NODE;
 			mBack = NULL_NODE;
@@ -134,7 +135,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		TTValue& front()
 		{
-			assert(mFront != NULL_NODE);  // this is empty
+			assert(mFront != NULL_NODE); // this is empty
 			return mPool[mFront];
 		}
 
@@ -152,7 +153,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		const TTValue& front() const
 		{
-			assert(mFront != NULL_NODE);  // this is empty
+			assert(mFront != NULL_NODE); // this is empty
 			return mPool[mFront];
 		}
 
@@ -170,27 +171,33 @@ namespace ratl
 		// Iterator
 		////////////////////////////////////////////////////////////////////////////////////
 		class const_iterator;
+
 		class iterator
 		{
 			friend class list_base<T>;
 			friend class const_iterator;
 
-			int						mLoc;
+			int mLoc;
 			list_base<T>* mOwner;
 
 		public:
 			// Constructors
 			//--------------
 			iterator() : mLoc(0), mOwner(nullptr)
-			{}
+			{
+			}
+
 			iterator(list_base* p, const int t) : mLoc(t), mOwner(p)
-			{}
+			{
+			}
+
 			iterator(const iterator& t) : mLoc(t.mLoc), mOwner(t.mOwner)
-			{}
+			{
+			}
 
 			// Assignment Operator
 			//---------------------
-			void		operator= (const iterator& t)
+			void operator=(const iterator& t)
 			{
 				mOwner = t.mOwner;
 				mLoc = t.mLoc;
@@ -198,18 +205,19 @@ namespace ratl
 
 			// Equality Operators
 			//--------------------
-			bool		operator!=(const iterator& t)	const
+			bool operator!=(const iterator& t) const
 			{
 				return mLoc != t.mLoc || mOwner != t.mOwner;
 			}
-			bool		operator==(const iterator& t)	const
+
+			bool operator==(const iterator& t) const
 			{
 				return mLoc == t.mLoc && mOwner == t.mOwner;
 			}
 
 			// DeReference Operator
 			//----------------------
-			TTValue& operator* ()	const
+			TTValue& operator*() const
 			{
 				assert(mLoc >= 0 && mLoc < T::CAPACITY);
 				return mOwner->mPool[mLoc];
@@ -217,7 +225,7 @@ namespace ratl
 
 			// DeReference Operator
 			//----------------------
-			TTValue& value()	const
+			TTValue& value() const
 			{
 				assert(mLoc >= 0 && mLoc < T::CAPACITY);
 				return mOwner->mPool[mLoc];
@@ -225,7 +233,7 @@ namespace ratl
 
 			// DeReference Operator
 			//----------------------
-			TTValue* operator-> ()	const
+			TTValue* operator->() const
 			{
 				assert(mLoc >= 0 && mLoc < T::CAPACITY);
 				return &mOwner->mPool[mLoc];
@@ -249,6 +257,7 @@ namespace ratl
 				mLoc = T::node(mOwner->mPool[mLoc]).mNext;
 				return *this;
 			}
+
 			// prefix Inc Operator
 			//--------------
 			iterator operator--(int)
@@ -277,31 +286,39 @@ namespace ratl
 		{
 			friend class list_base<T>;
 
-			int								mLoc;
+			int mLoc;
 			const list_base<T>* mOwner;
 
 		public:
 			// Constructors
 			//--------------
 			const_iterator() : mLoc(0), mOwner(nullptr)
-			{}
+			{
+			}
+
 			const_iterator(const list_base* p, const int t) : mLoc(t), mOwner(p)
-			{}
+			{
+			}
+
 			const_iterator(const const_iterator& t) : mLoc(t.mLoc), mOwner(t.mOwner)
-			{}
+			{
+			}
+
 			const_iterator(const iterator& t) : mLoc(t.mLoc), mOwner(t.mOwner)
-			{}
+			{
+			}
 
 			// Assignment Operator
 			//---------------------
-			void		operator= (const const_iterator& t)
+			void operator=(const const_iterator& t)
 			{
 				mOwner = t.mOwner;
 				mLoc = t.mLoc;
 			}
+
 			// Assignment Operator
 			//---------------------
-			void		operator= (const iterator& t)
+			void operator=(const iterator& t)
 			{
 				mOwner = t.mOwner;
 				mLoc = t.mLoc;
@@ -309,29 +326,31 @@ namespace ratl
 
 			// Equality Operators
 			//--------------------
-			bool		operator!=(const iterator& t)		const
+			bool operator!=(const iterator& t) const
 			{
 				return mLoc != t.mLoc || mOwner != t.mOwner;
 			}
-			bool		operator==(const iterator& t)		const
+
+			bool operator==(const iterator& t) const
 			{
 				return mLoc == t.mLoc && mOwner == t.mOwner;
 			}
 
 			// Equality Operators
 			//--------------------
-			bool		operator!=(const const_iterator& t)		const
+			bool operator!=(const const_iterator& t) const
 			{
 				return mLoc != t.mLoc || mOwner != t.mOwner;
 			}
-			bool		operator==(const const_iterator& t)		const
+
+			bool operator==(const const_iterator& t) const
 			{
 				return mLoc == t.mLoc && mOwner == t.mOwner;
 			}
 
 			// DeReference Operator
 			//----------------------
-			const TTValue& operator* ()		const
+			const TTValue& operator*() const
 			{
 				assert(mLoc >= 0 && mLoc < T::CAPACITY);
 				return mOwner->mPool[mLoc];
@@ -339,7 +358,7 @@ namespace ratl
 
 			// DeReference Operator
 			//----------------------
-			const TTValue* operator-> ()		const
+			const TTValue* operator->() const
 			{
 				assert(mLoc >= 0 && mLoc < T::CAPACITY);
 				return &mOwner->mPool[mLoc];
@@ -347,7 +366,7 @@ namespace ratl
 
 			// DeReference Operator
 			//----------------------
-			const TTValue& value()	const
+			const TTValue& value() const
 			{
 				assert(mLoc >= 0 && mLoc < T::CAPACITY);
 				return mOwner->mPool[mLoc];
@@ -371,6 +390,7 @@ namespace ratl
 				mLoc = T::node(mOwner->mPool[mLoc]).mNext;
 				return *this;
 			}
+
 			// prefix Inc Operator
 			//--------------
 			const_iterator operator--(int)
@@ -391,13 +411,14 @@ namespace ratl
 				return *this;
 			}
 		};
-		friend class				iterator;
-		friend class				const_iterator;
+
+		friend class iterator;
+		friend class const_iterator;
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// Iterator Begin (Starts At Address mFront)
 		////////////////////////////////////////////////////////////////////////////////////
-		iterator	begin()
+		iterator begin()
 		{
 			return iterator(this, mFront);
 		}
@@ -405,7 +426,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Iterator Begin (Starts At Address mFront)
 		////////////////////////////////////////////////////////////////////////////////////
-		const_iterator	begin() const
+		const_iterator begin() const
 		{
 			return const_iterator(this, mFront);
 		}
@@ -413,7 +434,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Reverse Iterator Begin (Starts At Address mBack)
 		////////////////////////////////////////////////////////////////////////////////////
-		iterator	rbegin()
+		iterator rbegin()
 		{
 			return iterator(this, mBack);
 		}
@@ -421,7 +442,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Reverse Iterator Begin (Starts At Address mBack)
 		////////////////////////////////////////////////////////////////////////////////////
-		const_iterator	rbegin() const
+		const_iterator rbegin() const
 		{
 			return const_iterator(this, mBack);
 		}
@@ -429,7 +450,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Iterator End (Set To Address NULL_NODE)  Should Work For Forward & Backward Iteration
 		////////////////////////////////////////////////////////////////////////////////////
-		iterator	end()
+		iterator end()
 		{
 			return iterator(this, NULL_NODE);
 		}
@@ -437,7 +458,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Iterator End (Set To Address NULL_NODE)  Should Work For Forward & Backward Iteration
 		////////////////////////////////////////////////////////////////////////////////////
-		const_iterator	end() const
+		const_iterator end() const
 		{
 			return const_iterator(this, NULL_NODE);
 		}
@@ -452,14 +473,16 @@ namespace ratl
 			insert_low(it, nNew);
 			return mPool[mNew];
 		}
+
 		////////////////////////////////////////////////////////////////////////////////////
 		// Iterator Insert Value(BEFORE POINTED ELEMENT)
 		////////////////////////////////////////////////////////////////////////////////////
-		void	insert(const iterator& it, const TTValue& val)
+		void insert(const iterator& it, const TTValue& val)
 		{
 			const int nNew = mPool.alloc(val);
 			insert_low(it, nNew);
 		}
+
 		////////////////////////////////////////////////////////////////////////////////////
 		// Iterator Insert Raw(BEFORE POINTED ELEMENT)
 		////////////////////////////////////////////////////////////////////////////////////
@@ -480,15 +503,17 @@ namespace ratl
 			it = iterator(this, nNew);
 			return mPool[mNew];
 		}
+
 		////////////////////////////////////////////////////////////////////////////////////
 		// Iterator Insert Value(AFTER POINTED ELEMENT) (ALSO - NOT CONSTANT, WILL CHANGE it)
 		////////////////////////////////////////////////////////////////////////////////////
-		void	insert_after(iterator& it, const TTValue& val)
+		void insert_after(iterator& it, const TTValue& val)
 		{
 			int nNew = mPool.alloc(val);
 			insert_low_after(it, nNew);
 			it = iterator(this, nNew);
 		}
+
 		////////////////////////////////////////////////////////////////////////////////////
 		// Iterator Insert Raw(AFTER POINTED ELEMENT) (ALSO - NOT CONSTANT, WILL CHANGE it)
 		////////////////////////////////////////////////////////////////////////////////////
@@ -509,14 +534,16 @@ namespace ratl
 			insert_low(begin(), nNew);
 			return mPool[mNew];
 		}
+
 		////////////////////////////////////////////////////////////////////////////////////
 		// Front Insert Value(BEFORE POINTED ELEMENT)
 		////////////////////////////////////////////////////////////////////////////////////
-		void	push_front(const TTValue& val)
+		void push_front(const TTValue& val)
 		{
 			const int nNew = mPool.alloc(val);
 			insert_low(begin(), nNew);
 		}
+
 		////////////////////////////////////////////////////////////////////////////////////
 		// Front Insert Raw(BEFORE POINTED ELEMENT)
 		////////////////////////////////////////////////////////////////////////////////////
@@ -536,14 +563,16 @@ namespace ratl
 			insert_low(end(), nNew);
 			return mPool[mNew];
 		}
+
 		////////////////////////////////////////////////////////////////////////////////////
 		// Front Insert Value(BEFORE POINTED ELEMENT)
 		////////////////////////////////////////////////////////////////////////////////////
-		void	push_back(const TTValue& val)
+		void push_back(const TTValue& val)
 		{
 			const int nNew = mPool.alloc(val);
 			insert_low(end(), nNew);
 		}
+
 		////////////////////////////////////////////////////////////////////////////////////
 		// Front Insert Raw(BEFORE POINTED ELEMENT)
 		////////////////////////////////////////////////////////////////////////////////////
@@ -553,17 +582,18 @@ namespace ratl
 			insert_low(end(), mPool.pointer_to_index(ret));
 			return ret;
 		}
+
 		////////////////////////////////////////////////////////////////////////////////////
 		// Iterator Erase
 		////////////////////////////////////////////////////////////////////////////////////
-		void		erase(iterator& it)
+		void erase(iterator& it)
 		{
-			assert(it.mOwner == this);		// Iterators must be mixed up, this is from a different list.
+			assert(it.mOwner == this); // Iterators must be mixed up, this is from a different list.
 			assert(it.mLoc != NULL_NODE);
 
-			int		At = it.mLoc;
-			int		Prev = T::node(mPool[At]).mPrev;
-			int		Next = T::node(mPool[At]).mNext;
+			int At = it.mLoc;
+			int Prev = T::node(mPool[At]).mPrev;
+			int Next = T::node(mPool[At]).mNext;
 
 			// LINK: (Prev)<-(At)--(Next)
 			//--------------------------------------------
@@ -595,22 +625,23 @@ namespace ratl
 			mPool.free(At);
 			it.mLoc = Prev;
 		}
-		template<class CAST_TO>
+
+		template <class CAST_TO>
 		CAST_TO* verify_alloc(CAST_TO* p) const
 		{
 			return mPool.verify_alloc(p);
 		}
-	private:
 
+	private:
 		////////////////////////////////////////////////////////////////////////////////////
 		// Iterator Insert, returns pool index
 		////////////////////////////////////////////////////////////////////////////////////
 		void insert_low(const iterator& it, int nNew)
 		{
-			assert(it.mOwner == this);	// Iterators must be mixed up, this is from a different list.
+			assert(it.mOwner == this); // Iterators must be mixed up, this is from a different list.
 
-			int		Next = it.mLoc;
-			int		Prev;
+			int Next = it.mLoc;
+			int Prev;
 			if (Next != NULL_NODE)
 			{
 				Prev = T::node(mPool[Next]).mPrev;
@@ -657,10 +688,10 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		void insert_low_after(const iterator& it, int nNew)
 		{
-			assert(it.mOwner == this);	// Iterators must be mixed up, this is from a different list.
+			assert(it.mOwner == this); // Iterators must be mixed up, this is from a different list.
 
-			int		Next = NULL_NODE;//it.mLoc;
-			int		Prev = it.mLoc;//NULL_NODE;
+			int Next = NULL_NODE; //it.mLoc;
+			int Prev = it.mLoc; //NULL_NODE;
 			if (Prev != NULL_NODE)
 			{
 				Next = T::node(mPool[Prev]).mNext;
@@ -703,35 +734,44 @@ namespace ratl
 		}
 	};
 
-	template<class T, int ARG_CAPACITY>
-	class list_vs : public list_base<storage::value_semantics_node<T, ARG_CAPACITY, list_node> >
+	template <class T, int ARG_CAPACITY>
+	class list_vs : public list_base<storage::value_semantics_node<T, ARG_CAPACITY, list_node>>
 	{
 	public:
-		typedef storage::value_semantics_node<T, ARG_CAPACITY, list_node> TStorageTraits;
-		typedef typename TStorageTraits::TValue TTValue;
+		using TStorageTraits = storage::value_semantics_node<T, ARG_CAPACITY, list_node>;
+		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
-		list_vs() {}
+
+		list_vs()
+		{
+		}
 	};
 
-	template<class T, int ARG_CAPACITY>
-	class list_os : public list_base<storage::object_semantics_node<T, ARG_CAPACITY, list_node> >
+	template <class T, int ARG_CAPACITY>
+	class list_os : public list_base<storage::object_semantics_node<T, ARG_CAPACITY, list_node>>
 	{
 	public:
-		typedef storage::object_semantics_node<T, ARG_CAPACITY, list_node> TStorageTraits;
-		typedef typename TStorageTraits::TValue TTValue;
+		using TStorageTraits = storage::object_semantics_node<T, ARG_CAPACITY, list_node>;
+		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
-		list_os() {}
+
+		list_os()
+		{
+		}
 	};
 
-	template<class T, int ARG_CAPACITY, int ARG_MAX_CLASS_SIZE>
-	class list_is : public list_base<storage::virtual_semantics_node<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE, list_node> >
+	template <class T, int ARG_CAPACITY, int ARG_MAX_CLASS_SIZE>
+	class list_is : public list_base<storage::virtual_semantics_node<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE, list_node>>
 	{
 	public:
-		typedef storage::virtual_semantics_node<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE, list_node> TStorageTraits;
-		typedef typename TStorageTraits::TValue TTValue;
+		using TStorageTraits = storage::virtual_semantics_node<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE, list_node>;
+		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		static const int MAX_CLASS_SIZE = ARG_MAX_CLASS_SIZE;
-		list_is() {}
+
+		list_is()
+		{
+		}
 	};
 }
 #endif

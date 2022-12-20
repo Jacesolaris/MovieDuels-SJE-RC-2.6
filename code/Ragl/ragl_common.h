@@ -108,16 +108,21 @@ namespace ragl
 	////////////////////////////////////////////////////////////////////////////////////////
 	// The Graph Node Class
 	////////////////////////////////////////////////////////////////////////////////////////
-	class	CNode
+	class CNode
 	{
 	public:
-		CNode() {}
-		CNode(const CVec3& Pt) : mPoint(Pt) {}
+		CNode()
+		{
+		}
+
+		CNode(const CVec3& Pt) : mPoint(Pt)
+		{
+		}
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// Access Operator (For Triangulation)
 		////////////////////////////////////////////////////////////////////////////////////
-		float			operator[](const int dimension)
+		float operator[](const int dimension)
 		{
 			return mPoint[dimension];
 		}
@@ -125,7 +130,7 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Equality Operator (For KDTree)
 		////////////////////////////////////////////////////////////////////////////////////
-		bool			operator==(const CNode& t) const
+		bool operator==(const CNode& t) const
 		{
 			return t.mPoint == mPoint;
 		}
@@ -133,7 +138,7 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Left Right Test (For Triangulation)
 		////////////////////////////////////////////////////////////////////////////////////
-		virtual		ESide	LRTest(const CNode& A, const CNode& B) const
+		virtual ESide LRTest(const CNode& A, const CNode& B) const
 		{
 			return mPoint.LRTest(A.mPoint, B.mPoint);
 		}
@@ -141,27 +146,27 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Point In Circle (For Triangulation)
 		////////////////////////////////////////////////////////////////////////////////////
-		virtual		bool	InCircle(const CNode& A, const CNode& B, const CNode& C) const
+		virtual bool InCircle(const CNode& A, const CNode& B, const CNode& C) const
 		{
 			return mPoint.PtInCircle(A.mPoint, B.mPoint, C.mPoint);
 		}
 
 	public:
-		CVec3		mPoint;
+		CVec3 mPoint;
 	};
 
 	////////////////////////////////////////////////////////////////////////////////////////
 	// The Graph Edge Class
 	////////////////////////////////////////////////////////////////////////////////////////
-	class	CEdge
+	class CEdge
 	{
 	public:
-		int			mNodeA;
-		int			mNodeB;
-		bool		mOnHull;
-		float		mDistance;
-		bool		mCanBeInval;
-		bool		mValid;
+		int mNodeA;
+		int mNodeB;
+		bool mOnHull;
+		float mDistance;
+		bool mCanBeInval;
+		bool mValid;
 	};
 
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -171,13 +176,16 @@ namespace ragl
 	// various dimensions.  It is used in both Triangulation and KDTree
 	////////////////////////////////////////////////////////////////////////////////////////
 	template <class TDATA, class TDATAREF>
-	class	ragl_ref
+	class ragl_ref
 	{
 	public:
 		////////////////////////////////////////////////////////////////////////////////////
 		// Constructors
 		////////////////////////////////////////////////////////////////////////////////////
-		ragl_ref() {}
+		ragl_ref()
+		{
+		}
+
 		ragl_ref(const ragl_ref& r) { mDataRef = static_cast<TDATAREF>(r.mDataRef); }
 		ragl_ref(const TDATA& r) { mDataRef = static_cast<TDATAREF>(&r); }
 		ragl_ref(const TDATAREF r) { mDataRef = static_cast<TDATAREF>(r); }
@@ -185,14 +193,14 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Assignment Operators
 		////////////////////////////////////////////////////////////////////////////////////
-		void			operator=(const ragl_ref& r) { mDataRef = static_cast<TDATAREF>(r.mDataRef); }
-		void			operator=(const TDATA& r) { mDataRef = static_cast<TDATAREF>(&r); }
-		void			operator=(const TDATAREF r) { mDataRef = static_cast<TDATAREF>(r); }
+		void operator=(const ragl_ref& r) { mDataRef = static_cast<TDATAREF>(r.mDataRef); }
+		void operator=(const TDATA& r) { mDataRef = static_cast<TDATAREF>(&r); }
+		void operator=(const TDATAREF r) { mDataRef = static_cast<TDATAREF>(r); }
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// Access Operator (For Triangulation)
 		////////////////////////////////////////////////////////////////////////////////////
-		float			operator[](int dimension) const { return (*mDataRef)[dimension]; }
+		float operator[](int dimension) const { return (*mDataRef)[dimension]; }
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// Dereference Operator
@@ -200,33 +208,33 @@ namespace ragl
 		TDATA& operator*() { return *mDataRef; }
 		const TDATA& operator*() const { return *mDataRef; }
 
-		TDATAREF		handle() const { return mDataRef; }
+		TDATAREF handle() const { return mDataRef; }
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// Equality / Inequality Operators
 		////////////////////////////////////////////////////////////////////////////////////
-		bool			operator== (const ragl_ref& t) const { return	*mDataRef == *t.mDataRef; }
-		bool			operator!= (const ragl_ref& t) const { return	*mDataRef != *t.mDataRef; }
-		bool			operator<  (const ragl_ref& t) const { return	*mDataRef < *t.mDataRef; }
-		bool			operator>  (const ragl_ref& t) const { return	*mDataRef > *t.mDataRef; }
-		bool			operator<= (const ragl_ref& t) const { return	*mDataRef <= *t.mDataRef; }
-		bool			operator>= (const ragl_ref& t) const { return	*mDataRef >= *t.mDataRef; }
+		bool operator==(const ragl_ref& t) const { return *mDataRef == *t.mDataRef; }
+		bool operator!=(const ragl_ref& t) const { return *mDataRef != *t.mDataRef; }
+		bool operator<(const ragl_ref& t) const { return *mDataRef < *t.mDataRef; }
+		bool operator>(const ragl_ref& t) const { return *mDataRef > *t.mDataRef; }
+		bool operator<=(const ragl_ref& t) const { return *mDataRef <= *t.mDataRef; }
+		bool operator>=(const ragl_ref& t) const { return *mDataRef >= *t.mDataRef; }
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// Equality / Inequality Operators
 		////////////////////////////////////////////////////////////////////////////////////
-		bool			operator== (const TDATA& t) const { return	*mDataRef == t; }
-		bool			operator!= (const TDATA& t) const { return	*mDataRef != t; }
-		bool			operator<  (const TDATA& t) const { return	*mDataRef < t; }
-		bool			operator>  (const TDATA& t) const { return	*mDataRef > t; }
-		bool			operator<= (const TDATA& t) const { return	*mDataRef <= t; }
-		bool			operator>= (const TDATA& t) const { return	*mDataRef >= t; }
+		bool operator==(const TDATA& t) const { return *mDataRef == t; }
+		bool operator!=(const TDATA& t) const { return *mDataRef != t; }
+		bool operator<(const TDATA& t) const { return *mDataRef < t; }
+		bool operator>(const TDATA& t) const { return *mDataRef > t; }
+		bool operator<=(const TDATA& t) const { return *mDataRef <= t; }
+		bool operator>=(const TDATA& t) const { return *mDataRef >= t; }
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// The Data Reference
 		////////////////////////////////////////////////////////////////////////////////////
 	private:
-		TDATAREF		mDataRef;
+		TDATAREF mDataRef;
 	};
 }
 #endif

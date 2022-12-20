@@ -155,17 +155,18 @@ decode (standard decoder) reduction_code:
 typedef unsigned char byte;
 #endif
 
-typedef struct id3v1_1 {
+typedef struct id3v1_1
+{
 	char id[3];
-	char title[30];		// <file basename>
-	char artist[30];	// "Raven Software"
-	char album[30];		// "#UNCOMP %d"		// needed
-	char year[4];		// "2000"
-	char comment[28];	// "#MAXVOL %g"		// needed
+	char title[30]; // <file basename>
+	char artist[30]; // "Raven Software"
+	char album[30]; // "#UNCOMP %d"		// needed
+	char year[4]; // "2000"
+	char comment[28]; // "#MAXVOL %g"		// needed
 	char zero;
 	char track;
 	char genre;
-} id3v1_1;	// 128 bytes in size
+} id3v1_1; // 128 bytes in size
 
 id3v1_1* gpTAG;
 #define BYTESREMAINING_ACCOUNT_FOR_REAR_TAG(_pvData, _iBytesRemaining)								\
@@ -180,15 +181,15 @@ id3v1_1* gpTAG;
 /********  pcm buffer ********/
 
 #define PCM_BUFBYTES  60000U	// more than enough to cover the largest that one packet will ever expand to
-char PCM_Buffer[PCM_BUFBYTES];	// better off being declared, so we don't do mallocs in this module (MAC reasons)
+char PCM_Buffer[PCM_BUFBYTES]; // better off being declared, so we don't do mallocs in this module (MAC reasons)
 
 typedef struct
 {
-	int (*decode_init) (MPEG_HEAD* h, int framebytes_arg,
-		int reduction_code, int transform_code,
-		int convert_code, int freq_limit);
-	void (*decode_info) (DEC_INFO* info);
-	IN_OUT(*decode) (unsigned char* bs, short* pcm, unsigned char* pNextByteAfterData);
+	int (*decode_init)(MPEG_HEAD* h, int framebytes_arg,
+	                   int reduction_code, int transform_code,
+	                   int convert_code, int freq_limit);
+	void (*decode_info)(DEC_INFO* info);
+	IN_OUT (*decode)(unsigned char* bs, short* pcm, unsigned char* pNextByteAfterData);
 }
 AUDIO;
 
@@ -219,20 +220,20 @@ static AUDIO audio_table[2][2] =
 };
 #endif
 
-static const AUDIO audio = { audio_decode_init, audio_decode_info, audio_decode };	//audio_table[0][0];
+static const AUDIO audio = {audio_decode_init, audio_decode_info, audio_decode}; //audio_table[0][0];
 
 // Do NOT change these, ever!!!!!!!!!!!!!!!!!!
 //
-const int reduction_code = 0;		// unpack at full sample rate output
+const int reduction_code = 0; // unpack at full sample rate output
 const int convert_code_mono = 1;
 const int convert_code_stereo = 0;
-const int freq_limit = 24000;	// no idea what this is about, but it's always this value so...
+const int freq_limit = 24000; // no idea what this is about, but it's always this value so...
 
 // the entire decode mechanism uses this now...
 //
 MP3STREAM _MP3Stream;
 LP_MP3STREAM pMP3Stream = &_MP3Stream;
-int bFastEstimateOnly = 0;	// MUST DEFAULT TO THIS VALUE!!!!!!!!!
+int bFastEstimateOnly = 0; // MUST DEFAULT TO THIS VALUE!!!!!!!!!
 
 // char *return is NZ for any errors (no trailing CR!)
 //
@@ -241,7 +242,7 @@ char* C_MP3_IsValid(void* pvData, int iDataLen, int bStereoDesired)
 	//	char sTemp[1024];	/////////////////////////////////////////////////
 	unsigned int iRealDataStart;
 	MPEG_HEAD head;
-	DEC_INFO  decinfo;
+	DEC_INFO decinfo;
 
 	int iBitRate;
 	int iFrameBytes;
@@ -264,14 +265,16 @@ char* C_MP3_IsValid(void* pvData, int iDataLen, int bStereoDesired)
 	// although the decoder can convert stereo to mono (apparently), we want to know about stereo files
 	//	because they're a waste of source space... (all FX are mono, and moved via panning)
 	//
-	if (head.mode != 3 && !bStereoDesired && iDataLen > 98000)	//3 seems to mean mono
-	{// we'll allow it for small files even if stereo
+	if (head.mode != 3 && !bStereoDesired && iDataLen > 98000) //3 seems to mean mono
+	{
+		// we'll allow it for small files even if stereo
 		if (iDataLen != 1050024) //fixme, make cinematic_1 play as music instead
 		{
 			return "MP3ERR: Sound file is stereo!";
 		}
 	}
-	if (audio.decode_init(&head, iFrameBytes, reduction_code, iRealDataStart, bStereoDesired ? convert_code_stereo : convert_code_mono, freq_limit))
+	if (audio.decode_init(&head, iFrameBytes, reduction_code, iRealDataStart,
+	                      bStereoDesired ? convert_code_stereo : convert_code_mono, freq_limit))
 	{
 		if (bStereoDesired)
 		{
@@ -292,7 +295,7 @@ char* C_MP3_IsValid(void* pvData, int iDataLen, int bStereoDesired)
 
 		if (decinfo.bits != 16)
 		{
-			return "MP3ERR: Source file is not 16bit!";	// will this ever happen? oh well...
+			return "MP3ERR: Source file is not 16bit!"; // will this ever happen? oh well...
 		}
 
 		if (decinfo.samprate != 44100)
@@ -301,7 +304,7 @@ char* C_MP3_IsValid(void* pvData, int iDataLen, int bStereoDesired)
 		}
 		if (bStereoDesired && decinfo.channels != 2)
 		{
-			return "MP3ERR: Source file is not stereo!";	// sod it, I'm going to count this as an error now
+			return "MP3ERR: Source file is not stereo!"; // sod it, I'm going to count this as an error now
 		}
 	}
 	else
@@ -320,7 +323,7 @@ char* C_MP3_GetHeaderData(void* pvData, int iDataLen, int* piRate, int* piWidth,
 {
 	unsigned int iRealDataStart;
 	MPEG_HEAD head;
-	DEC_INFO  decinfo;
+	DEC_INFO decinfo;
 
 	int iBitRate;
 
@@ -332,13 +335,14 @@ char* C_MP3_GetHeaderData(void* pvData, int iDataLen, int* piRate, int* piWidth,
 		return "MP3ERR: Bad or unsupported file!";
 	}
 
-	if (audio.decode_init(&head, iFrameBytes, reduction_code, iRealDataStart, bStereoDesired ? convert_code_stereo : convert_code_mono, freq_limit))
+	if (audio.decode_init(&head, iFrameBytes, reduction_code, iRealDataStart,
+	                      bStereoDesired ? convert_code_stereo : convert_code_mono, freq_limit))
 	{
 		audio.decode_info(&decinfo);
 
-		*piRate = decinfo.samprate;	// rate (eg 22050, 44100 etc)
-		*piWidth = decinfo.bits / 8;	// 1 for 8bit, 2 for 16 bit
-		*piChannels = decinfo.channels;	// 1 for mono, 2 for stereo
+		*piRate = decinfo.samprate; // rate (eg 22050, 44100 etc)
+		*piWidth = decinfo.bits / 8; // 1 for 8bit, 2 for 16 bit
+		*piChannels = decinfo.channels; // 1 for mono, 2 for stereo
 	}
 	else
 	{
@@ -377,7 +381,7 @@ char* C_MP3_GetUnpackedSize(void* pvData, int iSourceBytesRemaining, int* piUnpa
 	const int iFrameBytes = head_info3(pvData, iSourceBytesRemaining / 2, &head, &iBitRate, &iRealDataStart);
 
 	BYTESREMAINING_ACCOUNT_FOR_REAR_TAG(pvData, iSourceBytesRemaining)
-		iSourceBytesRemaining -= iRealDataStart;
+	iSourceBytesRemaining -= iRealDataStart;
 
 	const int iReadLimit = iSourceReadIndex + iSourceBytesRemaining;
 
@@ -389,7 +393,8 @@ char* C_MP3_GetUnpackedSize(void* pvData, int iSourceBytesRemaining, int* piUnpa
 		{
 			// init decoder...
 
-			if (audio.decode_init(&head, iFrameBytes, reduction_code, iRealDataStart, bStereoDesired ? convert_code_stereo : convert_code_mono, freq_limit))
+			if (audio.decode_init(&head, iFrameBytes, reduction_code, iRealDataStart,
+			                      bStereoDesired ? convert_code_stereo : convert_code_mono, freq_limit))
 			{
 				int iDestWriteIndex = 0;
 				audio.decode_info(&decinfo);
@@ -399,17 +404,15 @@ char* C_MP3_GetUnpackedSize(void* pvData, int iSourceBytesRemaining, int* piUnpa
 				for (int iFrameCounter = 0;; iFrameCounter++)
 				{
 					if (iSourceBytesRemaining == 0 || iSourceBytesRemaining < iFrameBytes)
-						break;	// end of file
+						break; // end of file
 
-					bFastEstimateOnly = 1;	///////////////////////////////
+					bFastEstimateOnly = 1; ///////////////////////////////
 
-					const IN_OUT x = audio.decode((unsigned char*)pvData + iSourceReadIndex, (short*)((char*)pPCM_Buffer
-						//+ iDestWriteIndex		// keep decoding over the same spot since we're only counting bytes in this function
-						),
-						(unsigned char*)pvData + iReadLimit
+					const IN_OUT x = audio.decode((unsigned char*)pvData + iSourceReadIndex, (short*)pPCM_Buffer,
+					                              (unsigned char*)pvData + iReadLimit
 					);
 
-					bFastEstimateOnly = 0;	///////////////////////////////
+					bFastEstimateOnly = 0; ///////////////////////////////
 
 					iSourceReadIndex += x.in_bytes;
 					iSourceBytesRemaining -= x.in_bytes;
@@ -422,7 +425,7 @@ char* C_MP3_GetUnpackedSize(void* pvData, int iSourceBytesRemaining, int* piUnpa
 					}
 				}
 
-				*piUnpackedSize = iDestWriteIndex;	// yeeehaaa!
+				*piUnpackedSize = iDestWriteIndex; // yeeehaaa!
 			}
 			else
 			{
@@ -450,7 +453,8 @@ char* C_MP3_GetUnpackedSize(void* pvData, int iSourceBytesRemaining, int* piUnpa
 #undef iSourceReadIndex
 }
 
-char* C_MP3_UnpackRawPCM(void* pvData, int iSourceBytesRemaining, int* piUnpackedSize, void* pbUnpackBuffer, int bStereoDesired)
+char* C_MP3_UnpackRawPCM(void* pvData, int iSourceBytesRemaining, int* piUnpackedSize, void* pbUnpackBuffer,
+                         int bStereoDesired)
 {
 	unsigned int iRealDataStart;
 	MPEG_HEAD head;
@@ -469,7 +473,7 @@ char* C_MP3_UnpackRawPCM(void* pvData, int iSourceBytesRemaining, int* piUnpacke
 	const int iFrameBytes = head_info3(pvData, iSourceBytesRemaining / 2, &head, &iBitRate, &iRealDataStart);
 
 	BYTESREMAINING_ACCOUNT_FOR_REAR_TAG(pvData, iSourceBytesRemaining)
-		iSourceBytesRemaining -= iRealDataStart;
+	iSourceBytesRemaining -= iRealDataStart;
 
 	const int iReadLimit = iSourceReadIndex + iSourceBytesRemaining;
 
@@ -479,7 +483,8 @@ char* C_MP3_UnpackRawPCM(void* pvData, int iSourceBytesRemaining, int* piUnpacke
 		{
 			// init decoder...
 
-			if (audio.decode_init(&head, iFrameBytes, reduction_code, iRealDataStart, bStereoDesired ? convert_code_stereo : convert_code_mono, freq_limit))
+			if (audio.decode_init(&head, iFrameBytes, reduction_code, iRealDataStart,
+			                      bStereoDesired ? convert_code_stereo : convert_code_mono, freq_limit))
 			{
 				int iDestWriteIndex = 0;
 				audio.decode_info(&decinfo);
@@ -491,16 +496,16 @@ char* C_MP3_UnpackRawPCM(void* pvData, int iSourceBytesRemaining, int* piUnpacke
 
 				//===============
 
-								// decode...
-								//
+				// decode...
+				//
 				for (int iFrameCounter = 0;; iFrameCounter++)
 				{
 					if (iSourceBytesRemaining == 0 || iSourceBytesRemaining < iFrameBytes)
-						break;	// end of file
+						break; // end of file
 
 					const IN_OUT x = audio.decode((unsigned char*)pvData + iSourceReadIndex,
-						(short*)((char*)pbUnpackBuffer + iDestWriteIndex),
-						(unsigned char*)pvData + iReadLimit
+					                              (short*)((char*)pbUnpackBuffer + iDestWriteIndex),
+					                              (unsigned char*)pvData + iReadLimit
 					);
 
 					iSourceReadIndex += x.in_bytes;
@@ -514,7 +519,7 @@ char* C_MP3_UnpackRawPCM(void* pvData, int iSourceBytesRemaining, int* piUnpacke
 					}
 				}
 
-				*piUnpackedSize = iDestWriteIndex;	// yeeehaaa!
+				*piUnpackedSize = iDestWriteIndex; // yeeehaaa!
 			}
 			else
 			{
@@ -539,12 +544,12 @@ char* C_MP3_UnpackRawPCM(void* pvData, int iSourceBytesRemaining, int* piUnpacke
 // char * return is NULL for ok, else error string
 //
 char* C_MP3Stream_DecodeInit(LP_MP3STREAM pSFX_MP3Stream, void* pvSourceData, int iSourceBytesRemaining,
-	int iGameAudioSampleRate, int iGameAudioSampleBits, int bStereoDesired)
+                             int iGameAudioSampleRate, int iGameAudioSampleBits, int bStereoDesired)
 {
 	char* psReturn = NULL;
-	MPEG_HEAD		head;			// only relevant within this function during init
-	DEC_INFO		decinfo;		//   " "
-	int				iBitRate;		// not used after being filled in by head_info3()
+	MPEG_HEAD head; // only relevant within this function during init
+	DEC_INFO decinfo; //   " "
+	int iBitRate; // not used after being filled in by head_info3()
 
 	pMP3Stream = pSFX_MP3Stream;
 
@@ -552,7 +557,8 @@ char* C_MP3Stream_DecodeInit(LP_MP3STREAM pSFX_MP3Stream, void* pvSourceData, in
 
 	pMP3Stream->pbSourceData = (byte*)pvSourceData;
 	pMP3Stream->iSourceBytesRemaining = iSourceBytesRemaining;
-	pMP3Stream->iSourceFrameBytes = head_info3((byte*)pvSourceData, iSourceBytesRemaining / 2, &head, &iBitRate, (unsigned int*)&pMP3Stream->iSourceReadIndex);
+	pMP3Stream->iSourceFrameBytes = head_info3(pvSourceData, iSourceBytesRemaining / 2, &head, &iBitRate,
+	                                           (unsigned int*)&pMP3Stream->iSourceReadIndex);
 
 	// hack, do NOT do this for stereo, since music files are now streamed and therefore the data isn't actually fully
 	//	loaded at this point, only about 4k or so for the header is actually in memory!!!...
@@ -571,15 +577,16 @@ char* C_MP3Stream_DecodeInit(LP_MP3STREAM pSFX_MP3Stream, void* pvSourceData, in
 	assert(pMP3Stream->iSourceFrameBytes);
 	if (pMP3Stream->iSourceFrameBytes)
 	{
-		if (audio.decode_init(&head, pMP3Stream->iSourceFrameBytes, reduction_code, pMP3Stream->iSourceReadIndex, bStereoDesired ? convert_code_stereo : convert_code_mono, freq_limit))
+		if (audio.decode_init(&head, pMP3Stream->iSourceFrameBytes, reduction_code, pMP3Stream->iSourceReadIndex,
+		                      bStereoDesired ? convert_code_stereo : convert_code_mono, freq_limit))
 		{
-			pMP3Stream->iRewind_FinalReductionCode = reduction_code;	// default = 0 (no reduction), 1=half, 2 = quarter
+			pMP3Stream->iRewind_FinalReductionCode = reduction_code; // default = 0 (no reduction), 1=half, 2 = quarter
 
 			pMP3Stream->iRewind_FinalConvertCode = bStereoDesired ? convert_code_stereo : convert_code_mono;
 			// default = 1 (mono), OR with 8 for 8-bit output
 
-// only now can we ask what kind of properties this file has, and then adjust to fit what the game wants...
-//
+			// only now can we ask what kind of properties this file has, and then adjust to fit what the game wants...
+			//
 			audio.decode_info(&decinfo);
 
 			//			printf("\n output samprate = %6ld",decinfo.samprate);
@@ -587,18 +594,18 @@ char* C_MP3Stream_DecodeInit(LP_MP3STREAM pSFX_MP3Stream, void* pvSourceData, in
 			//			printf("\n output bits     = %6d", decinfo.bits);
 			//			printf("\n output type     = %6d", decinfo.type);
 
-						// decoder offers half or quarter rate adjustement only...
-						//
+			// decoder offers half or quarter rate adjustement only...
+			//
 			if (iGameAudioSampleRate == decinfo.samprate >> 1)
 				pMP3Stream->iRewind_FinalReductionCode = 1;
-			else
-				if (iGameAudioSampleRate == decinfo.samprate >> 2)
-					pMP3Stream->iRewind_FinalReductionCode = 2;
+			else if (iGameAudioSampleRate == decinfo.samprate >> 2)
+				pMP3Stream->iRewind_FinalReductionCode = 2;
 
-			if (iGameAudioSampleBits == decinfo.bits >> 1)	// if game wants 8 bit sounds, then setup for that
+			if (iGameAudioSampleBits == decinfo.bits >> 1) // if game wants 8 bit sounds, then setup for that
 				pMP3Stream->iRewind_FinalConvertCode |= 8;
 
-			if (audio.decode_init(&head, pMP3Stream->iSourceFrameBytes, pMP3Stream->iRewind_FinalReductionCode, pMP3Stream->iSourceReadIndex, pMP3Stream->iRewind_FinalConvertCode, freq_limit))
+			if (audio.decode_init(&head, pMP3Stream->iSourceFrameBytes, pMP3Stream->iRewind_FinalReductionCode,
+			                      pMP3Stream->iSourceReadIndex, pMP3Stream->iRewind_FinalConvertCode, freq_limit))
 			{
 				audio.decode_info(&decinfo);
 #ifdef _DEBUG
@@ -625,7 +632,7 @@ char* C_MP3Stream_DecodeInit(LP_MP3STREAM pSFX_MP3Stream, void* pvSourceData, in
 	}
 	else
 	{
-		psReturn = "MP3ERR: Errr.... something's broken with this MP3 file";	// should never happen by this point
+		psReturn = "MP3ERR: Errr.... something's broken with this MP3 file"; // should never happen by this point
 	}
 
 	// restore global stream ptr before returning to normal functions (so the rest of the MP3 code still works)...
@@ -639,27 +646,29 @@ char* C_MP3Stream_DecodeInit(LP_MP3STREAM pSFX_MP3Stream, void* pvSourceData, in
 //
 unsigned int C_MP3Stream_Decode(LP_MP3STREAM pSFX_MP3Stream, int bFastForwarding)
 {
-	unsigned int uiDecoded = 0;	// default to "finished"
+	unsigned int uiDecoded = 0; // default to "finished"
 
 	pMP3Stream = pSFX_MP3Stream;
 
-	if (pSFX_MP3Stream->iSourceBytesRemaining == 0)//|| pSFX_MP3Stream->iSourceBytesRemaining < pSFX_MP3Stream->iSourceFrameBytes)
+	if (pSFX_MP3Stream->iSourceBytesRemaining == 0)
+	//|| pSFX_MP3Stream->iSourceBytesRemaining < pSFX_MP3Stream->iSourceFrameBytes)
 	{
-		uiDecoded = 0;	// finished
+		uiDecoded = 0; // finished
 		pMP3Stream = &_MP3Stream;
 
 		return uiDecoded;
 	}
 
-	bFastEstimateOnly = bFastForwarding;	///////////////////////////////
+	bFastEstimateOnly = bFastForwarding; ///////////////////////////////
 
 	const IN_OUT x = audio.decode(pSFX_MP3Stream->pbSourceData + pSFX_MP3Stream->iSourceReadIndex,
-		(short*)(pSFX_MP3Stream->bDecodeBuffer),
-		pSFX_MP3Stream->pbSourceData + pSFX_MP3Stream->iRewind_SourceReadIndex + pSFX_MP3Stream->
-		iRewind_SourceBytesRemaining
+	                              (short*)(pSFX_MP3Stream->bDecodeBuffer),
+	                              pSFX_MP3Stream->pbSourceData + pSFX_MP3Stream->iRewind_SourceReadIndex +
+	                              pSFX_MP3Stream->
+	                              iRewind_SourceBytesRemaining
 	);
 
-	bFastEstimateOnly = 0;	///////////////////////////////
+	bFastEstimateOnly = 0; ///////////////////////////////
 
 #ifdef _DEBUG
 	pSFX_MP3Stream->iSourceFrameCounter++;
@@ -675,7 +684,7 @@ unsigned int C_MP3Stream_Decode(LP_MP3STREAM pSFX_MP3Stream, int bFastForwarding
 	if (x.in_bytes <= 0)
 	{
 		//psReturn = "MP3ERR: Bad sync in file";
-		uiDecoded = 0;	// finished
+		uiDecoded = 0; // finished
 		pMP3Stream = &_MP3Stream;
 
 		return uiDecoded;
@@ -693,20 +702,22 @@ unsigned int C_MP3Stream_Decode(LP_MP3STREAM pSFX_MP3Stream, int bFastForwarding
 char* C_MP3Stream_Rewind(LP_MP3STREAM pSFX_MP3Stream)
 {
 	char* psReturn = NULL;
-	MPEG_HEAD	head;			// only relevant within this function during init
-	int			iBitRate;		// ditto
-	int			iNULL;
+	MPEG_HEAD head; // only relevant within this function during init
+	int iBitRate; // ditto
+	int iNULL;
 
 	pMP3Stream = pSFX_MP3Stream;
 
 	pMP3Stream->iSourceReadIndex = pMP3Stream->iRewind_SourceReadIndex;
-	pMP3Stream->iSourceBytesRemaining = pMP3Stream->iRewind_SourceBytesRemaining;	// already adjusted for tags etc
+	pMP3Stream->iSourceBytesRemaining = pMP3Stream->iRewind_SourceBytesRemaining; // already adjusted for tags etc
 
 	// I'm not sure that this is needed, but where else does decode_init get passed useful data ptrs?...
 	//
-	if (pMP3Stream->iSourceFrameBytes == head_info3(pMP3Stream->pbSourceData, pMP3Stream->iSourceBytesRemaining / 2, &head, &iBitRate, (unsigned int*)&iNULL))
+	if (pMP3Stream->iSourceFrameBytes == head_info3(pMP3Stream->pbSourceData, pMP3Stream->iSourceBytesRemaining / 2,
+	                                                &head, &iBitRate, (unsigned int*)&iNULL))
 	{
-		if (audio.decode_init(&head, pMP3Stream->iSourceFrameBytes, pMP3Stream->iRewind_FinalReductionCode, pMP3Stream->iSourceReadIndex, pMP3Stream->iRewind_FinalConvertCode, freq_limit))
+		if (audio.decode_init(&head, pMP3Stream->iSourceFrameBytes, pMP3Stream->iRewind_FinalReductionCode,
+		                      pMP3Stream->iSourceReadIndex, pMP3Stream->iRewind_FinalConvertCode, freq_limit))
 		{
 			// we should always get here...
 			//

@@ -66,7 +66,7 @@ void window8_dual(const float* vbuf, int vb_ptr, short* pcm);
 float* dct_coef_addr();
 
 /*======================================================================*/
-static void gencoef()		/* gen coef for N=32 (31 coefs) */
+static void gencoef() /* gen coef for N=32 (31 coefs) */
 {
 	static int iOnceOnly = 0;
 
@@ -87,6 +87,7 @@ static void gencoef()		/* gen coef for N=32 (31 coefs) */
 		}
 	}
 }
+
 /*------------------------------------------------------------*/
 void sbt_init()
 {
@@ -106,6 +107,7 @@ void sbt_init()
 	}
 	pMP3Stream->vb2_ptr = pMP3Stream->vb_ptr = 0;
 }
+
 /*============================================================*/
 /*============================================================*/
 /*============================================================*/
@@ -120,6 +122,7 @@ void sbt_mono(float* sample, short* pcm, int n)
 		pcm += 32;
 	}
 }
+
 /*------------------------------------------------------------*/
 void sbt_dual(float* sample, short* pcm, int n)
 {
@@ -134,6 +137,7 @@ void sbt_dual(float* sample, short* pcm, int n)
 		pcm += 64;
 	}
 }
+
 /*------------------------------------------------------------*/
 /* convert dual to mono */
 void sbt_dual_mono(float* sample, short* pcm, int n)
@@ -147,6 +151,7 @@ void sbt_dual_mono(float* sample, short* pcm, int n)
 		pcm += 32;
 	}
 }
+
 /*------------------------------------------------------------*/
 /* convert dual to left */
 void sbt_dual_left(float* sample, short* pcm, int n)
@@ -160,11 +165,12 @@ void sbt_dual_left(float* sample, short* pcm, int n)
 		pcm += 32;
 	}
 }
+
 /*------------------------------------------------------------*/
 /* convert dual to right */
 void sbt_dual_right(float* sample, short* pcm, int n)
 {
-	sample++;			/* point to right chan */
+	sample++; /* point to right chan */
 	for (int i = 0; i < n; i++)
 	{
 		fdct32_dual(sample, pMP3Stream->vbuf + pMP3Stream->vb_ptr);
@@ -174,6 +180,7 @@ void sbt_dual_right(float* sample, short* pcm, int n)
 		pcm += 32;
 	}
 }
+
 /*------------------------------------------------------------*/
 /*---------------- 16 pt sbt's  -------------------------------*/
 /*------------------------------------------------------------*/
@@ -188,6 +195,7 @@ void sbt16_mono(float* sample, short* pcm, int n)
 		pcm += 16;
 	}
 }
+
 /*------------------------------------------------------------*/
 void sbt16_dual(float* sample, short* pcm, int n)
 {
@@ -202,6 +210,7 @@ void sbt16_dual(float* sample, short* pcm, int n)
 		pcm += 32;
 	}
 }
+
 /*------------------------------------------------------------*/
 void sbt16_dual_mono(float* sample, short* pcm, int n)
 {
@@ -214,6 +223,7 @@ void sbt16_dual_mono(float* sample, short* pcm, int n)
 		pcm += 16;
 	}
 }
+
 /*------------------------------------------------------------*/
 void sbt16_dual_left(float* sample, short* pcm, int n)
 {
@@ -226,6 +236,7 @@ void sbt16_dual_left(float* sample, short* pcm, int n)
 		pcm += 16;
 	}
 }
+
 /*------------------------------------------------------------*/
 void sbt16_dual_right(float* sample, short* pcm, int n)
 {
@@ -239,6 +250,7 @@ void sbt16_dual_right(float* sample, short* pcm, int n)
 		pcm += 16;
 	}
 }
+
 /*------------------------------------------------------------*/
 /*---------------- 8 pt sbt's  -------------------------------*/
 /*------------------------------------------------------------*/
@@ -253,6 +265,7 @@ void sbt8_mono(float* sample, short* pcm, int n)
 		pcm += 8;
 	}
 }
+
 /*------------------------------------------------------------*/
 void sbt8_dual(float* sample, short* pcm, int n)
 {
@@ -267,6 +280,7 @@ void sbt8_dual(float* sample, short* pcm, int n)
 		pcm += 16;
 	}
 }
+
 /*------------------------------------------------------------*/
 void sbt8_dual_mono(float* sample, short* pcm, int n)
 {
@@ -279,6 +293,7 @@ void sbt8_dual_mono(float* sample, short* pcm, int n)
 		pcm += 8;
 	}
 }
+
 /*------------------------------------------------------------*/
 void sbt8_dual_left(float* sample, short* pcm, int n)
 {
@@ -291,6 +306,7 @@ void sbt8_dual_left(float* sample, short* pcm, int n)
 		pcm += 8;
 	}
 }
+
 /*------------------------------------------------------------*/
 void sbt8_dual_right(float* sample, short* pcm, int n)
 {
@@ -304,6 +320,7 @@ void sbt8_dual_right(float* sample, short* pcm, int n)
 		pcm += 8;
 	}
 }
+
 /*------------------------------------------------------------*/
 /*------------------------------------------------------------*/
 #define COMPILE_ME

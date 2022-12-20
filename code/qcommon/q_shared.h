@@ -1052,10 +1052,14 @@ constexpr auto SFL_NO_ROLLS = 1 << 16; //if set, cannot roll;
 #define SFL_NO_KICKS				(1<<19)//if set, cannot do kicks (can't do kicks anyway if using a throwable saber/sword)
 #define SFL_NO_MIRROR_ATTACKS		(1<<20)//if set, cannot do the simultaneous attack left/right moves (only available in Dual Lightsaber Combat Style)
 
+
+
 #define SFL_NO_ROLL_STAB			(1<<21)//if set, cannot do roll-stab move at end of roll
 //SABER FLAGS2
 //Primary Blade Style
 #define SFL2_NO_WALL_MARKS			(1<<0)//if set, stops the saber from drawing marks on the world (good for real-sword type mods)
+
+
 
 #define SFL2_NO_DLIGHT				(1<<1)//if set, stops the saber from drawing a dynamic light (good for real-sword type mods)
 #define SFL2_NO_BLADE				(1<<2)//if set, stops the saber from drawing a blade (good for real-sword type mods)
@@ -1063,25 +1067,41 @@ constexpr auto SFL_NO_ROLLS = 1 << 16; //if set, cannot roll;
 #define SFL2_NO_DISMEMBERMENT		(1<<4)//if set, the saber never does dismemberment (good for pointed/blunt melee weapons)
 #define SFL2_NO_IDLE_EFFECT			(1<<5)//if set, the saber will not do damage or any effects when it is idle (not in an attack anim).  (good for real-sword type mods)
 
+
+
 #define SFL2_ALWAYS_BLOCK			(1<<6)//if set, the blades will always be blocking (good for things like shields that should always block)
+
+
 
 #define SFL2_NO_MANUAL_DEACTIVATE	(1<<7)//if set, the blades cannot manually be toggled on and off
 #define SFL2_TRANSITION_DAMAGE		(1<<8)//if set, the blade does damage in start, transition and return anims (like strong style does)
 
+
+
 //Secondary Blade Style
 #define SFL2_NO_WALL_MARKS2			(1<<9)//if set, stops the saber from drawing marks on the world (good for real-sword type mods)
+
+
 
 #define SFL2_NO_DLIGHT2				(1<<10)//if set, stops the saber from drawing a dynamic light (good for real-sword type mods)
 #define SFL2_NO_BLADE2				(1<<11)//if set, stops the saber from drawing a blade (good for real-sword type mods)
 #define SFL2_NO_CLASH_FLARE2		(1<<12)//if set, the saber will not do the big, white clash flare with other sabers
 #define SFL2_NO_DISMEMBERMENT2		(1<<13)//if set, the saber never does dismemberment (good for pointed/blunt melee weapons)
 
+
+
 #define SFL2_NO_IDLE_EFFECT2		(1<<14)//if set, the saber will not do damage or any effects when it is idle (not in an attack anim).  (good for real-sword type mods)
+
+
 
 #define SFL2_ALWAYS_BLOCK2			(1<<15)//if set, the blades will always be blocking (good for things like shields that should always block)
 
+
+
 #define SFL2_NO_MANUAL_DEACTIVATE2	(1<<16)//if set, the blades cannot manually be toggled on and off
 #define SFL2_TRANSITION_DAMAGE2		(1<<17)//if set, the blade does damage in start, transition and return anims (like strong style does)
+
+
 
 // !!!!!!!!!!!! loadsave affecting struct !!!!!!!!!!!!!!!!!!!!!!!!!!
 using saberInfo_t = struct
@@ -1727,6 +1747,8 @@ public:
 
 #define MAX_SABERS 2	// if this ever changes then update the table "static const save_field_t savefields_gClient[]"!!!!!!!!!!!!
 
+
+
 // playerState_t is the information needed by both the client and server
 // to predict player motion and actions
 // nothing outside of pmove should modify these, or some degree of prediction error
@@ -1996,18 +2018,18 @@ public:
 	short saberBlocked;
 	short leanStopDebounceTime;
 
-	int PlayerEffectFlags;        // PlayerEffectFlags
+	int PlayerEffectFlags; // PlayerEffectFlags
 
-	int ManualBlockingFlags;      //Blockingflag on OK
-	int ManualBlockingTime;       //Blocking 1
-	int ManualblockStartTime;     //Blocking 2
+	int ManualBlockingFlags; //Blockingflag on OK
+	int ManualBlockingTime; //Blocking 1
+	int ManualblockStartTime; //Blocking 2
 	int ManualblockLastStartTime; //Blocking 3
-	int BoltblockStartTime;       //Blocking 4
-	int ManualMBlockingTime;      // MBlocking 1
-	int saberBlockingTime;        // SaberBlockingTime 1
+	int BoltblockStartTime; //Blocking 4
+	int ManualMBlockingTime; // MBlocking 1
+	int saberBlockingTime; // SaberBlockingTime 1
 	int damageTime;
 
-	int DodgeStartTime;     //Dodging 1
+	int DodgeStartTime; //Dodging 1
 	int DodgeLastStartTime; //Dodging 2
 
 #ifdef JK2_MODE
@@ -2395,19 +2417,19 @@ public:
 		saved_game.write<int32_t>(sprintDebReduce);
 		saved_game.write<int32_t>(Isprojecting);
 
-		saved_game.write<int32_t>(PlayerEffectFlags);        // PlayerEffectFlags
+		saved_game.write<int32_t>(PlayerEffectFlags); // PlayerEffectFlags
 
-		saved_game.write<int32_t>(ManualBlockingFlags);      //Blockingflag on
-		saved_game.write<int32_t>(ManualBlockingTime);       //Blocking 1
-		saved_game.write<int32_t>(ManualblockStartTime);     //Blocking 2
+		saved_game.write<int32_t>(ManualBlockingFlags); //Blockingflag on
+		saved_game.write<int32_t>(ManualBlockingTime); //Blocking 1
+		saved_game.write<int32_t>(ManualblockStartTime); //Blocking 2
 		saved_game.write<int32_t>(ManualblockLastStartTime); //Blocking 3
-		saved_game.write<int32_t>(BoltblockStartTime);       //Blocking 4
-		saved_game.write<int32_t>(ManualMBlockingTime);      //MBlocking 1
-		saved_game.write<int32_t>(saberBlockingTime);        //SaberBlockingTime 1
+		saved_game.write<int32_t>(BoltblockStartTime); //Blocking 4
+		saved_game.write<int32_t>(ManualMBlockingTime); //MBlocking 1
+		saved_game.write<int32_t>(saberBlockingTime); //SaberBlockingTime 1
 		saved_game.write<int32_t>(damageTime);
 
-		saved_game.write<int32_t>(DodgeStartTime);           //Dodging 1
-		saved_game.write<int32_t>(DodgeLastStartTime);       //Dodging 2
+		saved_game.write<int32_t>(DodgeStartTime); //Dodging 1
+		saved_game.write<int32_t>(DodgeLastStartTime); //Dodging 2
 
 		saved_game.write<int32_t>(userInt1);
 		saved_game.write<int32_t>(userInt2);
@@ -2666,19 +2688,19 @@ public:
 		saved_game.read<int32_t>(sprintDebReduce);
 		saved_game.read<int32_t>(Isprojecting);
 
-		saved_game.read<int32_t>(PlayerEffectFlags);        // PlayerEffectFlags
+		saved_game.read<int32_t>(PlayerEffectFlags); // PlayerEffectFlags
 
-		saved_game.read<int32_t>(ManualBlockingFlags);      //Blockingflag on
-		saved_game.read<int32_t>(ManualBlockingTime);       //Blocking 1
-		saved_game.read<int32_t>(ManualblockStartTime);     //Blocking 2
+		saved_game.read<int32_t>(ManualBlockingFlags); //Blockingflag on
+		saved_game.read<int32_t>(ManualBlockingTime); //Blocking 1
+		saved_game.read<int32_t>(ManualblockStartTime); //Blocking 2
 		saved_game.read<int32_t>(ManualblockLastStartTime); //Blocking 3
-		saved_game.read<int32_t>(BoltblockStartTime);       //Blocking 4
-		saved_game.read<int32_t>(ManualMBlockingTime);      //MBlocking 1
-		saved_game.read<int32_t>(saberBlockingTime);        //SaberBlockingTime 1
+		saved_game.read<int32_t>(BoltblockStartTime); //Blocking 4
+		saved_game.read<int32_t>(ManualMBlockingTime); //MBlocking 1
+		saved_game.read<int32_t>(saberBlockingTime); //SaberBlockingTime 1
 		saved_game.read<int32_t>(damageTime);
 
-		saved_game.read<int32_t>(DodgeStartTime);           //Dodging 1
-		saved_game.read<int32_t>(DodgeLastStartTime);       //Dodging 2
+		saved_game.read<int32_t>(DodgeStartTime); //Dodging 1
+		saved_game.read<int32_t>(DodgeLastStartTime); //Dodging 2
 
 		saved_game.read<int32_t>(userInt1);
 		saved_game.read<int32_t>(userInt2);
@@ -2935,7 +2957,7 @@ using entityState_t = struct entityState_s
 	int client_num; // 0 to (MAX_CLIENTS - 1), for players and corpses
 	mutable int frame;
 
-	int		NPC_class; //we need to see what it is on the client for a few effects.
+	int NPC_class; //we need to see what it is on the client for a few effects.
 
 	int solid; // for client side prediction, gi.linkentity sets this properly
 
@@ -2999,17 +3021,17 @@ using entityState_t = struct entityState_s
 
 	int generic1;
 
-	int PlayerEffectFlags;        // PlayerEffectFlags
+	int PlayerEffectFlags; // PlayerEffectFlags
 
-	int ManualBlockingFlags;      //Blockingflag on OK
-	int ManualBlockingTime;       //Blocking 1
-	int ManualblockStartTime;     //Blocking 2
+	int ManualBlockingFlags; //Blockingflag on OK
+	int ManualBlockingTime; //Blocking 1
+	int ManualblockStartTime; //Blocking 2
 	int ManualblockLastStartTime; //Blocking 3
-	int BoltblockStartTime;       //Blocking 4
-	int ManualMBlockingTime;      // MBlocking 1
-	int saberBlockingTime;        // SaberBlockingTime 1
+	int BoltblockStartTime; //Blocking 4
+	int ManualMBlockingTime; // MBlocking 1
+	int saberBlockingTime; // SaberBlockingTime 1
 
-	int DodgeStartTime;     //Dodging 1
+	int DodgeStartTime; //Dodging 1
 	int DodgeLastStartTime; //Dodging 2
 
 	int respectingtime;
@@ -3107,18 +3129,18 @@ using entityState_t = struct entityState_s
 #ifndef JK2_MODE
 		saved_game.write<int32_t>(isPortalEnt);
 
-		saved_game.write<int32_t>(PlayerEffectFlags);        // PlayerEffectFlags
+		saved_game.write<int32_t>(PlayerEffectFlags); // PlayerEffectFlags
 
-		saved_game.write<int32_t>(ManualBlockingFlags);      //Blockingflag on
-		saved_game.write<int32_t>(ManualBlockingTime);       //Blocking 1
-		saved_game.write<int32_t>(ManualblockStartTime);     //Blocking 2
+		saved_game.write<int32_t>(ManualBlockingFlags); //Blockingflag on
+		saved_game.write<int32_t>(ManualBlockingTime); //Blocking 1
+		saved_game.write<int32_t>(ManualblockStartTime); //Blocking 2
 		saved_game.write<int32_t>(ManualblockLastStartTime); //Blocking 3
-		saved_game.write<int32_t>(BoltblockStartTime);       //Blocking 4
-		saved_game.write<int32_t>(ManualMBlockingTime);      //MBlocking 1
-		saved_game.write<int32_t>(saberBlockingTime);        //SaberBlockingTime 1
+		saved_game.write<int32_t>(BoltblockStartTime); //Blocking 4
+		saved_game.write<int32_t>(ManualMBlockingTime); //MBlocking 1
+		saved_game.write<int32_t>(saberBlockingTime); //SaberBlockingTime 1
 
-		saved_game.write<int32_t>(DodgeStartTime);           //Dodging 1
-		saved_game.write<int32_t>(DodgeLastStartTime);       //Dodging 2
+		saved_game.write<int32_t>(DodgeStartTime); //Dodging 1
+		saved_game.write<int32_t>(DodgeLastStartTime); //Dodging 2
 
 		saved_game.write<int32_t>(userInt1);
 		saved_game.write<int32_t>(userInt2);
@@ -3226,18 +3248,18 @@ using entityState_t = struct entityState_s
 #ifndef JK2_MODE
 		saved_game.read<int32_t>(isPortalEnt);
 
-		saved_game.read<int32_t>(PlayerEffectFlags);        // PlayerEffectFlags
+		saved_game.read<int32_t>(PlayerEffectFlags); // PlayerEffectFlags
 
-		saved_game.read<int32_t>(ManualBlockingFlags);      //Blockingflag on
-		saved_game.read<int32_t>(ManualBlockingTime);       //Blocking 1
-		saved_game.read<int32_t>(ManualblockStartTime);     //Blocking 2
+		saved_game.read<int32_t>(ManualBlockingFlags); //Blockingflag on
+		saved_game.read<int32_t>(ManualBlockingTime); //Blocking 1
+		saved_game.read<int32_t>(ManualblockStartTime); //Blocking 2
 		saved_game.read<int32_t>(ManualblockLastStartTime); //Blocking 3
-		saved_game.read<int32_t>(BoltblockStartTime);       //Blocking 4
-		saved_game.read<int32_t>(ManualMBlockingTime);      //MBlocking 1
-		saved_game.read<int32_t>(saberBlockingTime);        //SaberBlockingTime 1
+		saved_game.read<int32_t>(BoltblockStartTime); //Blocking 4
+		saved_game.read<int32_t>(ManualMBlockingTime); //MBlocking 1
+		saved_game.read<int32_t>(saberBlockingTime); //SaberBlockingTime 1
 
-		saved_game.read<int32_t>(DodgeStartTime);           //Dodging 1
-		saved_game.read<int32_t>(DodgeLastStartTime);       //Dodging 2
+		saved_game.read<int32_t>(DodgeStartTime); //Dodging 1
+		saved_game.read<int32_t>(DodgeLastStartTime); //Dodging 2
 
 		saved_game.read<int32_t>(userInt1);
 		saved_game.read<int32_t>(userInt2);
@@ -3530,6 +3552,6 @@ void Q_RemoveFromBitflags(uint32_t* bits, int index, uint32_t bitsPerByte);
 using cmpFunc_t = int(*)(const void* a, const void* b);
 
 void* Q_LinearSearch(const void* key, const void* ptr, size_t count,
-	size_t size, cmpFunc_t cmp);
+                     size_t size, cmpFunc_t cmp);
 
 #endif	// __Q_SHARED_H

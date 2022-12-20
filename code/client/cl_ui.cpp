@@ -38,7 +38,7 @@ extern qboolean SG_GetSaveImage(const char* psPathlessBaseName, void* pvAddress)
 extern int SG_GetSaveGameComment(const char* psPathlessBaseName, char* sComment, char* sMapName);
 extern qboolean SG_GameAllowedToSaveHere(qboolean inCamera);
 extern void SG_StoreSaveGameComment(const char* sComment);
-extern byte* SCR_GetScreenshot(qboolean* qValid);						// uncommented
+extern byte* SCR_GetScreenshot(qboolean* qValid); // uncommented
 
 /*
 ====================
@@ -51,7 +51,8 @@ Helper functions for User Interface
 GetClientState
 ====================
 */
-static connstate_t GetClientState(void) {
+static connstate_t GetClientState(void)
+{
 	return cls.state;
 }
 
@@ -60,7 +61,8 @@ static connstate_t GetClientState(void) {
 CL_GetGlConfig
 ====================
 */
-static void UI_GetGlconfig(glconfig_t* config) {
+static void UI_GetGlconfig(glconfig_t* config)
+{
 	*config = cls.glconfig;
 }
 
@@ -69,11 +71,13 @@ static void UI_GetGlconfig(glconfig_t* config) {
 GetClipboardData
 ====================
 */
-static void GetClipboardData(char* buf, int buflen) {
-	char* cbd, * c;
+static void GetClipboardData(char* buf, int buflen)
+{
+	char *cbd, *c;
 
 	c = cbd = Sys_GetClipboardData();
-	if (!cbd) {
+	if (!cbd)
+	{
 		*buf = 0;
 		return;
 	}
@@ -111,12 +115,15 @@ void Key_KeynumToStringBuf(int keynum, char* buf, int buflen)
 Key_GetBindingBuf
 ====================
 */
-void Key_GetBindingBuf(int keynum, char* buf, int buflen) {
+void Key_GetBindingBuf(int keynum, char* buf, int buflen)
+{
 	const char* value = Key_GetBinding(keynum);
-	if (value) {
+	if (value)
+	{
 		Q_strncpyz(buf, value, buflen);
 	}
-	else {
+	else
+	{
 		*buf = 0;
 	}
 }
@@ -133,7 +140,8 @@ static int FloatAsInt(float f)
 	return fi.i;
 }
 
-static void UI_Cvar_Create(const char* var_name, const char* var_value, int flags) {
+static void UI_Cvar_Create(const char* var_name, const char* var_value, int flags)
+{
 	Cvar_Register(nullptr, var_name, var_value, flags);
 }
 
@@ -157,7 +165,9 @@ CL_ShutdownUI
 ====================
 */
 void UI_Shutdown(void);
-void CL_ShutdownUI(void) {
+
+void CL_ShutdownUI(void)
+{
 	UI_Shutdown();
 	Key_SetCatcher(Key_GetCatcher() & ~KEYCATCH_UI);
 	cls.uiStarted = qfalse;
@@ -194,12 +204,13 @@ void UI_Init(int apiVersion, const uiimport_t* uiimport, qboolean inGameLoad);
 CL_InitUI
 ====================
 */
-void CL_InitUI(void) {
+void CL_InitUI(void)
+{
 #ifdef JK2_MODE
 	JK2SP_Register("keynames", 0	/*SP_REGISTER_REQUIRED*/);		// reference is KEYNAMES
 #endif
 
-	uiimport_t	uii = {};
+	uiimport_t uii = {};
 
 	uii.Printf = Com_Printf;
 	uii.Error = Com_Error;
@@ -305,7 +316,8 @@ void CL_InitUI(void) {
 	//	uie->UI_Init( UI_API_VERSION, &uii );
 }
 
-qboolean UI_GameCommand(void) {
+qboolean UI_GameCommand(void)
+{
 	if (!cls.uiStarted)
 	{
 		return qfalse;
@@ -317,19 +329,21 @@ void CL_GenericMenu_f(void)
 {
 	const char* arg = Cmd_Argv(1);
 
-	if (cls.uiStarted) {
+	if (cls.uiStarted)
+	{
 		UI_SetActiveMenu("ingame", arg);
 	}
 }
 
 void CL_EndScreenDissolve_f(void)
 {
-	re.InitDissolve(qtrue);	// dissolve from cinematic to underlying ingame
+	re.InitDissolve(qtrue); // dissolve from cinematic to underlying ingame
 }
 
 void CL_DataPad_f(void)
 {
-	if (cls.uiStarted && cls.cgameStarted && (cls.state == CA_ACTIVE)) {
+	if (cls.uiStarted && cls.cgameStarted && (cls.state == CA_ACTIVE))
+	{
 		UI_SetActiveMenu("datapad", nullptr);
 	}
 }
@@ -343,6 +357,7 @@ static void CL_GetGlconfig(glconfig_t* config)
 {
 	*config = cls.glconfig;
 }
+
 /*
 int PC_ReadTokenHandle(int handle, pc_token_t *pc_token);
 int PC_SourceFileAndLine(int handle, char *filename, int *line);
@@ -362,7 +377,8 @@ intptr_t CL_UISystemCalls(const intptr_t* args)
 		Com_Error(ERR_DROP, "%s", VMA(1));
 
 	case UI_CVAR_REGISTER:
-		Cvar_Register(static_cast<vmCvar_t*>(VMA(1)), static_cast<const char*>(VMA(2)), static_cast<const char*>(VMA(3)), args[4]);
+		Cvar_Register(static_cast<vmCvar_t*>(VMA(1)), static_cast<const char*>(VMA(2)),
+		              static_cast<const char*>(VMA(3)), args[4]);
 		return 0;
 
 	case UI_CVAR_SET:
@@ -395,7 +411,8 @@ intptr_t CL_UISystemCalls(const intptr_t* args)
 		return FloatAsInt(Cvar_VariableValue(static_cast<const char*>(VMA(1))));
 
 	case UI_FS_GETFILELIST:
-		return FS_GetFileList(static_cast<const char*>(VMA(1)), static_cast<const char*>(VMA(2)), static_cast<char*>(VMA(3)), args[4]);
+		return FS_GetFileList(static_cast<const char*>(VMA(1)), static_cast<const char*>(VMA(2)),
+		                      static_cast<char*>(VMA(3)), args[4]);
 
 	case UI_KEY_SETCATCHER:
 		Key_SetCatcher(args[1]);
@@ -425,15 +442,15 @@ intptr_t CL_UISystemCalls(const intptr_t* args)
 		re.ClearScene();
 		return 0;
 
-		//	case UI_KEY_GETOVERSTRIKEMODE:
-		//		return Key_GetOverstrikeMode();
-		//		return 0;
+	//	case UI_KEY_GETOVERSTRIKEMODE:
+	//		return Key_GetOverstrikeMode();
+	//		return 0;
 
-		//	case UI_PC_READ_TOKEN:
-		//		return PC_ReadTokenHandle( args[1], VMA(2) );
+	//	case UI_PC_READ_TOKEN:
+	//		return PC_ReadTokenHandle( args[1], VMA(2) );
 
-		//	case UI_PC_SOURCE_FILE_AND_LINE:
-		//		return PC_SourceFileAndLine( args[1], VMA(2), VMA(3) );
+	//	case UI_PC_SOURCE_FILE_AND_LINE:
+	//		return PC_SourceFileAndLine( args[1], VMA(2), VMA(3) );
 
 	case UI_KEY_GETCATCHER:
 		return Key_GetCatcher();
@@ -448,13 +465,14 @@ intptr_t CL_UISystemCalls(const intptr_t* args)
 		S_StartLocalSound(args[1], args[2]);
 		return 0;
 
-		//	case UI_R_REGISTERFONT:
-		//		re.RegisterFont( VMA(1), args[2], VMA(3));
-		//		return 0;
+	//	case UI_R_REGISTERFONT:
+	//		re.RegisterFont( VMA(1), args[2], VMA(3));
+	//		return 0;
 
 	case UI_CIN_PLAYCINEMATIC:
 		Com_DPrintf("UI_CIN_PlayCinematic\n");
-		return CIN_PlayCinematic(static_cast<const char*>(VMA(1)), args[2], args[3], args[4], args[5], args[6], static_cast<const char*>(VMA(7)));
+		return CIN_PlayCinematic(static_cast<const char*>(VMA(1)), args[2], args[3], args[4], args[5], args[6],
+		                         static_cast<const char*>(VMA(7)));
 
 	case UI_CIN_STOPCINEMATIC:
 		return CIN_StopCinematic(args[1]);

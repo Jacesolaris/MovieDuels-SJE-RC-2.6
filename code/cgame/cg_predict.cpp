@@ -161,7 +161,7 @@ void CG_ClipMoveToEntities(const vec3_t start, const vec3_t mins, const vec3_t m
 		}
 
 		cgi_CM_TransformedBoxTrace(&trace, start, end,
-			mins, maxs, cmodel, mask, origin, angles);
+		                           mins, maxs, cmodel, mask, origin, angles);
 
 		if (trace.allsolid || trace.fraction < tr->fraction)
 		{
@@ -282,7 +282,7 @@ qboolean CG_CheckModifyUCmd(usercmd_t* cmd, vec3_t viewangles)
 		overridAngles = qtrue;
 	}
 
-	if (&g_entities[0] && g_entities[0].client)
+	if (g_entities[0].client)
 	{
 		if (!PM_AdjustAnglesToGripper(&g_entities[0], cmd))
 		{
@@ -436,7 +436,7 @@ void CG_InterpolatePlayerState(const qboolean grabAngles)
 		cg_smoothPlayerPos.value > 0.0f &&
 		cg_smoothPlayerPos.value < 1.0f &&
 		!onPlat
-		)
+	)
 	{
 		// 0 = no smoothing, 1 = no movement
 		for (i = 0; i < 3; i++)
@@ -481,7 +481,7 @@ void CG_InterpolatePlayerState(const qboolean grabAngles)
 		if (cg.validPPS &&
 			cg_smoothPlayerPlat.value > 0.0f &&
 			cg_smoothPlayerPlat.value < 1.0f
-			)
+		)
 		{
 			// 0 = no smoothing, 1 = no movement
 			for (i = 0; i < 3; i++)
@@ -592,7 +592,7 @@ void CG_TouchTriggerPrediction()
 		}
 
 		cgi_CM_BoxTrace(&trace, cg.predicted_player_state.origin, cg.predicted_player_state.origin,
-			cg_pmove.mins, cg_pmove.maxs, cmodel, -1);
+		                cg_pmove.mins, cg_pmove.maxs, cmodel, -1);
 
 		if (!trace.startsolid)
 		{

@@ -29,8 +29,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "client/client.h"
 #include "client/snd_local.h"
 
-extern dma_t		dma;
-SDL_AudioDeviceID	dev;
+extern dma_t dma;
+SDL_AudioDeviceID dev;
 qboolean snd_inited = qfalse;
 
 cvar_t* s_sdlBits;
@@ -54,12 +54,12 @@ static void SNDDMA_AudioCallback(void* userdata, Uint8* stream, int len)
 	if (pos >= dmasize)
 		dmapos = pos = 0;
 
-	if (!snd_inited)  /* shouldn't happen, but just in case... */
+	if (!snd_inited) /* shouldn't happen, but just in case... */
 	{
 		memset(stream, '\0', len);
 		return;
 	}
-	const int tobufend = dmasize - pos;  /* bytes to buffer's end. */
+	const int tobufend = dmasize - pos; /* bytes to buffer's end. */
 	int len1 = len;
 	int len2 = 0;
 
@@ -71,7 +71,7 @@ static void SNDDMA_AudioCallback(void* userdata, Uint8* stream, int len)
 	memcpy(stream, dma.buffer + pos, len1);
 	if (len2 <= 0)
 		dmapos += (len1 / (dma.samplebits / 8));
-	else  /* wraparound? */
+	else /* wraparound? */
 	{
 		memcpy(stream + len1, dma.buffer, len2);
 		dmapos = (len2 / (dma.samplebits / 8));
@@ -83,20 +83,20 @@ static void SNDDMA_AudioCallback(void* userdata, Uint8* stream, int len)
 
 static struct
 {
-	Uint16		enumFormat;
+	Uint16 enumFormat;
 	const char* stringFormat;
 } formatToStringTable[] =
 {
-	{ AUDIO_U8,     "AUDIO_U8" },
-	{ AUDIO_S8,     "AUDIO_S8" },
-	{ AUDIO_U16LSB, "AUDIO_U16LSB" },
-	{ AUDIO_S16LSB, "AUDIO_S16LSB" },
-	{ AUDIO_U16MSB, "AUDIO_U16MSB" },
-	{ AUDIO_S16MSB, "AUDIO_S16MSB" },
-	{ AUDIO_S32LSB, "AUDIO_S32LSB" },
-	{ AUDIO_S32MSB, "AUDIO_S32MSB" },
-	{ AUDIO_F32LSB, "AUDIO_F32LSB" },
-	{ AUDIO_F32MSB, "AUDIO_F32MSB" }
+	{AUDIO_U8, "AUDIO_U8"},
+	{AUDIO_S8, "AUDIO_S8"},
+	{AUDIO_U16LSB, "AUDIO_U16LSB"},
+	{AUDIO_S16LSB, "AUDIO_S16LSB"},
+	{AUDIO_U16MSB, "AUDIO_U16MSB"},
+	{AUDIO_S16MSB, "AUDIO_S16MSB"},
+	{AUDIO_S32LSB, "AUDIO_S32LSB"},
+	{AUDIO_S32MSB, "AUDIO_S32MSB"},
+	{AUDIO_F32LSB, "AUDIO_F32LSB"},
+	{AUDIO_F32MSB, "AUDIO_F32MSB"}
 };
 
 /*
@@ -110,16 +110,20 @@ static void SNDDMA_PrintAudiospec(const char* str, const SDL_AudioSpec* spec)
 
 	Com_Printf("%s:\n", str);
 
-	for (const auto& i : formatToStringTable) {
-		if (spec->format == i.enumFormat) {
+	for (const auto& i : formatToStringTable)
+	{
+		if (spec->format == i.enumFormat)
+		{
 			fmt = i.stringFormat;
 		}
 	}
 
-	if (fmt) {
+	if (fmt)
+	{
 		Com_Printf("  Format:   %s\n", fmt);
 	}
-	else {
+	else
+	{
 		Com_Printf("  Format:   " S_COLOR_RED "UNKNOWN (%d)\n", static_cast<int>(spec->format));
 	}
 
@@ -152,7 +156,8 @@ qboolean SNDDMA_Init(int sampleFrequencyInKHz)
 	if (snd_inited)
 		return qtrue;
 
-	if (!s_sdlBits) {
+	if (!s_sdlBits)
+	{
 		s_sdlBits = Cvar_Get("s_sdlBits", "16", CVAR_ARCHIVE_ND);
 		s_sdlChannels = Cvar_Get("s_sdlChannels", "2", CVAR_ARCHIVE_ND);
 		s_sdlDevSamps = Cvar_Get("s_sdlDevSamps", "0", CVAR_ARCHIVE_ND);
@@ -198,7 +203,7 @@ qboolean SNDDMA_Init(int sampleFrequencyInKHz)
 		else if (desired.freq <= 44100)
 			desired.samples = 1024;
 		else
-			desired.samples = 2048;  // (*shrug*)
+			desired.samples = 2048; // (*shrug*)
 	}
 
 	desired.channels = static_cast<int>(s_sdlChannels->value);
@@ -225,7 +230,7 @@ qboolean SNDDMA_Init(int sampleFrequencyInKHz)
 	if (!tmp)
 		tmp = (obtained.samples * obtained.channels) * 10;
 
-	if (tmp & (tmp - 1))  // not a power of two? Seems to confuse something.
+	if (tmp & (tmp - 1)) // not a power of two? Seems to confuse something.
 	{
 		int val = 1;
 		while (val < tmp)
@@ -235,7 +240,7 @@ qboolean SNDDMA_Init(int sampleFrequencyInKHz)
 	}
 
 	dmapos = 0;
-	dma.samplebits = obtained.format & 0xFF;  // first byte of format is bits.
+	dma.samplebits = obtained.format & 0xFF; // first byte of format is bits.
 	dma.channels = obtained.channels;
 	dma.samples = tmp;
 	dma.submission_chunk = 1;
@@ -244,7 +249,7 @@ qboolean SNDDMA_Init(int sampleFrequencyInKHz)
 	dma.buffer = static_cast<byte*>(calloc(1, dmasize));
 
 	Com_Printf("Starting SDL audio callback...\n");
-	SDL_PauseAudioDevice(dev, 0);  // start callback.
+	SDL_PauseAudioDevice(dev, 0); // start callback.
 
 	Com_Printf("SDL audio initialized.\n");
 	snd_inited = qtrue;

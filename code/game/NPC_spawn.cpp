@@ -54,12 +54,48 @@ extern qboolean PM_SaberInAttack(int move);
 extern cvar_t* com_outcast;
 
 // NPC spawn names for random spawner
-const char* lightside_jedi1[] = { "md_mundi", "md_depa", "md_aayla", "md_luminara", "md_shaak_ti", "md_adi_gallia", "md_yarael", "md_yaddle", "md_coleman", "md_yoda", "md_windu", "md_quigon", "md_fisto", "md_drallig", "md_plo_koon", "md_saesee", "md_jocasta", "md_barriss", "md_ongree", "md_sora", "md_tarados", "md_obi_ep3", "md_ani_ep3", "md_foul_moudama", "md_youngling", "md_jed1", "md_jed6", "md_jed10", "md_jbrute", "md_ezra", "md_kanan", "md_caleb", "md_gungan_warrior", "md_bultar", "md_agen", "cal_kestis", "md_sabine", "md_joopi", "md_tsuichoi", "md_stass_allie", "md_sarissa_jeng", "md_redath", "md_micah", "md_bolla_ropal", "md_koffi" };
-const char* lightside_jedi2[] = { "md_ahsoka_rebels", "md_plo_tcw", "md_fisto_tcw", "md_adi_tcw", "md_eeth_koth", "md_even_piell", "md_quinlan", "md_drallig_tcw", "md_tiplee", "md_tiplar", "md_serra", "jedimaster", "md_obi_tcw", "md_ani_tcw", "md_ahsoka_s7", "md_windu_tcw", "md_templeguard", "md_depa_tcw_robed", "jaro_tapal", "md_obi_jabiim", "md_ben_robed", "md_luke_rotj", "md_luke_crait", "md_rey_skywalker", "md_rahn", "md_kyle", "md_mara", "rosh_penin", "md_shaakti_tfu", "militiatrooper", "md_ahsoka_tm", "md_luke_hooded_tm", "md_kento_marek", "md_kota", "md_galen", "md_bastila", "md_jed_nikto", "md_halsey", "md_ima_gundi", "md_knox", "md_tera_sinube", "md_nahdar", "md_oppo_rancisis", "md_thongla_jur" };
-const char* lightside_gunners[] = { "md_pad_ga", "md_clo_cody", "md_clo_rex", "md_clo_ep2", "md_clo1_jt", "md_duchess_satine", "md_nien_nunb", "md_bail_organa_tfu", "md_ackbar", "bespincop", "md_dindjarin", "md_grogu", "md_greef", "md_cara_dune", "md_kuiil", "md_new_rep_sec_droid", "rebel2", "militiasaboteur", "md_poe", "jan", "md_hera", "md_rex_old", "md_leia_anh", "md_han_esb", "md_chewie", "md_lando_bespin", "md_mon_mothma", "md_cassian", "md_bodhi", "md_chirrut", "md_jarjar", "md_baze_malbus", "md_jyn_erso", "md_finn", "md_rose_tico", "md_k2so", "md_rebel_pilot" };
-const char* darkside_sith1[] = { "md_dooku", "md_magnaguard", "md_clone_assassin", "md_kylo_shirtless", "md_sidious_ep3_robed", "md_ani_sith", "md_maul", "md_grievous", "md_gua_am", "md_kyle_emp", "md_sidious_tcw", "md_savage", "md_dooku_tcw", "md_maul_cyber_tcw", "md_maul_tcw_staff", "md_ventress", "darthdesolous", "darthphobos", "shadowtrooper", "reborn", "md_vader", "md_emperor2", "md_royalguard", "md_shadowguard", "md_royalcombat", "purge_trooper" };
-const char* darkside_sith2[] = { "stormie_tfa_riot", "md_emperor_ros_blind", "md_kylo_ros_helmet", "md_pguard", "md_maw", "md_yun", "md_boc", "md_pic", "md_gorc", "md_jerec", "md_sariss", "tavion", "alora_dual", "md_desann", "gamorrean", "vizam_tgpoc", "md_mau_luke", "md_plagueis", "md_starkiller", "md_revan", "md_7thsister", "md_5thbrother", "md_inquisitor", "md_8thbrother", "md_maul_rebels6", "md_2ndsister" };
-const char* darkside_gunners[] = { "md_sbd_am", "md_tus2_tc", "battledroid", "md_sithtrooper", "md_hondo", "swamptrooper", "md_embo", "md_phasma", "md_tarkin", "saboteur", "md_bossk", "md_hux", "md_fennec", "md_greedo", "md_krennic", "md_thrawn", "weequay", "stormtrooper", "md_deathtrooper", "md_shoretrooper", "md_darktrooper", "md_gideon", "stormie_tfa", "impworker", "md_mother_talzin" }; // md_jango, md_snoke, md_cadbane, md_durge, boba_fett_nohelmet2, boba_fett_esb, rax
+const char* lightside_jedi1[] = {
+	"md_mundi", "md_depa", "md_aayla", "md_luminara", "md_shaak_ti", "md_adi_gallia", "md_yarael", "md_yaddle",
+	"md_coleman", "md_yoda", "md_windu", "md_quigon", "md_fisto", "md_drallig", "md_plo_koon", "md_saesee",
+	"md_jocasta", "md_barriss", "md_ongree", "md_sora", "md_tarados", "md_obi_ep3", "md_ani_ep3", "md_foul_moudama",
+	"md_youngling", "md_jed1", "md_jed6", "md_jed10", "md_jbrute", "md_ezra", "md_kanan", "md_caleb",
+	"md_gungan_warrior", "md_bultar", "md_agen", "cal_kestis", "md_sabine", "md_joopi", "md_tsuichoi", "md_stass_allie",
+	"md_sarissa_jeng", "md_redath", "md_micah", "md_bolla_ropal", "md_koffi"
+};
+const char* lightside_jedi2[] = {
+	"md_ahsoka_rebels", "md_plo_tcw", "md_fisto_tcw", "md_adi_tcw", "md_eeth_koth", "md_even_piell", "md_quinlan",
+	"md_drallig_tcw", "md_tiplee", "md_tiplar", "md_serra", "jedimaster", "md_obi_tcw", "md_ani_tcw", "md_ahsoka_s7",
+	"md_windu_tcw", "md_templeguard", "md_depa_tcw_robed", "jaro_tapal", "md_obi_jabiim", "md_ben_robed",
+	"md_luke_rotj", "md_luke_crait", "md_rey_skywalker", "md_rahn", "md_kyle", "md_mara", "rosh_penin",
+	"md_shaakti_tfu", "militiatrooper", "md_ahsoka_tm", "md_luke_hooded_tm", "md_kento_marek", "md_kota", "md_galen",
+	"md_bastila", "md_jed_nikto", "md_halsey", "md_ima_gundi", "md_knox", "md_tera_sinube", "md_nahdar",
+	"md_oppo_rancisis", "md_thongla_jur"
+};
+const char* lightside_gunners[] = {
+	"md_pad_ga", "md_clo_cody", "md_clo_rex", "md_clo_ep2", "md_clo1_jt", "md_duchess_satine", "md_nien_nunb",
+	"md_bail_organa_tfu", "md_ackbar", "bespincop", "md_dindjarin", "md_grogu", "md_greef", "md_cara_dune", "md_kuiil",
+	"md_new_rep_sec_droid", "rebel2", "militiasaboteur", "md_poe", "jan", "md_hera", "md_rex_old", "md_leia_anh",
+	"md_han_esb", "md_chewie", "md_lando_bespin", "md_mon_mothma", "md_cassian", "md_bodhi", "md_chirrut", "md_jarjar",
+	"md_baze_malbus", "md_jyn_erso", "md_finn", "md_rose_tico", "md_k2so", "md_rebel_pilot"
+};
+const char* darkside_sith1[] = {
+	"md_dooku", "md_magnaguard", "md_clone_assassin", "md_kylo_shirtless", "md_sidious_ep3_robed", "md_ani_sith",
+	"md_maul", "md_grievous", "md_gua_am", "md_kyle_emp", "md_sidious_tcw", "md_savage", "md_dooku_tcw",
+	"md_maul_cyber_tcw", "md_maul_tcw_staff", "md_ventress", "darthdesolous", "darthphobos", "shadowtrooper", "reborn",
+	"md_vader", "md_emperor2", "md_royalguard", "md_shadowguard", "md_royalcombat", "purge_trooper"
+};
+const char* darkside_sith2[] = {
+	"stormie_tfa_riot", "md_emperor_ros_blind", "md_kylo_ros_helmet", "md_pguard", "md_maw", "md_yun", "md_boc",
+	"md_pic", "md_gorc", "md_jerec", "md_sariss", "tavion", "alora_dual", "md_desann", "gamorrean", "vizam_tgpoc",
+	"md_mau_luke", "md_plagueis", "md_starkiller", "md_revan", "md_7thsister", "md_5thbrother", "md_inquisitor",
+	"md_8thbrother", "md_maul_rebels6", "md_2ndsister"
+};
+const char* darkside_gunners[] = {
+	"md_sbd_am", "md_tus2_tc", "battledroid", "md_sithtrooper", "md_hondo", "swamptrooper", "md_embo", "md_phasma",
+	"md_tarkin", "saboteur", "md_bossk", "md_hux", "md_fennec", "md_greedo", "md_krennic", "md_thrawn", "weequay",
+	"stormtrooper", "md_deathtrooper", "md_shoretrooper", "md_darktrooper", "md_gideon", "stormie_tfa", "impworker",
+	"md_mother_talzin"
+}; // md_jango, md_snoke, md_cadbane, md_durge, boba_fett_nohelmet2, boba_fett_esb, rax
 
 /*
 -------------------------
@@ -79,7 +115,7 @@ painFunc_t NPC_PainFunc(const gentity_t* ent)
 	{
 		switch (ent->client->NPC_class)
 		{
-			// troopers get special pain
+		// troopers get special pain
 		case CLASS_SABOTEUR:
 		case CLASS_STORMTROOPER:
 		case CLASS_CLONETROOPER:
@@ -119,7 +155,7 @@ painFunc_t NPC_PainFunc(const gentity_t* ent)
 			func = painF_NPC_SandCreature_Pain;
 			break;
 
-			// all other droids, did I miss any?
+		// all other droids, did I miss any?
 		case CLASS_GONK:
 		case CLASS_R2D2:
 		case CLASS_R5D2:
@@ -147,7 +183,7 @@ painFunc_t NPC_PainFunc(const gentity_t* ent)
 		case CLASS_GALAKMECH:
 			func = painF_NPC_GM_Pain;
 			break;
-			// everyone else gets the normal pain func
+		// everyone else gets the normal pain func
 		default:
 			func = painF_NPC_Pain;
 			break;
@@ -575,123 +611,123 @@ void NPC_SetMiscDefaultData(gentity_t* ent)
 	{
 	case TEAM_PLAYER:
 		//ent->flags |= FL_NO_KNOCKBACK;
-	{
-		//ent->flags |= FL_NO_KNOCKBACK;
-		if (ent->client->NPC_class == CLASS_SEEKER)
 		{
-			ent->NPC->defaultBehavior = BS_DEFAULT;
-			ent->client->ps.gravity = 0;
-			ent->svFlags |= SVF_CUSTOM_GRAVITY;
-			ent->client->moveType = MT_FLYSWIM;
-			ent->count = 30; // SEEKER shot ammo count
-			return;
-		}
-		if (ent->client->NPC_class == CLASS_JEDI
-			|| ent->client->NPC_class == CLASS_KYLE
-			|| ent->client->NPC_class == CLASS_AHSOKA
-			|| ent->client->NPC_class == CLASS_JEDIMASTER
-			|| ent->client->NPC_class == CLASS_LUKE)
-		{
-			//good jedi
-			ent->client->enemyTeam = TEAM_ENEMY;
-			if (ent->spawnflags & JSF_AMBUSH)
+			//ent->flags |= FL_NO_KNOCKBACK;
+			if (ent->client->NPC_class == CLASS_SEEKER)
 			{
-				//ambusher
-				ent->NPC->scriptFlags |= SCF_IGNORE_ALERTS;
-				ent->client->noclip = true; //hang
+				ent->NPC->defaultBehavior = BS_DEFAULT;
+				ent->client->ps.gravity = 0;
+				ent->svFlags |= SVF_CUSTOM_GRAVITY;
+				ent->client->moveType = MT_FLYSWIM;
+				ent->count = 30; // SEEKER shot ammo count
+				return;
 			}
-			if (ent->client->ps.weapon != WP_SABER)
+			if (ent->client->NPC_class == CLASS_JEDI
+				|| ent->client->NPC_class == CLASS_KYLE
+				|| ent->client->NPC_class == CLASS_AHSOKA
+				|| ent->client->NPC_class == CLASS_JEDIMASTER
+				|| ent->client->NPC_class == CLASS_LUKE)
 			{
-				G_CreateG2AttachedWeaponModel(ent, weaponData[ent->client->ps.weapon].weaponMdl, ent->handRBolt, 0);
-			}
-		}
-		else
-		{
-			if (ent->client->ps.weapon != WP_NONE
-				&& ent->client->ps.weapon != WP_SABER //sabers done above
-				&& (!(ent->NPC->aiFlags & NPCAI_MATCHPLAYERWEAPON) || !ent->weaponModel[0]))
-				//they do this themselves
-			{
-				G_CreateG2AttachedWeaponModel(ent, weaponData[ent->client->ps.weapon].weaponMdl, ent->handRBolt, 0);
-				WP_SaberAddHolsteredG2SaberModels(ent);
-			}
-			switch (ent->client->ps.weapon)
-			{
-			case WP_BLASTER_PISTOL:
-				if (ent->client->NPC_class == CLASS_REBORN && ent->NPC->rank >= RANK_LT_COMM && (!(ent->NPC->aiFlags
-					& NPCAI_MATCHPLAYERWEAPON) || !ent->weaponModel[0])) //they do this themselves
+				//good jedi
+				ent->client->enemyTeam = TEAM_ENEMY;
+				if (ent->spawnflags & JSF_AMBUSH)
 				{
-					//dual blaster pistols, so add the left-hand one, too
-					G_CreateG2AttachedWeaponModel(ent, weaponData[ent->client->ps.weapon].weaponMdl, ent->handLBolt,
-						1);
+					//ambusher
+					ent->NPC->scriptFlags |= SCF_IGNORE_ALERTS;
+					ent->client->noclip = true; //hang
 				}
-				break;
-
-			case WP_DUAL_PISTOL:
-				if ((ent->client->NPC_class == CLASS_JANGODUAL || Q_stricmp(ent->NPC_type, "md_jango_dual") == 0)
+				if (ent->client->ps.weapon != WP_SABER)
+				{
+					G_CreateG2AttachedWeaponModel(ent, weaponData[ent->client->ps.weapon].weaponMdl, ent->handRBolt, 0);
+				}
+			}
+			else
+			{
+				if (ent->client->ps.weapon != WP_NONE
+					&& ent->client->ps.weapon != WP_SABER //sabers done above
 					&& (!(ent->NPC->aiFlags & NPCAI_MATCHPLAYERWEAPON) || !ent->weaponModel[0]))
+				//they do this themselves
+				{
+					G_CreateG2AttachedWeaponModel(ent, weaponData[ent->client->ps.weapon].weaponMdl, ent->handRBolt, 0);
+					WP_SaberAddHolsteredG2SaberModels(ent);
+				}
+				switch (ent->client->ps.weapon)
+				{
+				case WP_BLASTER_PISTOL:
+					if (ent->client->NPC_class == CLASS_REBORN && ent->NPC->rank >= RANK_LT_COMM && (!(ent->NPC->aiFlags
+						& NPCAI_MATCHPLAYERWEAPON) || !ent->weaponModel[0])) //they do this themselves
+					{
+						//dual blaster pistols, so add the left-hand one, too
+						G_CreateG2AttachedWeaponModel(ent, weaponData[ent->client->ps.weapon].weaponMdl, ent->handLBolt,
+						                              1);
+					}
+					break;
+
+				case WP_DUAL_PISTOL:
+					if ((ent->client->NPC_class == CLASS_JANGODUAL || Q_stricmp(ent->NPC_type, "md_jango_dual") == 0)
+						&& (!(ent->NPC->aiFlags & NPCAI_MATCHPLAYERWEAPON) || !ent->weaponModel[0]))
 					//they do this themselves
-				{
-					//dual blaster pistols, so add the left-hand one, too
-					G_CreateG2AttachedWeaponModel(ent, weaponData[ent->client->ps.weapon].weaponMdl, ent->handLBolt,
-						1);
-				}
-				break;
+					{
+						//dual blaster pistols, so add the left-hand one, too
+						G_CreateG2AttachedWeaponModel(ent, weaponData[ent->client->ps.weapon].weaponMdl, ent->handLBolt,
+						                              1);
+					}
+					break;
 
-			case WP_JANGO:
-			case WP_BRYAR_PISTOL:
-			case WP_CLONEPISTOL:
-			case WP_JAWA:
-			case WP_SBD_BLASTER:
-				break;
+				case WP_JANGO:
+				case WP_BRYAR_PISTOL:
+				case WP_CLONEPISTOL:
+				case WP_JAWA:
+				case WP_SBD_BLASTER:
+					break;
 
-			case WP_DISRUPTOR:
-			case WP_BOWCASTER:
-			case WP_REPEATER:
-			case WP_DEMP2:
-			case WP_FLECHETTE:
-			case WP_ROCKET_LAUNCHER:
-			case WP_CONCUSSION:
-			default:
-				break;
-			case WP_THERMAL:
-			case WP_BLASTER:
-				ST_ClearTimers(ent);
-				if (ent->NPC->rank >= RANK_LT || ent->client->ps.weapon == WP_THERMAL)
-				{
-					//officers, grenade-throwers use alt-fire
-					//ent->health = 50;
-					//ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+				case WP_DISRUPTOR:
+				case WP_BOWCASTER:
+				case WP_REPEATER:
+				case WP_DEMP2:
+				case WP_FLECHETTE:
+				case WP_ROCKET_LAUNCHER:
+				case WP_CONCUSSION:
+				default:
+					break;
+				case WP_THERMAL:
+				case WP_BLASTER:
+					ST_ClearTimers(ent);
+					if (ent->NPC->rank >= RANK_LT || ent->client->ps.weapon == WP_THERMAL)
+					{
+						//officers, grenade-throwers use alt-fire
+						//ent->health = 50;
+						//ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					}
+					break;
 				}
-				break;
-			}
-			if (!Q_stricmp("galak_mech", ent->NPC_type))
-			{
-				//starts with armor
-				NPC_GalakMech_Init(ent);
+				if (!Q_stricmp("galak_mech", ent->NPC_type))
+				{
+					//starts with armor
+					NPC_GalakMech_Init(ent);
+				}
 			}
 		}
-	}
-	if (ent->client->NPC_class == CLASS_PLAYER
-		|| ent->client->NPC_class == CLASS_VEHICLE
-		|| ent->spawnflags & SFB_CINEMATIC)
-	{
-		ent->NPC->defaultBehavior = BS_CINEMATIC;
-	}
-	else
-	{
-		if (g_noAutoFollow->integer)
+		if (ent->client->NPC_class == CLASS_PLAYER
+			|| ent->client->NPC_class == CLASS_VEHICLE
+			|| ent->spawnflags & SFB_CINEMATIC)
 		{
-			ent->NPC->defaultBehavior = BS_STAND_GUARD;
-			ent->client->leader = nullptr;
+			ent->NPC->defaultBehavior = BS_CINEMATIC;
 		}
 		else
 		{
-			ent->NPC->defaultBehavior = BS_FOLLOW_LEADER;
-			ent->client->leader = &g_entities[0]; //player
+			if (g_noAutoFollow->integer)
+			{
+				ent->NPC->defaultBehavior = BS_STAND_GUARD;
+				ent->client->leader = nullptr;
+			}
+			else
+			{
+				ent->NPC->defaultBehavior = BS_FOLLOW_LEADER;
+				ent->client->leader = &g_entities[0]; //player
+			}
 		}
-	}
-	break;
+		break;
 	case TEAM_NEUTRAL:
 
 		if (Q_stricmp(ent->NPC_type, "gonk") == 0)
@@ -717,148 +753,148 @@ void NPC_SetMiscDefaultData(gentity_t* ent)
 		break;
 
 	case TEAM_ENEMY:
-	{
-		ent->NPC->defaultBehavior = BS_DEFAULT;
-		if (ent->client->NPC_class == CLASS_SHADOWTROOPER
-			&& Q_stricmpn("shadowtrooper", ent->NPC_type, 13) == 0)
-		{
-			if (!PM_SaberInAttack(ent->client->ps.saberMove))
-			{
-				jedi_cloak(ent);
-			}
-		}
-		if (ent->client->NPC_class == CLASS_TAVION ||
-			ent->client->NPC_class == CLASS_ALORA ||
-			ent->client->NPC_class == CLASS_GALEN ||
-			ent->client->NPC_class == CLASS_REBORN && ent->client->ps.weapon == WP_SABER ||
-			ent->client->NPC_class == CLASS_DESANN ||
-			ent->client->NPC_class == CLASS_SITHLORD ||
-			ent->client->NPC_class == CLASS_BOC ||
-			ent->client->NPC_class == CLASS_VADER ||
-			ent->client->NPC_class == CLASS_SHADOWTROOPER)
-		{
-			ent->client->enemyTeam = TEAM_PLAYER;
-			if (ent->spawnflags & JSF_AMBUSH)
-			{
-				//ambusher
-				ent->NPC->scriptFlags |= SCF_IGNORE_ALERTS;
-				ent->client->noclip = true; //hang
-			}
-			if (ent->client->ps.weapon != WP_SABER)
-			{
-				G_CreateG2AttachedWeaponModel(ent, weaponData[ent->client->ps.weapon].weaponMdl, ent->handRBolt, 0);
-			}
-		}
-		else if (ent->client->NPC_class == CLASS_PROBE ||
-			ent->client->NPC_class == CLASS_REMOTE ||
-			ent->client->NPC_class == CLASS_GLIDER ||
-			ent->client->NPC_class == CLASS_INTERROGATOR ||
-			ent->client->NPC_class == CLASS_SENTRY)
 		{
 			ent->NPC->defaultBehavior = BS_DEFAULT;
-			ent->client->ps.gravity = 0;
-			ent->svFlags |= SVF_CUSTOM_GRAVITY;
-			ent->client->moveType = MT_FLYSWIM;
-		}
-		else
-		{
-			if (ent->client->ps.weapon != WP_NONE
-				&& ent->client->ps.weapon != WP_SABER //sabers done above
-				&& (!(ent->NPC->aiFlags & NPCAI_MATCHPLAYERWEAPON) || !ent->weaponModel[0]))
-				//they do this themselves
+			if (ent->client->NPC_class == CLASS_SHADOWTROOPER
+				&& Q_stricmpn("shadowtrooper", ent->NPC_type, 13) == 0)
 			{
-				G_CreateG2AttachedWeaponModel(ent, weaponData[ent->client->ps.weapon].weaponMdl, ent->handRBolt, 0);
-				WP_SaberAddHolsteredG2SaberModels(ent);
-			}
-			switch (ent->client->ps.weapon)
-			{
-			case WP_BRYAR_PISTOL:
-			case WP_SBD_BLASTER:
-			case WP_JAWA:
-			case WP_JANGO:
-			case WP_CLONEPISTOL:
-				break;
-			case WP_BLASTER_PISTOL:
-				NPCInfo->scriptFlags |= SCF_PILOT;
-
-				if (ent->client->NPC_class == CLASS_REBORN && ent->NPC->rank >= RANK_LT_COMM && (!(ent->NPC->aiFlags
-					& NPCAI_MATCHPLAYERWEAPON) || !ent->weaponModel[0])) //they do this themselves
+				if (!PM_SaberInAttack(ent->client->ps.saberMove))
 				{
-					//dual blaster pistols, so add the left-hand one, too
-					G_CreateG2AttachedWeaponModel(ent, weaponData[ent->client->ps.weapon].weaponMdl, ent->handLBolt,
-						1);
+					jedi_cloak(ent);
 				}
-				break;
-			case WP_DUAL_PISTOL:
-				if ((ent->client->NPC_class == CLASS_JANGODUAL || Q_stricmp(ent->NPC_type, "md_jango_dual") == 0)
+			}
+			if (ent->client->NPC_class == CLASS_TAVION ||
+				ent->client->NPC_class == CLASS_ALORA ||
+				ent->client->NPC_class == CLASS_GALEN ||
+				ent->client->NPC_class == CLASS_REBORN && ent->client->ps.weapon == WP_SABER ||
+				ent->client->NPC_class == CLASS_DESANN ||
+				ent->client->NPC_class == CLASS_SITHLORD ||
+				ent->client->NPC_class == CLASS_BOC ||
+				ent->client->NPC_class == CLASS_VADER ||
+				ent->client->NPC_class == CLASS_SHADOWTROOPER)
+			{
+				ent->client->enemyTeam = TEAM_PLAYER;
+				if (ent->spawnflags & JSF_AMBUSH)
+				{
+					//ambusher
+					ent->NPC->scriptFlags |= SCF_IGNORE_ALERTS;
+					ent->client->noclip = true; //hang
+				}
+				if (ent->client->ps.weapon != WP_SABER)
+				{
+					G_CreateG2AttachedWeaponModel(ent, weaponData[ent->client->ps.weapon].weaponMdl, ent->handRBolt, 0);
+				}
+			}
+			else if (ent->client->NPC_class == CLASS_PROBE ||
+				ent->client->NPC_class == CLASS_REMOTE ||
+				ent->client->NPC_class == CLASS_GLIDER ||
+				ent->client->NPC_class == CLASS_INTERROGATOR ||
+				ent->client->NPC_class == CLASS_SENTRY)
+			{
+				ent->NPC->defaultBehavior = BS_DEFAULT;
+				ent->client->ps.gravity = 0;
+				ent->svFlags |= SVF_CUSTOM_GRAVITY;
+				ent->client->moveType = MT_FLYSWIM;
+			}
+			else
+			{
+				if (ent->client->ps.weapon != WP_NONE
+					&& ent->client->ps.weapon != WP_SABER //sabers done above
 					&& (!(ent->NPC->aiFlags & NPCAI_MATCHPLAYERWEAPON) || !ent->weaponModel[0]))
+				//they do this themselves
+				{
+					G_CreateG2AttachedWeaponModel(ent, weaponData[ent->client->ps.weapon].weaponMdl, ent->handRBolt, 0);
+					WP_SaberAddHolsteredG2SaberModels(ent);
+				}
+				switch (ent->client->ps.weapon)
+				{
+				case WP_BRYAR_PISTOL:
+				case WP_SBD_BLASTER:
+				case WP_JAWA:
+				case WP_JANGO:
+				case WP_CLONEPISTOL:
+					break;
+				case WP_BLASTER_PISTOL:
+					NPCInfo->scriptFlags |= SCF_PILOT;
+
+					if (ent->client->NPC_class == CLASS_REBORN && ent->NPC->rank >= RANK_LT_COMM && (!(ent->NPC->aiFlags
+						& NPCAI_MATCHPLAYERWEAPON) || !ent->weaponModel[0])) //they do this themselves
+					{
+						//dual blaster pistols, so add the left-hand one, too
+						G_CreateG2AttachedWeaponModel(ent, weaponData[ent->client->ps.weapon].weaponMdl, ent->handLBolt,
+						                              1);
+					}
+					break;
+				case WP_DUAL_PISTOL:
+					if ((ent->client->NPC_class == CLASS_JANGODUAL || Q_stricmp(ent->NPC_type, "md_jango_dual") == 0)
+						&& (!(ent->NPC->aiFlags & NPCAI_MATCHPLAYERWEAPON) || !ent->weaponModel[0]))
 					//they do this themselves
-				{
-					//dual blaster pistols, so add the left-hand one, too
-					G_CreateG2AttachedWeaponModel(ent, weaponData[ent->client->ps.weapon].weaponMdl, ent->handLBolt,
-						1);
-				}
-				break;
+					{
+						//dual blaster pistols, so add the left-hand one, too
+						G_CreateG2AttachedWeaponModel(ent, weaponData[ent->client->ps.weapon].weaponMdl, ent->handLBolt,
+						                              1);
+					}
+					break;
 
-			case WP_DISRUPTOR:
-				//Sniper
-				//ent->NPC->scriptFlags |= SCF_ALT_FIRE;//FIXME: use primary fire sometimes?  Up close?  Different class of NPC?
-				break;
-			case WP_BOWCASTER:
-				NPCInfo->scriptFlags |= SCF_PILOT;
-				break;
-			case WP_REPEATER:
-				NPCInfo->scriptFlags |= SCF_PILOT;
+				case WP_DISRUPTOR:
+					//Sniper
+					//ent->NPC->scriptFlags |= SCF_ALT_FIRE;//FIXME: use primary fire sometimes?  Up close?  Different class of NPC?
+					break;
+				case WP_BOWCASTER:
+					NPCInfo->scriptFlags |= SCF_PILOT;
+					break;
+				case WP_REPEATER:
+					NPCInfo->scriptFlags |= SCF_PILOT;
 				//machine-gunner
-				break;
-			case WP_DEMP2:
-				break;
-			case WP_FLECHETTE:
-				NPCInfo->scriptFlags |= SCF_PILOT;
+					break;
+				case WP_DEMP2:
+					break;
+				case WP_FLECHETTE:
+					NPCInfo->scriptFlags |= SCF_PILOT;
 				//shotgunner
-				if (!Q_stricmp("stofficeralt", ent->NPC_type))
-				{
-					//ent->NPC->scriptFlags |= SCF_ALT_FIRE;
-				}
-				break;
-			case WP_ROCKET_LAUNCHER:
-				break;
-			case WP_CONCUSSION:
-				break;
-			case WP_THERMAL:
-				//Gran, use main, bouncy fire
-				//					ent->NPC->scriptFlags |= SCF_ALT_FIRE;
-				break;
-			case WP_MELEE:
-				break;
-			case WP_NOGHRI_STICK:
-				break;
-			default:
-			case WP_BLASTER:
-				//FIXME: health in NPCs.cfg, and not all blaster users are stormtroopers
-				//FIXME: not necc. a ST
-				NPCInfo->scriptFlags |= SCF_PILOT;
+					if (!Q_stricmp("stofficeralt", ent->NPC_type))
+					{
+						//ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					}
+					break;
+				case WP_ROCKET_LAUNCHER:
+					break;
+				case WP_CONCUSSION:
+					break;
+				case WP_THERMAL:
+					//Gran, use main, bouncy fire
+					//					ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					break;
+				case WP_MELEE:
+					break;
+				case WP_NOGHRI_STICK:
+					break;
+				default:
+				case WP_BLASTER:
+					//FIXME: health in NPCs.cfg, and not all blaster users are stormtroopers
+					//FIXME: not necc. a ST
+					NPCInfo->scriptFlags |= SCF_PILOT;
 
-				ST_ClearTimers(ent);
-				if (ent->NPC->rank >= RANK_COMMANDER)
-				{
-					//commanders use alt-fire
-					//ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					ST_ClearTimers(ent);
+					if (ent->NPC->rank >= RANK_COMMANDER)
+					{
+						//commanders use alt-fire
+						//ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					}
+					if (!Q_stricmp("rodian2", ent->NPC_type))
+					{
+						//ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					}
+					break;
 				}
-				if (!Q_stricmp("rodian2", ent->NPC_type))
+				if (!Q_stricmp("galak_mech", ent->NPC_type))
 				{
-					//ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					//starts with armor
+					NPC_GalakMech_Init(ent);
 				}
-				break;
-			}
-			if (!Q_stricmp("galak_mech", ent->NPC_type))
-			{
-				//starts with armor
-				NPC_GalakMech_Init(ent);
 			}
 		}
-	}
-	break;
+		break;
 
 	default:
 		ent->NPC->defaultBehavior = BS_DEFAULT;
@@ -874,7 +910,7 @@ void NPC_SetMiscDefaultData(gentity_t* ent)
 	}
 
 	if (ent->client->NPC_class == CLASS_ATST || ent->client->NPC_class == CLASS_MARK1)
-		// chris/steve/kevin requested that the mark1 be shielded also
+	// chris/steve/kevin requested that the mark1 be shielded also
 	{
 		ent->flags |= FL_SHIELDED | FL_NO_KNOCKBACK;
 	}
@@ -890,7 +926,7 @@ void NPC_SetMiscDefaultData(gentity_t* ent)
 		ent->client->NPC_class == CLASS_BOBAFETT ||
 		ent->client->NPC_class == CLASS_MANDALORIAN ||
 		ent->client->NPC_class == CLASS_ROCKETTROOPER
-		)
+	)
 	{
 		ent->NPC->scriptFlags |= SCF_NAV_CAN_FLY;
 	}
@@ -914,7 +950,7 @@ void NPC_SetMiscDefaultData(gentity_t* ent)
 	{
 		ent->genericBolt1 = gi.G2API_AddBolt(&ent->ghoul2[ent->weaponModel[0]], "*flash");
 		G_PlayEffect(G_EffectIndex("scepter/sword.efx"), ent->weaponModel[0], ent->genericBolt1, ent->s.number,
-			ent->currentOrigin, qtrue, qtrue);
+		             ent->currentOrigin, qtrue, qtrue);
 		//how many times can she recharge?
 		ent->count = g_spskill->integer * 2;
 		//To make sure she can do it at least once
@@ -944,19 +980,19 @@ int NPC_WeaponsForTeam(const team_t team, const int spawnflags, const char* npc_
 	//*** not sure how to handle this, should I pass in class instead of team and go from there? - dmv
 	switch (team)
 	{
-		// no longer exists
+	// no longer exists
 
-		//	case TEAM_IMPERIAL:
+	//	case TEAM_IMPERIAL:
 	case TEAM_ENEMY:
 		if (Q_stricmp("tavion", npc_type) == 0 ||
 			Q_stricmpn("reborn", npc_type, 6) == 0 ||
 			Q_stricmp("desann", npc_type) == 0 ||
 			Q_stricmpn("shadowtrooper", npc_type, 13) == 0)
 			return 1 << WP_SABER;
-		//			return ( 1 << WP_IMPERIAL_BLADE);
-		//NOTENOTE: Falls through if not a knife user
+	//			return ( 1 << WP_IMPERIAL_BLADE);
+	//NOTENOTE: Falls through if not a knife user
 
-		//FIXME: default weapon in npc config?
+	//FIXME: default weapon in npc config?
 		if (Q_stricmpn("stofficer", npc_type, 9) == 0)
 		{
 			return 1 << WP_FLECHETTE;
@@ -1076,7 +1112,7 @@ int NPC_WeaponsForTeam(const team_t team, const int spawnflags, const char* npc_
 		{
 			return 1 << WP_MELEE;
 		}
-		//Stormtroopers, etc.
+	//Stormtroopers, etc.
 		return 1 << WP_BLASTER;
 
 	case TEAM_PLAYER:
@@ -1110,7 +1146,7 @@ int NPC_WeaponsForTeam(const team_t team, const int spawnflags, const char* npc_
 			return WP_NONE;
 		}
 
-		//rebel
+	//rebel
 		return 1 << WP_BLASTER;
 
 	case TEAM_NEUTRAL:
@@ -1242,8 +1278,8 @@ void NPC_Begin(gentity_t* ent)
 			{
 				//remove yourself
 				Quake3Game()->DebugPrint(IGameInterface::WL_ERROR,
-					"NPC %s could not spawn, firing target3 (%s) and removing self\n",
-					ent->targetname, ent->target3);
+				                         "NPC %s could not spawn, firing target3 (%s) and removing self\n",
+				                         ent->targetname, ent->target3);
 				//Fire off our target3
 				G_UseTargets2(ent, ent, ent->target3);
 
@@ -1254,9 +1290,9 @@ void NPC_Begin(gentity_t* ent)
 			else
 			{
 				Quake3Game()->DebugPrint(IGameInterface::WL_ERROR,
-					"NPC %s at (%5.0f %5.0f %5.0f) couldn't spawn, waiting %4.2f secs to try again\n",
-					ent->targetname, ent->s.origin[0], ent->s.origin[1], ent->s.origin[2],
-					ent->wait / 1000.0f);
+				                         "NPC %s at (%5.0f %5.0f %5.0f) couldn't spawn, waiting %4.2f secs to try again\n",
+				                         ent->targetname, ent->s.origin[0], ent->s.origin[1], ent->s.origin[2],
+				                         ent->wait / 1000.0f);
 				ent->e_ThinkFunc = thinkF_NPC_Begin;
 				ent->nextthink = level.time + ent->wait; //try again in half a second
 			}
@@ -1333,7 +1369,7 @@ void NPC_Begin(gentity_t* ent)
 		case 2:
 			ent->NPC->stats.aim = Q_irand(3, 4);
 			break;
-		default:;
+		default: ;
 		}
 	}
 	else if (ent->client->NPC_class == CLASS_STORMTROOPER
@@ -1368,7 +1404,7 @@ void NPC_Begin(gentity_t* ent)
 				ent->NPC->stats.aim -= Q_irand(0, 2);
 			}
 			break;
-		default:;
+		default: ;
 		}
 	}
 	else if (ent->client->NPC_class == CLASS_REBORN
@@ -1384,7 +1420,7 @@ void NPC_Begin(gentity_t* ent)
 		case 2:
 			ent->NPC->stats.yawSpeed *= 1.5f;
 			break;
-		default:;
+		default: ;
 		}
 	}
 	else if (ent->client->NPC_class == CLASS_BOC)
@@ -1980,7 +2016,7 @@ gentity_t* NPC_Spawn_Do(gentity_t* ent, const qboolean fullSpawnNow)
 		VectorCopy(ent->currentOrigin, bottom);
 		bottom[2] = MIN_WORLD_COORD;
 		gi.trace(&tr, ent->currentOrigin, ent->mins, ent->maxs, bottom, ent->s.number, MASK_NPCSOLID,
-			static_cast<EG2_Collision>(0), 0);
+		         static_cast<EG2_Collision>(0), 0);
 		if (!tr.allsolid && !tr.startsolid && tr.fraction < 1.0)
 		{
 			G_SetOrigin(ent, tr.endpos);
@@ -3145,7 +3181,7 @@ void SP_NPC_Jedi(gentity_t* self)
 			case 2:
 				self->NPC_type = "jedimaster3";
 				break;
-			default:;
+			default: ;
 			}
 		}
 		else if (self->spawnflags & 1)
@@ -3770,7 +3806,7 @@ void SP_NPC_Weequay(gentity_t* self)
 		case 3:
 			self->NPC_type = "Weequay4";
 			break;
-		default:;
+		default: ;
 		}
 	}
 
@@ -4251,7 +4287,7 @@ void SP_NPC_Cultist(gentity_t* self)
 			case 2: //all
 				self->spawnflags |= 4;
 				break;
-			default:;
+			default: ;
 			}
 			if (Q_irand(0, 1))
 			{
@@ -4935,7 +4971,7 @@ static void NPC_Spawn_f()
 	VectorNormalize(forward);
 	VectorMA(g_entities[0].currentOrigin, 128, forward, end);
 	gi.trace(&trace, g_entities[0].currentOrigin, nullptr, nullptr, end, 0, MASK_SOLID, static_cast<EG2_Collision>(0),
-		0);
+	         0);
 	VectorCopy(trace.endpos, end);
 	end[2] -= 24;
 	gi.trace(&trace, trace.endpos, nullptr, nullptr, end, 0, MASK_SOLID, static_cast<EG2_Collision>(0), 0);
@@ -5228,7 +5264,7 @@ void NPC_Kill_f(void)
 				{
 					//A spawner, remove it
 					gi.Printf(S_COLOR_GREEN"Removing NPC spawner %s with NPC named %s\n", player->NPC_type,
-						player->NPC_targetname);
+					          player->NPC_targetname);
 					G_FreeEntity(player);
 					//FIXME: G_UseTargets2(player, player, player->NPC_target & player->target);?
 				}

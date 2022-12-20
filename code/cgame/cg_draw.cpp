@@ -224,18 +224,18 @@ static void CG_DrawForcePower_md(const centity_t* cent, const float hud_ratio)
 		if (cg_SerenityJediEngineHudMode.integer == 3)
 		{
 			CG_DrawPic(SCREEN_WIDTH - (SCREEN_WIDTH - forceTics_md[i].xPos) + 4.5 * hud_ratio,
-				forceTics_md[i].yPos + 8,
-				forceTics_md[i].width * hud_ratio,
-				forceTics_md[i].height,
-				forceTics_md[i].background);
+			           forceTics_md[i].yPos + 8,
+			           forceTics_md[i].width * hud_ratio,
+			           forceTics_md[i].height,
+			           forceTics_md[i].background);
 		}
 		else
 		{
 			CG_DrawPic(SCREEN_WIDTH - (SCREEN_WIDTH - forceTics_md[i].xPos) * hud_ratio,
-				forceTics_md[i].yPos,
-				forceTics_md[i].width * hud_ratio,
-				forceTics_md[i].height,
-				forceTics_md[i].background);
+			           forceTics_md[i].yPos,
+			           forceTics_md[i].width * hud_ratio,
+			           forceTics_md[i].height,
+			           forceTics_md[i].background);
 		}
 
 		value -= inc;
@@ -366,10 +366,10 @@ static void CG_DrawForcePower(const centity_t* cent, const float hud_ratio)
 		cgi_R_SetColor(calc_color);
 
 		CG_DrawPic(SCREEN_WIDTH - (SCREEN_WIDTH - forceTics[i].xPos) * hud_ratio,
-			forceTics[i].yPos,
-			forceTics[i].width * hud_ratio,
-			forceTics[i].height,
-			forceTics[i].background);
+		           forceTics[i].yPos,
+		           forceTics[i].width * hud_ratio,
+		           forceTics[i].height,
+		           forceTics[i].background);
 
 		value -= inc;
 	}
@@ -397,7 +397,7 @@ static void CG_DrawForcePower(const centity_t* cent, const float hud_ratio)
 
 void CG_DrawJK2ForcePower(const centity_t* cent, const int x, const int y)
 {
-	vec4_t		calc_color;
+	vec4_t calc_color;
 	float extra = 0;
 	float percent;
 
@@ -408,7 +408,8 @@ void CG_DrawJK2ForcePower(const centity_t* cent, const int x, const int y)
 	const float inc = static_cast<float>(cent->gent->client->ps.forcePowerMax) / MAX_DATAPADTICS;
 	float value = cent->gent->client->ps.forcePower;
 	if (value > cent->gent->client->ps.forcePowerMax)
-	{//supercharged with force
+	{
+		//supercharged with force
 		extra = value - cent->gent->client->ps.forcePowerMax;
 		value = cent->gent->client->ps.forcePowerMax;
 	}
@@ -416,18 +417,19 @@ void CG_DrawJK2ForcePower(const centity_t* cent, const int x, const int y)
 	for (int i = MAX_DATAPADTICS - 1; i >= 0; i--)
 	{
 		if (extra)
-		{//supercharged
+		{
+			//supercharged
 			memcpy(calc_color, colorTable[CT_WHITE], sizeof(vec4_t));
 			percent = 0.75f + sin(cg.time * 0.005f) * (extra / cent->gent->client->ps.forcePowerMax * 0.25f);
 			calc_color[0] *= percent;
 			calc_color[1] *= percent;
 			calc_color[2] *= percent;
 		}
-		else if (value <= 0)	// partial tic
+		else if (value <= 0) // partial tic
 		{
 			memcpy(calc_color, colorTable[CT_BLACK], sizeof(vec4_t));
 		}
-		else if (value < inc)	// partial tic
+		else if (value < inc) // partial tic
 		{
 			memcpy(calc_color, colorTable[CT_LTGREY], sizeof(vec4_t));
 			percent = value / inc;
@@ -443,10 +445,10 @@ void CG_DrawJK2ForcePower(const centity_t* cent, const int x, const int y)
 		cgi_R_SetColor(calc_color);
 
 		CG_DrawPic(x + JK2forceTicPos[i].x,
-			y + JK2forceTicPos[i].y,
-			JK2forceTicPos[i].width,
-			JK2forceTicPos[i].height,
-			JK2forceTicPos[i].tic);
+		           y + JK2forceTicPos[i].y,
+		           JK2forceTicPos[i].width,
+		           JK2forceTicPos[i].height,
+		           JK2forceTicPos[i].tic);
 
 		value -= inc;
 	}
@@ -534,7 +536,8 @@ static void CG_DrawJK2SaberFatigue(const centity_t* cent, const int x, const int
 			cg.messageLitActive = qfalse;
 		}
 	}
-	else if (cg.mishapHUDTotalFlashTime > cg.time || cent->gent->client->ps.saberFatigueChainCount > MISHAPLEVEL_RUNINACCURACY)
+	else if (cg.mishapHUDTotalFlashTime > cg.time || cent->gent->client->ps.saberFatigueChainCount >
+		MISHAPLEVEL_RUNINACCURACY)
 	{
 		if (!(cg.time / 600 & 1))
 		{
@@ -1086,18 +1089,18 @@ static void CG_Drawgunfatigue(const centity_t* cent, const float hud_ratio)
 		if (cg_SerenityJediEngineHudMode.integer == 3)
 		{
 			CG_DrawPic(SCREEN_WIDTH - (SCREEN_WIDTH - mishapTics[i].xPos) + 4.5 * hud_ratio,
-				mishapTics[i].yPos + 8,
-				mishapTics[i].width * hud_ratio,
-				mishapTics[i].height,
-				mishapTics[i].background);
+			           mishapTics[i].yPos + 8,
+			           mishapTics[i].width * hud_ratio,
+			           mishapTics[i].height,
+			           mishapTics[i].background);
 		}
 		else
 		{
 			CG_DrawPic(SCREEN_WIDTH - (SCREEN_WIDTH - mishapTics[i].xPos) * hud_ratio,
-				mishapTics[i].yPos,
-				mishapTics[i].width * hud_ratio,
-				mishapTics[i].height,
-				mishapTics[i].background);
+			           mishapTics[i].yPos,
+			           mishapTics[i].width * hud_ratio,
+			           mishapTics[i].height,
+			           mishapTics[i].background);
 		}
 
 		value -= inc;
@@ -1503,7 +1506,7 @@ void CG_DrawoldblockPoints(const centity_t* cent)
 
 	//now draw the part to show how much fuel there is in the color specified
 	CG_FillRect(x + 1.0f, y + 1.0f + (BPFUELBAR_H - percent), BPFUELBAR_W - 1.0f,
-		BPFUELBAR_H - 1.0f - (BPFUELBAR_H - percent), a_color);
+	            BPFUELBAR_H - 1.0f - (BPFUELBAR_H - percent), a_color);
 
 	//then draw the other part greyed out
 	CG_FillRect(x + 1.0f, y + 1.0f, BPFUELBAR_W - 1.0f, BPFUELBAR_H - percent, c_color);
@@ -1874,10 +1877,10 @@ static void CG_DrawClassicblockPoints(const centity_t* cent, const float hud_rat
 		cgi_R_SetColor(calc_color);
 
 		CG_DrawPic(SCREEN_WIDTH - (SCREEN_WIDTH - blockpoint_tics[i].xPos) * hud_ratio,
-			blockpoint_tics[i].yPos,
-			blockpoint_tics[i].width * hud_ratio,
-			blockpoint_tics[i].height,
-			blockpoint_tics[i].background);
+		           blockpoint_tics[i].yPos,
+		           blockpoint_tics[i].width * hud_ratio,
+		           blockpoint_tics[i].height,
+		           blockpoint_tics[i].background);
 
 		value -= inc;
 	}
@@ -1910,7 +1913,9 @@ void CG_DrawDF_Pic(const int index)
 		otherHUDBits[index].background
 	);
 }
-void CG_DrawDF_RotatePic(const int index, const int rotate, const int offset_x, const int offset_y, const float scale_w, const float scale_h)
+
+void CG_DrawDF_RotatePic(const int index, const int rotate, const int offset_x, const int offset_y, const float scale_w,
+                         const float scale_h)
 {
 	cgi_R_SetColor(otherHUDBits[index].color);
 	CG_DrawRotatePic2(
@@ -2105,14 +2110,14 @@ void CG_DrawDF_Armor()
 	}
 
 	// If armor is low, flash a graphic to warn the player
-	if (ps->stats[STAT_ARMOR])	// Is there armor? Draw the HUD Armor TIC
+	if (ps->stats[STAT_ARMOR]) // Is there armor? Draw the HUD Armor TIC
 	{
 		const float quarter_armor = ps->stats[STAT_MAX_HEALTH] / 4.0f;
 
 		// Make tic flash if armor is at 25% of full armor
-		if (ps->stats[STAT_ARMOR] < quarter_armor)		// Do whatever the flash timer says
+		if (ps->stats[STAT_ARMOR] < quarter_armor) // Do whatever the flash timer says
 		{
-			if (cg.HUDTickFlashTime < cg.time)			// Flip at the same time
+			if (cg.HUDTickFlashTime < cg.time) // Flip at the same time
 			{
 				cg.HUDTickFlashTime = cg.time + 400;
 				if (cg.HUDArmorFlag)
@@ -2130,7 +2135,7 @@ void CG_DrawDF_Armor()
 			cg.HUDArmorFlag = qtrue;
 		}
 	}
-	else						// No armor? Don't show it.
+	else // No armor? Don't show it.
 	{
 		cg.HUDArmorFlag = qfalse;
 	}
@@ -2390,7 +2395,8 @@ void CG_DrawDF_GunFatigue(const centity_t* cent)
 	cgi_R_SetColor(otherHUDBits[OHB_BLASTERSTYLE_DF].color);
 
 	// Show weapon fatigue by changing height and position of blaster style image
-	float fatigue_percent = static_cast<float>(cent->gent->client->ps.BlasterAttackChainCount) / (BLASTERMISHAPLEVEL_MAX + 1);
+	float fatigue_percent = static_cast<float>(cent->gent->client->ps.BlasterAttackChainCount) / (BLASTERMISHAPLEVEL_MAX
+		+ 1);
 
 	if (fatigue_percent < 0)
 	{
@@ -2421,11 +2427,12 @@ void CG_DrawDF_GunFatigue(const centity_t* cent)
 		);
 	}
 }
+
 // new df hud// right hud
 
 static void CG_DrawDF_Ammo(const centity_t* cent)
 {
-	vec4_t		calc_color;
+	vec4_t calc_color;
 	int offset_y = 21;
 
 	if (!cent->currentState.weapon) // We don't have a weapon right now
@@ -2441,7 +2448,7 @@ static void CG_DrawDF_Ammo(const centity_t* cent)
 	const playerState_t* ps = &cg.snap->ps;
 	float curr_value = ps->ammo[weaponData[cent->currentState.weapon].ammoIndex];
 
-	if (curr_value < 0)	// No ammo
+	if (curr_value < 0) // No ammo
 	{
 		return;
 	}
@@ -2451,11 +2458,11 @@ static void CG_DrawDF_Ammo(const centity_t* cent)
 
 	for (int i = MAX_DFHUDTICS - 1; i >= 0; i--)
 	{
-		if (curr_value <= 0)	// don't show tic
+		if (curr_value <= 0) // don't show tic
 		{
 			break;
 		}
-		if (curr_value < inc)	// partial tic (alpha it out)
+		if (curr_value < inc) // partial tic (alpha it out)
 		{
 			memcpy(calc_color, df_ammoTics[i].color, sizeof(vec4_t));
 			const float percent = curr_value / inc;
@@ -2467,10 +2474,10 @@ static void CG_DrawDF_Ammo(const centity_t* cent)
 		if (cg_SerenityJediEngineHudMode.integer == 4) // vertical
 		{
 			CG_DrawPic(df_ammoTics[i].xPos,
-				df_ammoTics[i].yPos,
-				df_ammoTics[i].width,
-				df_ammoTics[i].height,
-				df_ammoTics[i].background
+			           df_ammoTics[i].yPos,
+			           df_ammoTics[i].width,
+			           df_ammoTics[i].height,
+			           df_ammoTics[i].background
 			);
 		}
 		else // horizontal
@@ -2649,10 +2656,10 @@ static void CG_DrawDF_BlockPoints(const centity_t* cent)
 		if (cg_SerenityJediEngineHudMode.integer == 4) // vertical
 		{
 			CG_DrawPic(df_blockTics[i].xPos,
-				df_blockTics[i].yPos,
-				df_blockTics[i].width,
-				df_blockTics[i].height,
-				df_blockTics[i].background
+			           df_blockTics[i].yPos,
+			           df_blockTics[i].width,
+			           df_blockTics[i].height,
+			           df_blockTics[i].background
 			);
 		}
 		else // horizontal
@@ -2808,10 +2815,10 @@ static void CG_DrawDF_ForcePowers(const centity_t* cent)
 		if (cg_SerenityJediEngineHudMode.integer == 4) // vertical
 		{
 			CG_DrawPic(df_forceTics[i].xPos,
-				df_forceTics[i].yPos,
-				df_forceTics[i].width,
-				df_forceTics[i].height,
-				df_forceTics[i].background
+			           df_forceTics[i].yPos,
+			           df_forceTics[i].width,
+			           df_forceTics[i].height,
+			           df_forceTics[i].background
 			);
 		}
 		else // horizontal
@@ -3018,7 +3025,8 @@ void CG_DrawSprintFuel()
 	CG_DrawRect(x, y + 100, SPFUELBAR_W, SPFUELBAR_H, 0.5f, colorTable[CT_BLACK]);
 
 	//now draw the part to show how much health there is in the color specified
-	CG_FillRect(x + 0.5f, y + 0.5f + (SPFUELBAR_H - percent) + 100, SPFUELBAR_W - 0.5f, SPFUELBAR_H - 0.5f - (SPFUELBAR_H - percent), a_color);
+	CG_FillRect(x + 0.5f, y + 0.5f + (SPFUELBAR_H - percent) + 100, SPFUELBAR_W - 0.5f,
+	            SPFUELBAR_H - 0.5f - (SPFUELBAR_H - percent), a_color);
 
 	//then draw the other part greyed out
 	CG_FillRect(x + 0.5f, y + 0.5f + 100, SPFUELBAR_W - 0.5f, SPFUELBAR_H - percent, c_color);
@@ -3078,7 +3086,7 @@ void CG_DrawJetpackFuel()
 
 	//now draw the part to show how much health there is in the color specified
 	CG_FillRect(x + 0.5f, y + 0.5f + (JPFUELBAR_H - percent), JPFUELBAR_W - 0.5f,
-		JPFUELBAR_H - 0.5f - (JPFUELBAR_H - percent), a_color);
+	            JPFUELBAR_H - 0.5f - (JPFUELBAR_H - percent), a_color);
 
 	//then draw the other part greyed out
 	CG_FillRect(x + 0.5f, y + 0.5f, JPFUELBAR_W - 0.5f, JPFUELBAR_H - percent, c_color);
@@ -3141,7 +3149,8 @@ void CG_DrawCloakFuel()
 	CG_DrawRect(x, y, CLFUELBAR_W, CLFUELBAR_H, 0.5f, colorTable[CT_BLACK]);
 
 	//now draw the part to show how much fuel there is in the color specified
-	CG_FillRect(x + 0.5f, y + 0.5f + (CLFUELBAR_H - percent), CLFUELBAR_W - 0.5f, CLFUELBAR_H - 0.5f - (CLFUELBAR_H - percent), a_color);
+	CG_FillRect(x + 0.5f, y + 0.5f + (CLFUELBAR_H - percent), CLFUELBAR_W - 0.5f,
+	            CLFUELBAR_H - 0.5f - (CLFUELBAR_H - percent), a_color);
 
 	//then draw the other part greyed out
 	CG_FillRect(x + 0.5f, y + 0.5f, CLFUELBAR_W - 0.5f, CLFUELBAR_H - percent, c_color);
@@ -3210,7 +3219,7 @@ void CG_DrawBarrierFuel()
 
 	//now draw the part to show how much fuel there is in the color specified
 	CG_FillRect(x + 0.5f, y + 0.5f + (BFFUELBAR_H - percent), BFFUELBAR_W - 0.5f,
-		BFFUELBAR_H - 0.5f - (BFFUELBAR_H - percent), a_color);
+	            BFFUELBAR_H - 0.5f - (BFFUELBAR_H - percent), a_color);
 
 	//then draw the other part greyed out
 	CG_FillRect(x + 0.5f, y + 0.5f, BFFUELBAR_W - 0.5f, BFFUELBAR_H - percent, c_color);
@@ -3339,18 +3348,18 @@ static void CG_DrawAmmo_md(const centity_t* cent, const float hud_ratio)
 		if (cg_SerenityJediEngineHudMode.integer == 3)
 		{
 			CG_DrawPic(SCREEN_WIDTH - (SCREEN_WIDTH - ammoTics_md[i].xPos) + 4.5 * hud_ratio,
-				ammoTics_md[i].yPos + 8,
-				ammoTics_md[i].width * hud_ratio,
-				ammoTics_md[i].height,
-				ammoTics_md[i].background);
+			           ammoTics_md[i].yPos + 8,
+			           ammoTics_md[i].width * hud_ratio,
+			           ammoTics_md[i].height,
+			           ammoTics_md[i].background);
 		}
 		else
 		{
 			CG_DrawPic(SCREEN_WIDTH - (SCREEN_WIDTH - ammoTics_md[i].xPos) * hud_ratio,
-				ammoTics_md[i].yPos,
-				ammoTics_md[i].width * hud_ratio,
-				ammoTics_md[i].height,
-				ammoTics_md[i].background);
+			           ammoTics_md[i].yPos,
+			           ammoTics_md[i].width * hud_ratio,
+			           ammoTics_md[i].height,
+			           ammoTics_md[i].background);
 		}
 
 		curr_value -= inc;
@@ -3455,10 +3464,10 @@ static void CG_DrawAmmo(const centity_t* cent, const float hud_ratio)
 		cgi_R_SetColor(calc_color);
 
 		CG_DrawPic(SCREEN_WIDTH - (SCREEN_WIDTH - ammoTics[i].xPos) * hud_ratio,
-			ammoTics[i].yPos,
-			ammoTics[i].width * hud_ratio,
-			ammoTics[i].height,
-			ammoTics[i].background);
+		           ammoTics[i].yPos,
+		           ammoTics[i].width * hud_ratio,
+		           ammoTics[i].height,
+		           ammoTics[i].background);
 
 		curr_value -= inc;
 	}
@@ -3466,8 +3475,8 @@ static void CG_DrawAmmo(const centity_t* cent, const float hud_ratio)
 
 void CG_DrawJK2Ammo(const centity_t* cent, const int x, const int y)
 {
-	int			num_color_i;
-	vec4_t		calc_color;
+	int num_color_i;
+	vec4_t calc_color;
 
 	const playerState_t* ps = &cg.snap->ps;
 
@@ -3486,40 +3495,41 @@ void CG_DrawJK2Ammo(const centity_t* cent, const int x, const int y)
 		cgi_R_SetColor(colorTable[CT_WHITE]);
 
 		if (!cg.saberAnimLevelPending && cent->gent->client)
-		{//uninitialized after a load game, cheat across and get it
+		{
+			//uninitialized after a load game, cheat across and get it
 			cg.saberAnimLevelPending = cent->gent->client->ps.saberAnimLevel;
 		}
 		// don't need to draw ammo, but we will draw the current saber style in this window
 		switch (cg.saberAnimLevelPending)
 		{
-		case 1://FORCE_LEVEL_1:
+		case 1: //FORCE_LEVEL_1:
 			CG_DrawPic(x, y, 80, 40, cgs.media.JK2HUDSaberStyleFast);
 			break;
-		case 2://FORCE_LEVEL_2:
+		case 2: //FORCE_LEVEL_2:
 			CG_DrawPic(x, y, 80, 40, cgs.media.JK2HUDSaberStyleMed);
 			break;
-		case 3://FORCE_LEVEL_3:
+		case 3: //FORCE_LEVEL_3:
 			CG_DrawPic(x, y, 80, 40, cgs.media.JK2HUDSaberStyleStrong);
 			break;
-		case 4://FORCE_LEVEL_4://Desann
+		case 4: //FORCE_LEVEL_4://Desann
 			CG_DrawPic(x, y, 80, 40, cgs.media.JK2HUDSaberStyleDesann);
 			break;
-		case 5://FORCE_LEVEL_5://Tavion
+		case 5: //FORCE_LEVEL_5://Tavion
 			CG_DrawPic(x, y, 80, 40, cgs.media.JK2HUDSaberStyleTavion);
 			break;
-		case 6://FORCE_LEVEL_5://STAFF
+		case 6: //FORCE_LEVEL_5://STAFF
 			CG_DrawPic(x, y, 80, 40, cgs.media.JK2HUDSaberStyleStaff);
 			break;
-		case 7://FORCE_LEVEL_5://DUELS
+		case 7: //FORCE_LEVEL_5://DUELS
 			CG_DrawPic(x, y, 80, 40, cgs.media.JK2HUDSaberStyleDuels);
 			break;
-		default:;
+		default: ;
 		}
 		return;
 	}
 	float value = ps->ammo[weaponData[cent->currentState.weapon].ammoIndex];
 
-	if (value < 0)	// No ammo
+	if (value < 0) // No ammo
 	{
 		return;
 	}
@@ -3562,16 +3572,17 @@ void CG_DrawJK2Ammo(const centity_t* cent, const int x, const int y)
 	cgi_R_SetColor(colorTable[num_color_i]);
 	CG_DrawNumField(x + 29, y + 26, 3, value, 6, 12, NUM_FONT_SMALL, qfalse);
 
-	const float inc = static_cast<float>(ammoData[weaponData[cent->currentState.weapon].ammoIndex].max) / MAX_DATAPADTICS;
+	const float inc = static_cast<float>(ammoData[weaponData[cent->currentState.weapon].ammoIndex].max) /
+		MAX_DATAPADTICS;
 	value = ps->ammo[weaponData[cent->currentState.weapon].ammoIndex];
 
 	for (int i = MAX_DATAPADTICS - 1; i >= 0; i--)
 	{
-		if (value <= 0)	// partial tic
+		if (value <= 0) // partial tic
 		{
 			memcpy(calc_color, colorTable[CT_BLACK], sizeof(vec4_t));
 		}
-		else if (value < inc)	// partial tic
+		else if (value < inc) // partial tic
 		{
 			memcpy(calc_color, colorTable[CT_WHITE], sizeof(vec4_t));
 			const float percent = value / inc;
@@ -3587,10 +3598,10 @@ void CG_DrawJK2Ammo(const centity_t* cent, const int x, const int y)
 		cgi_R_SetColor(calc_color);
 
 		CG_DrawPic(x + JK2ammoTicPos[i].x,
-			y + JK2ammoTicPos[i].y,
-			JK2ammoTicPos[i].width,
-			JK2ammoTicPos[i].height,
-			JK2ammoTicPos[i].tic);
+		           y + JK2ammoTicPos[i].y,
+		           JK2ammoTicPos[i].width,
+		           JK2ammoTicPos[i].height,
+		           JK2ammoTicPos[i].tic);
 
 		value -= inc;
 	}
@@ -4881,7 +4892,7 @@ static void CG_DrawATSTHud()
 
 	// we just calc the display value from the sum of health and armor
 	if (g_entities[cg.snap->ps.viewEntity].activator)
-		// ensure we can look back to the atst_drivable to get the max health
+	// ensure we can look back to the atst_drivable to get the max health
 	{
 		health = g_entities[cg.snap->ps.viewEntity].health + g_entities[cg.snap->ps.viewEntity].client->ps.stats[
 			STAT_ARMOR];
@@ -5013,7 +5024,7 @@ static void CG_DrawBatteryCharge()
 static void CG_DrawSimpleSaberStyle(const centity_t* cent)
 {
 	uint32_t calc_color;
-	char num[7] = { 0 };
+	char num[7] = {0};
 	int weap_x = 16;
 
 	if (!cent->currentState.weapon) // We don't have a weapon right now
@@ -5067,13 +5078,13 @@ static void CG_DrawSimpleSaberStyle(const centity_t* cent)
 	}
 
 	SimpleHud_DrawString(SCREEN_WIDTH - cgs.widthRatioCoef * (weap_x + 16 + 32), SCREEN_HEIGHT - 80 + 40, num,
-		colorTable[calc_color]);
+	                     colorTable[calc_color]);
 }
 
 static void CG_DrawSimpleAmmo(const centity_t* cent)
 {
 	uint32_t calc_color;
-	char num[16] = { 0 };
+	char num[16] = {0};
 
 	if (!cent->currentState.weapon) // We don't have a weapon right now
 	{
@@ -5089,7 +5100,7 @@ static void CG_DrawSimpleAmmo(const centity_t* cent)
 		weapon].altEnergyPerShot == 0)
 	{
 		SimpleHud_DrawString(SCREEN_WIDTH - cgs.widthRatioCoef * (16 + 32), SCREEN_HEIGHT - 80 + 40, "--",
-			colorTable[CT_HUD_ORANGE]);
+		                     colorTable[CT_HUD_ORANGE]);
 		return;
 	}
 
@@ -5133,12 +5144,12 @@ static void CG_DrawSimpleAmmo(const centity_t* cent)
 	Com_sprintf(num, sizeof num, "%i", curr_value);
 
 	SimpleHud_DrawString(SCREEN_WIDTH - cgs.widthRatioCoef * (16 + 32), SCREEN_HEIGHT - 80 + 40, num,
-		colorTable[calc_color]);
+	                     colorTable[calc_color]);
 }
 
 static void CG_DrawSimpleForcePower(const centity_t* cent)
 {
-	char num[16] = { 0 };
+	char num[16] = {0};
 	qboolean flash = qfalse;
 
 	if (!cent->gent || !cent->gent->client->ps.forcePowersKnown)
@@ -5176,7 +5187,7 @@ static void CG_DrawSimpleForcePower(const centity_t* cent)
 	Com_sprintf(num, sizeof num, "%i", cent->gent->client->ps.forcePower);
 
 	SimpleHud_DrawString(SCREEN_WIDTH - cgs.widthRatioCoef * (16 + 32), SCREEN_HEIGHT - 80 + 40 + 14, num,
-		colorTable[calc_color]);
+	                     colorTable[calc_color]);
 }
 
 /*
@@ -5201,7 +5212,7 @@ bool draw_jetpack_fuel_rocket_trooper_player(const centity_t* cent)
 void CG_DrawSJEHUDRightFrame(const int x, const int y)
 {
 	cgi_R_SetColor(colorTable[CT_WHITE]);
-	CG_DrawPic(x - 72, y - 75, 152, 160, cgs.media.SJEHUDRightFrame);		// Metal frame
+	CG_DrawPic(x - 72, y - 75, 152, 160, cgs.media.SJEHUDRightFrame); // Metal frame
 }
 
 void CG_DrawSJEHUDLeftFrame(const int x, const int y)
@@ -5211,8 +5222,8 @@ void CG_DrawSJEHUDLeftFrame(const int x, const int y)
 }
 
 //jk2 hud
-vec4_t	bluehudtint = { 0.5, 0.5, 1.0, 1.0 };
-vec4_t	redhudtint = { 1.0, 0.5, 0.5, 1.0 };
+vec4_t bluehudtint = {0.5, 0.5, 1.0, 1.0};
+vec4_t redhudtint = {1.0, 0.5, 0.5, 1.0};
 float* hudTintColor;
 
 void CG_DrawHUDJK2LeftFrame1(int x, int y);
@@ -5233,10 +5244,10 @@ static void CG_DrawHUD(const centity_t* cent)
 		constexpr int y = SCREEN_HEIGHT - 80;
 
 		SimpleHud_DrawString(x + cgs.widthRatioCoef * 16, y + 40, va("%i", cg.snap->ps.stats[STAT_HEALTH]),
-			colorTable[CT_HUD_RED]);
+		                     colorTable[CT_HUD_RED]);
 
 		SimpleHud_DrawString(x + cgs.widthRatioCoef * (18 + 14), y + 40 + 14, va("%i", cg.snap->ps.stats[STAT_ARMOR]),
-			colorTable[CT_HUD_GREEN]);
+		                     colorTable[CT_HUD_GREEN]);
 
 		CG_DrawSimpleForcePower(cent);
 
@@ -5301,23 +5312,23 @@ static void CG_DrawHUD(const centity_t* cent)
 			if (cg_SerenityJediEngineHudMode.integer == 1)
 			{
 				CG_DrawSmallStringColor(section_x_pos + 5, section_y_pos - 60,
-					va("Armor_md:%d", cg.snap->ps.stats[STAT_ARMOR]), colorTable[CT_HUD_GREEN]);
+				                        va("Armor_md:%d", cg.snap->ps.stats[STAT_ARMOR]), colorTable[CT_HUD_GREEN]);
 				CG_DrawSmallStringColor(section_x_pos + 5, section_y_pos - 40,
-					va("Health_md:%d", cg.snap->ps.stats[STAT_HEALTH]), colorTable[CT_HUD_GREEN]);
+				                        va("Health_md:%d", cg.snap->ps.stats[STAT_HEALTH]), colorTable[CT_HUD_GREEN]);
 			}
 			else if (cg_SerenityJediEngineHudMode.integer == 2)
 			{
 				CG_DrawSmallStringColor(section_x_pos + 5, section_y_pos - 60,
-					va("Armor:%d", cg.snap->ps.stats[STAT_ARMOR]), colorTable[CT_HUD_GREEN]);
+				                        va("Armor:%d", cg.snap->ps.stats[STAT_ARMOR]), colorTable[CT_HUD_GREEN]);
 				CG_DrawSmallStringColor(section_x_pos + 5, section_y_pos - 40,
-					va("Health:%d", cg.snap->ps.stats[STAT_HEALTH]), colorTable[CT_HUD_GREEN]);
+				                        va("Health:%d", cg.snap->ps.stats[STAT_HEALTH]), colorTable[CT_HUD_GREEN]);
 			}
 			else
 			{
 				CG_DrawSmallStringColor(section_x_pos + 5, section_y_pos - 60,
-					va("Armor:%d", cg.snap->ps.stats[STAT_ARMOR]), colorTable[CT_HUD_GREEN]);
+				                        va("Armor:%d", cg.snap->ps.stats[STAT_ARMOR]), colorTable[CT_HUD_GREEN]);
 				CG_DrawSmallStringColor(section_x_pos + 5, section_y_pos - 40,
-					va("Health:%d", cg.snap->ps.stats[STAT_HEALTH]), colorTable[CT_HUD_GREEN]);
+				                        va("Health:%d", cg.snap->ps.stats[STAT_HEALTH]), colorTable[CT_HUD_GREEN]);
 			}
 		}
 
@@ -5413,7 +5424,7 @@ static void CG_DrawHUD(const centity_t* cent)
 			{
 				CG_DrawblockPoints(26, 412, hud_ratio);
 			}
-		}// new df hud
+		} // new df hud
 		else if (cg_SerenityJediEngineHudMode.integer == 4 || cg_SerenityJediEngineHudMode.integer == 5) // left hud
 		{
 			CG_DrawDF_Health();
@@ -5528,10 +5539,12 @@ static void CG_DrawHUD(const centity_t* cent)
 				currentState.weapon != WP_MELEE && cent->gent)
 			{
 				const int value = cg.snap->ps.ammo[weaponData[cent->currentState.weapon].ammoIndex];
-				CG_DrawSmallStringColor(section_x_pos, section_y_pos - 60, va("Ammo:%d", value), colorTable[CT_HUD_GREEN]);
+				CG_DrawSmallStringColor(section_x_pos, section_y_pos - 60, va("Ammo:%d", value),
+				                        colorTable[CT_HUD_GREEN]);
 			}
-			CG_DrawSmallStringColor(section_x_pos, section_y_pos - 40, va("Force:%d", cent->gent->client->ps.forcePower),
-				colorTable[CT_HUD_GREEN]);
+			CG_DrawSmallStringColor(section_x_pos, section_y_pos - 40,
+			                        va("Force:%d", cent->gent->client->ps.forcePower),
+			                        colorTable[CT_HUD_GREEN]);
 		}
 
 		// Print frame
@@ -5662,7 +5675,7 @@ static void CG_DrawHUD(const centity_t* cent)
 				CG_Drawgunfatigue(cent, hud_ratio);
 			}
 			CG_DrawForcePower_md(cent, hud_ratio);
-		}// new df hud
+		} // new df hud
 		else if (cg_SerenityJediEngineHudMode.integer == 4 || cg_SerenityJediEngineHudMode.integer == 5) // right hud
 		{
 			CG_DrawDF_ForcePowers(cent);
@@ -5672,7 +5685,8 @@ static void CG_DrawHUD(const centity_t* cent)
 				CG_DrawDF_BlockPoints(cent);
 			}
 
-			if (cent->currentState.weapon != WP_SABER && cent->currentState.weapon != WP_MELEE && cent->currentState.weapon != WP_STUN_BATON)
+			if (cent->currentState.weapon != WP_SABER && cent->currentState.weapon != WP_MELEE && cent->currentState.
+				weapon != WP_STUN_BATON)
 			{
 				CG_DrawDF_Ammo(cent);
 			}
@@ -5827,9 +5841,10 @@ static void CG_DrawHUD(const centity_t* cent)
 			if (cg_SerenityJediEngineMode.integer)
 			{
 				if ((cent->gent->client->NPC_class == CLASS_MANDALORIAN
-					|| cent->gent->client->NPC_class == CLASS_JANGO
-					|| cent->gent->client->NPC_class == CLASS_JANGODUAL
-					|| cent->gent->client->NPC_class == CLASS_BOBAFETT || draw_jetpack_fuel_rocket_trooper_player(cent))
+						|| cent->gent->client->NPC_class == CLASS_JANGO
+						|| cent->gent->client->NPC_class == CLASS_JANGODUAL
+						|| cent->gent->client->NPC_class == CLASS_BOBAFETT || draw_jetpack_fuel_rocket_trooper_player(
+							cent))
 					&& cg.snap->ps.jetpackFuel < 100)
 				{
 					//draw it as long as it isn't full
@@ -5945,7 +5960,7 @@ void CG_DrawHUDJK2LeftFrame2(const int x, const int y)
 void CG_DrawHUDJK2RightFrame2(const int x, const int y)
 {
 	cgi_R_SetColor(colorTable[CT_WHITE]);
-	CG_DrawPic(x, y, 80, 80, cgs.media.JK2HUDRightFrame);	// Metal frame
+	CG_DrawPic(x, y, 80, 80, cgs.media.JK2HUDRightFrame); // Metal frame
 }
 
 /*
@@ -5976,7 +5991,7 @@ static void CG_DrawDatapadHealth(const int x, const int y)
 
 	cgi_R_SetColor(colorTable[CT_HUD_RED]);
 	CG_DrawNumField(x + 16, y + 40, 3, ps->stats[STAT_HEALTH], 6, 12,
-		NUM_FONT_SMALL, qtrue);
+	                NUM_FONT_SMALL, qtrue);
 }
 
 static void CG_DrawDataPadArmor(const int x, const int y)
@@ -6018,7 +6033,7 @@ static void CG_DrawDataPadArmor(const int x, const int y)
 
 	cgi_R_SetColor(colorTable[CT_HUD_GREEN]);
 	CG_DrawNumField(x + 16 + 14, y + 40 + 14, 3, ps->stats[STAT_ARMOR], 6, 12,
-		NUM_FONT_SMALL, qfalse);
+	                NUM_FONT_SMALL, qfalse);
 }
 
 /*
@@ -6075,10 +6090,10 @@ static void CG_DrawDatapadForcePower(const centity_t* cent, const int x, const i
 
 		cgi_R_SetColor(calc_color);
 		CG_DrawPic(x + forceTicPos[i].x,
-			y + forceTicPos[i].y,
-			forceTicPos[i].width,
-			forceTicPos[i].height,
-			forceTicPos[i].tic);
+		           y + forceTicPos[i].y,
+		           forceTicPos[i].width,
+		           forceTicPos[i].height,
+		           forceTicPos[i].tic);
 
 		value -= inc;
 	}
@@ -6139,7 +6154,7 @@ static void CG_DrawDataPadAmmo(const centity_t* cent, const int x, const int y)
 		case SS_STAFF:
 			CG_DrawPic(x, y, 80, 40, cgs.media.HUDSaberStyleStaff);
 			break;
-		default:;
+		default: ;
 		}
 		return;
 	}
@@ -6213,10 +6228,10 @@ static void CG_DrawDataPadAmmo(const centity_t* cent, const int x, const int y)
 
 		cgi_R_SetColor(calc_color);
 		CG_DrawPic(x + ammoTicPos[i].x,
-			y + ammoTicPos[i].y,
-			ammoTicPos[i].width,
-			ammoTicPos[i].height,
-			ammoTicPos[i].tic);
+		           y + ammoTicPos[i].y,
+		           ammoTicPos[i].width,
+		           ammoTicPos[i].height,
+		           ammoTicPos[i].tic);
 
 		value -= inc;
 	}
@@ -6476,7 +6491,7 @@ static void CG_DrawZoomMask()
 
 		// Draw rotating insert
 		CG_DrawRotatePic2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT, -level,
-			cgs.media.disruptorInsert, cgs.widthRatioCoef);
+		                  cgs.media.disruptorInsert, cgs.widthRatioCoef);
 
 		float max = cg_entities[0].gent->client->ps.ammo[weaponData[WP_DISRUPTOR].ammoIndex] / static_cast<float>(
 			ammoData[weaponData[
@@ -6648,6 +6663,7 @@ CG_DrawPickupItem
 */
 constexpr auto PICKUP_ICON_SIZE = 44;
 constexpr auto PICKUP_ICON_SMALL = 22;
+
 static void CG_DrawPickupItem()
 {
 	const int value = cg.itemPickup;
@@ -6813,7 +6829,8 @@ void CG_DrawBlockPointBar(const centity_t* cent, const float ch_x, const float c
 		return;
 	}
 
-	const float block_percent = static_cast<float>(cent->gent->client->ps.blockPoints) / static_cast<float>(BLOCK_POINTS_MAX);
+	const float block_percent = static_cast<float>(cent->gent->client->ps.blockPoints) / static_cast<float>(
+		BLOCK_POINTS_MAX);
 
 	//color of the bar
 	//hostile
@@ -6838,7 +6855,8 @@ void CG_DrawBlockPointBar(const centity_t* cent, const float ch_x, const float c
 	CG_FillRect(x + 1.0f, y + 1.0f, block_percent * ch_w - 2.0f, ch_h - 2.0f, a_color);
 }
 
-void CG_DrawFatiguePointBar(const centity_t* cent, const float ch_x, const float ch_y, const float ch_w, const float ch_h)
+void CG_DrawFatiguePointBar(const centity_t* cent, const float ch_x, const float ch_y, const float ch_w,
+                            const float ch_h)
 {
 	vec4_t a_color;
 	vec4_t c_color;
@@ -6880,7 +6898,8 @@ void CG_DrawFatiguePointBar(const centity_t* cent, const float ch_x, const float
 		return;
 	}
 
-	const float fatigue_percent = static_cast<float>(cent->gent->client->ps.saberFatigueChainCount) / static_cast<float>(MISHAPLEVEL_OVERLOAD);
+	const float fatigue_percent = static_cast<float>(cent->gent->client->ps.saberFatigueChainCount) / static_cast<float>
+		(MISHAPLEVEL_OVERLOAD);
 
 	//color of the bar
 	//hostile
@@ -6944,7 +6963,8 @@ void CG_DrawForcePointBar(const centity_t* cent, const float ch_x, const float c
 		return;
 	}
 
-	const float force_percent = static_cast<float>(cent->gent->client->ps.forcePower) / static_cast<float>(cent->gent->client->ps.forcePowerMax);
+	const float force_percent = static_cast<float>(cent->gent->client->ps.forcePower) / static_cast<float>(cent->gent->
+		client->ps.forcePowerMax);
 
 	//color of the bar
 	//hostile
@@ -6990,11 +7010,13 @@ void CG_DrawBlockPointBars()
 			if (CG_WorldCoordToScreenCoordFloat(pos, &ch_x, &ch_y))
 			{
 				if (NPC_IsOversized(cent->gent))
-				{//on screen
+				{
+					//on screen
 					CG_DrawBlockPointBar(cent, ch_x, ch_y + 10, BLOCKPOINT_BAR_WIDTH, BLOCKPOINT_BAR_HEIGHT);
 				}
 				else
-				{//on screen
+				{
+					//on screen
 					CG_DrawBlockPointBar(cent, ch_x, ch_y, BLOCKPOINT_BAR_WIDTH, BLOCKPOINT_BAR_HEIGHT);
 				}
 			}
@@ -7009,7 +7031,8 @@ void CG_AddBlockPointBarEnt(const int ent_num)
 		return;
 	}
 
-	if (DistanceSquared(cg_entities[ent_num].lerpOrigin, g_entities[0].client->renderInfo.eyePoint) < BLOCKPOINT_BAR_RANGE * BLOCKPOINT_BAR_RANGE)
+	if (DistanceSquared(cg_entities[ent_num].lerpOrigin, g_entities[0].client->renderInfo.eyePoint) <
+		BLOCKPOINT_BAR_RANGE * BLOCKPOINT_BAR_RANGE)
 	{
 		cg_BlockPointBarEnts[cg_numBlockPointBarEnts++] = ent_num;
 	}
@@ -7038,11 +7061,13 @@ void CG_DrawFatiguePointBars()
 			if (CG_WorldCoordToScreenCoordFloat(pos, &ch_x, &ch_y))
 			{
 				if (NPC_IsOversized(cent->gent))
-				{//on screen
+				{
+					//on screen
 					CG_DrawFatiguePointBar(cent, ch_x, ch_y + 10, -FATIGUE_BAR_WIDTH + 2, Fatigue_BAR_HEIGHT);
 				}
 				else
-				{//on screen
+				{
+					//on screen
 					CG_DrawFatiguePointBar(cent, ch_x, ch_y, -FATIGUE_BAR_WIDTH + 2, Fatigue_BAR_HEIGHT);
 				}
 			}
@@ -7057,7 +7082,8 @@ void CG_AddFatiguePointBarEnt(const int ent_num)
 		return;
 	}
 
-	if (DistanceSquared(cg_entities[ent_num].lerpOrigin, g_entities[0].client->renderInfo.eyePoint) < Fatigue_BAR_RANGE * Fatigue_BAR_RANGE)
+	if (DistanceSquared(cg_entities[ent_num].lerpOrigin, g_entities[0].client->renderInfo.eyePoint) < Fatigue_BAR_RANGE
+		* Fatigue_BAR_RANGE)
 	{
 		cg_FatiguePointBarEnts[cg_numFatigueBarEnts++] = ent_num;
 	}
@@ -7088,11 +7114,13 @@ void CG_DrawForcePointBars()
 			if (CG_WorldCoordToScreenCoordFloat(pos, &ch_x, &ch_y))
 			{
 				if (NPC_IsOversized(cent->gent))
-				{//on screen
+				{
+					//on screen
 					CG_DrawForcePointBar(cent, ch_x, ch_y + 10, BLOCKPOINT_BAR_WIDTH, BLOCKPOINT_BAR_HEIGHT);
 				}
 				else
-				{//on screen
+				{
+					//on screen
 					CG_DrawForcePointBar(cent, ch_x, ch_y, BLOCKPOINT_BAR_WIDTH, BLOCKPOINT_BAR_HEIGHT);
 				}
 			}
@@ -7130,11 +7158,13 @@ void CG_DrawHealthBars()
 			if (CG_WorldCoordToScreenCoordFloat(pos, &ch_x, &ch_y))
 			{
 				if (NPC_IsOversized(cent->gent))
-				{//on screen
+				{
+					//on screen
 					CG_DrawHealthBar(cent, ch_x, ch_y + 10, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
 				}
 				else
-				{//on screen
+				{
+					//on screen
 					CG_DrawHealthBar(cent, ch_x, ch_y, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
 				}
 			}
@@ -7225,7 +7255,7 @@ static void CG_DrawCrosshair(vec3_t world_point)
 				ecolor[2] = 1.0f; //B
 			}
 			else if (g_entities[0].client && (g_entities[0].client->playerTeam == TEAM_FREE || g_entities[0].client->
-				playerTeam == TEAM_SOLO || g_entities[0].client->playerTeam == TEAM_PROJECTION) ||
+					playerTeam == TEAM_SOLO || g_entities[0].client->playerTeam == TEAM_PROJECTION) ||
 				cross_ent->client->playerTeam == TEAM_FREE ||
 				cross_ent->client->playerTeam == TEAM_PROJECTION ||
 				cross_ent->client->playerTeam == TEAM_SOLO)
@@ -7363,7 +7393,7 @@ static void CG_DrawCrosshair(vec3_t world_point)
 			cg.forceCrosshairEndTime = cg.time - ecolor[3] * 500.0f;
 		}
 		if (cg.forceCrosshairEndTime && cg.time - cg.forceCrosshairEndTime > 500.0f)
-			// not pointing at anything and fade out is totally done
+		// not pointing at anything and fade out is totally done
 		{
 			// reset everything
 			cg.forceCrosshairStartTime = 0;
@@ -7377,7 +7407,7 @@ static void CG_DrawCrosshair(vec3_t world_point)
 		cg.snap->ps.weapon == WP_JANGO ||
 		cg.snap->ps.weapon == WP_CLONEPISTOL ||
 		cg.snap->ps.weapon == WP_REBELBLASTER) && (cg_entities[0].currentState.eFlags & EF2_JANGO_DUALS || cg_entities[
-			0].currentState.eFlags & EF2_DUAL_PISTOLS) && cg_trueguns.integer)
+		0].currentState.eFlags & EF2_DUAL_PISTOLS) && cg_trueguns.integer)
 	{
 		w = h = cg_crosshairDualSize.value;
 	}
@@ -7419,7 +7449,7 @@ static void CG_DrawCrosshair(vec3_t world_point)
 		{
 			// draws a custom crosshair that is twice as large as normal
 			cgi_R_DrawStretchPic(x + cg.refdef.x + 320 - w, y + cg.refdef.y + 240 - h, w * 2, h * 2, 0, 0, 1, 1,
-				cgs.media.turretCrossHairShader);
+			                     cgs.media.turretCrossHairShader);
 		}
 	}
 	else if ((cg.snap->ps.weapon == WP_DUAL_PISTOL ||
@@ -7428,10 +7458,10 @@ static void CG_DrawCrosshair(vec3_t world_point)
 		cg.snap->ps.weapon == WP_JANGO ||
 		cg.snap->ps.weapon == WP_CLONEPISTOL ||
 		cg.snap->ps.weapon == WP_REBELBLASTER) && (cg_entities[0].currentState.eFlags & EF2_JANGO_DUALS || cg_entities[
-			0].currentState.eFlags & EF2_DUAL_PISTOLS) && cg_trueguns.integer)
+		0].currentState.eFlags & EF2_DUAL_PISTOLS) && cg_trueguns.integer)
 	{
 		cgi_R_DrawStretchPic(x + cg.refdef.x + 0.5 * (640 - w), y + cg.refdef.y + 0.5 * (480 - h), w, h, 0, 0, 1, 1,
-			cgs.media.crosshairShader[4]);
+		                     cgs.media.crosshairShader[4]);
 	}
 	else
 	{
@@ -7442,7 +7472,7 @@ static void CG_DrawCrosshair(vec3_t world_point)
 				cg.snap->ps.weapon == WP_MELEE)
 			{
 				cgi_R_DrawStretchPic(x + cg.refdef.x + 0.5 * (640 - w), y + cg.refdef.y + 0.5 * (480 - h), w, h, 0, 0,
-					1, 1, cgs.media.crosshairShader[1]);
+				                     1, 1, cgs.media.crosshairShader[1]);
 			}
 			else if (cg.snap->ps.weapon == WP_REPEATER ||
 				cg.snap->ps.weapon == WP_BLASTER ||
@@ -7455,7 +7485,7 @@ static void CG_DrawCrosshair(vec3_t world_point)
 				cg.snap->ps.weapon == WP_REBELRIFLE)
 			{
 				cgi_R_DrawStretchPic(x + cg.refdef.x + 0.5 * (640 - w), y + cg.refdef.y + 0.5 * (480 - h), w, h, 0, 0,
-					1, 1, cgs.media.crosshairShader[2]);
+				                     1, 1, cgs.media.crosshairShader[2]);
 			}
 			else if (cg.snap->ps.weapon == WP_FLECHETTE ||
 				cg.snap->ps.weapon == WP_CONCUSSION ||
@@ -7463,7 +7493,7 @@ static void CG_DrawCrosshair(vec3_t world_point)
 				cg.snap->ps.weapon == WP_DEMP2)
 			{
 				cgi_R_DrawStretchPic(x + cg.refdef.x + 0.5 * (640 - w), y + cg.refdef.y + 0.5 * (480 - h), w, h, 0, 0,
-					1, 1, cgs.media.crosshairShader[3]);
+				                     1, 1, cgs.media.crosshairShader[3]);
 			}
 			else if ((cg.snap->ps.weapon == WP_DUAL_PISTOL ||
 				cg.snap->ps.weapon == WP_BLASTER_PISTOL ||
@@ -7471,23 +7501,23 @@ static void CG_DrawCrosshair(vec3_t world_point)
 				cg.snap->ps.weapon == WP_JANGO ||
 				cg.snap->ps.weapon == WP_CLONEPISTOL ||
 				cg.snap->ps.weapon == WP_REBELBLASTER) && (cg_entities[0].currentState.eFlags & EF2_JANGO_DUALS ||
-					cg_entities[0].currentState.eFlags & EF2_DUAL_PISTOLS) && cg_trueguns.integer)
+				cg_entities[0].currentState.eFlags & EF2_DUAL_PISTOLS) && cg_trueguns.integer)
 			{
 				cgi_R_DrawStretchPic(x + cg.refdef.x + 0.5 * (640 - w), y + cg.refdef.y + 0.5 * (480 - h), w, h, 0, 0,
-					1, 1, cgs.media.crosshairShader[4]);
+				                     1, 1, cgs.media.crosshairShader[4]);
 			}
 			else if (cg.snap->ps.weapon == WP_THERMAL ||
 				cg.snap->ps.weapon == WP_DET_PACK ||
 				cg.snap->ps.weapon == WP_TRIP_MINE)
 			{
 				cgi_R_DrawStretchPic(x + cg.refdef.x + 0.5 * (640 - w), y + cg.refdef.y + 0.5 * (480 - h), w, h, 0, 0,
-					1, 1, cgs.media.crosshairShader[5]);
+				                     1, 1, cgs.media.crosshairShader[5]);
 			}
 			else if (cg.snap->ps.weapon == WP_DISRUPTOR ||
 				cg.snap->ps.weapon == WP_TUSKEN_RIFLE)
 			{
 				cgi_R_DrawStretchPic(x + cg.refdef.x + 0.5 * (640 - w), y + cg.refdef.y + 0.5 * (480 - h), w, h, 0, 0,
-					1, 1, cgs.media.crosshairShader[6]);
+				                     1, 1, cgs.media.crosshairShader[6]);
 			}
 			else if (cg.snap->ps.weapon == WP_BLASTER_PISTOL ||
 				cg.snap->ps.weapon == WP_BRYAR_PISTOL ||
@@ -7499,19 +7529,19 @@ static void CG_DrawCrosshair(vec3_t world_point)
 				cg.snap->ps.weapon == WP_SBD_BLASTER)
 			{
 				cgi_R_DrawStretchPic(x + cg.refdef.x + 0.5 * (640 - w), y + cg.refdef.y + 0.5 * (480 - h), w, h, 0, 0,
-					1, 1, cgs.media.crosshairShader[7]);
+				                     1, 1, cgs.media.crosshairShader[7]);
 			}
 			else if (cg.snap->ps.weapon == WP_ROCKET_LAUNCHER)
 			{
 				cgi_R_DrawStretchPic(x + cg.refdef.x + 0.5 * (640 - w), y + cg.refdef.y + 0.5 * (480 - h), w, h, 0, 0,
-					1, 1, cgs.media.crosshairShader[8]);
+				                     1, 1, cgs.media.crosshairShader[8]);
 			}
 			else
 			{
 				h_shader = cgs.media.crosshairShader[cg_drawCrosshair.integer % NUM_CROSSHAIRS];
 
 				cgi_R_DrawStretchPic(x + cg.refdef.x + 0.5 * (640 - w), y + cg.refdef.y + 0.5 * (480 - h), w, h, 0, 0,
-					1, 1, h_shader);
+				                     1, 1, h_shader);
 			}
 		}
 		else
@@ -7519,7 +7549,7 @@ static void CG_DrawCrosshair(vec3_t world_point)
 			h_shader = cgs.media.crosshairShader[cg_drawCrosshair.integer % NUM_CROSSHAIRS];
 
 			cgi_R_DrawStretchPic(x + cg.refdef.x + 0.5 * (640 - w), y + cg.refdef.y + 0.5 * (480 - h), w, h, 0, 0, 1, 1,
-				h_shader);
+			                     h_shader);
 		}
 	}
 
@@ -7535,9 +7565,9 @@ static void CG_DrawCrosshair(vec3_t world_point)
 		h *= 2.0f;
 
 		cgi_R_DrawStretchPic(x + cg.refdef.x + 0.5f * (640 - w), y + cg.refdef.y + 0.5f * (480 - h),
-			w, h,
-			0, 0, 1, 1,
-			cgs.media.forceCoronaShader);
+		                     w, h,
+		                     0, 0, 1, 1,
+		                     cgs.media.forceCoronaShader);
 	}
 
 	cgi_R_SetColor(nullptr);
@@ -7632,7 +7662,8 @@ static void CG_ScanForRocketLock()
 
 	const gentity_t* trace_ent = &g_entities[g_crosshairEntNum];
 
-	if (!trace_ent || g_crosshairEntNum <= 0 || g_crosshairEntNum >= ENTITYNUM_WORLD || !trace_ent->client && trace_ent->s
+	if (!trace_ent || g_crosshairEntNum <= 0 || g_crosshairEntNum >= ENTITYNUM_WORLD || !trace_ent->client && trace_ent
+		->s
 		.weapon != WP_TURRET || !trace_ent->health
 		|| trace_ent && trace_ent->client && trace_ent->client->ps.powerups[PW_CLOAKED])
 	{
@@ -7668,7 +7699,7 @@ static void CG_ScanForRocketLock()
 
 		// keep locking to this thing for one second after it gets out of view
 		if (g_rocketLockTime + 2000.0f < cg.time)
-			// since time was hacked above, I'm compensating so that 2000ms is really only 1000ms
+		// since time was hacked above, I'm compensating so that 2000ms is really only 1000ms
 		{
 			// too bad, you had your chance
 			g_rocketLockEntNum = ENTITYNUM_NONE;
@@ -7723,7 +7754,7 @@ static void CG_ScanForCrosshairEntity(const qboolean scan_all)
 
 	cg_forceCrosshair = qfalse;
 	if (cg_entities[0].gent && cg_entities[0].gent->client)
-		// <-Mike said it should always do this   //if (cg_crosshairForceHint.integer &&
+	// <-Mike said it should always do this   //if (cg_crosshairForceHint.integer &&
 	{
 		//try to check for force-affectable stuff first
 		vec3_t d_f, d_rt, d_up;
@@ -7745,8 +7776,8 @@ static void CG_ScanForCrosshairEntity(const qboolean scan_all)
 
 		//YES!  This is very very bad... but it works!  James made me do it.  Really, he did.  Blame James.
 		gi.trace(&trace, start, vec3_origin, vec3_origin, end,
-			ignoreEnt, MASK_OPAQUE | CONTENTS_SHOTCLIP | CONTENTS_BODY | CONTENTS_ITEM | CONTENTS_TERRAIN,
-			G2_NOCOLLIDE, 10);
+		         ignoreEnt, MASK_OPAQUE | CONTENTS_SHOTCLIP | CONTENTS_BODY | CONTENTS_ITEM | CONTENTS_TERRAIN,
+		         G2_NOCOLLIDE, 10);
 		// ); took out CONTENTS_SOLID| so you can target people through glass.... took out CONTENTS_CORPSE so disintegrated guys aren't shown, could just remove their body earlier too...
 
 		if (trace.entityNum < ENTITYNUM_WORLD)
@@ -7908,8 +7939,8 @@ static void CG_ScanForCrosshairEntity(const qboolean scan_all)
 		}
 		//YES!  This is very very bad... but it works!  James made me do it.  Really, he did.  Blame James.
 		gi.trace(&trace, start, vec3_origin, vec3_origin, end,
-			ignoreEnt, MASK_OPAQUE | CONTENTS_TERRAIN | CONTENTS_SHOTCLIP | CONTENTS_BODY | CONTENTS_ITEM,
-			G2_NOCOLLIDE, 10);
+		         ignoreEnt, MASK_OPAQUE | CONTENTS_TERRAIN | CONTENTS_SHOTCLIP | CONTENTS_BODY | CONTENTS_ITEM,
+		         G2_NOCOLLIDE, 10);
 		// ); took out CONTENTS_SOLID| so you can target people through glass.... took out CONTENTS_CORPSE so disintegrated guys aren't shown, could just remove their body earlier too...
 
 		/*
@@ -8144,7 +8175,7 @@ static void CG_DrawRocketLocking(const int lock_ent_num)
 
 		sz = (1.0f - sz) * (1.0f - sz) * 32 + 6;
 
-		vec4_t color = { 0.0f, 0.0f, 0.0f, 0.0f };
+		vec4_t color = {0.0f, 0.0f, 0.0f, 0.0f};
 
 		cy += sz * 0.5f;
 
@@ -8187,7 +8218,7 @@ static void CG_DrawRocketLocking(const int lock_ent_num)
 
 			// our slices are offset by about 45 degrees.
 			CG_DrawRotatePic(cx - sz, cy - sz, sz, sz, i * 45.0f, cgi_R_RegisterShaderNoMip("gfx/2d/wedge"),
-				cgs.widthRatioCoef);
+			                 cgs.widthRatioCoef);
 		}
 
 		// we are locked and loaded baby
@@ -8248,7 +8279,7 @@ CG_DrawSnapshot
 static float CG_DrawSnapshot(const float y)
 {
 	const char* s = va("time:%i snap:%i cmd:%i", cg.snap->serverTime,
-		cg.latestSnapshotNum, cgs.serverCommandSequence);
+	                   cg.latestSnapshotNum, cgs.serverCommandSequence);
 
 	const int w = cgi_R_Font_StrLenPixels(s, cgs.media.qhFontMedium, 1.0f);
 	cgi_R_Font_DrawString(635 - w, y + 2, s, colorTable[CT_LTGOLD1], cgs.media.qhFontMedium, -1, 1.0f);
@@ -8420,297 +8451,297 @@ float cg_draw_radar(const float y)
 		switch (cent->currentState.eType)
 		{
 		default:
-		{
-			vec4_t rgba;
-
-			const float x = (float)RADAR_X + (float)RADAR_RADIUS_X + sin(angle) * distance * cgs.widthRatioCoef;
-			const float ly = y + static_cast<float>(RADAR_RADIUS) + cos(angle) * distance;
-
-			arrow_base_scale = 6.0f;
-			qhandle_t shader;
-			z_scale = 1.0f;
-
-			if (!far_away)
 			{
-				//we want to scale the thing up/down based on the relative Z (up/down) positioning
-				if (cent->lerpOrigin[2] > cg.predicted_player_state.origin[2])
-				{
-					//higher, scale up (between 16 and 24)
-					float dif = cent->lerpOrigin[2] - cg.predicted_player_state.origin[2];
+				vec4_t rgba;
 
-					//max out to 1.5x scale at 512 units above local player's height
-					dif /= 1024.0f;
-					if (dif > 0.5f)
-					{
-						dif = 0.5f;
-					}
-					z_scale += dif;
-				}
-				else if (cent->lerpOrigin[2] < cg.predicted_player_state.origin[2])
-				{
-					//lower, scale down (between 16 and 8)
-					float dif = cg.predicted_player_state.origin[2] - cent->lerpOrigin[2];
-
-					//half scale at 512 units below local player's height
-					dif /= 1024.0f;
-					if (dif > 0.5f)
-					{
-						dif = 0.5f;
-					}
-					z_scale -= dif;
-				}
-			}
-
-			arrow_base_scale *= z_scale;
-
-			rgba[0] = rgba[1] = rgba[2] = rgba[3] = 1.0f;
-
-			// generic enemy index specifies a shader to use for the radar entity.
-			if (cent->currentState.genericenemyindex && cent->currentState.genericenemyindex < MAX_ICONS)
-			{
-				shader = cgs.media.radarIcons[cent->currentState.genericenemyindex];
-			}
-			else if (cent->currentState.radarIcon)
-			{
-				shader = cgs.media.radarIcons[cent->currentState.radarIcon];
-			}
-			else
-			{
-				shader = cgs.media.siegeItemShader;
-			}
-
-			if (shader)
-			{
-				// Pulse the alpha if time2 is set.  time2 gets set when the entity takes pain
-				if (cent->currentState.time2 && cg.time - cent->currentState.time2 < 5000 ||
-					cent->currentState.time2 == 0xFFFFFFFF)
-				{
-					if (cg.time / 200 & 1)
-					{
-						rgba[3] = 0.1f + 0.9f * static_cast<float>(cg.time % 200) / 200.0f;
-					}
-					else
-					{
-						rgba[3] = 1.0f - 0.9f * static_cast<float>(cg.time % 200) / 200.0f;
-					}
-				}
-
-				cgi_R_SetColor(rgba);
-				CG_DrawPic(x - 4 + x_offset, ly - 4, arrow_base_scale, arrow_base_scale, shader);
-			}
-		}
-		break;
-
-		case ET_PLAYER:
-		{
-			qhandle_t shader;
-			vec4_t rgba;
-
-			if (radar_ent->client->ps.stats[STAT_HEALTH] <= 0)
-			{
-				continue;
-			}
-
-			switch (radar_ent->client->playerTeam)
-			{
-			case TEAM_ENEMY:
-				VectorCopy(colorTable[CT_RED], rgba);
-				break;
-			case TEAM_NEUTRAL:
-				VectorCopy(colorTable[CT_YELLOW], rgba);
-				break;
-			case TEAM_PLAYER:
-				VectorCopy(colorTable[CT_GREEN], rgba);
-				break;
-			case TEAM_SOLO:
-				VectorCopy(colorTable[CT_MAGENTA], rgba);
-				break;
-			case TEAM_PROJECTION:
-				VectorCopy(colorTable[CT_BLUE], rgba);
-				break;
-			case TEAM_FREE:
-				VectorCopy(colorTable[CT_CYAN], rgba);
-				break;
-			default:
-				VectorCopy(colorTable[CT_WHITE], rgba);
-				break;
-			}
-
-			rgba[3] = 1.0f;
-
-			arrow_base_scale = 8.0f;
-			z_scale = 1.0f;
-
-			cgi_R_SetColor(rgba);
-
-			if (cent->currentState.radarIcon)
-			{
-				shader = cgs.media.radarIcons[cent->currentState.radarIcon];
-			}
-			else
-			{
-				shader = cgs.media.mAutomapPlayerIcon;
-			}
-
-			if (!far_away)
-			{
-				//we want to scale the thing up/down based on the relative Z (up/down) positioning
-				if (cent->lerpOrigin[2] > cg.predicted_player_state.origin[2])
-				{
-					//higher, scale up (between 16 and 32)
-					float dif = cent->lerpOrigin[2] - cg.predicted_player_state.origin[2];
-
-					//max out to 2x scale at 1024 units above local player's height
-					dif /= 1024.0f;
-					if (dif > 1.0f)
-					{
-						dif = 1.0f;
-					}
-					z_scale += dif;
-				}
-				else if (cent->lerpOrigin[2] < cg.predicted_player_state.origin[2])
-				{
-					//lower, scale down (between 16 and 8)
-					float dif = cg.predicted_player_state.origin[2] - cent->lerpOrigin[2];
-
-					//half scale at 512 units below local player's height
-					dif /= 1024.0f;
-					if (dif > 0.5f)
-					{
-						dif = 0.5f;
-					}
-					z_scale -= dif;
-				}
-			}
-
-			arrow_base_scale *= z_scale;
-
-			arrow_w = arrow_base_scale * RADAR_RADIUS / 128;
-			arrow_h = arrow_base_scale * RADAR_RADIUS / 128;
-
-			if (cent->currentState.radarIcon)
-			{
-				arrow_w *= 2.0f;
-				arrow_h *= 2.0f;
-				CG_DrawPic(0, 0, 0, 0, cgs.media.whiteShader);
-				CG_DrawRotatePic2(RADAR_X + RADAR_RADIUS_X + sin(angle) * distance * cgs.widthRatioCoef + x_offset,
-					y + RADAR_RADIUS + cos(angle) * distance,
-					arrow_w, arrow_h,
-					0, shader, cgs.widthRatioCoef);
-			}
-			else
-			{
-				CG_DrawPic(0, 0, 0, 0, cgs.media.whiteShader);
-				CG_DrawRotatePic2(RADAR_X + RADAR_RADIUS_X + sin(angle) * distance * cgs.widthRatioCoef + x_offset,
-					y + RADAR_RADIUS + cos(angle) * distance,
-					arrow_w, arrow_h,
-					360 - cent->lerpAngles[YAW] + cg.predicted_player_state.viewangles[YAW], shader,
-					cgs.widthRatioCoef);
-			}
-			break;
-
-		case ET_MISSILE:
-
-			if (cent->currentState.client_num > MAX_CLIENTS //belongs to an NPC
-				&& cg_entities[cent->currentState.client_num].currentState.NPC_class == CLASS_VEHICLE)
-			{
-				//a rocket belonging to an NPC, FIXME: only tracking rockets!
-
-				// ReSharper disable once CppCStyleCast
-				const float x = (float)RADAR_X + static_cast<float>(RADAR_RADIUS) + sin(angle) * distance;
+				const float x = (float)RADAR_X + (float)RADAR_RADIUS_X + sin(angle) * distance * cgs.widthRatioCoef;
 				const float ly = y + static_cast<float>(RADAR_RADIUS) + cos(angle) * distance;
 
-				arrow_base_scale = 3.0f;
-				if (cg.predicted_player_state.m_iVehicleNum)
-				{
-					//I'm in a vehicle
-					//if it's targeting me, then play an alarm sound if I'm in a vehicle
-					if (cent->currentState.otherEntityNum == cg.predicted_player_state.client_num || cent->
-						currentState.otherEntityNum == cg.predicted_player_state.m_iVehicleNum)
-					{
-						if (radarLockSoundDebounceTime < cg.time)
-						{
-							vec3_t sound_org;
-							int alarm_sound;
-							if (actual_dist > RADAR_MISSILE_RANGE * 0.66f)
-							{
-								radarLockSoundDebounceTime = cg.time + 1000;
-								arrow_base_scale = 3.0f;
-								alarm_sound = cgi_S_RegisterSound("sound/vehicles/common/lockalarm1.wav");
-							}
-							else if (actual_dist > RADAR_MISSILE_RANGE / 3.0f)
-							{
-								radarLockSoundDebounceTime = cg.time + 500;
-								arrow_base_scale = 6.0f;
-								alarm_sound = cgi_S_RegisterSound("sound/vehicles/common/lockalarm2.wav");
-							}
-							else
-							{
-								radarLockSoundDebounceTime = cg.time + 250;
-								arrow_base_scale = 9.0f;
-								alarm_sound = cgi_S_RegisterSound("sound/vehicles/common/lockalarm3.wav");
-							}
-							if (actual_dist > RADAR_MISSILE_RANGE)
-							{
-								actual_dist = RADAR_MISSILE_RANGE;
-							}
-							VectorMA(cg.refdef.vieworg, -500.0f * (actual_dist / RADAR_MISSILE_RANGE), dir_player,
-								sound_org);
-							cgi_S_StartSound(sound_org, ENTITYNUM_WORLD, CHAN_AUTO, alarm_sound);
-						}
-					}
-				}
+				arrow_base_scale = 6.0f;
+				qhandle_t shader;
 				z_scale = 1.0f;
 
-				//we want to scale the thing up/down based on the relative Z (up/down) positioning
-				if (cent->lerpOrigin[2] > cg.predicted_player_state.origin[2])
+				if (!far_away)
 				{
-					//higher, scale up (between 16 and 24)
-					float dif = cent->lerpOrigin[2] - cg.predicted_player_state.origin[2];
-
-					//max out to 1.5x scale at 512 units above local player's height
-					dif /= 1024.0f;
-					if (dif > 0.5f)
+					//we want to scale the thing up/down based on the relative Z (up/down) positioning
+					if (cent->lerpOrigin[2] > cg.predicted_player_state.origin[2])
 					{
-						dif = 0.5f;
-					}
-					z_scale += dif;
-				}
-				else if (cent->lerpOrigin[2] < cg.predicted_player_state.origin[2])
-				{
-					//lower, scale down (between 16 and 8)
-					float dif = cg.predicted_player_state.origin[2] - cent->lerpOrigin[2];
+						//higher, scale up (between 16 and 24)
+						float dif = cent->lerpOrigin[2] - cg.predicted_player_state.origin[2];
 
-					//half scale at 512 units below local player's height
-					dif /= 1024.0f;
-					if (dif > 0.5f)
-					{
-						dif = 0.5f;
+						//max out to 1.5x scale at 512 units above local player's height
+						dif /= 1024.0f;
+						if (dif > 0.5f)
+						{
+							dif = 0.5f;
+						}
+						z_scale += dif;
 					}
-					z_scale -= dif;
+					else if (cent->lerpOrigin[2] < cg.predicted_player_state.origin[2])
+					{
+						//lower, scale down (between 16 and 8)
+						float dif = cg.predicted_player_state.origin[2] - cent->lerpOrigin[2];
+
+						//half scale at 512 units below local player's height
+						dif /= 1024.0f;
+						if (dif > 0.5f)
+						{
+							dif = 0.5f;
+						}
+						z_scale -= dif;
+					}
 				}
 
 				arrow_base_scale *= z_scale;
 
-				if (cent->currentState.client_num >= MAX_CLIENTS //missile owned by an NPC
-					&& cg_entities[cent->currentState.client_num].currentState.NPC_class == CLASS_VEHICLE
-					//NPC is a vehicle
-					&& cg_entities[cent->currentState.client_num].currentState.m_iVehicleNum <= MAX_CLIENTS
-					//Vehicle has a player driver
-					&& cgs.clientinfo[cg_entities[cent->currentState.client_num].currentState.m_iVehicleNum - 1].
-					infoValid) //player driver is valid
+				rgba[0] = rgba[1] = rgba[2] = rgba[3] = 1.0f;
+
+				// generic enemy index specifies a shader to use for the radar entity.
+				if (cent->currentState.genericenemyindex && cent->currentState.genericenemyindex < MAX_ICONS)
 				{
-					cgi_R_SetColor(colorTable[CT_RED]);
+					shader = cgs.media.radarIcons[cent->currentState.genericenemyindex];
+				}
+				else if (cent->currentState.radarIcon)
+				{
+					shader = cgs.media.radarIcons[cent->currentState.radarIcon];
 				}
 				else
 				{
-					cgi_R_SetColor(nullptr);
+					shader = cgs.media.siegeItemShader;
 				}
-				CG_DrawPic(x - 4 + x_offset, ly - 4, arrow_base_scale, arrow_base_scale,
-					cgs.media.mAutomapRocketIcon);
+
+				if (shader)
+				{
+					// Pulse the alpha if time2 is set.  time2 gets set when the entity takes pain
+					if (cent->currentState.time2 && cg.time - cent->currentState.time2 < 5000 ||
+						cent->currentState.time2 == 0xFFFFFFFF)
+					{
+						if (cg.time / 200 & 1)
+						{
+							rgba[3] = 0.1f + 0.9f * static_cast<float>(cg.time % 200) / 200.0f;
+						}
+						else
+						{
+							rgba[3] = 1.0f - 0.9f * static_cast<float>(cg.time % 200) / 200.0f;
+						}
+					}
+
+					cgi_R_SetColor(rgba);
+					CG_DrawPic(x - 4 + x_offset, ly - 4, arrow_base_scale, arrow_base_scale, shader);
+				}
 			}
 			break;
-		}
+
+		case ET_PLAYER:
+			{
+				qhandle_t shader;
+				vec4_t rgba;
+
+				if (radar_ent->client->ps.stats[STAT_HEALTH] <= 0)
+				{
+					continue;
+				}
+
+				switch (radar_ent->client->playerTeam)
+				{
+				case TEAM_ENEMY:
+					VectorCopy(colorTable[CT_RED], rgba);
+					break;
+				case TEAM_NEUTRAL:
+					VectorCopy(colorTable[CT_YELLOW], rgba);
+					break;
+				case TEAM_PLAYER:
+					VectorCopy(colorTable[CT_GREEN], rgba);
+					break;
+				case TEAM_SOLO:
+					VectorCopy(colorTable[CT_MAGENTA], rgba);
+					break;
+				case TEAM_PROJECTION:
+					VectorCopy(colorTable[CT_BLUE], rgba);
+					break;
+				case TEAM_FREE:
+					VectorCopy(colorTable[CT_CYAN], rgba);
+					break;
+				default:
+					VectorCopy(colorTable[CT_WHITE], rgba);
+					break;
+				}
+
+				rgba[3] = 1.0f;
+
+				arrow_base_scale = 8.0f;
+				z_scale = 1.0f;
+
+				cgi_R_SetColor(rgba);
+
+				if (cent->currentState.radarIcon)
+				{
+					shader = cgs.media.radarIcons[cent->currentState.radarIcon];
+				}
+				else
+				{
+					shader = cgs.media.mAutomapPlayerIcon;
+				}
+
+				if (!far_away)
+				{
+					//we want to scale the thing up/down based on the relative Z (up/down) positioning
+					if (cent->lerpOrigin[2] > cg.predicted_player_state.origin[2])
+					{
+						//higher, scale up (between 16 and 32)
+						float dif = cent->lerpOrigin[2] - cg.predicted_player_state.origin[2];
+
+						//max out to 2x scale at 1024 units above local player's height
+						dif /= 1024.0f;
+						if (dif > 1.0f)
+						{
+							dif = 1.0f;
+						}
+						z_scale += dif;
+					}
+					else if (cent->lerpOrigin[2] < cg.predicted_player_state.origin[2])
+					{
+						//lower, scale down (between 16 and 8)
+						float dif = cg.predicted_player_state.origin[2] - cent->lerpOrigin[2];
+
+						//half scale at 512 units below local player's height
+						dif /= 1024.0f;
+						if (dif > 0.5f)
+						{
+							dif = 0.5f;
+						}
+						z_scale -= dif;
+					}
+				}
+
+				arrow_base_scale *= z_scale;
+
+				arrow_w = arrow_base_scale * RADAR_RADIUS / 128;
+				arrow_h = arrow_base_scale * RADAR_RADIUS / 128;
+
+				if (cent->currentState.radarIcon)
+				{
+					arrow_w *= 2.0f;
+					arrow_h *= 2.0f;
+					CG_DrawPic(0, 0, 0, 0, cgs.media.whiteShader);
+					CG_DrawRotatePic2(RADAR_X + RADAR_RADIUS_X + sin(angle) * distance * cgs.widthRatioCoef + x_offset,
+					                  y + RADAR_RADIUS + cos(angle) * distance,
+					                  arrow_w, arrow_h,
+					                  0, shader, cgs.widthRatioCoef);
+				}
+				else
+				{
+					CG_DrawPic(0, 0, 0, 0, cgs.media.whiteShader);
+					CG_DrawRotatePic2(RADAR_X + RADAR_RADIUS_X + sin(angle) * distance * cgs.widthRatioCoef + x_offset,
+					                  y + RADAR_RADIUS + cos(angle) * distance,
+					                  arrow_w, arrow_h,
+					                  360 - cent->lerpAngles[YAW] + cg.predicted_player_state.viewangles[YAW], shader,
+					                  cgs.widthRatioCoef);
+				}
+				break;
+
+			case ET_MISSILE:
+
+				if (cent->currentState.client_num > MAX_CLIENTS //belongs to an NPC
+					&& cg_entities[cent->currentState.client_num].currentState.NPC_class == CLASS_VEHICLE)
+				{
+					//a rocket belonging to an NPC, FIXME: only tracking rockets!
+
+					// ReSharper disable once CppCStyleCast
+					const float x = (float)RADAR_X + static_cast<float>(RADAR_RADIUS) + sin(angle) * distance;
+					const float ly = y + static_cast<float>(RADAR_RADIUS) + cos(angle) * distance;
+
+					arrow_base_scale = 3.0f;
+					if (cg.predicted_player_state.m_iVehicleNum)
+					{
+						//I'm in a vehicle
+						//if it's targeting me, then play an alarm sound if I'm in a vehicle
+						if (cent->currentState.otherEntityNum == cg.predicted_player_state.client_num || cent->
+							currentState.otherEntityNum == cg.predicted_player_state.m_iVehicleNum)
+						{
+							if (radarLockSoundDebounceTime < cg.time)
+							{
+								vec3_t sound_org;
+								int alarm_sound;
+								if (actual_dist > RADAR_MISSILE_RANGE * 0.66f)
+								{
+									radarLockSoundDebounceTime = cg.time + 1000;
+									arrow_base_scale = 3.0f;
+									alarm_sound = cgi_S_RegisterSound("sound/vehicles/common/lockalarm1.wav");
+								}
+								else if (actual_dist > RADAR_MISSILE_RANGE / 3.0f)
+								{
+									radarLockSoundDebounceTime = cg.time + 500;
+									arrow_base_scale = 6.0f;
+									alarm_sound = cgi_S_RegisterSound("sound/vehicles/common/lockalarm2.wav");
+								}
+								else
+								{
+									radarLockSoundDebounceTime = cg.time + 250;
+									arrow_base_scale = 9.0f;
+									alarm_sound = cgi_S_RegisterSound("sound/vehicles/common/lockalarm3.wav");
+								}
+								if (actual_dist > RADAR_MISSILE_RANGE)
+								{
+									actual_dist = RADAR_MISSILE_RANGE;
+								}
+								VectorMA(cg.refdef.vieworg, -500.0f * (actual_dist / RADAR_MISSILE_RANGE), dir_player,
+								         sound_org);
+								cgi_S_StartSound(sound_org, ENTITYNUM_WORLD, CHAN_AUTO, alarm_sound);
+							}
+						}
+					}
+					z_scale = 1.0f;
+
+					//we want to scale the thing up/down based on the relative Z (up/down) positioning
+					if (cent->lerpOrigin[2] > cg.predicted_player_state.origin[2])
+					{
+						//higher, scale up (between 16 and 24)
+						float dif = cent->lerpOrigin[2] - cg.predicted_player_state.origin[2];
+
+						//max out to 1.5x scale at 512 units above local player's height
+						dif /= 1024.0f;
+						if (dif > 0.5f)
+						{
+							dif = 0.5f;
+						}
+						z_scale += dif;
+					}
+					else if (cent->lerpOrigin[2] < cg.predicted_player_state.origin[2])
+					{
+						//lower, scale down (between 16 and 8)
+						float dif = cg.predicted_player_state.origin[2] - cent->lerpOrigin[2];
+
+						//half scale at 512 units below local player's height
+						dif /= 1024.0f;
+						if (dif > 0.5f)
+						{
+							dif = 0.5f;
+						}
+						z_scale -= dif;
+					}
+
+					arrow_base_scale *= z_scale;
+
+					if (cent->currentState.client_num >= MAX_CLIENTS //missile owned by an NPC
+						&& cg_entities[cent->currentState.client_num].currentState.NPC_class == CLASS_VEHICLE
+						//NPC is a vehicle
+						&& cg_entities[cent->currentState.client_num].currentState.m_iVehicleNum <= MAX_CLIENTS
+						//Vehicle has a player driver
+						&& cgs.clientinfo[cg_entities[cent->currentState.client_num].currentState.m_iVehicleNum - 1].
+						infoValid) //player driver is valid
+					{
+						cgi_R_SetColor(colorTable[CT_RED]);
+					}
+					else
+					{
+						cgi_R_SetColor(nullptr);
+					}
+					CG_DrawPic(x - 4 + x_offset, ly - 4, arrow_base_scale, arrow_base_scale,
+					           cgs.media.mAutomapRocketIcon);
+				}
+				break;
+			}
 		}
 	}
 
@@ -8721,7 +8752,7 @@ float cg_draw_radar(const float y)
 
 	cgi_R_SetColor(colorTable[CT_WHITE]);
 	CG_DrawRotatePic2(RADAR_X + RADAR_RADIUS_X + x_offset, y + RADAR_RADIUS, arrow_w, arrow_h,
-		0, cgs.media.mAutomapPlayerIcon, cgs.widthRatioCoef);
+	                  0, cgs.media.mAutomapPlayerIcon, cgs.widthRatioCoef);
 
 	return y + RADAR_RADIUS * 2;
 }
@@ -8733,7 +8764,7 @@ CG_DrawAmmoWarning
 */
 static void CG_DrawAmmoWarning()
 {
-	char text[1024] = { 0 };
+	char text[1024] = {0};
 
 	if (cg_drawAmmoWarning.integer == 0)
 	{
@@ -8768,7 +8799,6 @@ static void CG_DrawAmmoWarning()
 //---------------------------------------
 static qboolean CG_RenderingFromMiscCamera()
 {
-
 	if (cg.snap->ps.viewEntity > 0 &&
 		cg.snap->ps.viewEntity < ENTITYNUM_WORLD)
 	{
@@ -9251,7 +9281,7 @@ extern void CG_SaberClashFlare();
 
 static void CG_Draw2D()
 {
-	char text[1024] = { 0 };
+	char text[1024] = {0};
 	int w, y_pos;
 	const centity_t* cent = &cg_entities[cg.snap->ps.client_num];
 
@@ -9343,8 +9373,8 @@ static void CG_Draw2D()
 	//if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_ACCURATEMISSILEBLOCKING)
 	//if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_NPCBLOCKSTANCE)
 	//{//test for all sorts of shit... does it work? show me.
-		//CG_DrawPic(0, 0, 640, 480, cgi_R_RegisterShader("gfx/2d/jsense"));
-		//CG_DrawPic(0, 0, 640, 480, cgi_R_RegisterShader("gfx/2d/droid_view"));
+	//CG_DrawPic(0, 0, 640, 480, cgi_R_RegisterShader("gfx/2d/jsense"));
+	//CG_DrawPic(0, 0, 640, 480, cgi_R_RegisterShader("gfx/2d/droid_view"));
 	//}
 
 	if (cg_debugHealthBars.integer)
@@ -9410,7 +9440,8 @@ static void CG_Draw2D()
 	// don't draw any status if dead
 	if (cg.snap->ps.stats[STAT_HEALTH] > 0)
 	{
-		if (!(cent->gent && cent->gent->s.eFlags & (EF_LOCKED_TO_WEAPON | EF_IN_ATST)) && !G_IsRidingVehicle(cent->gent))
+		if (!(cent->gent && cent->gent->s.eFlags & (EF_LOCKED_TO_WEAPON | EF_IN_ATST)) && !
+			G_IsRidingVehicle(cent->gent))
 		{
 			if (cg_SerenityJediEngineMode.integer)
 			{
@@ -9433,7 +9464,8 @@ static void CG_Draw2D()
 			}
 			CG_DrawInventorySelect();
 
-			if ((cg_SerenityJediEngineHudMode.integer == 4 || cg_SerenityJediEngineHudMode.integer == 5) && !cg_drawSelectionScrollBar.integer)
+			if ((cg_SerenityJediEngineHudMode.integer == 4 || cg_SerenityJediEngineHudMode.integer == 5) && !
+				cg_drawSelectionScrollBar.integer)
 			{
 				//
 			}
@@ -9543,7 +9575,8 @@ void CG_DrawIconBackground()
 
 	const bool is_on_veh = G_IsRidingVehicle(cg_entities[0].gent) != nullptr;
 
-	if (cg_SerenityJediEngineHudMode.integer == 0 || cg_SerenityJediEngineHudMode.integer == 4 || cg_SerenityJediEngineHudMode.integer == 5)
+	if (cg_SerenityJediEngineHudMode.integer == 0 || cg_SerenityJediEngineHudMode.integer == 4 ||
+		cg_SerenityJediEngineHudMode.integer == 5)
 	{
 		return;
 	}
@@ -9571,7 +9604,8 @@ void CG_DrawIconBackground()
 	}
 
 	// Get size and location of bakcround specified in the HUD.MENU file
-	if (!cgi_UI_GetMenuInfo("iconbackground", &background_x_pos, &background_y_pos, &background_width, &background_height))
+	if (!cgi_UI_GetMenuInfo("iconbackground", &background_x_pos, &background_y_pos, &background_width,
+	                        &background_height))
 	{
 		return;
 	}
@@ -9609,8 +9643,10 @@ void CG_DrawIconBackground()
 
 			const auto hold_float = static_cast<float>(background_height);
 			background_height = static_cast<int>(hold_float * cg.iconHUDPercent);
-			CG_DrawPic(background_x_pos, background_y_pos, background_width, -background_height, background); // Top half
-			CG_DrawPic(background_x_pos, background_y_pos, background_width, background_height, background); // Bottom half
+			CG_DrawPic(background_x_pos, background_y_pos, background_width, -background_height, background);
+			// Top half
+			CG_DrawPic(background_x_pos, background_y_pos, background_width, background_height, background);
+			// Bottom half
 		}
 		return;
 	}
@@ -9692,7 +9728,8 @@ void CG_DrawSJEIconBackground()
 	}
 
 	// Get size and location of bakcround specified in the HUD.MENU file
-	if (!cgi_UI_GetMenuInfo("iconbackground", &background_x_pos, &background_y_pos, &background_width, &background_height))
+	if (!cgi_UI_GetMenuInfo("iconbackground", &background_x_pos, &background_y_pos, &background_width,
+	                        &background_height))
 	{
 		return;
 	}
@@ -9735,16 +9772,20 @@ void CG_DrawSJEIconBackground()
 
 			const auto hold_float = static_cast<float>(background_height);
 			background_height = static_cast<int>(hold_float * cg.iconHUDPercent);
-			CG_DrawPic(background_x_pos, background_y_pos, background_width, -background_height, background); // Top half
-			CG_DrawPic(background_x_pos, background_y_pos, background_width, background_height, background); // Bottom half
+			CG_DrawPic(background_x_pos, background_y_pos, background_width, -background_height, background);
+			// Top half
+			CG_DrawPic(background_x_pos, background_y_pos, background_width, background_height, background);
+			// Bottom half
 		}
 		else
 		{
 			x_add = 0;
 		}
 		cgi_R_SetColor(colorTable[CT_WHITE]);
-		CG_DrawPic(prong_left_x + x_add * hud_ratio, background_y_pos - 45, 40 * hud_ratio, 80, cgs.media.weaponProngsOff);
-		CG_DrawPic(prong_right_x - x_add * hud_ratio, background_y_pos - 45, -40 * hud_ratio, 80, cgs.media.weaponProngsOff);
+		CG_DrawPic(prong_left_x + x_add * hud_ratio, background_y_pos - 45, 40 * hud_ratio, 80,
+		           cgs.media.weaponProngsOff);
+		CG_DrawPic(prong_right_x - x_add * hud_ratio, background_y_pos - 45, -40 * hud_ratio, 80,
+		           cgs.media.weaponProngsOff);
 		return;
 	}
 
