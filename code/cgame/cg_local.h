@@ -824,7 +824,7 @@ void CG_PlayerShieldHit(int entitynum, vec3_t angles, int amount);
 //
 // cg_predict.c
 //
-int CG_PointContents(const vec3_t point, int passEntityNum);
+int CG_PointContents(const vec3_t point, int pass_entity_num);
 void CG_Trace(trace_t* result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
               int skip_number, int mask);
 void CG_PredictPlayerState();
@@ -844,7 +844,7 @@ void CG_AddPacketEntities(qboolean isPortal);
 void CG_Beam(const centity_t* cent, int color);
 void CG_AdjustPositionForMover(const vec3_t in, int mover_num, int at_time, vec3_t out);
 
-void CG_PositionEntityOnTag(refEntity_t* entity, const refEntity_t* parent, qhandle_t parentModel, const char* tagName);
+void CG_PositionEntityOnTag(refEntity_t* entity, const refEntity_t* parent, qhandle_t parent_model, const char* tag_name);
 void CG_PositionEntityOnTagDual(refEntity_t* entity, const refEntity_t* parent, qhandle_t parent_model,
                                 const char* tag_name);
 
@@ -873,8 +873,8 @@ void CG_DPPrevInventory_f(void);
 void CG_DPNextForcePower_f(void);
 void CG_DPPrevForcePower_f(void);
 
-void CG_RegisterWeapon(int weaponNum);
-void CG_RegisterItemVisuals(int itemNum);
+void CG_RegisterWeapon(int weapon_num);
+void CG_RegisterItemVisuals(int item_num);
 void CG_RegisterItemSounds(int itemNum);
 
 void CG_FireWeapon(centity_t* cent, qboolean alt_fire);
@@ -1234,8 +1234,8 @@ void FX_NoghriShotProjectileThink(centity_t* cent, const weaponInfo_s* weapon);
 void FX_NoghriShotWeaponHitWall(vec3_t origin, vec3_t normal);
 void FX_NoghriShotWeaponHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, qboolean humanoid);
 
-void CG_BounceEffect(centity_t* cent, int weapon, vec3_t origin, vec3_t normal);
-void CG_MissileStick(const centity_t* cent, int weapon, vec3_t origin);
+void CG_BounceEffect(const int weapon, vec3_t origin, vec3_t normal);
+void CG_MissileStick(const centity_t* cent, const int weapon);
 
 void FX_DestructionProjectileThink(centity_t* cent, const weaponInfo_s* weapon);
 void FX_DestructionHitWall(vec3_t origin, vec3_t normal);
@@ -1249,8 +1249,8 @@ void FX_StrikeProjectileThink(centity_t* cent, const weaponInfo_s* weapon);
 void FX_StrikeHitWall(vec3_t origin, vec3_t normal);
 void FX_StrikeHitPlayer(vec3_t origin, vec3_t normal, qboolean humanoid);
 
-void CG_MissileHitPlayer(const centity_t* cent, int weapon, vec3_t origin, vec3_t dir, qboolean altFire);
-void CG_MissileHitWall(const centity_t* cent, int weapon, vec3_t origin, vec3_t dir, qboolean altFire);
+void CG_MissileHitPlayer(const centity_t* cent, int weapon, vec3_t origin, vec3_t dir, qboolean alt_fire);
+void CG_MissileHitWall(const centity_t* cent, int weapon, vec3_t origin, vec3_t dir, qboolean alt_fire);
 
 void CG_DrawTargetBeam(vec3_t start, vec3_t end, vec3_t norm, const char* beam_fx, const char* impact_fx);
 

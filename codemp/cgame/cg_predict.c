@@ -396,7 +396,7 @@ void	CG_G2Trace(trace_t* result, const vec3_t start, const vec3_t mins, const ve
 CG_PointContents
 ================
 */
-int		CG_PointContents(const vec3_t point, int passEntityNum) {
+int		CG_PointContents(const vec3_t point, int pass_entity_num) {
 	int contents = trap->CM_PointContents(point, 0);
 
 	for (int i = 0; i < cg_numSolidEntities; i++) {
@@ -404,7 +404,7 @@ int		CG_PointContents(const vec3_t point, int passEntityNum) {
 
 		const entityState_t* ent = &cent->currentState;
 
-		if (ent->number == passEntityNum) {
+		if (ent->number == pass_entity_num) {
 			continue;
 		}
 
@@ -431,7 +431,7 @@ Generates cg.predictedPlayerState by interpolating between
 cg.snap->ps and cg.nextFrame->ps
 ========================
 */
-static void CG_InterpolatePlayerState(qboolean grabAngles) {
+static void CG_InterpolatePlayerState(qboolean grab_angles) {
 	playerState_t* out = &cg.predictedPlayerState;
 	const snapshot_t* prev = cg.snap;
 	const snapshot_t* next = cg.nextSnap;
@@ -439,7 +439,7 @@ static void CG_InterpolatePlayerState(qboolean grabAngles) {
 	*out = cg.snap->ps;
 
 	// if we are still allowing local input, short circuit the view angles
-	if (grabAngles) {
+	if (grab_angles) {
 		usercmd_t	cmd;
 
 		const int cmdNum = trap->GetCurrentCmdNumber();
@@ -467,7 +467,7 @@ static void CG_InterpolatePlayerState(qboolean grabAngles) {
 
 	for (i = 0; i < 3; i++) {
 		out->origin[i] = prev->ps.origin[i] + f * (next->ps.origin[i] - prev->ps.origin[i]);
-		if (!grabAngles) {
+		if (!grab_angles) {
 			out->viewangles[i] = LerpAngle(
 				prev->ps.viewangles[i], next->ps.viewangles[i], f);
 		}

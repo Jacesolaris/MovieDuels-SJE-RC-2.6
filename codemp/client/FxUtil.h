@@ -107,12 +107,12 @@ COrientedParticle* FX_AddOrientedParticle(vec3_t org, vec3_t norm, vec3_t vel, v
 	EMatImpactEffect matImpactFX = MATIMPACTFX_NONE, int fxParm = -1,
 	CGhoul2Info_v* ghoul2 = NULL, int entNum = -1, int modelNum = -1, int boltNum = -1);
 
-CPoly* FX_AddPoly(const vec3_t* verts, const vec2_t* st, int numVerts,
+CPoly* FX_AddPoly(const vec3_t* verts, const vec2_t* st, int num_verts,
 	vec3_t vel, vec3_t accel,
-	float alpha1, float alpha2, float alphaParm,
+	float alpha1, float alpha2, float alpha_parm,
 	vec3_t rgb1, vec3_t rgb2, float rgbParm,
-	vec3_t rotationDelta, float bounce, int motionDelay,
-	int killTime, qhandle_t shader, int flags);
+	vec3_t rotation_delta, float bounce, int motion_delay,
+	int kill_time, qhandle_t shader, int flags);
 
 CFlash* FX_AddFlash(vec3_t origin,
 	float size1, float size2, float sizeParm,

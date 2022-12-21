@@ -115,27 +115,27 @@ CG_ItemPickup
 A new item was picked up this frame
 ================
 */
-void CG_ItemPickup(const int itemNum, const qboolean bHadItem)
+void CG_ItemPickup(const int item_num, const qboolean b_had_item)
 {
-	cg.itemPickup = itemNum;
+	cg.itemPickup = item_num;
 	cg.itemPickupTime = cg.time;
 	cg.itemPickupBlendTime = cg.time;
 
-	const int nCurWpn = cg.predicted_player_state.weapon;
-	const int nNewWpn = bg_itemlist[itemNum].giTag;
+	const int n_cur_wpn = cg.predicted_player_state.weapon;
+	const int n_new_wpn = bg_itemlist[item_num].giTag;
 
-	if (nNewWpn != WP_MELEE && bg_itemlist[itemNum].classname && bg_itemlist[itemNum].classname[0])
+	if (n_new_wpn != WP_MELEE && bg_itemlist[item_num].classname && bg_itemlist[item_num].classname[0])
 	{
 		char text[1024];
 		if (cgi_SP_GetStringTextString("SP_INGAME_PICKUPLINE", text, sizeof text))
 		{
 			char data[1024];
-			if (cgi_SP_GetStringTextString(va("SP_INGAME_%s", bg_itemlist[itemNum].classname), data, sizeof data))
+			if (cgi_SP_GetStringTextString(va("SP_INGAME_%s", bg_itemlist[item_num].classname), data, sizeof data))
 			{
 				cgi_Cvar_Set("cg_WeaponPickupText", va("%s %s\n", text, data));
 				cg.weaponPickupTextTime = cg.time + 5000;
 			}
-			else if (cgi_SP_GetStringTextString(va("SPMOD_INGAME_%s", bg_itemlist[itemNum].classname), data,
+			else if (cgi_SP_GetStringTextString(va("SPMOD_INGAME_%s", bg_itemlist[item_num].classname), data,
 			                                    sizeof data))
 			{
 				cgi_Cvar_Set("cg_WeaponPickupText", va("%s %s\n", text, data));
@@ -145,9 +145,9 @@ void CG_ItemPickup(const int itemNum, const qboolean bHadItem)
 	}
 
 	// see if it should be the grabbed weapon
-	if (bg_itemlist[itemNum].giType == IT_WEAPON)
+	if (bg_itemlist[item_num].giType == IT_WEAPON)
 	{
-		if (nCurWpn == WP_SABER || bHadItem)
+		if (n_cur_wpn == WP_SABER || b_had_item)
 		{
 			//never switch away from the saber!
 			return;
@@ -162,11 +162,11 @@ void CG_ItemPickup(const int itemNum, const qboolean bHadItem)
 		// NOTE: automatically switching to any weapon you pick up is stupid and annoying and we won't do it.
 		//
 
-		if (nNewWpn == WP_SABER)
+		if (n_new_wpn == WP_SABER)
 		{
 			//always switch to saber
 			SetWeaponSelectTime();
-			cg.weaponSelect = nNewWpn;
+			cg.weaponSelect = n_new_wpn;
 		}
 		else if (0 == cg_autoswitch.integer)
 		{
@@ -175,28 +175,28 @@ void CG_ItemPickup(const int itemNum, const qboolean bHadItem)
 		else if (1 == cg_autoswitch.integer)
 		{
 			// safe switching
-			if (nNewWpn > nCurWpn &&
-				!(nNewWpn == WP_DET_PACK) &&
-				!(nNewWpn == WP_TRIP_MINE) &&
-				!(nNewWpn == WP_THERMAL) &&
-				!(nNewWpn == WP_ROCKET_LAUNCHER) &&
-				!(nNewWpn == WP_CONCUSSION))
+			if (n_new_wpn > n_cur_wpn &&
+				!(n_new_wpn == WP_DET_PACK) &&
+				!(n_new_wpn == WP_TRIP_MINE) &&
+				!(n_new_wpn == WP_THERMAL) &&
+				!(n_new_wpn == WP_ROCKET_LAUNCHER) &&
+				!(n_new_wpn == WP_CONCUSSION))
 			{
 				// switch to new wpn
 				//				cg.weaponSelectTime = cg.time;
 				SetWeaponSelectTime();
-				cg.weaponSelect = nNewWpn;
+				cg.weaponSelect = n_new_wpn;
 			}
 		}
 		else if (2 == cg_autoswitch.integer)
 		{
 			// best
-			if (nNewWpn > nCurWpn)
+			if (n_new_wpn > n_cur_wpn)
 			{
 				// switch to new wpn
 				//				cg.weaponSelectTime = cg.time;
 				SetWeaponSelectTime();
-				cg.weaponSelect = nNewWpn;
+				cg.weaponSelect = n_new_wpn;
 			}
 		}
 	}
@@ -210,7 +210,7 @@ UseItem
 extern void CG_ToggleBinoculars();
 extern void CG_ToggleLAGoggles();
 
-void UseItem(const int itemNum)
+void UseItem(const int item_num)
 {
 	const centity_t* cent = &cg_entities[cg.snap->ps.client_num];
 
@@ -219,7 +219,7 @@ void UseItem(const int itemNum)
 		return;
 	}
 
-	switch (itemNum)
+	switch (item_num)
 	{
 	case INV_ELECTROBINOCULARS:
 		CG_ToggleBinoculars();
@@ -248,7 +248,7 @@ void UseItem(const int itemNum)
 CG_UseForce
 ===============
 */
-static void CG_UseForce(centity_t* cent)
+static void CG_UseForce()
 {
 	//FIXME: sound or graphic change or something?
 	//actual force power action is on game/pm side
@@ -299,9 +299,9 @@ Returns qtrue for event types that access cent->gent directly (and don't require
 to be the player / entity 0).
 ==============
 */
-qboolean CG_UnsafeEventType(const int eventType)
+qboolean CG_UnsafeEventType(const int event_type)
 {
-	switch (eventType)
+	switch (event_type)
 	{
 	case EV_CHANGE_WEAPON:
 	case EV_DISRUPTOR_SNIPER_SHOT:
@@ -449,7 +449,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 	case EV_STEP_16: // smooth out step up transitions
 		DEBUGNAME("EV_STEP");
 		{
-			float oldStep;
+			float old_step;
 
 			if (client_num != cg.predicted_player_state.client_num)
 			{
@@ -464,16 +464,16 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 			const int delta = cg.time - cg.stepTime;
 			if (delta < STEP_TIME)
 			{
-				oldStep = cg.stepChange * (STEP_TIME - delta) / STEP_TIME;
+				old_step = cg.stepChange * (STEP_TIME - delta) / STEP_TIME;
 			}
 			else
 			{
-				oldStep = 0;
+				old_step = 0;
 			}
 
 			// add this amount
 			const int step = 4 * (event - EV_STEP_4 + 1);
-			cg.stepChange = oldStep + step;
+			cg.stepChange = old_step + step;
 			if (cg.stepChange > MAX_STEP_CHANGE)
 			{
 				cg.stepChange = MAX_STEP_CHANGE;
@@ -554,14 +554,14 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 	case EV_ITEM_PICKUP:
 		DEBUGNAME("EV_ITEM_PICKUP");
 		{
-			qboolean bHadItem = qfalse;
+			qboolean b_had_item = qfalse;
 
 			int index = es->eventParm; // player predicted
 
 			if (static_cast<char>(index) < 0)
 			{
 				index = -static_cast<char>(index);
-				bHadItem = qtrue;
+				b_had_item = qtrue;
 			}
 
 			if (index >= bg_numItems)
@@ -574,7 +574,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 			// show icon and name on status bar
 			if (es->number == cg.snap->ps.client_num)
 			{
-				CG_ItemPickup(index, bHadItem);
+				CG_ItemPickup(index, b_had_item);
 			}
 		}
 		break;
@@ -809,7 +809,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 	// This does not necessarily have to be from a grenade...
 	case EV_GRENADE_BOUNCE:
 		DEBUGNAME("EV_GRENADE_BOUNCE");
-		CG_BounceEffect(cent, es->weapon, position, cent->gent->pos1);
+		CG_BounceEffect(es->weapon, position, cent->gent->pos1);
 		break;
 
 	//
@@ -818,7 +818,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 
 	case EV_MISSILE_STICK:
 		DEBUGNAME("EV_MISSILE_STICK");
-		CG_MissileStick(cent, es->weapon, position);
+		CG_MissileStick(cent, es->weapon);
 		break;
 
 	case EV_MISSILE_HIT:
@@ -957,16 +957,16 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 		DEBUGNAME("EV_PLAY_EFFECT");
 		{
 			vec3_t axis[3];
-			const bool portalEnt = !!es->isPortalEnt;
+			const bool portal_ent = !!es->isPortalEnt;
 			//the fxrunner spawning this effect is within a skyportal, so only render this effect within that portal.
 
 			s = CG_ConfigString(CS_EFFECTS + es->eventParm);
 			// Ghoul2 Insert Start
 			if (es->boltInfo != 0)
 			{
-				const bool isRelative = !!es->weapon;
+				const bool is_relative = !!es->weapon;
 				theFxScheduler.
-					PlayEffect(s, cent->lerpOrigin, axis, es->boltInfo, -1, portalEnt, es->loopSound, isRelative);
+					PlayEffect(s, cent->lerpOrigin, axis, es->boltInfo, -1, portal_ent, es->loopSound, is_relative);
 				//loopSound 0 = not looping, 1 for infinite, else duration
 			}
 			else
@@ -978,11 +978,11 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 				// the entNum the effect may be attached to
 				if (es->otherEntityNum)
 				{
-					theFxScheduler.PlayEffect(s, cent->lerpOrigin, axis, -1, es->otherEntityNum, portalEnt);
+					theFxScheduler.PlayEffect(s, cent->lerpOrigin, axis, -1, es->otherEntityNum, portal_ent);
 				}
 				else
 				{
-					theFxScheduler.PlayEffect(s, cent->lerpOrigin, axis, -1, -1, portalEnt);
+					theFxScheduler.PlayEffect(s, cent->lerpOrigin, axis, -1, -1, portal_ent);
 				}
 			}
 		}
@@ -1000,18 +1000,18 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 	case EV_STOP_EFFECT:
 		DEBUGNAME("EV_STOP_EFFECT");
 		{
-			bool portalEnt = false;
+			bool portal_ent = false;
 
 			if (es->isPortalEnt)
 			{
 				//the fxrunner spawning this effect is within a skyportal, so only render this effect within that portal.
-				portalEnt = true;
+				portal_ent = true;
 			}
 
 			s = CG_ConfigString(CS_EFFECTS + es->eventParm);
 			if (es->boltInfo != 0)
 			{
-				theFxScheduler.StopEffect(s, es->boltInfo, portalEnt);
+				theFxScheduler.StopEffect(s, es->boltInfo, portal_ent);
 			}
 		}
 		break;
@@ -1218,7 +1218,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 
 	case EV_USE_FORCE:
 		DEBUGNAME("EV_USE_FORCEITEM");
-		CG_UseForce(cent);
+		CG_UseForce();
 		break;
 
 	case EV_USE_ITEM:

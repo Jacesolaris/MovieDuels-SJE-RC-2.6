@@ -288,7 +288,7 @@ int G_FindLookItem(gentity_t* self)
 	return best_ent_num;
 }
 
-extern void CG_SetClientViewAngles(vec3_t angles, qboolean overrideViewEnt);
+extern void CG_SetClientViewAngles(vec3_t angles, qboolean override_view_ent);
 
 qboolean G_ClearViewEntity(gentity_t* ent)
 {

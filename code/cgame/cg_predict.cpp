@@ -105,7 +105,7 @@ CG_ClipMoveToEntities
 ====================
 */
 void CG_ClipMoveToEntities(const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-                           const int skipNumber, const int mask, trace_t* tr)
+                           const int skip_number, const int mask, trace_t* tr)
 {
 	trace_t trace;
 	clipHandle_t cmodel;
@@ -118,7 +118,7 @@ void CG_ClipMoveToEntities(const vec3_t start, const vec3_t mins, const vec3_t m
 		const centity_t* cent = cg_solidEntities[i];
 		const entityState_t* ent = &cent->currentState;
 
-		if (ent->number == skipNumber)
+		if (ent->number == skip_number)
 		{
 			continue;
 		}
@@ -206,9 +206,9 @@ CG_PointContents
 #define USE_SV_PNT_CONTENTS (1)
 
 #if USE_SV_PNT_CONTENTS
-int CG_PointContents(const vec3_t point, const int passEntityNum)
+int CG_PointContents(const vec3_t point, const int pass_entity_num)
 {
-	return gi.pointcontents(point, passEntityNum);
+	return gi.pointcontents(point, pass_entity_num);
 }
 #else
 int		CG_PointContents(const vec3_t point, int passEntityNum) {
@@ -245,9 +245,9 @@ int		CG_PointContents(const vec3_t point, int passEntityNum) {
 }
 #endif
 
-void CG_SetClientViewAngles(vec3_t angles, const qboolean overrideViewEnt)
+void CG_SetClientViewAngles(vec3_t angles, const qboolean override_view_ent)
 {
-	if (cg.snap->ps.viewEntity <= 0 || cg.snap->ps.viewEntity >= ENTITYNUM_WORLD || overrideViewEnt)
+	if (cg.snap->ps.viewEntity <= 0 || cg.snap->ps.viewEntity >= ENTITYNUM_WORLD || override_view_ent)
 	{
 		//don't clamp angles when looking through a viewEntity
 		for (int i = 0; i < 3; i++)
@@ -269,17 +269,17 @@ extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 
 qboolean CG_CheckModifyUCmd(usercmd_t* cmd, vec3_t viewangles)
 {
-	qboolean overridAngles = qfalse;
+	qboolean overrid_angles = qfalse;
 	if (cg.snap->ps.viewEntity > 0 && cg.snap->ps.viewEntity < ENTITYNUM_WORLD)
 	{
 		//controlling something else
 		memset(cmd, 0, sizeof(usercmd_t));
 		VectorCopy(g_entities[0].pos4, viewangles);
-		overridAngles = qtrue;
+		overrid_angles = qtrue;
 	}
 	else if (G_IsRidingVehicle(&g_entities[0]))
 	{
-		overridAngles = qtrue;
+		overrid_angles = qtrue;
 	}
 
 	if (g_entities[0].client)
@@ -292,7 +292,7 @@ qboolean CG_CheckModifyUCmd(usercmd_t* cmd, vec3_t viewangles)
 				if (viewangles)
 				{
 					VectorCopy(g_entities[0].client->ps.viewangles, viewangles);
-					overridAngles = qtrue;
+					overrid_angles = qtrue;
 				}
 			}
 		}
@@ -302,7 +302,7 @@ qboolean CG_CheckModifyUCmd(usercmd_t* cmd, vec3_t viewangles)
 			if (viewangles)
 			{
 				VectorCopy(g_entities[0].client->ps.viewangles, viewangles);
-				overridAngles = qtrue;
+				overrid_angles = qtrue;
 			}
 		}
 		if (G_CheckClampUcmd(&g_entities[0], cmd))
@@ -311,11 +311,11 @@ qboolean CG_CheckModifyUCmd(usercmd_t* cmd, vec3_t viewangles)
 			if (viewangles)
 			{
 				VectorCopy(g_entities[0].client->ps.viewangles, viewangles);
-				overridAngles = qtrue;
+				overrid_angles = qtrue;
 			}
 		}
 	}
-	return overridAngles;
+	return overrid_angles;
 }
 
 qboolean CG_OnMovingPlat(const playerState_t* ps)
@@ -360,20 +360,20 @@ Generates cg.predicted_player_state by interpolating between
 cg.snap->player_state and cg.nextFrame->player_state
 ========================
 */
-void CG_InterpolatePlayerState(const qboolean grabAngles)
+void CG_InterpolatePlayerState(const qboolean grab_angles)
 {
 	int i;
-	vec3_t oldOrg;
+	vec3_t old_org;
 
 	playerState_t* out = &cg.predicted_player_state;
 	const snapshot_t* prev = cg.snap;
 	const snapshot_t* next = cg.nextSnap;
 
-	VectorCopy(out->origin, oldOrg);
+	VectorCopy(out->origin, old_org);
 	*out = cg.snap->ps;
 
 	// if we are still allowing local input, short circuit the view angles
-	if (grabAngles)
+	if (grab_angles)
 	{
 		usercmd_t cmd;
 
@@ -409,7 +409,7 @@ void CG_InterpolatePlayerState(const qboolean grabAngles)
 		for (i = 0; i < 3; i++)
 		{
 			out->origin[i] = prev->ps.origin[i] + f * (next->ps.origin[i] - prev->ps.origin[i]);
-			if (!grabAngles)
+			if (!grab_angles)
 			{
 				out->viewangles[i] = LerpAngle(
 					prev->ps.viewangles[i], next->ps.viewangles[i], f);
@@ -419,7 +419,7 @@ void CG_InterpolatePlayerState(const qboolean grabAngles)
 		}
 	}
 
-	bool onPlat = false;
+	bool on_plat = false;
 	const centity_t* pent = nullptr;
 	if (out->groundEntityNum > 0)
 	{
@@ -427,7 +427,7 @@ void CG_InterpolatePlayerState(const qboolean grabAngles)
 		if (pent->currentState.eType == ET_MOVER)
 
 		{
-			onPlat = true;
+			on_plat = true;
 		}
 	}
 
@@ -435,16 +435,16 @@ void CG_InterpolatePlayerState(const qboolean grabAngles)
 		cg.validPPS &&
 		cg_smoothPlayerPos.value > 0.0f &&
 		cg_smoothPlayerPos.value < 1.0f &&
-		!onPlat
+		!on_plat
 	)
 	{
 		// 0 = no smoothing, 1 = no movement
 		for (i = 0; i < 3; i++)
 		{
-			out->origin[i] = cg_smoothPlayerPos.value * (oldOrg[i] - out->origin[i]) + out->origin[i];
+			out->origin[i] = cg_smoothPlayerPos.value * (old_org[i] - out->origin[i]) + out->origin[i];
 		}
 	}
-	else if (onPlat && cg_smoothPlayerPlat.value > 0.0f && cg_smoothPlayerPlat.value < 1.0f)
+	else if (on_plat && cg_smoothPlayerPlat.value > 0.0f && cg_smoothPlayerPlat.value < 1.0f)
 	{
 		//		if (cg.frametime<150)
 		//		{
@@ -486,7 +486,7 @@ void CG_InterpolatePlayerState(const qboolean grabAngles)
 			// 0 = no smoothing, 1 = no movement
 			for (i = 0; i < 3; i++)
 			{
-				out->origin[i] = cg_smoothPlayerPlat.value * (oldOrg[i] - out->origin[i]) + out->origin[i];
+				out->origin[i] = cg_smoothPlayerPlat.value * (old_org[i] - out->origin[i]) + out->origin[i];
 			}
 		}
 		//		}

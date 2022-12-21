@@ -36,7 +36,7 @@ extern gentity_t* G_Find(gentity_t* from, int fieldofs, const char* match);
 extern void G_UseTargets(gentity_t* ent, gentity_t* activator);
 void CGCam_FollowDisable(void);
 void CGCam_TrackDisable(void);
-void CGCam_Distance(float distance, float initLerp);
+void CGCam_Distance(float distance, float init_lerp);
 void CGCam_DistanceDisable(void);
 extern qboolean CG_CalcFOVFromX(float fov_x);
 extern void WP_SaberCatch(gentity_t* self, gentity_t* saber, qboolean switch_to_saber);
@@ -60,7 +60,7 @@ CGCam_Init
 -------------------------
 */
 
-void CGCam_Init(void)
+void CGCam_Init()
 {
 	extern qboolean qbVidRestartOccured;
 	if (!qbVidRestartOccured)
@@ -249,7 +249,7 @@ CGCam_Pan
 -------------------------
 */
 
-void CGCam_Pan(vec3_t dest, vec3_t panDirection, const float duration)
+void CGCam_Pan(vec3_t dest, vec3_t pan_direction, const float duration)
 {
 	float delta2;
 
@@ -279,7 +279,7 @@ void CGCam_Pan(vec3_t dest, vec3_t panDirection, const float duration)
 		{
 			delta2 = delta1 - 360;
 		}
-		if (!panDirection[i])
+		if (!pan_direction[i])
 		{
 			//Didn't specify a direction, pick shortest
 			if (Q_fabs(delta1) < Q_fabs(delta2))
@@ -291,7 +291,7 @@ void CGCam_Pan(vec3_t dest, vec3_t panDirection, const float duration)
 				client_camera.angles2[i] = delta2;
 			}
 		}
-		else if (panDirection[i] < 0)
+		else if (pan_direction[i] < 0)
 		{
 			if (delta1 < 0)
 			{
@@ -307,7 +307,7 @@ void CGCam_Pan(vec3_t dest, vec3_t panDirection, const float duration)
 				client_camera.angles2[i] = 0;
 			}
 		}
-		else if (panDirection[i] > 0)
+		else if (pan_direction[i] > 0)
 		{
 			if (delta1 > 0)
 			{
@@ -494,23 +494,23 @@ CGCam_Follow
 -------------------------
 */
 
-void CGCam_Follow(const char* cameraGroup, const float speed, const float initLerp)
+void CGCam_Follow(const char* camera_group, const float speed, const float init_lerp)
 {
 	//Clear any previous
 	CGCam_FollowDisable();
 
-	if (!cameraGroup || !cameraGroup[0])
+	if (!camera_group || !camera_group[0])
 	{
 		return;
 	}
 
-	if (Q_stricmp("none", cameraGroup) == 0)
+	if (Q_stricmp("none", camera_group) == 0)
 	{
 		//Turn off all aiming
 		return;
 	}
 
-	if (Q_stricmp("NULL", cameraGroup) == 0)
+	if (Q_stricmp("NULL", camera_group) == 0)
 	{
 		//Turn off all aiming
 		return;
@@ -521,7 +521,7 @@ void CGCam_Follow(const char* cameraGroup, const float speed, const float initLe
 	client_camera.info_state &= ~CAMERA_PANNING;
 
 	//NULL terminate last char in case they type a name too long
-	Q_strncpyz(client_camera.cameraGroup, cameraGroup, sizeof client_camera.cameraGroup);
+	Q_strncpyz(client_camera.cameraGroup, camera_group, sizeof client_camera.cameraGroup);
 
 	if (speed)
 	{
@@ -532,7 +532,7 @@ void CGCam_Follow(const char* cameraGroup, const float speed, const float initLe
 		client_camera.followSpeed = 100.0f;
 	}
 
-	if (initLerp)
+	if (init_lerp)
 	{
 		client_camera.followInitLerp = qtrue;
 	}
@@ -586,11 +586,11 @@ void CG_CameraAutoAim(const char* name)
 CGCam_Track
 -------------------------
 */
-void CGCam_Track(const char* trackName, const float speed, const float initLerp)
+void CGCam_Track(const char* track_name, const float speed, const float init_lerp)
 {
 	CGCam_TrackDisable();
 
-	if (Q_stricmp("none", trackName) == 0)
+	if (Q_stricmp("none", track_name) == 0)
 	{
 		//turn off tracking
 		return;
@@ -598,11 +598,11 @@ void CGCam_Track(const char* trackName, const float speed, const float initLerp)
 
 	//NOTE: if this interrupts a move before it's done, need to copy the cg.refdef.vieworg to the camera.origin!
 	//This will find a path_corner now, not a misc_camera_track
-	const gentity_t* trackEnt = G_Find(nullptr, FOFS(targetname), trackName);
+	const gentity_t* trackEnt = G_Find(nullptr, FOFS(targetname), track_name);
 
 	if (!trackEnt)
 	{
-		gi.Printf(S_COLOR_RED"ERROR: %s camera track target not found\n", trackName);
+		gi.Printf(S_COLOR_RED"ERROR: %s camera track target not found\n", track_name);
 		return;
 	}
 
@@ -614,7 +614,7 @@ void CGCam_Track(const char* trackName, const float speed, const float initLerp)
 	client_camera.speed = speed;
 	client_camera.nextTrackEntUpdateTime = cg.time;
 
-	if (initLerp)
+	if (init_lerp)
 	{
 		client_camera.trackInitLerp = qtrue;
 	}
@@ -699,11 +699,11 @@ CGCam_Distance
 -------------------------
 */
 
-void CGCam_Distance(const float distance, const float initLerp)
+void CGCam_Distance(const float distance, const float init_lerp)
 {
 	client_camera.distance = distance;
 
-	if (initLerp)
+	if (init_lerp)
 	{
 		client_camera.distanceInitLerp = qtrue;
 	}
@@ -717,7 +717,7 @@ void CGCam_Distance(const float distance, const float initLerp)
 
 void CGCam_FollowUpdate(void)
 {
-	vec3_t center, dir, cameraAngles, vec; //No more than 16 subjects in a cameraGroup
+	vec3_t center, dir, camera_angles, vec; //No more than 16 subjects in a cameraGroup
 	int i;
 
 	if (client_camera.cameraGroup[0])
@@ -754,13 +754,13 @@ void CGCam_FollowUpdate(void)
 				                                     client_camera.cameraGroupTag);
 				if (newBolt != -1)
 				{
-					mdxaBone_t boltMatrix;
-					const vec3_t fromAngles = {0, from->client->ps.legsYaw, 0};
+					mdxaBone_t bolt_matrix;
+					const vec3_t from_angles = {0, from->client->ps.legsYaw, 0};
 
-					gi.G2API_GetBoltMatrix(fromCent->gent->ghoul2, from->playerModel, newBolt, &boltMatrix, fromAngles,
+					gi.G2API_GetBoltMatrix(fromCent->gent->ghoul2, from->playerModel, newBolt, &bolt_matrix, from_angles,
 					                       fromCent->lerpOrigin, cg.time, cgs.model_draw,
 					                       fromCent->currentState.modelScale);
-					gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, focus[num_subjects]);
+					gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, focus[num_subjects]);
 
 					focused = qtrue;
 				}
@@ -841,7 +841,7 @@ void CGCam_FollowUpdate(void)
 	//can't use client_camera.origin because it's not updated until the end of the move.
 
 	//Get desired angle
-	vectoangles(dir, cameraAngles);
+	vectoangles(dir, camera_angles);
 
 	if (client_camera.followInitLerp)
 	{
@@ -849,10 +849,10 @@ void CGCam_FollowUpdate(void)
 		const float frac = cg.frametime / 100.0f * client_camera.followSpeed / 100.f;
 		for (i = 0; i < 3; i++)
 		{
-			cameraAngles[i] = AngleNormalize180(cameraAngles[i]);
-			cameraAngles[i] = AngleNormalize180(
-				client_camera.angles[i] + frac * AngleNormalize180(cameraAngles[i] - client_camera.angles[i]));
-			cameraAngles[i] = AngleNormalize180(cameraAngles[i]);
+			camera_angles[i] = AngleNormalize180(camera_angles[i]);
+			camera_angles[i] = AngleNormalize180(
+				client_camera.angles[i] + frac * AngleNormalize180(camera_angles[i] - client_camera.angles[i]));
+			camera_angles[i] = AngleNormalize180(camera_angles[i]);
 		}
 #if 0
 		Com_Printf("%s\n", vtos(cameraAngles));
@@ -866,13 +866,13 @@ void CGCam_FollowUpdate(void)
 		for (i = 0; i < 3; i++)
 		{
 			//normalize so that when we start lerping, it doesn't freak out
-			cameraAngles[i] = AngleNormalize180(cameraAngles[i]);
+			camera_angles[i] = AngleNormalize180(camera_angles[i]);
 		}
 		//So tracker doesn't move right away thinking the first angle change
 		//is the subject moving... FIXME: shouldn't set this until lerp done OR snapped?
 		client_camera.subjectSpeed = 0;
 	}
-	VectorCopy(cameraAngles, client_camera.angles);
+	VectorCopy(camera_angles, client_camera.angles);
 }
 
 void CGCam_TrackEntUpdate(void)

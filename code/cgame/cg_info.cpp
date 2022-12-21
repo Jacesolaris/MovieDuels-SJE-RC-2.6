@@ -390,7 +390,7 @@ static void CG_LoadBar(void)
 	CG_DrawPic(tickleft + tickwidth * cg.loadLCARSStage, ticktop, capwidth, tickheight, cgs.media.loadTickCap);
 }
 
-int CG_WeaponCheck(int weaponIndex);
+int CG_WeaponCheck(int weapon_index);
 
 // For printing load screen icons
 constexpr int MAXLOADICONSPERROW = 8; // Max icons displayed per row

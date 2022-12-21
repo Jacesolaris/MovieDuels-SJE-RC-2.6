@@ -48,17 +48,17 @@ CG_RegisterItemVisuals
 The server says this item is used on this level
 =================
 */
-void CG_RegisterItemVisuals(int itemNum) {
-	if (itemNum < 0 || itemNum >= bg_numItems) {
-		trap->Error(ERR_DROP, "CG_RegisterItemVisuals: itemNum %d out of range [0-%d]", itemNum, bg_numItems - 1);
+void CG_RegisterItemVisuals(int item_num) {
+	if (item_num < 0 || item_num >= bg_numItems) {
+		trap->Error(ERR_DROP, "CG_RegisterItemVisuals: itemNum %d out of range [0-%d]", item_num, bg_numItems - 1);
 	}
 
-	itemInfo_t* itemInfo = &cg_items[itemNum];
+	itemInfo_t* itemInfo = &cg_items[item_num];
 	if (itemInfo->registered) {
 		return;
 	}
 
-	const gitem_t* item = &bg_itemlist[itemNum];
+	const gitem_t* item = &bg_itemlist[item_num];
 
 	memset(itemInfo, 0, sizeof(*itemInfo));
 	itemInfo->registered = qtrue;

@@ -699,7 +699,7 @@ void CGCam_Zoom(float FOV, float duration)
 	CGCam_Anything();
 }
 
-void CGCam_Pan(vec3_t dest, vec3_t panDirection, float duration)
+void CGCam_Pan(vec3_t dest, vec3_t pan_direction, float duration)
 {
 	CGCam_Anything();
 }
@@ -714,17 +714,17 @@ void CGCam_Shake(float intensity, int duration)
 	CGCam_Anything();
 }
 
-void CGCam_Follow(const char* cameraGroup, float speed, float initLerp)
+void CGCam_Follow(const char* camera_group, float speed, float init_lerp)
 {
 	CGCam_Anything();
 }
 
-void CGCam_Track(const char* trackName, float speed, float initLerp)
+void CGCam_Track(const char* track_name, float speed, float init_lerp)
 {
 	CGCam_Anything();
 }
 
-void CGCam_Distance(float distance, float initLerp)
+void CGCam_Distance(float distance, float init_lerp)
 {
 	CGCam_Anything();
 }

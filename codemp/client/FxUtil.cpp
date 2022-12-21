@@ -233,19 +233,19 @@ void FX_Add(bool portal)
 // all effects are being stopped.
 //-------------------------
 extern bool gEffectsInPortal;	//from FXScheduler.cpp so i don't have to pass it in on EVERY FX_ADD*
-void FX_AddPrimitive(CEffect** pEffect, int killTime)
+void FX_AddPrimitive(CEffect** p_effect, int kill_time)
 {
 	SEffectList* item = FX_GetValidEffect();
 
-	item->mEffect = *pEffect;
-	item->mKillTime = theFxHelper.mTime + killTime;
+	item->mEffect = *p_effect;
+	item->mKillTime = theFxHelper.mTime + kill_time;
 	item->mPortal = gEffectsInPortal;	//global set in AddScheduledEffects
 
 	activeFx++;
 
 	// Stash these in the primitive so it has easy access to the vals
-	(*pEffect)->SetTimeStart(theFxHelper.mTime);
-	(*pEffect)->SetTimeEnd(theFxHelper.mTime + killTime);
+	(*p_effect)->SetTimeStart(theFxHelper.mTime);
+	(*p_effect)->SetTimeEnd(theFxHelper.mTime + kill_time);
 }
 
 //-------------------------
@@ -1004,12 +1004,12 @@ COrientedParticle* FX_AddOrientedParticle(vec3_t org, vec3_t norm, vec3_t vel, v
 //-------------------------
 //  FX_AddPoly
 //-------------------------
-CPoly* FX_AddPoly(const vec3_t* verts, const vec2_t* st, int numVerts,
+CPoly* FX_AddPoly(const vec3_t* verts, const vec2_t* st, int num_verts,
 	vec3_t vel, vec3_t accel,
-	float alpha1, float alpha2, float alphaParm,
+	float alpha1, float alpha2, float alpha_parm,
 	vec3_t rgb1, vec3_t rgb2, float rgbParm,
-	vec3_t rotationDelta, float bounce, int motionDelay,
-	int killTime, qhandle_t shader, int flags)
+	vec3_t rotation_delta, float bounce, int motion_delay,
+	int kill_time, qhandle_t shader, int flags)
 {
 	if (theFxHelper.mFrameTime < 1 || !verts)
 	{ // disallow adding effects when the system is paused or the user doesn't pass in a vert array
@@ -1021,7 +1021,7 @@ CPoly* FX_AddPoly(const vec3_t* verts, const vec2_t* st, int numVerts,
 	if (fx)
 	{
 		// Do a cheesy copy of the verts and texture coords into our own structure
-		for (int i = 0; i < numVerts; i++)
+		for (int i = 0; i < num_verts; i++)
 		{
 			VectorCopy(verts[i], fx->mOrg[i]);
 			VectorCopy2(st[i], fx->mST[i]);
@@ -1041,7 +1041,7 @@ CPoly* FX_AddPoly(const vec3_t* verts, const vec2_t* st, int numVerts,
 		else if (flags & FX_RGB_PARM_MASK)
 		{
 			// rgbParm should be a value from 0-100..
-			fx->SetRGBParm(rgbParm * 0.01f * killTime + theFxHelper.mTime);
+			fx->SetRGBParm(rgbParm * 0.01f * kill_time + theFxHelper.mTime);
 		}
 
 		// Alpha----------------
@@ -1050,24 +1050,24 @@ CPoly* FX_AddPoly(const vec3_t* verts, const vec2_t* st, int numVerts,
 
 		if ((flags & FX_ALPHA_PARM_MASK) == FX_ALPHA_WAVE)
 		{
-			fx->SetAlphaParm(alphaParm * PI * 0.001f);
+			fx->SetAlphaParm(alpha_parm * PI * 0.001f);
 		}
 		else if (flags & FX_ALPHA_PARM_MASK)
 		{
-			fx->SetAlphaParm(alphaParm * 0.01f * killTime + theFxHelper.mTime);
+			fx->SetAlphaParm(alpha_parm * 0.01f * kill_time + theFxHelper.mTime);
 		}
 
 		fx->SetFlags(flags);
 		fx->SetShader(shader);
-		fx->SetRot(rotationDelta);
+		fx->SetRot(rotation_delta);
 		fx->SetElasticity(bounce);
-		fx->SetMotionTimeStamp(motionDelay);
-		fx->SetNumVerts(numVerts);
+		fx->SetMotionTimeStamp(motion_delay);
+		fx->SetNumVerts(num_verts);
 
 		// Now that we've set our data up, let's process it into a useful format
 		fx->PolyInit();
 
-		FX_AddPrimitive((CEffect**)&fx, killTime);
+		FX_AddPrimitive((CEffect**)&fx, kill_time);
 	}
 
 	return fx;

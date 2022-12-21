@@ -52,13 +52,13 @@ Modifies the entities position and axis by the given
 tag location
 ======================
 */
-void CG_PositionEntityOnTag(refEntity_t* entity, const refEntity_t* parent, const qhandle_t parentModel,
-                            const char* tagName)
+void CG_PositionEntityOnTag(refEntity_t* entity, const refEntity_t* parent, const qhandle_t parent_model,
+                            const char* tag_name)
 {
 	orientation_t lerped;
 
 	// lerp the tag
-	cgi_R_LerpTag(&lerped, parentModel, parent->oldframe, parent->frame, 1.0f - parent->backlerp, tagName);
+	cgi_R_LerpTag(&lerped, parent_model, parent->oldframe, parent->frame, 1.0f - parent->backlerp, tag_name);
 
 	VectorCopy(parent->origin, entity->origin);
 	for (int i = 0; i < 3; i++)
@@ -250,14 +250,14 @@ void CG_AddRefEntWithTransportEffect(const centity_t* cent, refEntity_t* ent)
 			vec3_t org;
 			VectorMA(ent->origin, -i, ent->axis[2], org);
 
-			FX_AddSprite(org, nullptr, nullptr, 5.5f, 5.5f, wv, wv, 0.0f, 0.0f, 1.0f,
-			             cgs.media.yellowDroppedSaberShader, 0x08000000);
+			FX_AddSprite(org, nullptr, nullptr, 5.5f, wv, wv, 0.0f, 0.0f, 1.0f, cgs.media.yellowDroppedSaberShader,
+			             0x08000000);
 		}
 		if (cent->gent->owner->s.weapon == WP_SABER)
 		{
 			//he's still controlling me
-			FX_AddSprite(cent->gent->owner->client->renderInfo.handRPoint, nullptr, nullptr, 8.0f, 8.0f, wv, wv, 0.0f,
-			             0.0f, 1.0f, cgs.media.yellowDroppedSaberShader, 0x08000000);
+			FX_AddSprite(cent->gent->owner->client->renderInfo.handRPoint, nullptr, nullptr, 8.0f, wv, wv, 0.0f, 0.0f,
+			             1.0f, cgs.media.yellowDroppedSaberShader, 0x08000000);
 		}
 	}
 }
@@ -526,8 +526,7 @@ static void CG_General(centity_t* cent)
 
 		vec4_t v4DKGREY2 = {0.15f, 0.15f, 0.15f};
 
-		FX_AddLine(start, end, 0.1f, 0.5f, 0.0f, 0.5f, 0.0f, v4DKGREY2, v4DKGREY2, 15,
-		           cgi_R_RegisterShader("gfx/misc/nav_line"), FX_SIZE_LINEAR);
+		FX_AddLine(start, end, 0.5f, 0.5f, 0.0f, v4DKGREY2, v4DKGREY2, 15, cgi_R_RegisterShader("gfx/misc/nav_line"), FX_SIZE_LINEAR);
 
 		CG_GrappleStartpoint(end);
 		//GOING OUT
@@ -1243,8 +1242,8 @@ static void CG_Item(centity_t* cent)
 			vec3_t org;
 			VectorMA(ent.origin, -i, ent.axis[2], org);
 
-			FX_AddSprite(org, nullptr, nullptr, 10.0f, 10.0f, wv * 0.5f, wv * 0.5f, 0.0f, 0.0f, 1.0f,
-			             cgs.media.yellowDroppedSaberShader, 0x08000000);
+			FX_AddSprite(org, nullptr, nullptr, 10.0f, wv * 0.5f, wv * 0.5f, 0.0f, 0.0f, 1.0f, cgs.media.yellowDroppedSaberShader,
+			             0x08000000);
 		}
 
 		// THIS light looks crappy...maybe it should just be removed...
@@ -1444,8 +1443,7 @@ static void CG_Missile(centity_t* cent)
 
 		gi.G2API_GiveMeVectorFromMatrix(mat, ORIGIN, start);
 
-		FX_AddLine(start, end, 0.1f, 0.1f, 0.0f, 0.5f, 0.0f, BLUER, BLUER, 300,
-		           cgi_R_RegisterShader("gfx/effects/blueline"), 0);
+		FX_AddLine(start, end, 0.1f, 0.5f, 0.0f, BLUER, BLUER, 300, cgi_R_RegisterShader("gfx/effects/blueline"), 0);
 
 		CG_StunStartpoint(end);
 	}
@@ -1534,8 +1532,7 @@ static void CG_Missile(centity_t* cent)
 
 		vec4_t v4DKGREY2 = {0.15f, 0.15f, 0.15f};
 
-		FX_AddLine(start, end, 0.1f, 0.5f, 0.0f, 0.5f, 0.0f, v4DKGREY2, v4DKGREY2, 15,
-		           cgi_R_RegisterShader("gfx/misc/nav_line"), FX_SIZE_LINEAR);
+		FX_AddLine(start, end, 0.5f, 0.5f, 0.0f, v4DKGREY2, v4DKGREY2, 15, cgi_R_RegisterShader("gfx/misc/nav_line"), FX_SIZE_LINEAR);
 
 		CG_GrappleStartpoint(end);
 	}

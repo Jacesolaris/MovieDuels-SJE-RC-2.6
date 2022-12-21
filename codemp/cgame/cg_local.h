@@ -1824,7 +1824,7 @@ void CG_PlayerShieldHit(int entitynum, vec3_t angles, int amount);
 // cg_predict.c
 //
 void CG_BuildSolidList(void);
-int	CG_PointContents(const vec3_t point, int passEntityNum);
+int	CG_PointContents(const vec3_t point, int pass_entity_num);
 void CG_Trace(trace_t* result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
 	int skipNumber, int mask);
 void CG_G2Trace(trace_t* result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
@@ -1884,8 +1884,8 @@ void CG_PrevWeapon_f(void);
 void CG_Weapon_f(void);
 void CG_WeaponClean_f(void);
 
-void CG_RegisterWeapon(int weaponNum);
-void CG_RegisterItemVisuals(int itemNum);
+void CG_RegisterWeapon(int weapon_num);
+void CG_RegisterItemVisuals(int item_num);
 
 void CG_FireWeapon(centity_t* cent, qboolean alt_fire);
 void CG_MissileHitWall(int weapon, int client_num, vec3_t origin, vec3_t dir, impactSound_t soundType, qboolean alt_fire, int charge);

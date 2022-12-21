@@ -177,7 +177,7 @@ Adds an explosion to a misc model breakables
 -------------------------
 */
 
-void CG_MiscModelExplosion(vec3_t mins, vec3_t maxs, const int size, const material_t chunkType)
+void CG_MiscModelExplosion(vec3_t mins, vec3_t maxs, const int size, const material_t chunk_type)
 {
 	int ct = 13;
 	vec3_t org, mid;
@@ -186,7 +186,7 @@ void CG_MiscModelExplosion(vec3_t mins, vec3_t maxs, const int size, const mater
 	VectorAdd(mins, maxs, mid);
 	VectorScale(mid, 0.5f, mid);
 
-	switch (chunkType)
+	switch (chunk_type)
 	{
 	case MAT_GLASS:
 		effect = "chunks/glassbreak";
@@ -286,7 +286,7 @@ Fun chunk spewer
 */
 
 void CG_Chunks(const int owner, vec3_t origin, const vec3_t mins, const vec3_t maxs,
-               const float speed, const int num_chunks, const material_t chunk_type, const int customChunk,
+               const float speed, const int num_chunks, const material_t chunk_type, const int custom_chunk,
                float base_scale, const int custom_sound = 0)
 {
 	int chunk_model = 0;
@@ -386,13 +386,13 @@ void CG_Chunks(const int owner, vec3_t origin, const vec3_t mins, const vec3_t m
 	// Chunks
 	for (int i = 0; i < num_chunks; i++)
 	{
-		if (customChunk > 0)
+		if (custom_chunk > 0)
 		{
 			// Try to use a custom chunk.
-			if (cgs.model_draw[customChunk])
+			if (cgs.model_draw[custom_chunk])
 			{
 				chunk = qtrue;
-				chunk_model = cgs.model_draw[customChunk];
+				chunk_model = cgs.model_draw[custom_chunk];
 			}
 		}
 

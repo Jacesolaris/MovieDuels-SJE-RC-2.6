@@ -26,9 +26,9 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "g_navigator.h"
 
 //client side shortcut hacks from cg_local.h
-extern void CG_MiscModelExplosion(vec3_t mins, vec3_t maxs, int size, material_t chunkType);
+extern void CG_MiscModelExplosion(vec3_t mins, vec3_t maxs, int size, material_t chunk_type);
 extern void CG_Chunks(int owner, vec3_t origin, const vec3_t mins, const vec3_t maxs,
-                      float speed, int num_chunks, material_t chunk_type, int customChunk, float base_scale,
+                      float speed, int num_chunks, material_t chunk_type, int custom_chunk, float base_scale,
                       int custom_sound = 0);
 extern void G_SetEnemy(gentity_t* self, gentity_t* enemy);
 

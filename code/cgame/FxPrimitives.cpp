@@ -58,11 +58,11 @@ void ClampVec(vec3_t dat, byte* res)
 	}
 }
 
-void GetOrigin(const int clientID, vec3_t org)
+void GetOrigin(const int client_id, vec3_t org)
 {
-	if (clientID >= 0)
+	if (client_id >= 0)
 	{
-		const centity_t* cent = &cg_entities[clientID];
+		const centity_t* cent = &cg_entities[client_id];
 
 		if (cent && cent->gent && cent->gent->client)
 		{
@@ -71,11 +71,11 @@ void GetOrigin(const int clientID, vec3_t org)
 	}
 }
 
-void GetDir(const int clientID, vec3_t org)
+void GetDir(const int client_id, vec3_t org)
 {
-	if (clientID >= 0)
+	if (client_id >= 0)
 	{
-		const centity_t* cent = &cg_entities[clientID];
+		const centity_t* cent = &cg_entities[client_id];
 
 		if (cent && cent->gent && cent->gent->client)
 		{
@@ -200,7 +200,7 @@ bool CParticle::Update()
 			vectoangles(dir, ang);
 			AngleVectors(ang, ax[0], ax[1], ax[2]);
 		}
-		vec3_t realVel, realAccel;
+		vec3_t real_vel, real_accel;
 
 		VectorMA(org, mOrgOffset[0], ax[0], org);
 		VectorMA(org, mOrgOffset[1], ax[1], org);
@@ -208,20 +208,20 @@ bool CParticle::Update()
 
 		const float time = (theFxHelper.mTime - mTimeStart) * 0.001f;
 		// calc the real velocity and accel vectors
-		VectorScale(ax[0], mVel[0], realVel);
-		VectorMA(realVel, mVel[1], ax[1], realVel);
-		VectorMA(realVel, mVel[2], ax[2], realVel);
-		realVel[2] += 0.5f * mGravity * time;
+		VectorScale(ax[0], mVel[0], real_vel);
+		VectorMA(real_vel, mVel[1], ax[1], real_vel);
+		VectorMA(real_vel, mVel[2], ax[2], real_vel);
+		real_vel[2] += 0.5f * mGravity * time;
 
-		VectorScale(ax[0], mAccel[0], realAccel);
-		VectorMA(realAccel, mAccel[1], ax[1], realAccel);
-		VectorMA(realAccel, mAccel[2], ax[2], realAccel);
+		VectorScale(ax[0], mAccel[0], real_accel);
+		VectorMA(real_accel, mAccel[1], ax[1], real_accel);
+		VectorMA(real_accel, mAccel[2], ax[2], real_accel);
 
 		// Get our real velocity at the current time, taking into account the effects of acceleartion.  NOTE: not sure if this is even 100% correct math-wise
-		VectorMA(realVel, time, realAccel, realVel);
+		VectorMA(real_vel, time, real_accel, real_vel);
 
 		// Now move us to where we should be at the given time
-		VectorMA(org, time, realVel, mOrigin1);
+		VectorMA(org, time, real_vel, mOrigin1);
 	}
 	else if (mTimeStart < theFxHelper.mTime && UpdateOrigin() == false)
 	{
@@ -2066,7 +2066,7 @@ Bezier curve line
 -------------------------
 */
 //----------------------------
-bool CBezier::Update(void)
+bool CBezier::Update()
 {
 	//FIXME: Handle Relative and Bolted Effects
 	/*
@@ -2181,7 +2181,7 @@ void CBezier::DrawSegment(vec3_t start, vec3_t end, const float texcoord1, const
 constexpr float BEZIER_RESOLUTION = 16.0f;
 
 //----------------------------
-void CBezier::Draw(void)
+void CBezier::Draw()
 {
 	vec3_t pos, old_pos;
 	constexpr float incr = 1.0f / BEZIER_RESOLUTION;
@@ -2244,7 +2244,7 @@ Full screen flash
 */
 
 //----------------------------
-bool CFlash::Update(void)
+bool CFlash::Update()
 {
 	UpdateRGB();
 	Draw();
@@ -2253,7 +2253,7 @@ bool CFlash::Update(void)
 }
 
 //----------------------------
-void CFlash::Init(void)
+void CFlash::Init()
 {
 	vec3_t dif;
 
@@ -2278,7 +2278,7 @@ void CFlash::Init(void)
 }
 
 //----------------------------
-void CFlash::Draw(void)
+void CFlash::Draw()
 {
 	// Interestingly, if znear is set > than this, then the flash
 	// doesn't appear at all.

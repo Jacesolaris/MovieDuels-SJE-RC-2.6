@@ -9166,6 +9166,8 @@ Jedi_Attack
 
 static void jedi_attack()
 {
+	int curmove = NPC->client->ps.saberMove;
+
 	//Don't do anything if we're in a pain anim
 	if (NPC->painDebounceTime > level.time)
 	{
@@ -9938,6 +9940,10 @@ static void jedi_attack()
 		{
 			NPC->client->ps.speed = NPCInfo->stats.runSpeed;
 		}
+	}
+	if (PM_SaberInStart(curmove) || PM_SaberInTransition(curmove))
+	{
+		ucmd.buttons |= BUTTON_ATTACK;
 	}
 }
 
