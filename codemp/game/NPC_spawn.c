@@ -224,7 +224,7 @@ extern void G_CreateG2AttachedWeaponModel(gentity_t* ent, const char* weaponMode
 void NPC_SetMiscDefaultData(gentity_t* ent)
 {
 	if (ent->spawnflags & SFB_CINEMATIC)
-	{//if a cinematic guy, default us to wait bState
+	{//if a cinematic guy, default us to wait b_state
 		ent->NPC->behaviorState = BS_CINEMATIC;
 	}
 	if (ent->client->NPC_class == CLASS_BOBAFETT)
@@ -741,7 +741,7 @@ int NPC_WeaponsForTeam(team_t team, int spawnflags, const char* NPC_type)
 	return WP_NONE;
 }
 
-extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void ChangeWeapon(const gentity_t* ent, int new_weapon);
 
 /*
 -------------------------

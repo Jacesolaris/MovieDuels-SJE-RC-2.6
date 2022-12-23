@@ -137,8 +137,8 @@ Coordinates are 640*480 virtual values
 A width of 0 will draw with the original image width
 =================
 */
-void CG_DrawPic(float x, float y, float width, float height, qhandle_t hShader) {
-	trap->R_DrawStretchPic(x, y, width, height, 0, 0, 1, 1, hShader);
+void CG_DrawPic(float x, float y, float width, float height, qhandle_t h_shader) {
+	trap->R_DrawStretchPic(x, y, width, height, 0, 0, 1, 1, h_shader);
 }
 
 /*
@@ -327,12 +327,12 @@ This repeats a 64*64 tile graphic to fill the screen around a sized down
 refresh window.
 =============
 */
-static void CG_TileClearBox(int x, int y, int w, int h, qhandle_t hShader) {
+static void CG_TileClearBox(int x, int y, int w, int h, qhandle_t h_shader) {
 	const float s1 = x / 64.0;
 	const float t1 = y / 64.0;
 	const float s2 = (x + w) / 64.0;
 	const float t2 = (y + h) / 64.0;
-	trap->R_DrawStretchPic(x, y, w, h, s1, t1, s2, t2, hShader);
+	trap->R_DrawStretchPic(x, y, w, h, s1, t1, s2, t2, h_shader);
 }
 
 /*
@@ -374,16 +374,16 @@ void CG_TileClear(void) {
 CG_FadeColor
 ================
 */
-float* CG_FadeColor(int startMsec, int totalMsec) {
+float* CG_FadeColor(int start_msec, int total_msec) {
 	static vec4_t		color;
 
-	if (startMsec == 0) {
+	if (start_msec == 0) {
 		return NULL;
 	}
 
-	const int t = cg.time - startMsec;
+	const int t = cg.time - start_msec;
 
-	if (t >= totalMsec) {
+	if (t >= total_msec) {
 		return NULL;
 	}
 
@@ -393,8 +393,8 @@ float* CG_FadeColor(int startMsec, int totalMsec) {
 	}
 
 	// fade out
-	if (totalMsec - t < FADE_TIME) {
-		color[3] = (totalMsec - t) * 1.0 / FADE_TIME;
+	if (total_msec - t < FADE_TIME) {
+		color[3] = (total_msec - t) * 1.0 / FADE_TIME;
 	}
 	else {
 		color[3] = 1.0;
@@ -478,7 +478,7 @@ Take x,y positions as if 640 x 480 and scales them to the proper resolution
 
 ==============
 */
-void CG_DrawNumField(int x, int y, int width, int value, int charWidth, int charHeight, int style, qboolean zeroFill)
+void CG_DrawNumField(int x, int y, int width, int value, int char_width, int char_height, int style, qboolean zero_fill)
 {
 	char	num[16];
 	int		frame;
@@ -521,32 +521,32 @@ void CG_DrawNumField(int x, int y, int width, int value, int charWidth, int char
 	switch (style)
 	{
 	case NUM_FONT_SMALL:
-		xWidth = charWidth;
+		xWidth = char_width;
 		break;
 	case NUM_FONT_CHUNKY:
-		xWidth = (charWidth / 1.2f) + 2;
+		xWidth = (char_width / 1.2f) + 2;
 		break;
 	default:
 	case NUM_FONT_BIG:
-		xWidth = (charWidth / 2) + 7;//(charWidth/6);
+		xWidth = (char_width / 2) + 7;//(charWidth/6);
 		break;
 	}
 
-	if (zeroFill)
+	if (zero_fill)
 	{
 		for (int i = 0; i < (width - l); i++)
 		{
 			switch (style)
 			{
 			case NUM_FONT_SMALL:
-				CG_DrawPic(x, y, charWidth, charHeight, cgs.media.smallnumberShaders[0]);
+				CG_DrawPic(x, y, char_width, char_height, cgs.media.smallnumberShaders[0]);
 				break;
 			case NUM_FONT_CHUNKY:
-				CG_DrawPic(x, y, charWidth, charHeight, cgs.media.chunkyNumberShaders[0]);
+				CG_DrawPic(x, y, char_width, char_height, cgs.media.chunkyNumberShaders[0]);
 				break;
 			default:
 			case NUM_FONT_BIG:
-				CG_DrawPic(x, y, charWidth, charHeight, cgs.media.numberShaders[0]);
+				CG_DrawPic(x, y, char_width, char_height, cgs.media.numberShaders[0]);
 				break;
 			}
 			x += 2 + (xWidth);
@@ -568,15 +568,15 @@ void CG_DrawNumField(int x, int y, int width, int value, int charWidth, int char
 		switch (style)
 		{
 		case NUM_FONT_SMALL:
-			CG_DrawPic(x, y, charWidth, charHeight, cgs.media.smallnumberShaders[frame]);
+			CG_DrawPic(x, y, char_width, char_height, cgs.media.smallnumberShaders[frame]);
 			x++;	// For a one line gap
 			break;
 		case NUM_FONT_CHUNKY:
-			CG_DrawPic(x, y, charWidth, charHeight, cgs.media.chunkyNumberShaders[frame]);
+			CG_DrawPic(x, y, char_width, char_height, cgs.media.chunkyNumberShaders[frame]);
 			break;
 		default:
 		case NUM_FONT_BIG:
-			CG_DrawPic(x, y, charWidth, charHeight, cgs.media.numberShaders[frame]);
+			CG_DrawPic(x, y, char_width, char_height, cgs.media.numberShaders[frame]);
 			break;
 		}
 

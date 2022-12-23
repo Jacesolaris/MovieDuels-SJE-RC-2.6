@@ -420,8 +420,8 @@ extern qboolean PM_SaberInStart(int move);
 extern qboolean PM_SaberInTransition(int move);
 extern qboolean PM_SaberInAttack(int move);
 extern qboolean WP_SaberCanTurnOffSomeBlades(const saberInfo_t* saber);
-extern void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags,
-                        int iBlend = SETANIM_BLEND_DEFAULT);
+extern void NPC_SetAnim(gentity_t* ent, int set_anim_parts, int anim, int set_anim_flags,
+                        int i_blend = SETANIM_BLEND_DEFAULT);
 
 void Svcmd_SaberAttackCycle_f(void)
 {

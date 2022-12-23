@@ -113,7 +113,7 @@ void NPC_BSMineMonster_Default(void);
 void NPC_BSHowler_Default(void);
 void NPC_BSRancor_Default(void);
 void NPC_BSWampa_Default(void);
-void NPC_BSSandCreature_Default(void);
+void NPC_BSSandCreature_Default();
 
 // animals
 void NPC_BSAnimal_Default();

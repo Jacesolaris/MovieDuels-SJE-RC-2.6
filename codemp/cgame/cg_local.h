@@ -1741,13 +1741,13 @@ Ghoul2 Insert End
 // cg_drawtools.c
 //
 void CG_FillRect(float x, float y, float width, float height, const float* color);
-void CG_DrawPic(float x, float y, float width, float height, qhandle_t hShader);
+void CG_DrawPic(float x, float y, float width, float height, qhandle_t h_shader);
 void CG_DrawRotatePic(float x, float y, float width, float height, float angle, qhandle_t hShader);
 void CG_DrawRotatePic2(float x, float y, float width, float height, float angle, qhandle_t hShader);
 void CG_DrawString(float x, float y, const char* string,
 	float charWidth, float charHeight, const float* modulate);
 
-void CG_DrawNumField(int x, int y, int width, int value, int charWidth, int charHeight, int style, qboolean zeroFill);
+void CG_DrawNumField(int x, int y, int width, int value, int char_width, int char_height, int style, qboolean zero_fill);
 
 void CG_DrawStringExt(int x, int y, const char* string, const float* setColor,
 	qboolean forceColor, qboolean shadow, int charWidth, int charHeight, int maxChars);
@@ -1758,7 +1758,7 @@ void CG_DrawSmallStringColor(int x, int y, const char* s, vec4_t color);
 
 int CG_DrawStrlen(const char* str);
 
-float* CG_FadeColor(int startMsec, int totalMsec);
+float* CG_FadeColor(int start_msec, int total_msec);
 float* CG_TeamColor(int team);
 void CG_TileClear(void);
 void CG_ColorForHealth(vec4_t hcolor);

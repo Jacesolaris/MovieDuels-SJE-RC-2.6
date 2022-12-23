@@ -118,22 +118,22 @@ void NPC_GalakMech_Init(gentity_t* ent)
 }
 
 //-----------------------------------------------------------------
-static void GM_CreateExplosion(gentity_t* self, const int boltID, const qboolean doSmall = qfalse)
+static void GM_CreateExplosion(gentity_t* self, const int bolt_id, const qboolean do_small = qfalse)
 {
-	if (boltID >= 0)
+	if (bolt_id >= 0)
 	{
 		mdxaBone_t boltMatrix;
 		vec3_t org, dir;
 
 		gi.G2API_GetBoltMatrix(self->ghoul2, self->playerModel,
-		                       boltID,
+		                       bolt_id,
 		                       &boltMatrix, self->currentAngles, self->currentOrigin, level.time,
 		                       nullptr, self->s.modelScale);
 
 		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, org);
 		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, NEGATIVE_Y, dir);
 
-		if (doSmall)
+		if (do_small)
 		{
 			G_PlayEffect("env/small_explode2", org, dir);
 		}
@@ -271,10 +271,10 @@ void NPC_GM_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, con
 		//FIXME: allow for radius damage?
 		if (hit_loc == HL_GENERIC1 && self->locationDamage[HL_GENERIC1] > GENERATOR_HEALTH)
 		{
-			const int newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*antenna_base");
-			if (newBolt != -1)
+			const int new_bolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*antenna_base");
+			if (new_bolt != -1)
 			{
-				GM_CreateExplosion(self, newBolt);
+				GM_CreateExplosion(self, new_bolt);
 			}
 
 			gi.G2API_SetSurfaceOnOff(&self->ghoul2[self->playerModel], "torso_shield_off", TURN_OFF);
@@ -514,8 +514,8 @@ static void GM_CheckFireState()
 			{
 				//Fire on the last known position
 				vec3_t muzzle;
-				qboolean tooClose = qfalse;
-				qboolean tooFar = qfalse;
+				qboolean too_close = qfalse;
+				qboolean too_far = qfalse;
 
 				CalcEntitySpot(NPC, SPOT_HEAD, muzzle);
 				if (VectorCompare(impactPos, vec3_origin))
@@ -531,43 +531,43 @@ static void GM_CheckFireState()
 				}
 
 				//see if impact would be too close to me
-				float distThreshold = 16384/*128*128*/; //default
+				float dist_threshold = 16384/*128*128*/; //default
 				if (NPC->s.weapon == WP_REPEATER)
 				{
 					if (NPCInfo->scriptFlags & SCF_ALT_FIRE)
 					{
-						distThreshold = 65536/*256*256*/;
+						dist_threshold = 65536/*256*256*/;
 					}
 				}
 
 				float dist = DistanceSquared(impactPos, muzzle);
 
-				if (dist < distThreshold)
+				if (dist < dist_threshold)
 				{
 					//impact would be too close to me
-					tooClose = qtrue;
+					too_close = qtrue;
 				}
 				else if (level.time - NPCInfo->enemyLastSeenTime > 5000)
 				{
 					//we've haven't seen them in the last 5 seconds
 					//see if it's too far from where he is
-					distThreshold = 65536/*256*256*/; //default
+					dist_threshold = 65536/*256*256*/; //default
 					if (NPC->s.weapon == WP_REPEATER)
 					{
 						if (NPCInfo->scriptFlags & SCF_ALT_FIRE)
 						{
-							distThreshold = 262144/*512*512*/;
+							dist_threshold = 262144/*512*512*/;
 						}
 					}
 					dist = DistanceSquared(impactPos, NPCInfo->enemyLastSeenLocation);
-					if (dist > distThreshold)
+					if (dist > dist_threshold)
 					{
 						//impact would be too far from enemy
-						tooFar = qtrue;
+						too_far = qtrue;
 					}
 				}
 
-				if (!tooClose && !tooFar)
+				if (!too_close && !too_far)
 				{
 					vec3_t angles;
 					vec3_t dir;
@@ -733,17 +733,17 @@ void NPC_BSGM_Attack()
 				if (NPC->client->ps.torsoAnim == BOTH_ATTACK4)
 				{
 					//smack down
-					int knockAnim = BOTH_KNOCKDOWN1;
+					int knock_anim = BOTH_KNOCKDOWN1;
 					if (PM_CrouchAnim(NPC->enemy->client->ps.legsAnim))
 					{
 						//knockdown from crouch
-						knockAnim = BOTH_KNOCKDOWN4;
+						knock_anim = BOTH_KNOCKDOWN4;
 					}
 					//throw them
 					smack_dir[2] = 1;
 					VectorNormalize(smack_dir);
 					G_Throw(NPC->enemy, smack_dir, 50);
-					NPC_SetAnim(NPC->enemy, SETANIM_BOTH, knockAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+					NPC_SetAnim(NPC->enemy, SETANIM_BOTH, knock_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				}
 				else
 				{
@@ -768,16 +768,16 @@ void NPC_BSGM_Attack()
 			if (TIMER_Done(NPC, "beamDelay"))
 			{
 				//time to start the beam
-				int laserAnim;
+				int laser_anim;
 				if (Q_irand(0, 1))
 				{
-					laserAnim = BOTH_ATTACK2;
+					laser_anim = BOTH_ATTACK2;
 				}
 				else
 				{
-					laserAnim = BOTH_ATTACK7;
+					laser_anim = BOTH_ATTACK7;
 				}
-				NPC_SetAnim(NPC, SETANIM_BOTH, laserAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+				NPC_SetAnim(NPC, SETANIM_BOTH, laser_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				TIMER_Set(NPC, "attackDelay", NPC->client->ps.torsoAnimTimer + Q_irand(1000, 3000));
 				//turn on beam effect
 				NPC->lockCount = 2;
@@ -951,10 +951,10 @@ void NPC_BSGM_Attack()
 			else
 			{
 				const int hit = NPC_ShotEntity(NPC->enemy, impactPos);
-				const gentity_t* hitEnt = &g_entities[hit];
+				const gentity_t* hit_ent = &g_entities[hit];
 				if (hit == NPC->enemy->s.number
-					|| hitEnt && hitEnt->client && hitEnt->client->playerTeam == NPC->client->enemyTeam
-					|| hitEnt && hitEnt->takedamage)
+					|| hit_ent && hit_ent->client && hit_ent->client->playerTeam == NPC->client->enemyTeam
+					|| hit_ent && hit_ent->takedamage)
 				{
 					//can hit enemy or will hit glass or other breakable, so shoot anyway
 					enemy_cs = qtrue;
@@ -965,7 +965,7 @@ void NPC_BSGM_Attack()
 				{
 					//Hmm, have to get around this bastard
 					NPC_AimAdjust(1); //adjust aim better longer we can see enemy
-					if (hitEnt && hitEnt->client && hitEnt->client->playerTeam == NPC->client->playerTeam)
+					if (hit_ent && hit_ent->client && hit_ent->client->playerTeam == NPC->client->playerTeam)
 					{
 						//would hit an ally, don't fire!!!
 						hitAlly = qtrue;
@@ -1015,10 +1015,10 @@ void NPC_BSGM_Attack()
 		NPCInfo->enemyLastSeenTime = level.time;
 
 		const int hit = NPC_ShotEntity(NPC->enemy, impactPos);
-		const gentity_t* hitEnt = &g_entities[hit];
+		const gentity_t* hit_ent = &g_entities[hit];
 		if (hit == NPC->enemy->s.number
-			|| hitEnt && hitEnt->client && hitEnt->client->playerTeam == NPC->client->enemyTeam
-			|| hitEnt && hitEnt->takedamage)
+			|| hit_ent && hit_ent->client && hit_ent->client->playerTeam == NPC->client->enemyTeam
+			|| hit_ent && hit_ent->takedamage)
 		{
 			//can hit enemy or will hit glass or other breakable, so shoot anyway
 			enemy_cs = qtrue;

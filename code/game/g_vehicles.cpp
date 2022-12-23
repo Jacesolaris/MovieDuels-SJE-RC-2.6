@@ -83,7 +83,7 @@ extern cvar_t* g_speederControlScheme;
 extern cvar_t* in_joystick;
 extern void PM_SetAnim(const pmove_t* pm, int set_anim_parts, int anim, int set_anim_flags, int blend_time);
 extern int PM_AnimLength(int index, animNumber_t anim);
-extern void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags, int iBlend);
+extern void NPC_SetAnim(gentity_t* ent, int set_anim_parts, int anim, int set_anim_flags, int i_blend);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
                         qboolean break_saber_lock);
 #endif
@@ -1481,7 +1481,7 @@ void RegisterAssets(Vehicle_t* pVeh)
 {
 }
 
-extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void ChangeWeapon(const gentity_t* ent, int new_weapon);
 
 // Initialize the vehicle.
 bool Initialize(Vehicle_t* pVeh)

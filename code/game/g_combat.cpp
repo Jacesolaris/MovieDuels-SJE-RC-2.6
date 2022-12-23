@@ -65,8 +65,8 @@ extern qboolean jedi_win_po(const gentity_t* self);
 
 extern void NPC_SetPainEvent(gentity_t* self);
 extern qboolean PM_FaceProtectAnim(int anim);
-extern qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir,
-                                   qboolean forceKnockdown = qfalse);
+extern qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t push_dir,
+                                   qboolean force_knockdown = qfalse);
 extern qboolean jedi_stop_knockdown(gentity_t* self, const vec3_t push_dir);
 extern void jedi_play_blocked_push_sound(const gentity_t* self);
 
@@ -81,7 +81,7 @@ extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce
 extern qboolean PM_HasAnimation(const gentity_t* ent, int animation);
 extern qboolean G_TeamEnemy(const gentity_t* self);
 extern void CG_ChangeWeapon(int num);
-extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void ChangeWeapon(const gentity_t* ent, int new_weapon);
 extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t force_power, int override_amt);
 qboolean NPC_IsNotDismemberable(const gentity_t* self);
 extern void G_SetEnemy(gentity_t* self, gentity_t* enemy);
@@ -4254,7 +4254,7 @@ player_die
 ==================
 */
 extern qboolean NPC_IsJetpacking(const gentity_t* self);
-void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags, int iBlend);
+void NPC_SetAnim(gentity_t* ent, int set_anim_parts, int anim, int set_anim_flags, int i_blend);
 extern void AI_DeleteSelfFromGroup(const gentity_t* self);
 extern void AI_GroupMemberKilled(const gentity_t* self);
 extern qboolean FlyingCreature(const gentity_t* ent);

@@ -49,21 +49,21 @@ extern void NPC_BehaviorSet_Stormtrooper(int b_state);
 
 void RT_RunStormtrooperAI()
 {
-	int bState;
-	//Execute our bState
+	int b_state;
+	//Execute our b_state
 	if (NPCInfo->tempBehavior)
 	{
 		//Overrides normal behavior until cleared
-		bState = NPCInfo->tempBehavior;
+		b_state = NPCInfo->tempBehavior;
 	}
 	else
 	{
 		if (!NPCInfo->behaviorState)
 			NPCInfo->behaviorState = NPCInfo->defaultBehavior;
 
-		bState = NPCInfo->behaviorState;
+		b_state = NPCInfo->behaviorState;
 	}
-	NPC_BehaviorSet_Stormtrooper(bState);
+	NPC_BehaviorSet_Stormtrooper(b_state);
 }
 
 void RT_FireDecide()
@@ -93,11 +93,11 @@ void RT_FireDecide()
 	VectorClear(impact_pos);
 	const float enemy_dist = DistanceSquared(NPC->currentOrigin, NPC->enemy->currentOrigin);
 
-	vec3_t enemyDir, shootDir;
-	VectorSubtract(NPC->enemy->currentOrigin, NPC->currentOrigin, enemyDir);
-	VectorNormalize(enemyDir);
-	AngleVectors(NPC->client->ps.viewangles, shootDir, nullptr, nullptr);
-	const float dot = DotProduct(enemyDir, shootDir);
+	vec3_t enemy_dir, shoot_dir;
+	VectorSubtract(NPC->enemy->currentOrigin, NPC->currentOrigin, enemy_dir);
+	VectorNormalize(enemy_dir);
+	AngleVectors(NPC->client->ps.viewangles, shoot_dir, nullptr, nullptr);
+	const float dot = DotProduct(enemy_dir, shoot_dir);
 	if (dot > 0.5f || enemy_dist * (1.0f - dot) < 10000)
 	{
 		//enemy is in front of me or they're very close and not behind me
@@ -145,11 +145,11 @@ void RT_FireDecide()
 				{
 					//if enemy is FOV, go ahead and check for shooting
 					const int hit = NPC_ShotEntity(NPC->enemy, impact_pos);
-					const gentity_t* hitEnt = &g_entities[hit];
+					const gentity_t* hit_ent = &g_entities[hit];
 
 					if (hit == NPC->enemy->s.number
-						|| hitEnt && hitEnt->client && hitEnt->client->playerTeam == NPC->client->enemyTeam
-						|| hitEnt && hitEnt->takedamage && (hitEnt->svFlags & SVF_GLASS_BRUSH || hitEnt->health < 40
+						|| hit_ent && hit_ent->client && hit_ent->client->playerTeam == NPC->client->enemyTeam
+						|| hit_ent && hit_ent->takedamage && (hit_ent->svFlags & SVF_GLASS_BRUSH || hit_ent->health < 40
 							|| NPC->s.weapon == WP_EMPLACED_GUN))
 					{
 						//can hit enemy or enemy ally or will hit glass or other minor breakable (or in emplaced gun), so shoot anyway
@@ -161,7 +161,7 @@ void RT_FireDecide()
 					{
 						//Hmm, have to get around this bastard
 						//NPC_AimAdjust( 1 );//adjust aim better longer we can see enemy
-						if (hitEnt && hitEnt->client && hitEnt->client->playerTeam == NPC->client->playerTeam)
+						if (hit_ent && hit_ent->client && hit_ent->client->playerTeam == NPC->client->playerTeam)
 						{
 							//would hit an ally, don't fire!!!
 							hit_ally = qtrue;
@@ -211,8 +211,8 @@ void RT_FireDecide()
 					{
 						//Fire on the last known position
 						vec3_t muzzle;
-						qboolean tooClose = qfalse;
-						qboolean tooFar = qfalse;
+						qboolean too_close = qfalse;
+						qboolean too_far = qfalse;
 
 						CalcEntitySpot(NPC, SPOT_HEAD, muzzle);
 						if (VectorCompare(impact_pos, vec3_origin))
@@ -229,7 +229,7 @@ void RT_FireDecide()
 						}
 
 						//see if impact would be too close to me
-						float distThreshold = 16384/*128*128*/; //default
+						float dist_threshold = 16384/*128*128*/; //default
 						switch (NPC->s.weapon)
 						{
 						case WP_ROCKET_LAUNCHER:
@@ -237,18 +237,18 @@ void RT_FireDecide()
 						case WP_THERMAL:
 						case WP_TRIP_MINE:
 						case WP_DET_PACK:
-							distThreshold = 65536/*256*256*/;
+							dist_threshold = 65536/*256*256*/;
 							break;
 						case WP_REPEATER:
 							if (NPCInfo->scriptFlags & SCF_ALT_FIRE)
 							{
-								distThreshold = 65536/*256*256*/;
+								dist_threshold = 65536/*256*256*/;
 							}
 							break;
 						case WP_CONCUSSION:
 							if (!(NPCInfo->scriptFlags & SCF_ALT_FIRE))
 							{
-								distThreshold = 65536/*256*256*/;
+								dist_threshold = 65536/*256*256*/;
 							}
 							break;
 						default:
@@ -257,17 +257,17 @@ void RT_FireDecide()
 
 						float dist = DistanceSquared(impact_pos, muzzle);
 
-						if (dist < distThreshold)
+						if (dist < dist_threshold)
 						{
 							//impact would be too close to me
-							tooClose = qtrue;
+							too_close = qtrue;
 						}
 						else if (level.time - NPCInfo->enemyLastSeenTime > 5000 ||
 							NPCInfo->group && level.time - NPCInfo->group->lastSeenEnemyTime > 5000)
 						{
 							//we've haven't seen them in the last 5 seconds
 							//see if it's too far from where he is
-							distThreshold = 65536/*256*256*/; //default
+							dist_threshold = 65536/*256*256*/; //default
 							switch (NPC->s.weapon)
 							{
 							case WP_ROCKET_LAUNCHER:
@@ -275,32 +275,32 @@ void RT_FireDecide()
 							case WP_THERMAL:
 							case WP_TRIP_MINE:
 							case WP_DET_PACK:
-								distThreshold = 262144/*512*512*/;
+								dist_threshold = 262144/*512*512*/;
 								break;
 							case WP_REPEATER:
 								if (NPCInfo->scriptFlags & SCF_ALT_FIRE)
 								{
-									distThreshold = 262144/*512*512*/;
+									dist_threshold = 262144/*512*512*/;
 								}
 								break;
 							case WP_CONCUSSION:
 								if (!(NPCInfo->scriptFlags & SCF_ALT_FIRE))
 								{
-									distThreshold = 262144/*512*512*/;
+									dist_threshold = 262144/*512*512*/;
 								}
 								break;
 							default:
 								break;
 							}
 							dist = DistanceSquared(impact_pos, NPCInfo->enemyLastSeenLocation);
-							if (dist > distThreshold)
+							if (dist > dist_threshold)
 							{
 								//impact would be too far from enemy
-								tooFar = qtrue;
+								too_far = qtrue;
 							}
 						}
 
-						if (!tooClose && !tooFar)
+						if (!too_close && !too_far)
 						{
 							vec3_t angles;
 							vec3_t dir;
@@ -473,7 +473,7 @@ void RT_JetPackEffect(const int duration)
 	G_SoundOnEnt(NPC, CHAN_ITEM, "sound/chars/boba/bf_blast-off.wav");
 }
 
-void RT_Flying_ApplyFriction(float frictionScale)
+void RT_Flying_ApplyFriction()
 {
 	if (NPC->client->ps.velocity[0])
 	{
@@ -496,7 +496,7 @@ void RT_Flying_ApplyFriction(float frictionScale)
 	}
 }
 
-void RT_Flying_MaintainHeight(void)
+void RT_Flying_MaintainHeight()
 {
 	float dif = 0;
 
@@ -555,22 +555,22 @@ void RT_Flying_MaintainHeight(void)
 		else
 		{
 			//don't get too far away from height of enemy...
-			float enemyZHeight = NPC->enemy->currentOrigin[2];
+			float enemy_z_height = NPC->enemy->currentOrigin[2];
 			if (NPC->enemy->client
 				&& NPC->enemy->client->ps.groundEntityNum == ENTITYNUM_NONE
 				&& NPC->enemy->client->ps.forcePowersActive & 1 << FP_LEVITATION)
 			{
 				//so we don't go up when they force jump up at us
-				enemyZHeight = NPC->enemy->client->ps.forceJumpZStart;
+				enemy_z_height = NPC->enemy->client->ps.forceJumpZStart;
 			}
-			dif = NPC->currentOrigin[2] - (enemyZHeight + 64);
-			float maxHeight = 200;
-			const float hDist = DistanceHorizontal(NPC->enemy->currentOrigin, NPC->currentOrigin);
-			if (hDist < 512)
+			dif = NPC->currentOrigin[2] - (enemy_z_height + 64);
+			float max_height = 200;
+			const float h_dist = DistanceHorizontal(NPC->enemy->currentOrigin, NPC->currentOrigin);
+			if (h_dist < 512)
 			{
-				maxHeight *= hDist / 512;
+				max_height *= h_dist / 512;
 			}
-			if (dif > maxHeight)
+			if (dif > max_height)
 			{
 				if (NPC->client->ps.velocity[2] > 0) //FIXME: or: we can't see him anymore
 				{
@@ -655,10 +655,10 @@ void RT_Flying_MaintainHeight(void)
 	}
 
 	// Apply friction
-	RT_Flying_ApplyFriction(1.0f);
+	RT_Flying_ApplyFriction();
 }
 
-void RT_Flying_Strafe(void)
+void RT_Flying_Strafe()
 {
 	int side;
 	vec3_t end, right;
@@ -854,7 +854,7 @@ void RT_Flying_Ranged(const qboolean visible, const qboolean advance)
 	}
 }
 
-void RT_Flying_Attack(void)
+void RT_Flying_Attack()
 {
 	// Always keep a good height off the ground
 	RT_Flying_MaintainHeight();
@@ -877,7 +877,7 @@ void RT_Flying_Attack(void)
 	RT_Flying_Ranged(visible, advance);
 }
 
-void RT_Flying_Think(void)
+void RT_Flying_Think()
 {
 	if (Q3_TaskIDPending(NPC, TID_MOVE_NAV)
 		&& UpdateGoal())
@@ -925,7 +925,7 @@ void RT_Flying_Think(void)
 //=====================================================================================
 extern void RT_CheckJump();
 
-void NPC_BSRT_Default(void)
+void NPC_BSRT_Default()
 {
 	//FIXME: custom pain and death funcs:
 	//pain3 is in air

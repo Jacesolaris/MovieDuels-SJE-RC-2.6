@@ -5312,9 +5312,9 @@ static void CG_DrawHUD(const centity_t* cent)
 			if (cg_SerenityJediEngineHudMode.integer == 1)
 			{
 				CG_DrawSmallStringColor(section_x_pos + 5, section_y_pos - 60,
-				                        va("Armor_md:%d", cg.snap->ps.stats[STAT_ARMOR]), colorTable[CT_HUD_GREEN]);
+					va("Armor:%d", cg.snap->ps.stats[STAT_ARMOR]), colorTable[CT_HUD_GREEN]);
 				CG_DrawSmallStringColor(section_x_pos + 5, section_y_pos - 40,
-				                        va("Health_md:%d", cg.snap->ps.stats[STAT_HEALTH]), colorTable[CT_HUD_GREEN]);
+					va("Health:%d", cg.snap->ps.stats[STAT_HEALTH]), colorTable[CT_HUD_GREEN]);
 			}
 			else if (cg_SerenityJediEngineHudMode.integer == 2)
 			{
@@ -5335,8 +5335,7 @@ static void CG_DrawHUD(const centity_t* cent)
 		// Print frame
 
 		if (cg_SerenityJediEngineHudMode.integer == 1)
-		{
-			// Print scanline
+		{// Print scanline
 			cgi_R_SetColor(otherHUDBits[OHB_SCANLINE_LEFT].color);
 
 			CG_DrawPic(
@@ -5346,21 +5345,23 @@ static void CG_DrawHUD(const centity_t* cent)
 				otherHUDBits[OHB_SCANLINE_LEFT].height,
 				otherHUDBits[OHB_SCANLINE_LEFT].background
 			);
+			CG_DrawHUDJK2LeftFrame1(0.1, 400);
+			CG_DrawHUDJK2LeftFrame2(0.1, 400);
 
-			cgi_R_SetColor(otherHUDBits[OHB_FRAME_LEFT_MD].color);
-			CG_DrawPic(
-				otherHUDBits[OHB_FRAME_LEFT_MD].xPos * hud_ratio,
-				otherHUDBits[OHB_FRAME_LEFT_MD].yPos,
-				otherHUDBits[OHB_FRAME_LEFT_MD].width * hud_ratio,
-				otherHUDBits[OHB_FRAME_LEFT_MD].height,
-				otherHUDBits[OHB_FRAME_LEFT_MD].background
-			);
-			CG_DrawArmor_md(hud_ratio);
-			CG_DrawHealth_md(hud_ratio);
+			CG_DrawJK2Armor(cent, 0.1, 400);
 
 			if (cg_SerenityJediEngineMode.integer == 2 && cent->currentState.weapon == WP_SABER)
 			{
-				CG_DrawblockPoints(26, 412, hud_ratio);
+				CG_DrawJK2HealthSJE(cent, 0.1 + 21, 400 + 21);
+			}
+			else
+			{
+				CG_DrawJK2Health(cent, 0.1, 400);
+			}
+
+			if (cg_SerenityJediEngineMode.integer == 2 && cent->currentState.weapon == WP_SABER)
+			{
+				CG_DrawJK2blockPoints(23.7, 424);
 			}
 		}
 		else if (cg_SerenityJediEngineHudMode.integer == 2)
@@ -5400,29 +5401,29 @@ static void CG_DrawHUD(const centity_t* cent)
 			cgi_R_SetColor(otherHUDBits[OHB_SCANLINE_LEFT].color);
 
 			CG_DrawPic(
-				otherHUDBits[OHB_SCANLINE_LEFT].xPos - 4 * hud_ratio,
-				otherHUDBits[OHB_SCANLINE_LEFT].yPos + 8,
+				otherHUDBits[OHB_SCANLINE_LEFT].xPos * hud_ratio,
+				otherHUDBits[OHB_SCANLINE_LEFT].yPos,
 				otherHUDBits[OHB_SCANLINE_LEFT].width * hud_ratio,
 				otherHUDBits[OHB_SCANLINE_LEFT].height,
 				otherHUDBits[OHB_SCANLINE_LEFT].background
 			);
+			CG_DrawHUDJK2LeftFrame1(0.1, 400);
+			CG_DrawHUDJK2LeftFrame2(0.1, 400);
 
-			cgi_R_SetColor(otherHUDBits[OHB_FRAME_LEFT_MD].color);
-			CG_DrawPic(
-				otherHUDBits[OHB_FRAME_LEFT_MD].xPos - 4 * hud_ratio,
-				otherHUDBits[OHB_FRAME_LEFT_MD].yPos + 8,
-				otherHUDBits[OHB_FRAME_LEFT_MD].width * hud_ratio,
-				otherHUDBits[OHB_FRAME_LEFT_MD].height,
-				otherHUDBits[OHB_FRAME_LEFT_MD].background
-			);
-			CG_DrawSJEHUDLeftFrame(0.1, 400);
-
-			CG_DrawArmor_md(hud_ratio);
-			CG_DrawHealth_md(hud_ratio);
+			CG_DrawJK2Armor(cent, 0.1, 400);
 
 			if (cg_SerenityJediEngineMode.integer == 2 && cent->currentState.weapon == WP_SABER)
 			{
-				CG_DrawblockPoints(26, 412, hud_ratio);
+				CG_DrawJK2HealthSJE(cent, 0.1 + 21, 400 + 21);
+			}
+			else
+			{
+				CG_DrawJK2Health(cent, 0.1, 400);
+			}
+
+			if (cg_SerenityJediEngineMode.integer == 2 && cent->currentState.weapon == WP_SABER)
+			{
+				CG_DrawJK2blockPoints(23.7, 424);
 			}
 		} // new df hud
 		else if (cg_SerenityJediEngineHudMode.integer == 4 || cg_SerenityJediEngineHudMode.integer == 5) // left hud
@@ -5561,35 +5562,31 @@ static void CG_DrawHUD(const centity_t* cent)
 				otherHUDBits[OHB_SCANLINE_RIGHT].background
 			);
 
-			cgi_R_SetColor(otherHUDBits[OHB_FRAME_RIGHT_MD].color);
-			CG_DrawPic(
-				SCREEN_WIDTH - (SCREEN_WIDTH - otherHUDBits[OHB_FRAME_RIGHT_MD].xPos) * hud_ratio,
-				otherHUDBits[OHB_FRAME_RIGHT_MD].yPos,
-				otherHUDBits[OHB_FRAME_RIGHT_MD].width * hud_ratio,
-				otherHUDBits[OHB_FRAME_RIGHT_MD].height,
-				otherHUDBits[OHB_FRAME_RIGHT_MD].background
-			);
-			if (cent->currentState.weapon == WP_SABER)
+			CG_DrawHUDJK2RightFrame1(560, 400);
+			CG_DrawHUDJK2RightFrame2(560, 400);
+			CG_DrawJK2ForcePower(cent, 560, 400);
+
+			if (cent->currentState.weapon == WP_MELEE || cent->currentState.weapon == WP_STUN_BATON)
 			{
-				CG_DrawSaberStyle_md(cent, hud_ratio);
-				CG_DrawblockingMode(cent, hud_ratio);
-				CG_Drawsaberfatigue(cent, hud_ratio);
-			}
-			else if (cent->currentState.weapon == WP_SABER && !cent->gent->client->ps.SaberActive())
-			{
-				CG_DrawAmmo_md(cent, hud_ratio);
-				CG_Drawgunfatigue(cent, hud_ratio);
-			}
-			else if (cent->currentState.weapon == WP_MELEE)
-			{
-				CG_Drawgunfatigue(cent, hud_ratio);
+				//
 			}
 			else
 			{
-				CG_DrawAmmo_md(cent, hud_ratio);
-				CG_Drawgunfatigue(cent, hud_ratio);
+				CG_DrawJK2Ammo(cent, 560, 400);
+
+				if (cg_SerenityJediEngineMode.integer)
+				{
+					CG_DrawJK2blockingMode(cent);
+				}
+				if (cent->currentState.weapon == WP_SABER && cg_SerenityJediEngineMode.integer)
+				{
+					CG_DrawJK2SaberFatigue(cent, 560, 400);
+				}
+				else
+				{
+					CG_DrawJK2GunFatigue(cent, 560, 400);
+				}
 			}
-			CG_DrawForcePower_md(cent, hud_ratio);
 		}
 		else if (cg_SerenityJediEngineHudMode.integer == 2)
 		{
@@ -5636,45 +5633,38 @@ static void CG_DrawHUD(const centity_t* cent)
 			cgi_R_SetColor(otherHUDBits[OHB_SCANLINE_RIGHT].color);
 
 			CG_DrawPic(
-				SCREEN_WIDTH - (SCREEN_WIDTH - otherHUDBits[OHB_SCANLINE_RIGHT].xPos) + 4.5 * hud_ratio,
-				otherHUDBits[OHB_SCANLINE_RIGHT].yPos + 8,
+				SCREEN_WIDTH - (SCREEN_WIDTH - otherHUDBits[OHB_SCANLINE_RIGHT].xPos) * hud_ratio,
+				otherHUDBits[OHB_SCANLINE_RIGHT].yPos,
 				otherHUDBits[OHB_SCANLINE_RIGHT].width * hud_ratio,
 				otherHUDBits[OHB_SCANLINE_RIGHT].height,
 				otherHUDBits[OHB_SCANLINE_RIGHT].background
 			);
 
-			cgi_R_SetColor(otherHUDBits[OHB_FRAME_RIGHT_MD].color);
-			CG_DrawPic(
-				SCREEN_WIDTH - (SCREEN_WIDTH - otherHUDBits[OHB_FRAME_RIGHT_MD].xPos) + 4.5 * hud_ratio,
-				otherHUDBits[OHB_FRAME_RIGHT_MD].yPos + 8,
-				otherHUDBits[OHB_FRAME_RIGHT_MD].width * hud_ratio,
-				otherHUDBits[OHB_FRAME_RIGHT_MD].height,
-				otherHUDBits[OHB_FRAME_RIGHT_MD].background
-			);
+			CG_DrawHUDJK2RightFrame1(560, 400);
+			CG_DrawHUDJK2RightFrame2(560, 400);
+			CG_DrawJK2ForcePower(cent, 560, 400);
 
-			CG_DrawSJEHUDRightFrame(560, 400);
-
-			if (cent->currentState.weapon == WP_SABER)
+			if (cent->currentState.weapon == WP_MELEE || cent->currentState.weapon == WP_STUN_BATON)
 			{
-				CG_DrawSaberStyle_md(cent, hud_ratio);
-				CG_DrawblockingMode(cent, hud_ratio);
-				CG_Drawsaberfatigue(cent, hud_ratio);
-			}
-			else if (cent->currentState.weapon == WP_SABER && !cent->gent->client->ps.SaberActive())
-			{
-				CG_DrawAmmo_md(cent, hud_ratio);
-				CG_Drawgunfatigue(cent, hud_ratio);
-			}
-			else if (cent->currentState.weapon == WP_MELEE)
-			{
-				CG_Drawgunfatigue(cent, hud_ratio);
+				//
 			}
 			else
 			{
-				CG_DrawAmmo_md(cent, hud_ratio);
-				CG_Drawgunfatigue(cent, hud_ratio);
+				CG_DrawJK2Ammo(cent, 560, 400);
+
+				if (cg_SerenityJediEngineMode.integer)
+				{
+					CG_DrawJK2blockingMode(cent);
+				}
+				if (cent->currentState.weapon == WP_SABER && cg_SerenityJediEngineMode.integer)
+				{
+					CG_DrawJK2SaberFatigue(cent, 560, 400);
+				}
+				else
+				{
+					CG_DrawJK2GunFatigue(cent, 560, 400);
+				}
 			}
-			CG_DrawForcePower_md(cent, hud_ratio);
 		} // new df hud
 		else if (cg_SerenityJediEngineHudMode.integer == 4 || cg_SerenityJediEngineHudMode.integer == 5) // right hud
 		{

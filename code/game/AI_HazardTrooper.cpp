@@ -1477,10 +1477,10 @@ NPC_BehaviorSet_Trooper
 -------------------------
 */
 ////////////////////////////////////////////////////////////////////////////////////////
-void NPC_BehaviorSet_Trooper(const int bState)
+void NPC_BehaviorSet_Trooper(const int b_state)
 {
 	Trooper_UpdateTroop(NPC);
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:

@@ -31,7 +31,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern qboolean missionInfo_Updated;
 
 extern void CrystalAmmoSettings(gentity_t* ent);
-extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void ChangeWeapon(const gentity_t* ent, int new_weapon);
 extern qboolean PM_InKnockDown(const playerState_t* ps);
 extern qboolean PM_InGetUp(const playerState_t* ps);
 extern void WP_SetSaber(gentity_t* ent, int saber_num, const char* saber_name);

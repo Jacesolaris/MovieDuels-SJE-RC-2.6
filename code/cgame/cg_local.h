@@ -774,23 +774,23 @@ constexpr auto CG_PULSE = 0x00004000;
 void CG_DrawRect(float x, float y, float width, float height, float size, const float* color);
 void CG_FillRect(float x, float y, float width, float height, const float* color);
 void CG_Scissor(float x, float y, float width, float height);
-void CG_DrawPic(float x, float y, float width, float height, qhandle_t hShader);
+void CG_DrawPic(float x, float y, float width, float height, qhandle_t h_shader);
 void CG_DrawPic2(float x, float y, float width, float height, float s1, float t1, float s2, float t2,
-                 qhandle_t hShader);
-void CG_DrawRotatePic(float x, float y, float width, float height, float angle, qhandle_t hShader,
-                      float aspectCorrection = 1.0f);
-void CG_DrawRotatePic2(float x, float y, float width, float height, float angle, qhandle_t hShader,
-                       float aspectCorrection = 1.0f);
-void CG_DrawNumField(int x, int y, int width, int value, int charWidth, int charHeight, int style, qboolean zeroFill);
+                 qhandle_t h_shader);
+void CG_DrawRotatePic(float x, float y, float width, float height, float angle, qhandle_t h_shader,
+                      float aspect_correction = 1.0f);
+void CG_DrawRotatePic2(float x, float y, float width, float height, float angle, qhandle_t h_shader,
+                       float aspect_correction = 1.0f);
+void CG_DrawNumField(int x, int y, int width, int value, int char_width, int char_height, int style, qboolean zero_fill);
 void CG_DrawProportionalString(int x, int y, const char* str, int style, vec4_t color);
 
-void CG_DrawStringExt(int x, int y, const char* string, const float* setColor, qboolean forceColor, qboolean shadow,
-                      int charWidth, int charHeight);
+void CG_DrawStringExt(int x, int y, const char* string, const float* set_color, qboolean force_color, qboolean shadow,
+                      int char_width, int char_height);
 void CG_DrawSmallStringColor(int x, int y, const char* s, vec4_t color);
 
 int CG_DrawStrlen(const char* str);
 
-float* CG_FadeColor(int startMsec, int totalMsec);
+float* CG_FadeColor(int start_msec, int total_msec);
 void CG_TileClear();
 
 //
@@ -954,7 +954,7 @@ void CG_InitConsoleCommands();
 // cg_servercmds.c
 //
 void CG_ExecuteNewServerCommands(int latestSequence);
-void CG_ParseServerinfo(void);
+void CG_ParseServerinfo();
 
 //
 // cg_playerstate.c

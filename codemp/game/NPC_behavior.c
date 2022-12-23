@@ -614,7 +614,7 @@ void NPC_BSFollowLeader(void)
 		if (NPCS.NPC->client->ps.weapon == WP_SABER)//|| NPCInfo->confusionTime>level.time )
 		{//lightsaber user or charmed enemy
 			if (NPCS.NPCInfo->tempBehavior != BS_FOLLOW_LEADER)
-			{//not already in a temp bState
+			{//not already in a temp b_state
 				//go after the guy
 				NPCS.NPCInfo->tempBehavior = BS_HUNT_AND_KILL;
 				NPC_UpdateAngles(qtrue, qtrue);
@@ -945,7 +945,7 @@ void NPC_BSSearch(void)
 			NPCS.NPCInfo->tempBehavior = BS_DEFAULT;
 		}
 		else
-		{//if bState, change to run and shoot
+		{//if b_state, change to run and shoot
 			NPCS.NPCInfo->behaviorState = BS_HUNT_AND_KILL;
 			NPC_BSRunAndShoot();
 		}
@@ -993,13 +993,13 @@ void NPC_BSSearch(void)
 
 			if ((NPCS.NPCInfo->homeWp == WAYPOINT_NONE) || (NPCS.NPC->waypoint == WAYPOINT_NONE))
 			{
-				//Heading for or at an invalid waypoint, get out of this bState
+				//Heading for or at an invalid waypoint, get out of this b_state
 				if (NPCS.NPCInfo->tempBehavior == BS_SEARCH)
 				{//if tempbehavior, set tempbehavior to default
 					NPCS.NPCInfo->tempBehavior = BS_DEFAULT;
 				}
 				else
-				{//if bState, change to stand guard
+				{//if b_state, change to stand guard
 					NPCS.NPCInfo->behaviorState = BS_STAND_GUARD;
 					NPC_BSRunAndShoot();
 				}
@@ -1126,7 +1126,7 @@ NPC_BSSearchStart
 -------------------------
 */
 
-void NPC_BSSearchStart(int homeWp, bState_t bState)
+void NPC_BSSearchStart(int homeWp, bState_t b_state)
 {
 	//FIXME: Reimplement
 	if (homeWp == WAYPOINT_NONE)
@@ -1138,7 +1138,7 @@ void NPC_BSSearchStart(int homeWp, bState_t bState)
 		}
 	}
 	NPCS.NPCInfo->homeWp = homeWp;
-	NPCS.NPCInfo->tempBehavior = bState;
+	NPCS.NPCInfo->tempBehavior = b_state;
 	NPCS.NPCInfo->aiFlags |= NPCAI_ENROUTE_TO_HOMEWP;
 	NPCS.NPCInfo->investigateDebounceTime = 0;
 	trap->Nav_GetNodePosition(homeWp, NPCS.NPCInfo->tempGoal->r.currentOrigin);
@@ -1309,7 +1309,7 @@ NPC_BSFlee
 */
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern void WP_DropWeapon(gentity_t* dropper, vec3_t velocity);
-extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void ChangeWeapon(const gentity_t* ent, int new_weapon);
 void NPC_Surrender(void)
 {//FIXME: say "don't shoot!" if we weren't already surrendering
 	if (NPCS.NPC->client->ps.weaponTime || PM_InKnockDown(&NPCS.NPC->client->ps))

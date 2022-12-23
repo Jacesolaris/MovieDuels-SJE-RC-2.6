@@ -44,14 +44,11 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 extern cvar_t* com_buildScript;
 
-extern void CG_CameraAutoAim(const char* name);
-extern void CG_CameraAutoTrack(const char* name);
-
 extern void InitMover(gentity_t* ent);
 extern void MatchTeam(gentity_t* teamLeader, int moverState, int time);
-extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void ChangeWeapon(const gentity_t* ent, int new_weapon);
 extern char* G_GetLocationForEnt(const gentity_t* ent);
-extern void NPC_BSSearchStart(int homeWp, bState_t bState);
+extern void NPC_BSSearchStart(int homeWp, bState_t b_state);
 extern void InitMoverTrData(gentity_t* ent);
 extern qboolean SpotWouldTelefrag2(const gentity_t* mover, vec3_t dest);
 extern cvar_t* g_sex;
@@ -2564,7 +2561,7 @@ Q3_SetBState
   Argument		:  int entID
   Argument		: const char *bs_name
 FIXME: this should be a general NPC wrapper function
-	that is called ANY time	a bState is changed...
+	that is called ANY time	a b_state is changed...
 ============
 */
 static qboolean Q3_SetBState(const int entID, const char* bs_name)

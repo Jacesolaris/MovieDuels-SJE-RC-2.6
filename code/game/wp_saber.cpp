@@ -20920,7 +20920,7 @@ qboolean G_CheckEnemyPresence(const gentity_t* ent, const int dir, const float r
 //OTHER JEDI POWERS=========================================================================
 //OTHER JEDI POWERS=========================================================================
 extern gentity_t* TossClientItems(gentity_t* self);
-extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void ChangeWeapon(const gentity_t* ent, int new_weapon);
 
 void WP_DropWeapon(gentity_t* dropper, vec3_t velocity)
 {
@@ -21218,8 +21218,8 @@ void WP_ResistForcePush(gentity_t* self, const gentity_t* pusher, const qboolean
 	}
 }
 
-extern qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir,
-                                   qboolean forceKnockdown);
+extern qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t push_dir,
+                                   qboolean force_knockdown);
 extern qboolean jedi_stop_knockdown(gentity_t* self, const vec3_t push_dir);
 
 void WP_ForceKnockdown(gentity_t* self, gentity_t* pusher, const qboolean pull, qboolean strong_knockdown,

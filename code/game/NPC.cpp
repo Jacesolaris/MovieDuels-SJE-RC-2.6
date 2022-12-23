@@ -89,8 +89,8 @@ gclient_t* client;
 usercmd_t ucmd;
 visibility_t enemyVisibility;
 
-void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags, int iBlend);
-static bState_t G_CurrentBState(gNPC_t* gNPC);
+void NPC_SetAnim(gentity_t* ent, int set_anim_parts, int anim, int set_anim_flags, int i_blend);
+static bState_t G_CurrentBState(gNPC_t* g_npc);
 
 extern int eventClearTime;
 
@@ -506,7 +506,7 @@ and returns.
 ====================================================================
 */
 
-void pitch_roll_for_slope(gentity_t* forwhom, vec3_t pass_slope, vec3_t storeAngles, const qboolean keepPitch)
+void pitch_roll_for_slope(gentity_t* forwhom, vec3_t pass_slope, vec3_t store_angles, const qboolean keep_pitch)
 {
 	vec3_t slope;
 	vec3_t nvf, ovf, ovr, new_angles = {0, 0, 0};
@@ -544,12 +544,12 @@ void pitch_roll_for_slope(gentity_t* forwhom, vec3_t pass_slope, vec3_t storeAng
 	if (forwhom->client && forwhom->client->NPC_class == CLASS_VEHICLE)
 	{
 		//special code for vehicles
-		const Vehicle_t* pVeh = forwhom->m_pVehicle;
+		const Vehicle_t* p_veh = forwhom->m_pVehicle;
 
-		vec3_t tempAngles;
-		tempAngles[PITCH] = tempAngles[ROLL] = 0;
-		tempAngles[YAW] = pVeh->m_vOrientation[YAW];
-		AngleVectors(tempAngles, ovf, ovr, nullptr);
+		vec3_t temp_angles;
+		temp_angles[PITCH] = temp_angles[ROLL] = 0;
+		temp_angles[YAW] = p_veh->m_vOrientation[YAW];
+		AngleVectors(temp_angles, ovf, ovr, nullptr);
 	}
 	else
 	{
@@ -559,7 +559,7 @@ void pitch_roll_for_slope(gentity_t* forwhom, vec3_t pass_slope, vec3_t storeAng
 
 	vectoangles(slope, new_angles);
 	float pitch = new_angles[PITCH] + 90;
-	if (keepPitch)
+	if (keep_pitch)
 	{
 		pitch += old_pitch;
 	}
@@ -576,10 +576,10 @@ void pitch_roll_for_slope(gentity_t* forwhom, vec3_t pass_slope, vec3_t storeAng
 
 	const float dot = DotProduct(nvf, ovf);
 
-	if (storeAngles)
+	if (store_angles)
 	{
-		storeAngles[PITCH] = dot * pitch;
-		storeAngles[ROLL] = (1 - Q_fabs(dot)) * pitch * mod;
+		store_angles[PITCH] = dot * pitch;
+		store_angles[ROLL] = (1 - Q_fabs(dot)) * pitch * mod;
 	}
 	else if (forwhom->client)
 	{
@@ -605,242 +605,6 @@ void pitch_roll_for_slope(gentity_t* forwhom, vec3_t pass_slope, vec3_t storeAng
 }
 
 /*
-void NPC_PostDeathThink( void )
-{
-	float	mostdist;
-	trace_t trace1, trace2, trace3, trace4, movetrace;
-	vec3_t	org, endpos, startpos, forward, right;
-	int		whichtrace = 0;
-	float	cornerdist[4];
-	qboolean	frontbackbothclear = false;
-	qboolean	rightleftbothclear = false;
-
-	if( NPC->client->ps.groundEntityNum == ENTITYNUM_NONE || !VectorCompare( vec3_origin, NPC->client->ps.velocity ) )
-	{
-		if ( NPC->client->ps.groundEntityNum != ENTITYNUM_NONE && NPC->client->ps.friction == 1.0 )//check avelocity?
-		{
-			pitch_roll_for_slope( NPC );
-		}
-
-		return;
-	}
-
-	cornerdist[FRONT] = cornerdist[BACK] = cornerdist[RIGHT] = cornerdist[LEFT] = 0.0f;
-
-	mostdist = MIN_DROP_DIST;
-
-	AngleVectors( NPC->currentAngles, forward, right, NULL );
-	VectorCopy( NPC->currentOrigin, org );
-	org[2] += NPC->mins[2];
-
-	VectorMA( org, NPC->dead_size, forward, startpos );
-	VectorCopy( startpos, endpos );
-	endpos[2] -= 128;
-	gi.trace( &trace1, startpos, vec3_origin, vec3_origin, endpos, NPC->s.number, MASK_SOLID, );
-	if( !trace1.allsolid && !trace1.startsolid )
-	{
-		cornerdist[FRONT] = trace1.fraction;
-		if ( trace1.fraction > mostdist )
-		{
-			mostdist = trace1.fraction;
-			whichtrace = 1;
-		}
-	}
-
-	VectorMA( org, -NPC->dead_size, forward, startpos );
-	VectorCopy( startpos, endpos );
-	endpos[2] -= 128;
-	gi.trace( &trace2, startpos, vec3_origin, vec3_origin, endpos, NPC->s.number, MASK_SOLID );
-	if( !trace2.allsolid && !trace2.startsolid )
-	{
-		cornerdist[BACK] = trace2.fraction;
-		if ( trace2.fraction > mostdist )
-		{
-			mostdist = trace2.fraction;
-			whichtrace = 2;
-		}
-	}
-
-	VectorMA( org, NPC->dead_size/2, right, startpos );
-	VectorCopy( startpos, endpos );
-	endpos[2] -= 128;
-	gi.trace( &trace3, startpos, vec3_origin, vec3_origin, endpos, NPC->s.number, MASK_SOLID );
-	if ( !trace3.allsolid && !trace3.startsolid )
-	{
-		cornerdist[RIGHT] = trace3.fraction;
-		if ( trace3.fraction>mostdist )
-		{
-			mostdist = trace3.fraction;
-			whichtrace = 3;
-		}
-	}
-
-	VectorMA( org, -NPC->dead_size/2, right, startpos );
-	VectorCopy( startpos, endpos );
-	endpos[2] -= 128;
-	gi.trace( &trace4, startpos, vec3_origin, vec3_origin, endpos, NPC->s.number, MASK_SOLID );
-	if ( !trace4.allsolid && !trace4.startsolid )
-	{
-		cornerdist[LEFT] = trace4.fraction;
-		if ( trace4.fraction > mostdist )
-		{
-			mostdist = trace4.fraction;
-			whichtrace = 4;
-		}
-	}
-
-	//OK!  Now if two opposite sides are hanging, use a third if any, else, do nothing
-	if ( cornerdist[FRONT] > MIN_DROP_DIST && cornerdist[BACK] > MIN_DROP_DIST )
-		frontbackbothclear = true;
-
-	if ( cornerdist[RIGHT] > MIN_DROP_DIST && cornerdist[LEFT] > MIN_DROP_DIST )
-		rightleftbothclear = true;
-
-	if ( frontbackbothclear && rightleftbothclear )
-		return;
-
-	if ( frontbackbothclear )
-	{
-		if ( cornerdist[RIGHT] > MIN_DROP_DIST )
-			whichtrace = 3;
-		else if ( cornerdist[LEFT] > MIN_DROP_DIST )
-			whichtrace = 4;
-		else
-			return;
-	}
-
-	if ( rightleftbothclear )
-	{
-		if ( cornerdist[FRONT] > MIN_DROP_DIST )
-			whichtrace = 1;
-		else if ( cornerdist[BACK] > MIN_DROP_DIST )
-			whichtrace = 2;
-		else
-			return;
-	}
-
-	switch ( whichtrace )
-	{//check for stuck
-	case 1:
-		VectorMA( NPC->currentOrigin, NPC->maxs[0], forward, endpos );
-		gi.trace( &movetrace, NPC->currentOrigin, NPC->mins, NPC->maxs, endpos, NPC->s.number, MASK_MONSTERSOLID );
-		if ( movetrace.allsolid || movetrace.startsolid || movetrace.fraction < 1.0 )
-			if ( canmove( movetrace.ent ) )
-				whichtrace = -1;
-			else
-				whichtrace = 0;
-		break;
-	case 2:
-		VectorMA( NPC->currentOrigin, -NPC->maxs[0], forward, endpos );
-		gi.trace( &movetrace, NPC->currentOrigin, NPC->mins, NPC->maxs, endpos, NPC->s.number, MASK_MONSTERSOLID );
-		if ( movetrace.allsolid || movetrace.startsolid || movetrace.fraction < 1.0 )
-			if ( canmove( movetrace.ent ) )
-				whichtrace = -1;
-			else
-				whichtrace = 0;
-		break;
-	case 3:
-		VectorMA( NPC->currentOrigin, NPC->maxs[0], right, endpos );
-		gi.trace( &movetrace, NPC->currentOrigin, NPC->mins, NPC->maxs, endpos, NPC->s.number, MASK_MONSTERSOLID );
-		if ( movetrace.allsolid || movetrace.startsolid || movetrace.fraction < 1.0 )
-			if ( canmove( movetrace.ent ) )
-				whichtrace = -1;
-			else
-				whichtrace = 0;
-		break;
-	case 4:
-		VectorMA( NPC->currentOrigin, -NPC->maxs[0], right, endpos );
-		gi.trace( &movetrace, NPC->currentOrigin, NPC->mins, NPC->maxs, endpos, NPC->s.number, MASK_MONSTERSOLID );
-		if (movetrace.allsolid || movetrace.startsolid || movetrace.fraction < 1.0 )
-			if ( canmove( movetrace.ent ) )
-				whichtrace = -1;
-			else
-				whichtrace = 0;
-		break;
-	}
-
-	switch ( whichtrace )
-	{
-	case 1:
-		VectorMA( NPC->client->ps.velocity, 200, forward, NPC->client->ps.velocity );
-		if ( trace1.fraction >= 0.9 )
-		{
-//can't anymore, origin not in center of deathframe!
-//			NPC->avelocity[PITCH] = -300;
-			NPC->client->ps.friction = 1.0;
-		}
-		else
-		{
-			pitch_roll_for_slope( NPC, &trace1.plane.normal );
-			NPC->client->ps.friction = trace1.plane.normal[2] * 0.1;
-		}
-		return;
-		break;
-
-	case 2:
-		VectorMA( NPC->client->ps.velocity, -200, forward, NPC->client->ps.velocity );
-		if(trace2.fraction >= 0.9)
-		{
-//can't anymore, origin not in center of deathframe!
-//			NPC->avelocity[PITCH] = 300;
-			NPC->client->ps.friction = 1.0;
-		}
-		else
-		{
-			pitch_roll_for_slope( NPC, &trace2.plane.normal );
-			NPC->client->ps.friction = trace2.plane.normal[2] * 0.1;
-		}
-		return;
-		break;
-
-	case 3:
-		VectorMA( NPC->client->ps.velocity, 200, right, NPC->client->ps.velocity );
-		if ( trace3.fraction >= 0.9 )
-		{
-//can't anymore, origin not in center of deathframe!
-//			NPC->avelocity[ROLL] = -300;
-			NPC->client->ps.friction = 1.0;
-		}
-		else
-		{
-			pitch_roll_for_slope( NPC, &trace3.plane.normal );
-			NPC->client->ps.friction = trace3.plane.normal[2] * 0.1;
-		}
-		return;
-		break;
-
-	case 4:
-		VectorMA( NPC->client->ps.velocity, -200, right, NPC->client->ps.velocity );
-		if ( trace4.fraction >= 0.9 )
-		{
-//can't anymore, origin not in center of deathframe!
-//			NPC->avelocity[ROLL] = 300;
-			NPC->client->ps.friction = 1.0;
-		}
-		else
-		{
-			pitch_roll_for_slope( NPC, &trace4.plane.normal );
-			NPC->client->ps.friction = trace4.plane.normal[2] * 0.1;
-		}
-		return;
-		break;
-	}
-
-	//on solid ground
-	if ( whichtrace == -1 )
-	{
-		return;
-	}
-	NPC->client->ps.friction = 1.0;
-
-	//VectorClear( NPC->avelocity );
-	pitch_roll_for_slope( NPC );
-
-	//gi.linkentity (NPC);
-}
-*/
-
-/*
 ----------------------------------------
 DeadThink
 ----------------------------------------
@@ -852,13 +616,13 @@ static void DeadThink()
 	//We should really have a seperate G2 bounding box (seperate from the physics bbox) for G2 collisions only
 	//FIXME: don't ever inflate back up?
 	//GAH!  With Ragdoll, they get stuck in the ceiling
-	const float oldMaxs2 = NPC->maxs[2];
+	const float old_maxs2 = NPC->maxs[2];
 	NPC->maxs[2] = NPC->client->renderInfo.eyePoint[2] - NPC->currentOrigin[2] + 4;
 	if (NPC->maxs[2] < -8)
 	{
 		NPC->maxs[2] = -8;
 	}
-	if (NPC->maxs[2] > oldMaxs2)
+	if (NPC->maxs[2] > old_maxs2)
 	{
 		//inflating maxs, make sure we're not inflating into solid
 		gi.trace(&trace, NPC->currentOrigin, NPC->mins, NPC->maxs, NPC->currentOrigin, NPC->s.number, NPC->clipmask,
@@ -866,7 +630,7 @@ static void DeadThink()
 		if (trace.allsolid)
 		{
 			//must be inflating
-			NPC->maxs[2] = oldMaxs2;
+			NPC->maxs[2] = old_maxs2;
 		}
 	}
 
@@ -1090,15 +854,15 @@ void NPC_HandleAIFlags()
 	//----------------------------
 	if (NPCInfo->scriptFlags & SCF_FLY_WITH_JET)
 	{
-		bool ShouldFly = !!(NPCInfo->aiFlags & NPCAI_FLY);
-		const bool IsFlying = !!JET_Flying(NPC);
-		bool IsInTheAir = NPC->client->ps.groundEntityNum == ENTITYNUM_NONE;
+		bool should_fly = !!(NPCInfo->aiFlags & NPCAI_FLY);
+		const bool is_flying = !!JET_Flying(NPC);
+		bool is_in_the_air = NPC->client->ps.groundEntityNum == ENTITYNUM_NONE;
 
-		if (IsFlying)
+		if (is_flying)
 		{
 			// Don't Stop Flying Until Near The Ground
 			//-----------------------------------------
-			if (IsInTheAir)
+			if (is_in_the_air)
 			{
 				vec3_t ground;
 				trace_t trace;
@@ -1107,20 +871,20 @@ void NPC_HandleAIFlags()
 				gi.trace(&trace, NPC->currentOrigin, nullptr, nullptr, ground, NPC->s.number, NPC->clipmask,
 				         static_cast<EG2_Collision>(0), 0);
 
-				IsInTheAir = !trace.allsolid && !trace.startsolid && trace.fraction > 0.9f;
+				is_in_the_air = !trace.allsolid && !trace.startsolid && trace.fraction > 0.9f;
 			}
 
 			// If Flying, Remember The Last Time
 			//-----------------------------------
-			if (IsInTheAir)
+			if (is_in_the_air)
 			{
 				NPC->lastInAirTime = level.time;
-				ShouldFly = true;
+				should_fly = true;
 			}
 
 			// Auto Turn Off Jet Pack After 1 Second On The Ground
 			//-----------------------------------------------------
-			else if (!ShouldFly && level.time - NPC->lastInAirTime > 3000)
+			else if (!should_fly && level.time - NPC->lastInAirTime > 3000)
 			{
 				NPCInfo->aiFlags &= ~NPCAI_FLY;
 			}
@@ -1128,14 +892,14 @@ void NPC_HandleAIFlags()
 
 		// If We Should Be Flying And Are Not, Start Er Up
 		//-------------------------------------------------
-		if (ShouldFly && !IsFlying)
+		if (should_fly && !is_flying)
 		{
 			JET_FlyStart(NPC); // EVENTUALLY, Remove All Other Calls
 		}
 
 		// Otherwise, If Needed, Shut It Off
 		//-----------------------------------
-		else if (!ShouldFly && IsFlying)
+		else if (!should_fly && is_flying)
 		{
 			jet_fly_stop(NPC); // EVENTUALLY, Remove All Other Calls
 		}
@@ -1242,7 +1006,7 @@ void NPC_AvoidWallsAndCliffs()
 	*/
 }
 
-void NPC_CheckAttackScript(void)
+void NPC_CheckAttackScript()
 {
 	if (!(ucmd.buttons & BUTTON_ATTACK))
 	{
@@ -1254,7 +1018,7 @@ void NPC_CheckAttackScript(void)
 
 float NPC_MaxDistSquaredForWeapon();
 
-void NPC_CheckAttackHold(void)
+void NPC_CheckAttackHold()
 {
 	vec3_t vec;
 
@@ -1286,11 +1050,11 @@ void NPC_CheckAttackHold(void)
 }
 
 /*
-void NPC_KeepCurrentFacing(void)
+void NPC_KeepCurrentFacing()
 
 Fills in a default ucmd to keep current angles facing
 */
-void NPC_KeepCurrentFacing(void)
+void NPC_KeepCurrentFacing()
 {
 	if (!ucmd.angles[YAW])
 	{
@@ -1309,9 +1073,9 @@ NPC_BehaviorSet_Charmed
 -------------------------
 */
 
-void NPC_BehaviorSet_Charmed(const int bState)
+void NPC_BehaviorSet_Charmed(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_FOLLOW_LEADER: //# 40: Follow your leader and shoot any enemies you come across
 		NPC_BSFollowLeader();
@@ -1344,9 +1108,9 @@ NPC_BehaviorSet_Default
 -------------------------
 */
 
-void NPC_BehaviorSet_Default(const int bState)
+void NPC_BehaviorSet_Default(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_ADVANCE_FIGHT: //head toward captureGoal, shoot anything that gets in the way
 		NPC_BSAdvanceFight();
@@ -1396,9 +1160,9 @@ void NPC_BehaviorSet_Default(const int bState)
 NPC_BehaviorSet_Interrogator
 -------------------------
 */
-void NPC_BehaviorSet_Interrogator(const int bState)
+void NPC_BehaviorSet_Interrogator(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1408,23 +1172,21 @@ void NPC_BehaviorSet_Interrogator(const int bState)
 		NPC_BSInterrogator_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
 
-void NPC_BSImperialProbe_Attack(void);
-void NPC_BSImperialProbe_Patrol(void);
-void NPC_BSImperialProbe_Wait(void);
+void NPC_BSImperialProbe_Patrol();
 
 /*
 -------------------------
 NPC_BehaviorSet_ImperialProbe
 -------------------------
 */
-void NPC_BehaviorSet_ImperialProbe(const int bState)
+void NPC_BehaviorSet_ImperialProbe(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1434,7 +1196,7 @@ void NPC_BehaviorSet_ImperialProbe(const int bState)
 		NPC_BSImperialProbe_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1446,9 +1208,9 @@ void NPC_BSSeeker_Default();
 NPC_BehaviorSet_Seeker
 -------------------------
 */
-void NPC_BehaviorSet_Seeker(const int bState)
+void NPC_BehaviorSet_Seeker(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1468,9 +1230,9 @@ void NPC_BSRemote_Default();
 NPC_BehaviorSet_Remote
 -------------------------
 */
-void NPC_BehaviorSet_Remote(const int bState)
+void NPC_BehaviorSet_Remote(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1480,21 +1242,21 @@ void NPC_BehaviorSet_Remote(const int bState)
 		NPC_BSRemote_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
 
-void NPC_BSSentry_Default(void);
+void NPC_BSSentry_Default();
 
 /*
 -------------------------
 NPC_BehaviorSet_Sentry
 -------------------------
 */
-void NPC_BehaviorSet_Sentry(const int bState)
+void NPC_BehaviorSet_Sentry(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1504,7 +1266,7 @@ void NPC_BehaviorSet_Sentry(const int bState)
 		NPC_BSSentry_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1514,9 +1276,9 @@ void NPC_BehaviorSet_Sentry(const int bState)
 NPC_BehaviorSet_Grenadier
 -------------------------
 */
-void NPC_BehaviorSet_Grenadier(const int bState)
+void NPC_BehaviorSet_Grenadier(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1527,7 +1289,7 @@ void NPC_BehaviorSet_Grenadier(const int bState)
 		break;
 
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1537,9 +1299,9 @@ void NPC_BehaviorSet_Grenadier(const int bState)
 NPC_BehaviorSet_Tusken
 -------------------------
 */
-void NPC_BehaviorSet_Tusken(const int bState)
+void NPC_BehaviorSet_Tusken(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1550,7 +1312,7 @@ void NPC_BehaviorSet_Tusken(const int bState)
 		break;
 
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1560,9 +1322,9 @@ void NPC_BehaviorSet_Tusken(const int bState)
 NPC_BehaviorSet_Sniper
 -------------------------
 */
-void NPC_BehaviorSet_Sniper(const int bState)
+void NPC_BehaviorSet_Sniper(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1573,7 +1335,7 @@ void NPC_BehaviorSet_Sniper(const int bState)
 		break;
 
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1610,7 +1372,7 @@ void NPC_BehaviorSet_Stormtrooper(const int b_state)
 	}
 }
 
-void NPC_BehaviorSet_Object(int bState)
+void NPC_BehaviorSet_Object()
 {
 }
 
@@ -1620,9 +1382,9 @@ NPC_BehaviorSet_Jedi
 -------------------------
 */
 
-void NPC_BehaviorSet_Jedi(const int bState)
+void NPC_BehaviorSet_Jedi(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1641,7 +1403,7 @@ void NPC_BehaviorSet_Jedi(const int bState)
 		break;
 
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1652,9 +1414,9 @@ NPC_BehaviorSet_Grogu
 -------------------------
 */
 
-void NPC_BehaviorSet_Grogu(const int bState)
+void NPC_BehaviorSet_Grogu(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1680,7 +1442,7 @@ void NPC_BehaviorSet_Grogu(const int bState)
 		break;
 
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1688,9 +1450,9 @@ void NPC_BehaviorSet_Grogu(const int bState)
 qboolean G_JediInNormalAI(const gentity_t* ent)
 {
 	//NOTE: should match above func's switch!
-	//check our bState
-	const bState_t bState = G_CurrentBState(ent->NPC);
-	switch (bState)
+	//check our b_state
+	const bState_t b_state = G_CurrentBState(ent->NPC);
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1712,9 +1474,9 @@ qboolean G_JediInNormalAI(const gentity_t* ent)
 NPC_BehaviorSet_Droid
 -------------------------
 */
-void NPC_BehaviorSet_Droid(const int bState)
+void NPC_BehaviorSet_Droid(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_DEFAULT:
 	case BS_STAND_GUARD:
@@ -1722,7 +1484,7 @@ void NPC_BehaviorSet_Droid(const int bState)
 		NPC_BSDroid_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1732,9 +1494,9 @@ void NPC_BehaviorSet_Droid(const int bState)
 NPC_BehaviorSet_Mark1
 -------------------------
 */
-void NPC_BehaviorSet_Mark1(const int bState)
+void NPC_BehaviorSet_Mark1(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_DEFAULT:
 	case BS_STAND_GUARD:
@@ -1742,7 +1504,7 @@ void NPC_BehaviorSet_Mark1(const int bState)
 		NPC_BSMark1_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1752,9 +1514,9 @@ void NPC_BehaviorSet_Mark1(const int bState)
 NPC_BehaviorSet_Mark2
 -------------------------
 */
-void NPC_BehaviorSet_Mark2(const int bState)
+void NPC_BehaviorSet_Mark2(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_DEFAULT:
 	case BS_PATROL:
@@ -1763,7 +1525,7 @@ void NPC_BehaviorSet_Mark2(const int bState)
 		NPC_BSMark2_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1773,9 +1535,9 @@ void NPC_BehaviorSet_Mark2(const int bState)
 NPC_BehaviorSet_ATST
 -------------------------
 */
-void NPC_BehaviorSet_ATST(const int bState)
+void NPC_BehaviorSet_ATST(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_DEFAULT:
 	case BS_PATROL:
@@ -1784,7 +1546,7 @@ void NPC_BehaviorSet_ATST(const int bState)
 		NPC_BSATST_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1794,9 +1556,9 @@ void NPC_BehaviorSet_ATST(const int bState)
 NPC_BehaviorSet_MineMonster
 -------------------------
 */
-void NPC_BehaviorSet_MineMonster(const int bState)
+void NPC_BehaviorSet_MineMonster(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1806,7 +1568,7 @@ void NPC_BehaviorSet_MineMonster(const int bState)
 		NPC_BSMineMonster_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1816,9 +1578,9 @@ void NPC_BehaviorSet_MineMonster(const int bState)
 NPC_BehaviorSet_Howler
 -------------------------
 */
-void NPC_BehaviorSet_Howler(const int bState)
+void NPC_BehaviorSet_Howler(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1828,7 +1590,7 @@ void NPC_BehaviorSet_Howler(const int bState)
 		NPC_BSHowler_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1838,9 +1600,9 @@ void NPC_BehaviorSet_Howler(const int bState)
 NPC_BehaviorSet_Rancor
 -------------------------
 */
-void NPC_BehaviorSet_Rancor(const int bState)
+void NPC_BehaviorSet_Rancor(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1850,7 +1612,7 @@ void NPC_BehaviorSet_Rancor(const int bState)
 		NPC_BSRancor_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1860,9 +1622,9 @@ void NPC_BehaviorSet_Rancor(const int bState)
 NPC_BehaviorSet_Wampa
 -------------------------
 */
-void NPC_BehaviorSet_Wampa(const int bState)
+void NPC_BehaviorSet_Wampa(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1872,7 +1634,7 @@ void NPC_BehaviorSet_Wampa(const int bState)
 		NPC_BSWampa_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1882,9 +1644,9 @@ void NPC_BehaviorSet_Wampa(const int bState)
 NPC_BehaviorSet_SandCreature
 -------------------------
 */
-void NPC_BehaviorSet_SandCreature(const int bState)
+void NPC_BehaviorSet_SandCreature(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1894,7 +1656,7 @@ void NPC_BehaviorSet_SandCreature(const int bState)
 		NPC_BSSandCreature_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1905,9 +1667,9 @@ NPC_BehaviorSet_Droid
 -------------------------
 */
 // Added 01/21/03 by AReis.
-void NPC_BehaviorSet_Animal(const int bState)
+void NPC_BehaviorSet_Animal(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_DEFAULT:
 	case BS_STAND_GUARD:
@@ -1917,7 +1679,7 @@ void NPC_BehaviorSet_Animal(const int bState)
 	//NPC_BSDroid_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1927,24 +1689,24 @@ void NPC_BehaviorSet_Animal(const int bState)
 NPC_RunBehavior
 -------------------------
 */
-extern void NPC_BSEmplaced(void);
-extern qboolean NPC_CheckSurrender(void);
-extern void NPC_BSRT_Default(void);
-extern void NPC_BSCivilian_Default(int bState);
+extern void NPC_BSEmplaced();
+extern qboolean NPC_CheckSurrender();
+extern void NPC_BSRT_Default();
+extern void NPC_BSCivilian_Default(int b_state);
 extern void NPC_BSSD_Default();
-extern void NPC_BehaviorSet_Trooper(int bState);
+extern void NPC_BehaviorSet_Trooper(int b_state);
 extern bool NPC_IsTrooper(const gentity_t* ent);
 extern bool Pilot_MasterUpdate();
 
-void NPC_RunBehavior(const int team, const int bState)
+void NPC_RunBehavior(const int team, const int b_state)
 {
 	//
 	//
-	if (bState == BS_FOLLOW_OVERRIDE)
+	if (b_state == BS_FOLLOW_OVERRIDE)
 	{
 		NPC_BSFollowLeader();
 	}
-	if (bState == BS_CINEMATIC)
+	if (b_state == BS_CINEMATIC)
 	{
 		NPC_BSCinematic();
 	}
@@ -1965,7 +1727,7 @@ void NPC_RunBehavior(const int team, const int bState)
 	}
 	else if (NPC->client->NPC_class == CLASS_HOWLER)
 	{
-		NPC_BehaviorSet_Howler(bState);
+		NPC_BehaviorSet_Howler(b_state);
 	}
 	else if (jedi_cultist_destroyer(NPC))
 	{
@@ -1979,27 +1741,27 @@ void NPC_RunBehavior(const int team, const int bState)
 	else if (NPC->client->ps.weapon == WP_SABER)
 	{
 		//jedi
-		NPC_BehaviorSet_Jedi(bState);
+		NPC_BehaviorSet_Jedi(b_state);
 	}
 	else if (NPC->client->NPC_class == CLASS_REBORN && NPC->client->ps.weapon == WP_MELEE)
 	{
 		//force-only reborn
-		NPC_BehaviorSet_Jedi(bState);
+		NPC_BehaviorSet_Jedi(b_state);
 	}
 	else if (NPC->client->NPC_class == CLASS_SITHLORD && NPC->client->ps.weapon == WP_MELEE)
 	{
 		//force-only reborn
-		NPC_BehaviorSet_Jedi(bState);
+		NPC_BehaviorSet_Jedi(b_state);
 	}
 	else if (NPC->client->NPC_class == CLASS_SITHLORD && NPC->client->ps.weapon == WP_NONE)
 	{
 		//force-only reborn
-		NPC_BehaviorSet_Jedi(bState);
+		NPC_BehaviorSet_Jedi(b_state);
 	}
 	else if (NPC->client->NPC_class == CLASS_GROGU)
 	{
 		//force-only reborn
-		NPC_BehaviorSet_Grogu(bState);
+		NPC_BehaviorSet_Grogu(b_state);
 	}
 	else if (NPC->client->NPC_class == CLASS_BOBAFETT || NPC->client->NPC_class == CLASS_MANDALORIAN || NPC->client->
 		NPC_class == CLASS_JANGO || NPC->client->NPC_class == CLASS_JANGODUAL)
@@ -2015,11 +1777,11 @@ void NPC_RunBehavior(const int team, const int bState)
 			{
 				if (Boba_Flying(NPC))
 				{
-					NPC_BehaviorSet_Seeker(bState);
+					NPC_BehaviorSet_Seeker(b_state);
 				}
 				else
 				{
-					NPC_BehaviorSet_Jedi(bState);
+					NPC_BehaviorSet_Jedi(b_state);
 				}
 			}
 		}
@@ -2033,21 +1795,21 @@ void NPC_RunBehavior(const int team, const int bState)
 		}
 		else
 		{
-			NPC_BehaviorSet_Stormtrooper(bState);
+			NPC_BehaviorSet_Stormtrooper(b_state);
 		}
 		G_CheckCharmed(NPC);
 	}
 	else if (NPC->client->NPC_class == CLASS_RANCOR)
 	{
-		NPC_BehaviorSet_Rancor(bState);
+		NPC_BehaviorSet_Rancor(b_state);
 	}
 	else if (NPC->client->NPC_class == CLASS_SAND_CREATURE)
 	{
-		NPC_BehaviorSet_SandCreature(bState);
+		NPC_BehaviorSet_SandCreature(b_state);
 	}
 	else if (NPC->client->NPC_class == CLASS_WAMPA)
 	{
-		NPC_BehaviorSet_Wampa(bState);
+		NPC_BehaviorSet_Wampa(b_state);
 		G_CheckCharmed(NPC);
 	}
 	else if (NPCInfo->scriptFlags & SCF_FORCED_MARCH)
@@ -2059,26 +1821,26 @@ void NPC_RunBehavior(const int team, const int bState)
 	{
 		if (NPCInfo->scriptFlags & SCF_ALT_FIRE)
 		{
-			NPC_BehaviorSet_Sniper(bState);
+			NPC_BehaviorSet_Sniper(b_state);
 			G_CheckCharmed(NPC);
 			return;
 		}
-		NPC_BehaviorSet_Tusken(bState);
+		NPC_BehaviorSet_Tusken(b_state);
 		G_CheckCharmed(NPC);
 	}
 	else if (NPC->client->ps.weapon == WP_TUSKEN_STAFF)
 	{
-		NPC_BehaviorSet_Tusken(bState);
+		NPC_BehaviorSet_Tusken(b_state);
 		G_CheckCharmed(NPC);
 	}
 	else if (NPC->client->ps.weapon == WP_NOGHRI_STICK)
 	{
-		NPC_BehaviorSet_Stormtrooper(bState);
+		NPC_BehaviorSet_Stormtrooper(b_state);
 		G_CheckCharmed(NPC);
 	}
 	else if (NPC->client->NPC_class == CLASS_OBJECT)
 	{
-		NPC_BehaviorSet_Object(bState);
+		NPC_BehaviorSet_Object();
 	}
 	else
 	{
@@ -2091,37 +1853,37 @@ void NPC_RunBehavior(const int team, const int bState)
 			switch (NPC->client->NPC_class)
 			{
 			case CLASS_ATST:
-				NPC_BehaviorSet_ATST(bState);
+				NPC_BehaviorSet_ATST(b_state);
 				return;
 			case CLASS_PROBE:
-				NPC_BehaviorSet_ImperialProbe(bState);
+				NPC_BehaviorSet_ImperialProbe(b_state);
 				return;
 			case CLASS_REMOTE:
-				NPC_BehaviorSet_Remote(bState);
+				NPC_BehaviorSet_Remote(b_state);
 				return;
 			case CLASS_SENTRY:
-				NPC_BehaviorSet_Sentry(bState);
+				NPC_BehaviorSet_Sentry(b_state);
 				return;
 			case CLASS_INTERROGATOR:
-				NPC_BehaviorSet_Interrogator(bState);
+				NPC_BehaviorSet_Interrogator(b_state);
 				return;
 			case CLASS_MINEMONSTER:
-				NPC_BehaviorSet_MineMonster(bState);
+				NPC_BehaviorSet_MineMonster(b_state);
 				return;
 			case CLASS_HOWLER:
-				NPC_BehaviorSet_Howler(bState);
+				NPC_BehaviorSet_Howler(b_state);
 				return;
 			case CLASS_RANCOR:
-				NPC_BehaviorSet_Rancor(bState);
+				NPC_BehaviorSet_Rancor(b_state);
 				return;
 			case CLASS_SAND_CREATURE:
-				NPC_BehaviorSet_SandCreature(bState);
+				NPC_BehaviorSet_SandCreature(b_state);
 				return;
 			case CLASS_MARK1:
-				NPC_BehaviorSet_Mark1(bState);
+				NPC_BehaviorSet_Mark1(b_state);
 				return;
 			case CLASS_MARK2:
-				NPC_BehaviorSet_Mark2(bState);
+				NPC_BehaviorSet_Mark2(b_state);
 				return;
 			case CLASS_GALAKMECH:
 				NPC_BSGM_Default();
@@ -2137,15 +1899,15 @@ void NPC_RunBehavior(const int team, const int bState)
 
 			if (NPC_IsTrooper(NPC))
 			{
-				NPC_BehaviorSet_Trooper(bState);
+				NPC_BehaviorSet_Trooper(b_state);
 				return;
 			}
 
-			if (NPC->enemy && NPC->client->ps.weapon == WP_NONE && bState != BS_HUNT_AND_KILL && !Q3_TaskIDPending(
+			if (NPC->enemy && NPC->client->ps.weapon == WP_NONE && b_state != BS_HUNT_AND_KILL && !Q3_TaskIDPending(
 				NPC, TID_MOVE_NAV))
 			{
 				//if in battle and have no weapon, run away, fixme: when in BS_HUNT_AND_KILL, they just stand there
-				if (bState != BS_FLEE)
+				if (b_state != BS_FLEE)
 				{
 					NPC_StartFlee(NPC->enemy, NPC->enemy->currentOrigin, AEL_DANGER_GREAT, 5000, 10000);
 				}
@@ -2158,73 +1920,73 @@ void NPC_RunBehavior(const int team, const int bState)
 			if (NPC->client->ps.weapon == WP_SABER)
 			{
 				//special melee exception
-				NPC_BehaviorSet_Default(bState);
+				NPC_BehaviorSet_Default(b_state);
 				return;
 			}
 			if (NPC->client->ps.weapon == WP_DISRUPTOR && NPCInfo->scriptFlags & SCF_ALT_FIRE)
 			{
 				//a sniper
-				NPC_BehaviorSet_Sniper(bState);
+				NPC_BehaviorSet_Sniper(b_state);
 				return;
 			}
 			if (NPC->client->ps.weapon == WP_THERMAL
 				|| NPC->client->ps.weapon == WP_MELEE) //FIXME: separate AI for melee fighters
 			{
 				//a grenadier
-				NPC_BehaviorSet_Grenadier(bState);
+				NPC_BehaviorSet_Grenadier(b_state);
 				return;
 			}
 			if (NPC_CheckSurrender())
 			{
 				return;
 			}
-			NPC_BehaviorSet_Stormtrooper(bState);
+			NPC_BehaviorSet_Stormtrooper(b_state);
 			break;
 		case TEAM_NEUTRAL:
 
 			// special cases for enemy droids
 			if (NPC->client->NPC_class == CLASS_PROTOCOL)
 			{
-				NPC_BehaviorSet_Default(bState);
+				NPC_BehaviorSet_Default(b_state);
 			}
 			else if (NPC->client->NPC_class == CLASS_UGNAUGHT || NPC->client->NPC_class == CLASS_JAWA)
 			{
 				//others, too?
-				NPC_BSCivilian_Default(bState);
+				NPC_BSCivilian_Default(b_state);
 			}
 			// Add special vehicle behavior here.
 			else if (NPC->client->NPC_class == CLASS_VEHICLE)
 			{
-				const Vehicle_t* pVehicle = NPC->m_pVehicle;
-				if (!pVehicle->m_pPilot && pVehicle->m_iBoarding == 0)
+				const Vehicle_t* p_vehicle = NPC->m_pVehicle;
+				if (!p_vehicle->m_pPilot && p_vehicle->m_iBoarding == 0)
 				{
-					if (pVehicle->m_pVehicleInfo->type == VH_ANIMAL)
+					if (p_vehicle->m_pVehicleInfo->type == VH_ANIMAL)
 					{
-						NPC_BehaviorSet_Animal(bState);
+						NPC_BehaviorSet_Animal(b_state);
 					}
 				}
 			}
 			else
 			{
 				// Just one of the average droids
-				NPC_BehaviorSet_Droid(bState);
+				NPC_BehaviorSet_Droid(b_state);
 			}
 			break;
 
 		default:
 			if (NPC->client->NPC_class == CLASS_SEEKER)
 			{
-				NPC_BehaviorSet_Seeker(bState);
+				NPC_BehaviorSet_Seeker(b_state);
 			}
 			else
 			{
 				if (NPCInfo->charmedTime > level.time)
 				{
-					NPC_BehaviorSet_Charmed(bState);
+					NPC_BehaviorSet_Charmed(b_state);
 				}
 				else
 				{
-					NPC_BehaviorSet_Default(bState);
+					NPC_BehaviorSet_Default(b_state);
 				}
 				G_CheckCharmed(NPC);
 			}
@@ -2233,20 +1995,20 @@ void NPC_RunBehavior(const int team, const int bState)
 	}
 }
 
-static bState_t G_CurrentBState(gNPC_t* gNPC)
+static bState_t G_CurrentBState(gNPC_t* g_npc)
 {
-	if (gNPC->tempBehavior != BS_DEFAULT)
+	if (g_npc->tempBehavior != BS_DEFAULT)
 	{
 		//Overrides normal behavior until cleared
-		return gNPC->tempBehavior;
+		return g_npc->tempBehavior;
 	}
 
-	if (gNPC->behaviorState == BS_DEFAULT)
+	if (g_npc->behaviorState == BS_DEFAULT)
 	{
-		gNPC->behaviorState = gNPC->defaultBehavior;
+		g_npc->behaviorState = g_npc->defaultBehavior;
 	}
 
-	return gNPC->behaviorState;
+	return g_npc->behaviorState;
 }
 
 /*
@@ -2271,16 +2033,16 @@ void NPC_ExecuteBState(const gentity_t* self) //, int msec )
 		NPC->delayScriptTime = 0;
 	}
 
-	//Clear this and let bState set it itself, so it automatically handles changing bStates... but we need a set bState wrapper func
+	//Clear this and let b_state set it itself, so it automatically handles changing bStates... but we need a set b_state wrapper func
 	NPCInfo->combatMove = qfalse;
 
-	//Execute our bState
-	const bState_t bState = G_CurrentBState(NPCInfo);
+	//Execute our b_state
+	const bState_t b_state = G_CurrentBState(NPCInfo);
 
 	//Pick the proper bstate for us and run it
-	NPC_RunBehavior(self->client->playerTeam, bState);
+	NPC_RunBehavior(self->client->playerTeam, b_state);
 
-	//	if(bState != BS_POINT_COMBAT && NPCInfo->combatPoint != -1)
+	//	if(b_state != BS_POINT_COMBAT && NPCInfo->combatPoint != -1)
 	//	{
 	//level.combatPoints[NPCInfo->combatPoint].occupied = qfalse;
 	//NPCInfo->combatPoint = -1;
@@ -2302,7 +2064,7 @@ void NPC_ExecuteBState(const gentity_t* self) //, int msec )
 	{
 		if (!NPC->enemy->inuse)
 		{
-			//just in case bState doesn't catch this
+			//just in case b_state doesn't catch this
 			G_ClearEnemy(NPC);
 		}
 	}
@@ -2447,7 +2209,7 @@ extern int AITime;
 #endif//	AI_TIMERS
 void NPC_Think(gentity_t* ent) //, int msec )
 {
-	vec3_t oldMoveDir;
+	vec3_t old_move_dir;
 
 	ent->nextthink = level.time + FRAMETIME / 2;
 
@@ -2455,7 +2217,7 @@ void NPC_Think(gentity_t* ent) //, int msec )
 
 	memset(&ucmd, 0, sizeof ucmd);
 
-	VectorCopy(ent->client->ps.moveDir, oldMoveDir);
+	VectorCopy(ent->client->ps.moveDir, old_move_dir);
 	VectorClear(ent->client->ps.moveDir);
 
 	if (ent->client->playerTeam == g_entities[0].client->playerTeam &&
@@ -2621,7 +2383,7 @@ void NPC_Think(gentity_t* ent) //, int msec )
 			//reduce velocity
 			VectorScale(NPC->client->ps.velocity, 0.75f, NPC->client->ps.velocity);
 		}
-		VectorCopy(oldMoveDir, ent->client->ps.moveDir);
+		VectorCopy(old_move_dir, ent->client->ps.moveDir);
 		//or use client->pers.lastCommand?
 		NPCInfo->last_ucmd.serverTime = level.time - 50;
 		if (!NPC->next_roff_time || NPC->next_roff_time < level.time)
@@ -2645,7 +2407,7 @@ void NPC_Think(gentity_t* ent) //, int msec )
 	}
 }
 
-void NPC_InitAI(void)
+void NPC_InitAI()
 {
 	debugNPCAI = gi.cvar("d_npcai", "0", CVAR_CHEAT);
 	debugNPCFreeze = gi.cvar("d_npcfreeze", "0", CVAR_CHEAT);
@@ -2685,15 +2447,14 @@ void NPC_InitAnimTable( void )
   (frameLerp of 0 * numFrames of 0 = 0)
 ==================================
 */
-void NPC_InitAnimTable(void)
+void NPC_InitAnimTable()
 {
-	for (auto& knownAnimFileSet : level.knownAnimFileSets)
+	for (auto& known_anim_file_set : level.knownAnimFileSets)
 	{
-		for (auto& animation : knownAnimFileSet.animations)
+		for (auto& animation : known_anim_file_set.animations)
 		{
 			animation.firstFrame = 0;
 			animation.frameLerp = 100;
-			//			level.knownAnimFileSets[i].animations[j].initialLerp = 100;
 			animation.numFrames = 0;
 		}
 	}
@@ -2709,16 +2470,9 @@ void NPC_InitGame()
 	NPC_InitAI();
 	NPC_InitAnimTable();
 	G_ParseAnimFileSet("_humanoid"); //GET THIS CACHED NOW BEFORE CGAME STARTS
-	/*
-	ResetTeamCounters();
-	for ( int team = TEAM_FREE; team < TEAM_NUM_TEAMS; team++ )
-	{
-		teamLastEnemyTime[team] = -10000;
-	}
-	*/
 }
 
-void NPC_SetAnim(gentity_t* ent, int setAnimParts, const int anim, const int setAnimFlags, const int iBlend)
+void NPC_SetAnim(gentity_t* ent, int set_anim_parts, const int anim, const int set_anim_flags, const int i_blend)
 {
 	// FIXME : once torsoAnim and legsAnim are in the same structure for NCP and Players
 	// rename PM_SETAnimFinal to PM_SetAnim and have both NCP and Players call PM_SetAnim
@@ -2736,7 +2490,7 @@ void NPC_SetAnim(gentity_t* ent, int setAnimParts, const int anim, const int set
 			&& !PM_LockedAnim(anim))
 		{
 			//nothing can override these special anims
-			setAnimParts &= ~SETANIM_TORSO;
+			set_anim_parts &= ~SETANIM_TORSO;
 		}
 
 		if (ent->client->ps.legsAnimTimer
@@ -2744,11 +2498,11 @@ void NPC_SetAnim(gentity_t* ent, int setAnimParts, const int anim, const int set
 			&& !PM_LockedAnim(anim))
 		{
 			//nothing can override these special anims
-			setAnimParts &= ~SETANIM_LEGS;
+			set_anim_parts &= ~SETANIM_LEGS;
 		}
 	}
 
-	if (!setAnimParts)
+	if (!set_anim_parts)
 	{
 		return;
 	}
@@ -2766,49 +2520,49 @@ void NPC_SetAnim(gentity_t* ent, int setAnimParts, const int anim, const int set
 	if (ent->client)
 	{
 		//Players, NPCs
-		if (setAnimFlags & SETANIM_FLAG_OVERRIDE)
+		if (set_anim_flags & SETANIM_FLAG_OVERRIDE)
 		{
-			if (setAnimParts & SETANIM_TORSO)
+			if (set_anim_parts & SETANIM_TORSO)
 			{
-				if (setAnimFlags & SETANIM_FLAG_RESTART || ent->client->ps.torsoAnim != anim)
+				if (set_anim_flags & SETANIM_FLAG_RESTART || ent->client->ps.torsoAnim != anim)
 				{
 					PM_SetTorsoAnimTimer(ent, &ent->client->ps.torsoAnimTimer, 0);
 				}
 			}
-			if (setAnimParts & SETANIM_LEGS)
+			if (set_anim_parts & SETANIM_LEGS)
 			{
-				if (setAnimFlags & SETANIM_FLAG_RESTART || ent->client->ps.legsAnim != anim)
+				if (set_anim_flags & SETANIM_FLAG_RESTART || ent->client->ps.legsAnim != anim)
 				{
 					PM_SetLegsAnimTimer(ent, &ent->client->ps.legsAnimTimer, 0);
 				}
 			}
 		}
 
-		PM_SetAnimFinal(&ent->client->ps.torsoAnim, &ent->client->ps.legsAnim, setAnimParts, anim, setAnimFlags,
-		                &ent->client->ps.torsoAnimTimer, &ent->client->ps.legsAnimTimer, ent, iBlend);
+		PM_SetAnimFinal(&ent->client->ps.torsoAnim, &ent->client->ps.legsAnim, set_anim_parts, anim, set_anim_flags,
+		                &ent->client->ps.torsoAnimTimer, &ent->client->ps.legsAnimTimer, ent, i_blend);
 	}
 	else
 	{
 		//bodies, etc.
-		if (setAnimFlags & SETANIM_FLAG_OVERRIDE)
+		if (set_anim_flags & SETANIM_FLAG_OVERRIDE)
 		{
-			if (setAnimParts & SETANIM_TORSO)
+			if (set_anim_parts & SETANIM_TORSO)
 			{
-				if (setAnimFlags & SETANIM_FLAG_RESTART || ent->s.torsoAnim != anim)
+				if (set_anim_flags & SETANIM_FLAG_RESTART || ent->s.torsoAnim != anim)
 				{
 					PM_SetTorsoAnimTimer(ent, &ent->s.torsoAnimTimer, 0);
 				}
 			}
-			if (setAnimParts & SETANIM_LEGS)
+			if (set_anim_parts & SETANIM_LEGS)
 			{
-				if (setAnimFlags & SETANIM_FLAG_RESTART || ent->s.legsAnim != anim)
+				if (set_anim_flags & SETANIM_FLAG_RESTART || ent->s.legsAnim != anim)
 				{
 					PM_SetLegsAnimTimer(ent, &ent->s.legsAnimTimer, 0);
 				}
 			}
 		}
 
-		PM_SetAnimFinal(&ent->s.torsoAnim, &ent->s.legsAnim, setAnimParts, anim, setAnimFlags,
+		PM_SetAnimFinal(&ent->s.torsoAnim, &ent->s.legsAnim, set_anim_parts, anim, set_anim_flags,
 		                &ent->s.torsoAnimTimer, &ent->s.legsAnimTimer, ent);
 	}
 }

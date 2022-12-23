@@ -2440,7 +2440,7 @@ Q3_SetBState
   Argument		:  int entID
   Argument		: const char *bs_name
 FIXME: this should be a general NPC wrapper function
-	that is called ANY time	a bState is changed...
+	that is called ANY time	a b_state is changed...
 ============
 */
 static qboolean Q3_SetBState(int entID, const char* bs_name)
@@ -2510,7 +2510,7 @@ static qboolean Q3_SetBState(int entID, const char* bs_name)
 	ent->NPC->aiFlags &= ~NPCAI_TOUCHED_GOAL;
 
 	//	if ( bSID == BS_FLY )
-	//	{//FIXME: need a set bState wrapper
+	//	{//FIXME: need a set b_state wrapper
 	//		ent->client->moveType = MT_FLYSWIM;
 	//	}
 	//	else
@@ -3171,7 +3171,7 @@ Q3_SetWeapon
   Argument		: const char *wp_name
 ============
 */
-extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void ChangeWeapon(const gentity_t* ent, int new_weapon);
 static void Q3_SetWeapon(int entID, const char* wp_name)
 {
 	gentity_t* ent = &g_entities[entID];

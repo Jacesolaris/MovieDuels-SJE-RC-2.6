@@ -98,9 +98,9 @@ Coordinates are 640*480 virtual values
 A width of 0 will draw with the original image width
 =================
 */
-void CG_DrawPic(const float x, const float y, const float width, const float height, const qhandle_t hShader)
+void CG_DrawPic(const float x, const float y, const float width, const float height, const qhandle_t h_shader)
 {
-	cgi_R_DrawStretchPic(x, y, width, height, 0, 0, 1, 1, hShader);
+	cgi_R_DrawStretchPic(x, y, width, height, 0, 0, 1, 1, h_shader);
 }
 
 /*
@@ -113,9 +113,9 @@ Can also specify the exact texture coordinates
 =================
 */
 void CG_DrawPic2(const float x, const float y, const float width, const float height, const float s1, const float t1,
-                 const float s2, const float t2, const qhandle_t hShader)
+                 const float s2, const float t2, const qhandle_t h_shader)
 {
-	cgi_R_DrawStretchPic(x, y, width, height, s1, t1, s2, t2, hShader);
+	cgi_R_DrawStretchPic(x, y, width, height, s1, t1, s2, t2, h_shader);
 }
 
 /*
@@ -128,10 +128,10 @@ rotates around the upper right corner of the passed in point
 =================
 */
 void CG_DrawRotatePic(const float x, const float y, const float width, const float height, const float angle,
-                      const qhandle_t hShader,
-                      const float aspectCorrection)
+                      const qhandle_t h_shader,
+                      const float aspect_correction)
 {
-	cgi_R_DrawRotatePic(x, y, width, height, 0, 0, 1, 1, angle, hShader, aspectCorrection);
+	cgi_R_DrawRotatePic(x, y, width, height, 0, 0, 1, 1, angle, h_shader, aspect_correction);
 }
 
 /*
@@ -144,10 +144,10 @@ Actually rotates around the center point of the passed in coordinates
 =================
 */
 void CG_DrawRotatePic2(const float x, const float y, const float width, const float height, const float angle,
-                       const qhandle_t hShader,
-                       const float aspectCorrection)
+                       const qhandle_t h_shader,
+                       const float aspect_correction)
 {
-	cgi_R_DrawRotatePic2(x, y, width, height, 0, 0, 1, 1, angle, hShader, aspectCorrection);
+	cgi_R_DrawRotatePic2(x, y, width, height, 0, 0, 1, 1, angle, h_shader, aspect_correction);
 }
 
 /*
@@ -203,8 +203,8 @@ to a fixed color.
 Coordinates are at 640 by 480 virtual resolution
 ==================
 */
-void CG_DrawStringExt(const int x, const int y, const char* string, const float* setColor,
-                      const qboolean forceColor, const qboolean shadow, const int charWidth, const int charHeight)
+void CG_DrawStringExt(const int x, const int y, const char* string, const float* set_color,
+                      const qboolean force_color, const qboolean shadow, const int char_width, const int char_height)
 {
 	vec4_t color;
 	const char* s;
@@ -214,7 +214,7 @@ void CG_DrawStringExt(const int x, const int y, const char* string, const float*
 	if (shadow)
 	{
 		color[0] = color[1] = color[2] = 0;
-		color[3] = setColor[3];
+		color[3] = set_color[3];
 		cgi_R_SetColor(color);
 		s = string;
 		xx = x;
@@ -225,8 +225,8 @@ void CG_DrawStringExt(const int x, const int y, const char* string, const float*
 				s += 2;
 				continue;
 			}
-			CG_DrawChar(xx + 2, y + 2, charWidth, charHeight, *s);
-			xx += charWidth;
+			CG_DrawChar(xx + 2, y + 2, char_width, char_height, *s);
+			xx += char_width;
 			s++;
 		}
 	}
@@ -234,22 +234,22 @@ void CG_DrawStringExt(const int x, const int y, const char* string, const float*
 	// draw the colored text
 	s = string;
 	xx = x;
-	cgi_R_SetColor(setColor);
+	cgi_R_SetColor(set_color);
 	while (*s)
 	{
 		if (Q_IsColorString(s))
 		{
-			if (!forceColor)
+			if (!force_color)
 			{
 				memcpy(color, g_color_table[ColorIndex(*(s + 1))], sizeof color);
-				color[3] = setColor[3];
+				color[3] = set_color[3];
 				cgi_R_SetColor(color);
 			}
 			s += 2;
 			continue;
 		}
-		CG_DrawChar(xx, y, charWidth, charHeight, *s);
-		xx += charWidth;
+		CG_DrawChar(xx, y, char_width, char_height, *s);
+		xx += char_width;
 		s++;
 	}
 	cgi_R_SetColor(nullptr);
@@ -296,13 +296,13 @@ This repeats a 64*64 tile graphic to fill the screen around a sized down
 refresh window.
 =============
 */
-static void CG_TileClearBox(const int x, const int y, const int w, const int h, const qhandle_t hShader)
+static void CG_TileClearBox(const int x, const int y, const int w, const int h, const qhandle_t h_shader)
 {
 	const float s1 = x / 64.0;
 	const float t1 = y / 64.0;
 	const float s2 = (x + w) / 64.0;
 	const float t2 = (y + h) / 64.0;
-	cgi_R_DrawStretchPic(x, y, w, h, s1, t1, s2, t2, hShader);
+	cgi_R_DrawStretchPic(x, y, w, h, s1, t1, s2, t2, h_shader);
 }
 
 /*
@@ -346,26 +346,26 @@ void CG_TileClear()
 CG_FadeColor
 ================
 */
-float* CG_FadeColor(const int startMsec, const int totalMsec)
+float* CG_FadeColor(const int start_msec, const int total_msec)
 {
 	static vec4_t color;
 
-	if (startMsec == 0)
+	if (start_msec == 0)
 	{
 		return nullptr;
 	}
 
-	const int t = cg.time - startMsec;
+	const int t = cg.time - start_msec;
 
-	if (t >= totalMsec)
+	if (t >= total_msec)
 	{
 		return nullptr;
 	}
 
 	// fade out
-	if (totalMsec - t < FADE_TIME)
+	if (total_msec - t < FADE_TIME)
 	{
-		color[3] = (totalMsec - t) * 1.0 / FADE_TIME;
+		color[3] = (total_msec - t) * 1.0 / FADE_TIME;
 	}
 	else
 	{
@@ -384,12 +384,12 @@ Take x,y positions as if 640 x 480 and scales them to the proper resolution
 
 ==============
 */
-void CG_DrawNumField(int x, const int y, int width, int value, const int charWidth, const int charHeight,
-                     const int style, const qboolean zeroFill)
+void CG_DrawNumField(int x, const int y, int width, int value, const int char_width, const int char_height,
+                     const int style, const qboolean zero_fill)
 {
 	char num[16];
 	int frame;
-	int xWidth;
+	int x_width;
 
 	if (width < 1)
 	{
@@ -432,40 +432,40 @@ void CG_DrawNumField(int x, const int y, int width, int value, const int charWid
 	switch (style)
 	{
 	case NUM_FONT_SMALL:
-		xWidth = charWidth;
+		x_width = char_width;
 		break;
 	case NUM_FONT_CHUNKY:
-		xWidth = charWidth / 1.2f + 2;
+		x_width = char_width / 1.2f + 2;
 		break;
 	default:
 	case NUM_FONT_BIG:
-		xWidth = charWidth / 2 + 7; //(charWidth/6);
+		x_width = char_width / 2 + 7; //(charWidth/6);
 		break;
 	}
 
-	if (zeroFill)
+	if (zero_fill)
 	{
 		for (int i = 0; i < width - l; i++)
 		{
 			switch (style)
 			{
 			case NUM_FONT_SMALL:
-				CG_DrawPic(x, y, charWidth, charHeight, cgs.media.smallnumberShaders[0]);
+				CG_DrawPic(x, y, char_width, char_height, cgs.media.smallnumberShaders[0]);
 				break;
 			case NUM_FONT_CHUNKY:
-				CG_DrawPic(x, y, charWidth, charHeight, cgs.media.chunkyNumberShaders[0]);
+				CG_DrawPic(x, y, char_width, char_height, cgs.media.chunkyNumberShaders[0]);
 				break;
 			default:
 			case NUM_FONT_BIG:
-				CG_DrawPic(x, y, charWidth, charHeight, cgs.media.numberShaders[0]);
+				CG_DrawPic(x, y, char_width, char_height, cgs.media.numberShaders[0]);
 				break;
 			}
-			x += 2 + xWidth;
+			x += 2 + x_width;
 		}
 	}
 	else
 	{
-		x += 2 + xWidth * (width - l);
+		x += 2 + x_width * (width - l);
 	}
 
 	char* ptr = num;
@@ -479,19 +479,19 @@ void CG_DrawNumField(int x, const int y, int width, int value, const int charWid
 		switch (style)
 		{
 		case NUM_FONT_SMALL:
-			CG_DrawPic(x, y, charWidth, charHeight, cgs.media.smallnumberShaders[frame]);
+			CG_DrawPic(x, y, char_width, char_height, cgs.media.smallnumberShaders[frame]);
 			x++; // For a one line gap
 			break;
 		case NUM_FONT_CHUNKY:
-			CG_DrawPic(x, y, charWidth, charHeight, cgs.media.chunkyNumberShaders[frame]);
+			CG_DrawPic(x, y, char_width, char_height, cgs.media.chunkyNumberShaders[frame]);
 			break;
 		default:
 		case NUM_FONT_BIG:
-			CG_DrawPic(x, y, charWidth, charHeight, cgs.media.numberShaders[frame]);
+			CG_DrawPic(x, y, char_width, char_height, cgs.media.numberShaders[frame]);
 			break;
 		}
 
-		x += xWidth;
+		x += x_width;
 		ptr++;
 		l--;
 	}

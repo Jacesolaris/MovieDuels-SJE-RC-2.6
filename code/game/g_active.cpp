@@ -35,7 +35,7 @@ constexpr auto MIN_NPC_SPEED = 16.0f;
 extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
 extern qboolean Manual_NPCKickAbsorbing(const gentity_t* defender);
 extern void TryUse(gentity_t* ent);
-extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void ChangeWeapon(const gentity_t* ent, int new_weapon);
 extern void ScoreBoardReset(void);
 extern void G_Stumble(gentity_t* hit_ent);
 extern void WP_SaberUpdateMD(gentity_t* self, const usercmd_t* ucmd);

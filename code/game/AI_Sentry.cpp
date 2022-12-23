@@ -21,7 +21,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "b_local.h"
-#include "g_nav.h"
 #include "../cgame/cg_local.h"
 #include "g_functions.h"
 
@@ -112,16 +111,6 @@ void NPC_Sentry_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, co
 
 		self->NPC->localState = LSTATE_ACTIVE;
 	}
-
-	// You got hit, go after the enemy
-	//	if (self->NPC->localState == LSTATE_ASLEEP)
-	//	{
-	//		G_Sound( self, G_SoundIndex("sound/chars/sentry/misc/shieldsopen.wav"));
-	//
-	//		self->flags &= ~FL_SHIELDED;
-	//		NPC_SetAnim( self, SETANIM_BOTH, BOTH_POWERUP1, SETANIM_FLAG_OVERRIDE|SETANIM_FLAG_HOLD );
-	//		self->NPC->localState = LSTATE_WAKEUP;
-	//	}
 }
 
 /*
@@ -129,11 +118,11 @@ void NPC_Sentry_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, co
 Sentry_Fire
 -------------------------
 */
-void Sentry_Fire(void)
+void Sentry_Fire()
 {
 	vec3_t muzzle;
 	static vec3_t forward, vright, up;
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 	int bolt;
 
 	NPC->flags &= ~FL_SHIELDED;
@@ -184,13 +173,12 @@ void Sentry_Fire(void)
 
 	gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->playerModel,
 	                       bolt,
-	                       &boltMatrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
+	                       &bolt_matrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
 	                       nullptr, NPC->s.modelScale);
 
-	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, muzzle);
+	gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, muzzle);
 
 	AngleVectors(NPC->currentAngles, forward, vright, up);
-	//	G_Sound( NPC, G_SoundIndex("sound/chars/sentry/misc/shoot.wav"));
 
 	G_PlayEffect("bryar/muzzle_flash", muzzle, forward);
 
@@ -225,7 +213,7 @@ void Sentry_Fire(void)
 Sentry_MaintainHeight
 -------------------------
 */
-void Sentry_MaintainHeight(void)
+void Sentry_MaintainHeight()
 {
 	float dif;
 
@@ -326,7 +314,7 @@ void Sentry_MaintainHeight(void)
 Sentry_Idle
 -------------------------
 */
-void Sentry_Idle(void)
+void Sentry_Idle()
 {
 	Sentry_MaintainHeight();
 
@@ -353,7 +341,7 @@ void Sentry_Idle(void)
 Sentry_Strafe
 -------------------------
 */
-void Sentry_Strafe(void)
+void Sentry_Strafe()
 {
 	vec3_t end, right;
 	trace_t tr;
@@ -467,7 +455,7 @@ void Sentry_RangedAttack(const qboolean visible, const qboolean advance)
 Sentry_AttackDecision
 -------------------------
 */
-void Sentry_AttackDecision(void)
+void Sentry_AttackDecision()
 {
 	// Always keep a good height off the ground
 	Sentry_MaintainHeight();
@@ -527,7 +515,7 @@ qboolean NPC_CheckPlayerTeamStealth();
 NPC_Sentry_Patrol
 -------------------------
 */
-void NPC_Sentry_Patrol(void)
+void NPC_Sentry_Patrol()
 {
 	Sentry_MaintainHeight();
 
@@ -565,7 +553,7 @@ void NPC_Sentry_Patrol(void)
 NPC_BSSentry_Default
 -------------------------
 */
-void NPC_BSSentry_Default(void)
+void NPC_BSSentry_Default()
 {
 	if (NPC->targetname)
 	{

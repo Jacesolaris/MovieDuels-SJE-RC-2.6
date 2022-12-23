@@ -209,7 +209,7 @@ void Boba_Precache(void)
 }
 
 extern void G_CreateG2AttachedWeaponModel(gentity_t* ent, const char* weaponModel, int bolt_num, int weapon_num);
-extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void ChangeWeapon(const gentity_t* ent, int new_weapon);
 void Boba_ChangeWeapon(int wp)
 {
 	if (NPCS.NPC->s.weapon == wp)

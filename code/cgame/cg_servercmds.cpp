@@ -36,7 +36,7 @@ This is called explicitly when the gamestate is first received,
 and whenever the server updates any serverinfo flagged cvars
 ================
 */
-void CG_ParseServerinfo(void)
+void CG_ParseServerinfo()
 {
 	const char* info = CG_ConfigString(CS_SERVERINFO);
 	cgs.dmflags = atoi(Info_ValueForKey(info, "dmflags"));
@@ -113,10 +113,10 @@ CG_ConfigStringModified
 
 ================
 */
-void CG_RegisterClientModels(int entityNum);
+void CG_RegisterClientModels(int entity_num);
 extern void cgi_R_WorldEffectCommand(const char* command);
 
-static void CG_ConfigStringModified(void)
+static void CG_ConfigStringModified()
 {
 	const int num = atoi(CG_Argv(1));
 

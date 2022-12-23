@@ -223,7 +223,7 @@ enum
 	speech_sound,
 	speech_suspicious,
 	speech_yell,
-	speech_pushed
+	speech_greet
 };
 
 void speaker_speech(const gentity_t* self, const int speech_type, const float fail_chance)
@@ -303,7 +303,7 @@ void speaker_speech(const gentity_t* self, const int speech_type, const float fa
 	case speech_yell:
 		G_AddVoiceEvent(self, Q_irand(EV_ANGER1, EV_ANGER3), 2000);
 		break;
-	case speech_pushed:
+	case speech_greet:
 		G_AddVoiceEvent(self, Q_irand(EV_PUSHED1, EV_PUSHED3), 2000);
 		break;
 	default:

@@ -1740,7 +1740,7 @@ static qboolean CG_CalcViewValues()
 
 	//VectorCopy( cg.refdef.vieworg, cgRefdefVieworg );
 	// shake the camera if necessary
-	CGCam_UpdateSmooth(cg.refdef.vieworg, cg.refdefViewAngles);
+	CGCam_UpdateSmooth(cg.refdef.vieworg);
 	CGCam_UpdateShake(cg.refdef.vieworg, cg.refdefViewAngles);
 
 	/*

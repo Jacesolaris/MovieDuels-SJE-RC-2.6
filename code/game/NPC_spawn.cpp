@@ -302,7 +302,7 @@ void NPC_SetMiscDefaultData(gentity_t* ent)
 {
 	if (ent->spawnflags & SFB_CINEMATIC)
 	{
-		//if a cinematic guy, default us to wait bState
+		//if a cinematic guy, default us to wait b_state
 		ent->NPC->behaviorState = BS_CINEMATIC;
 	}
 	if (ent->client->NPC_class == CLASS_RANCOR)
@@ -1181,7 +1181,7 @@ int NPC_WeaponsForTeam(const team_t team, const int spawnflags, const char* npc_
 	return WP_NONE;
 }
 
-extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void ChangeWeapon(const gentity_t* ent, int new_weapon);
 
 /*
 -------------------------

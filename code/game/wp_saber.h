@@ -73,7 +73,7 @@ constexpr auto MPCOST_PARRYING = -2;
 constexpr auto MPCOST_PARRYING_ATTACKFAKE = -4;
 
 extern void Boba_FireWristMissile(gentity_t* self, int whichMissile);
-extern void Boba_EndWristMissile(const gentity_t* self, int whichMissile);
+extern void Boba_EndWristMissile(const gentity_t* self, int which_missile);
 
 using wristWeapon_t = struct wristWeapon_s
 {

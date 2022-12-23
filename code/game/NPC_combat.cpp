@@ -39,7 +39,7 @@ extern qboolean G_ValidEnemy(const gentity_t* self, const gentity_t* enemy);
 extern qboolean PM_ReloadAnim(int anim);
 extern qboolean PM_WeponRestAnim(int anim);
 
-void ChangeWeapon(const gentity_t* ent, int newWeapon);
+void ChangeWeapon(const gentity_t* ent, int new_weapon);
 
 void G_ClearEnemy(gentity_t* self)
 {
@@ -779,7 +779,7 @@ void G_SetEnemy(gentity_t* self, gentity_t* enemy)
 	self->enemy = enemy;
 }
 
-void ChangeWeapon(const gentity_t* ent, const int newWeapon)
+void ChangeWeapon(const gentity_t* ent, const int new_weapon)
 {
 	if (!ent || !ent->client || !ent->NPC)
 	{
@@ -791,13 +791,13 @@ void ChangeWeapon(const gentity_t* ent, const int newWeapon)
 		return;
 	}
 
-	ent->client->ps.weapon = newWeapon;
+	ent->client->ps.weapon = new_weapon;
 	ent->NPC->shotTime = 0;
 	ent->NPC->burstCount = 0;
 	ent->NPC->attackHold = 0;
-	ent->NPC->currentAmmo = ent->client->ps.ammo[weaponData[newWeapon].ammoIndex];
+	ent->NPC->currentAmmo = ent->client->ps.ammo[weaponData[new_weapon].ammoIndex];
 
-	switch (newWeapon)
+	switch (new_weapon)
 	{
 	case WP_BRYAR_PISTOL: //prifle
 		ent->NPC->aiFlags &= ~NPCAI_BURST_WEAPON;
@@ -1917,9 +1917,9 @@ float NPC_MaxDistSquaredForWeapon()
 	}
 }
 
-qboolean NPC_EnemyTooFar(const gentity_t* enemy, float dist, const qboolean toShoot)
+qboolean NPC_EnemyTooFar(const gentity_t* enemy, float dist, const qboolean to_shoot)
 {
-	if (!toShoot)
+	if (!to_shoot)
 	{
 		//Not trying to actually press fire button with this check
 		if (NPC->client->ps.weapon == WP_SABER)
@@ -1959,8 +1959,8 @@ You can mix and match any of those options (example: find closest visible player
 
 FIXME: this should go through the snapshot and find the closest enemy
 */
-gentity_t* NPC_PickEnemy(const gentity_t* closestTo, const int enemyTeam, const qboolean checkVis,
-                         const qboolean findPlayersFirst, const qboolean findClosest)
+gentity_t* NPC_PickEnemy(const gentity_t* closest_to, const int enemy_team, const qboolean check_vis,
+                         const qboolean find_players_first, const qboolean find_closest)
 {
 	int num_choices = 0;
 	int choice[128]; //FIXME: need a different way to determine how many choices?
@@ -1973,7 +1973,7 @@ gentity_t* NPC_PickEnemy(const gentity_t* closestTo, const int enemyTeam, const 
 	int vis_checks = CHECK_360 | CHECK_FOV | CHECK_VISRANGE;
 	int min_vis = VIS_FOV;
 
-	if (enemyTeam == TEAM_NEUTRAL)
+	if (enemy_team == TEAM_NEUTRAL)
 	{
 		return nullptr;
 	}
@@ -1988,7 +1988,7 @@ gentity_t* NPC_PickEnemy(const gentity_t* closestTo, const int enemyTeam, const 
 		min_vis = VIS_360;
 	}
 
-	if (findPlayersFirst)
+	if (find_players_first)
 	{
 		//try to find a player first
 		newenemy = &g_entities[0];
@@ -2023,7 +2023,7 @@ gentity_t* NPC_PickEnemy(const gentity_t* closestTo, const int enemyTeam, const 
 
 							if (!failed)
 							{
-								VectorSubtract(closestTo->currentOrigin, newenemy->currentOrigin, diff);
+								VectorSubtract(closest_to->currentOrigin, newenemy->currentOrigin, diff);
 								rel_dist = VectorLengthSquared(diff);
 								if (newenemy->client->hiddenDist > 0)
 								{
@@ -2063,23 +2063,21 @@ gentity_t* NPC_PickEnemy(const gentity_t* closestTo, const int enemyTeam, const 
 
 								if (!failed)
 								{
-									if (findClosest)
+									if (find_closest)
 									{
 										if (rel_dist < best_dist)
 										{
 											if (!NPC_EnemyTooFar(newenemy, rel_dist, qfalse))
 											{
-												if (checkVis)
+												if (check_vis)
 												{
 													if (NPC_CheckVisibility(newenemy, vis_checks) == min_vis)
 													{
-														best_dist = rel_dist;
 														closest_enemy = newenemy;
 													}
 												}
 												else
 												{
-													best_dist = rel_dist;
 													closest_enemy = newenemy;
 												}
 											}
@@ -2087,7 +2085,7 @@ gentity_t* NPC_PickEnemy(const gentity_t* closestTo, const int enemyTeam, const 
 									}
 									else if (!NPC_EnemyTooFar(newenemy, 0, qfalse))
 									{
-										if (checkVis)
+										if (check_vis)
 										{
 											if (NPC_CheckVisibility(newenemy, CHECK_360 | CHECK_FOV | CHECK_VISRANGE) ==
 												VIS_FOV)
@@ -2109,7 +2107,7 @@ gentity_t* NPC_PickEnemy(const gentity_t* closestTo, const int enemyTeam, const 
 		}
 	}
 
-	if (findClosest && closest_enemy)
+	if (find_closest && closest_enemy)
 	{
 		return closest_enemy;
 	}
@@ -2133,10 +2131,10 @@ gentity_t* NPC_PickEnemy(const gentity_t* closestTo, const int enemyTeam, const 
 			if (newenemy->health > 0)
 			{
 				if (newenemy->client && NPC_ValidEnemy(newenemy)
-					|| !newenemy->client && newenemy->noDamageTeam == enemyTeam)
+					|| !newenemy->client && newenemy->noDamageTeam == enemy_team)
 				{
 					//FIXME:  check for range and FOV or vis?
-					if (NPC->client->playerTeam == TEAM_PLAYER && enemyTeam == TEAM_PLAYER)
+					if (NPC->client->playerTeam == TEAM_PLAYER && enemy_team == TEAM_PLAYER)
 					{
 						//player allies turning on ourselves?  How?
 						if (newenemy->s.number)
@@ -2169,7 +2167,7 @@ gentity_t* NPC_PickEnemy(const gentity_t* closestTo, const int enemyTeam, const 
 							}
 						}
 
-						VectorSubtract(closestTo->currentOrigin, newenemy->currentOrigin, diff);
+						VectorSubtract(closest_to->currentOrigin, newenemy->currentOrigin, diff);
 						rel_dist = VectorLengthSquared(diff);
 						if (newenemy->client && newenemy->client->hiddenDist > 0)
 						{
@@ -2204,17 +2202,14 @@ gentity_t* NPC_PickEnemy(const gentity_t* closestTo, const int enemyTeam, const 
 							}
 						}
 
-						if (findClosest)
+						if (find_closest)
 						{
 							if (rel_dist < best_dist)
 							{
 								if (!NPC_EnemyTooFar(newenemy, rel_dist, qfalse))
 								{
-									if (checkVis)
+									if (check_vis)
 									{
-										//FIXME: NPCs need to be able to pick up other NPCs behind them,
-										//but for now, commented out because it was picking up enemies it shouldn't
-										//if ( NPC_CheckVisibility ( newenemy, CHECK_360|CHECK_VISRANGE ) >= VIS_360 )
 										if (NPC_CheckVisibility(newenemy, vis_checks) == min_vis)
 										{
 											best_dist = rel_dist;
@@ -2231,7 +2226,7 @@ gentity_t* NPC_PickEnemy(const gentity_t* closestTo, const int enemyTeam, const 
 						}
 						else if (!NPC_EnemyTooFar(newenemy, 0, qfalse))
 						{
-							if (checkVis)
+							if (check_vis)
 							{
 								if (NPC_CheckVisibility(newenemy, CHECK_360 | CHECK_VISRANGE) >= VIS_360)
 								{
@@ -2249,7 +2244,7 @@ gentity_t* NPC_PickEnemy(const gentity_t* closestTo, const int enemyTeam, const 
 		}
 	}
 
-	if (findClosest)
+	if (find_closest)
 	{
 		//FIXME: you can pick up an enemy around a corner this way.
 		return closest_enemy;
@@ -2269,8 +2264,8 @@ gentity_t *NPC_PickAlly ( void )
   Simply returns closest visible ally
 */
 
-gentity_t* NPC_PickAlly(const qboolean facingEachOther, const float range, const qboolean ignoreGroup,
-                        const qboolean movingOnly)
+gentity_t* NPC_PickAlly(const qboolean facing_each_other, const float range, const qboolean ignore_group,
+                        const qboolean moving_only)
 {
 	gentity_t* closest_ally = nullptr;
 	float best_dist = range;
@@ -2288,7 +2283,7 @@ gentity_t* NPC_PickAlly(const qboolean facingEachOther, const float range, const
 				{
 					vec3_t diff;
 					//if on same team or if player is disguised as your team
-					if (ignoreGroup)
+					if (ignore_group)
 					{
 						if (ally == NPC->client->leader)
 						{
@@ -2307,7 +2302,7 @@ gentity_t* NPC_PickAlly(const qboolean facingEachOther, const float range, const
 						continue;
 					}
 
-					if (movingOnly && ally->client && NPC->client)
+					if (moving_only && ally->client && NPC->client)
 					{
 						//They have to be moving relative to each other
 						if (!DistanceSquared(ally->client->ps.velocity, NPC->client->ps.velocity))
@@ -2320,7 +2315,7 @@ gentity_t* NPC_PickAlly(const qboolean facingEachOther, const float range, const
 					const float rel_dist = VectorNormalize(diff);
 					if (rel_dist < best_dist)
 					{
-						if (facingEachOther)
+						if (facing_each_other)
 						{
 							vec3_t vf;
 
@@ -2360,7 +2355,7 @@ gentity_t* NPC_PickAlly(const qboolean facingEachOther, const float range, const
 	return closest_ally;
 }
 
-gentity_t* NPC_CheckEnemy(const qboolean findNew, const qboolean tooFarOk, const qboolean setEnemy)
+gentity_t* NPC_CheckEnemy(const qboolean find_new, const qboolean too_far_ok, const qboolean set_enemy)
 {
 	qboolean forcefind_new = qfalse;
 	gentity_t* new_enemy = nullptr;
@@ -2369,7 +2364,7 @@ gentity_t* NPC_CheckEnemy(const qboolean findNew, const qboolean tooFarOk, const
 	{
 		if (!NPC->enemy->inuse) //|| NPC->enemy == NPC )//wtf?  NPCs should never get mad at themselves!
 		{
-			if (setEnemy)
+			if (set_enemy)
 			{
 				G_ClearEnemy(NPC);
 			}
@@ -2379,7 +2374,7 @@ gentity_t* NPC_CheckEnemy(const qboolean findNew, const qboolean tooFarOk, const
 	if (NPC->svFlags & SVF_IGNORE_ENEMIES)
 	{
 		//We're ignoring all enemies for now
-		if (setEnemy)
+		if (set_enemy)
 		{
 			G_ClearEnemy(NPC);
 		}
@@ -2416,14 +2411,14 @@ gentity_t* NPC_CheckEnemy(const qboolean findNew, const qboolean tooFarOk, const
 	{
 		if (NPC_EnemyTooFar(NPC->enemy, 0, qfalse))
 		{
-			if (findNew)
+			if (find_new)
 			{
 				//See if there is a close one and take it if so, else keep this one
 				forcefind_new = qtrue;
 			}
-			else if (!tooFarOk) //FIXME: don't need this extra bool any more
+			else if (!too_far_ok) //FIXME: don't need this extra bool any more
 			{
-				if (setEnemy)
+				if (set_enemy)
 				{
 					G_ClearEnemy(NPC);
 				}
@@ -2475,7 +2470,7 @@ gentity_t* NPC_CheckEnemy(const qboolean findNew, const qboolean tooFarOk, const
 	{
 		if (NPC->enemy->health <= 0 || NPC->enemy->flags & FL_NOTARGET)
 		{
-			if (setEnemy)
+			if (set_enemy)
 			{
 				G_ClearEnemy(NPC);
 			}
@@ -2498,7 +2493,7 @@ gentity_t* NPC_CheckEnemy(const qboolean findNew, const qboolean tooFarOk, const
 				{
 					//They have a different enemy, take it!
 					new_enemy = NPCInfo->defendEnt->enemy;
-					if (setEnemy)
+					if (set_enemy)
 					{
 						G_SetEnemy(NPC, NPCInfo->defendEnt->enemy);
 					}
@@ -2518,12 +2513,12 @@ gentity_t* NPC_CheckEnemy(const qboolean findNew, const qboolean tooFarOk, const
 		//NOTE: cantHitEnemyCounter >= 100 means we couldn't hit enemy for a full
 		//	10 seconds, so give up.  This means even if we're chasing him, we would
 		//	try to find another enemy after 10 seconds (assuming the cantHitEnemyCounter
-		//	is allowed to increment in a chasing bState)
+		//	is allowed to increment in a chasing b_state)
 		qboolean foundenemy = qfalse;
 
-		if (!findNew)
+		if (!find_new)
 		{
-			if (setEnemy)
+			if (set_enemy)
 			{
 				NPC->lastEnemy = NPC->enemy;
 				G_ClearEnemy(NPC);
@@ -2543,7 +2538,7 @@ gentity_t* NPC_CheckEnemy(const qboolean findNew, const qboolean tooFarOk, const
 			if (new_enemy)
 			{
 				foundenemy = qtrue;
-				if (setEnemy)
+				if (set_enemy)
 				{
 					G_SetEnemy(NPC, new_enemy);
 				}
@@ -2554,7 +2549,7 @@ gentity_t* NPC_CheckEnemy(const qboolean findNew, const qboolean tooFarOk, const
 		{
 			if (!foundenemy)
 			{
-				if (setEnemy)
+				if (set_enemy)
 				{
 					NPC->lastEnemy = NPC->enemy;
 					G_ClearEnemy(NPC);
@@ -2636,7 +2631,7 @@ NPC_ShotEntity
 -------------------------
 */
 
-int NPC_ShotEntity(const gentity_t* ent, vec3_t impactPos)
+int NPC_ShotEntity(const gentity_t* ent, vec3_t impact_pos)
 {
 	if (NPC == nullptr || ent == nullptr)
 		return qfalse;
@@ -2682,10 +2677,10 @@ int NPC_ShotEntity(const gentity_t* ent, vec3_t impactPos)
 		gi.trace(&tr, muzzle, nullptr, nullptr, targ, NPC->s.number, MASK_SHOT, static_cast<EG2_Collision>(0), 0);
 	}
 	//FIXME: if using a bouncing weapon like the bowcaster, should we check the reflection of the wall, too?
-	if (impactPos)
+	if (impact_pos)
 	{
 		//they want to know *where* the hit would be, too
-		VectorCopy(tr.endpos, impactPos);
+		VectorCopy(tr.endpos, impact_pos);
 	}
 	/* // NPCs should be able to shoot even if the muzzle would be inside their target
 		if ( tr.startsolid || tr.allsolid )
@@ -2991,7 +2986,7 @@ float IdealDistance()
 }
 
 /*QUAKED point_combat (0.7 0 0.7) (-20 -20 -24) (20 20 45) DUCK FLEE INVESTIGATE SQUAD LEAN SNIPE
-NPCs in bState BS_COMBAT_POINT will find their closest empty combat_point
+NPCs in b_state BS_COMBAT_POINT will find their closest empty combat_point
 
 DUCK - NPC will duck and fire from this point, NOT IMPLEMENTED?
 FLEE - Will choose this point when running
@@ -3129,14 +3124,14 @@ constexpr auto MIN_AVOID_DISTANCE = 128;
 #define MIN_AVOID_DISTANCE_SQUARED	( MIN_AVOID_DISTANCE * MIN_AVOID_DISTANCE )
 constexpr auto CP_COLLECT_RADIUS = 512.0f;
 
-int NPC_FindCombatPoint(const vec3_t position, const vec3_t avoidPosition, vec3_t destPosition, const int flags,
-                        float avoidDist, const int ignorePoint)
+int NPC_FindCombatPoint(const vec3_t position, const vec3_t avoid_position, vec3_t dest_position, const int flags,
+                        float avoid_dist, const int ignore_point)
 {
 	combatPoint_m points;
 
 	constexpr int best = -1; //, cost, bestCost = Q3_INFINITE, waypoint = WAYPOINT_NONE, destWaypoint = WAYPOINT_NONE;
 	trace_t tr;
-	float collRad = CP_COLLECT_RADIUS;
+	float coll_rad = CP_COLLECT_RADIUS;
 	vec3_t enemyPosition;
 	const float vis_range_sq = NPCInfo->stats.visrange * NPCInfo->stats.visrange;
 	const bool use_horiz_dist = NPC->s.weapon == WP_THERMAL || flags & CP_HORZ_DIST_COLL;
@@ -3145,42 +3140,42 @@ int NPC_FindCombatPoint(const vec3_t position, const vec3_t avoidPosition, vec3_
 	{
 		VectorCopy(NPC->enemy->currentOrigin, enemyPosition);
 	}
-	else if (avoidPosition)
+	else if (avoid_position)
 	{
-		VectorCopy(avoidPosition, enemyPosition);
+		VectorCopy(avoid_position, enemyPosition);
 	}
-	else if (destPosition)
+	else if (dest_position)
 	{
-		VectorCopy(destPosition, enemyPosition);
+		VectorCopy(dest_position, enemyPosition);
 	}
 	else
 	{
 		VectorCopy(NPC->currentOrigin, enemyPosition);
 	}
 
-	if (avoidDist <= 0)
+	if (avoid_dist <= 0)
 	{
-		avoidDist = MIN_AVOID_DISTANCE_SQUARED;
+		avoid_dist = MIN_AVOID_DISTANCE_SQUARED;
 	}
 	else
 	{
-		avoidDist *= avoidDist;
+		avoid_dist *= avoid_dist;
 	}
 
 	//Collect our nearest points
 	if (flags & CP_NO_PVS || flags & CP_TRYFAR)
 	{
 		//much larger radius since most will be dropped?
-		collRad = CP_COLLECT_RADIUS * 4;
+		coll_rad = CP_COLLECT_RADIUS * 4;
 	}
-	NPC_CollectCombatPoints(destPosition, collRad, points, flags); //position
+	NPC_CollectCombatPoints(dest_position, coll_rad, points, flags); //position
 
 	for (const auto& point : points)
 	{
 		const int i = point.second;
 
 		//Must not be one we want to ignore
-		if (i == ignorePoint)
+		if (i == ignore_point)
 		{
 			continue;
 		}
@@ -3217,8 +3212,8 @@ int NPC_FindCombatPoint(const vec3_t position, const vec3_t avoidPosition, vec3_
 		}
 
 		//Avoid this position?
-		if (avoidPosition && !(flags & CP_AVOID_ENEMY) && flags & CP_AVOID && DistanceSquared(
-			level.combatPoints[i].origin, avoidPosition) < avoidDist)
+		if (avoid_position && !(flags & CP_AVOID_ENEMY) && flags & CP_AVOID && DistanceSquared(
+			level.combatPoints[i].origin, avoid_position) < avoid_dist)
 		{
 			continue;
 		}
@@ -3253,14 +3248,14 @@ int NPC_FindCombatPoint(const vec3_t position, const vec3_t avoidPosition, vec3_
 		if (flags & CP_AVOID_ENEMY)
 		{
 			//Can't be too close to the enemy
-			if (dist_sq_point_to_enemy < avoidDist)
+			if (dist_sq_point_to_enemy < avoid_dist)
 			{
 				continue;
 			}
 
 			// otherwise, if currently safe and the path is not safe, ignore this point
-			if (dist_sq_npc_to_enemy > avoidDist &&
-				!NAV::SafePathExists(position, level.combatPoints[i].origin, enemyPosition, avoidDist))
+			if (dist_sq_npc_to_enemy > avoid_dist &&
+				!NAV::SafePathExists(position, level.combatPoints[i].origin, enemyPosition, avoid_dist))
 			{
 				continue;
 			}
@@ -3305,67 +3300,67 @@ int NPC_FindCombatPoint(const vec3_t position, const vec3_t avoidPosition, vec3_
 }
 
 int NPC_FindCombatPointRetry(const vec3_t position,
-                             const vec3_t avoidPosition,
-                             vec3_t destPosition,
-                             int* cpFlags,
-                             const float avoidDist,
-                             const int ignorePoint)
+                             const vec3_t avoid_position,
+                             vec3_t dest_position,
+                             int* cp_flags,
+                             const float avoid_dist,
+                             const int ignore_point)
 {
 	int cp = NPC_FindCombatPoint(position,
-	                             avoidPosition,
-	                             destPosition,
-	                             *cpFlags,
-	                             avoidDist,
-	                             ignorePoint);
-	while (cp == -1 && (*cpFlags & ~CP_HAS_ROUTE) != CP_ANY)
+	                             avoid_position,
+	                             dest_position,
+	                             *cp_flags,
+	                             avoid_dist,
+	                             ignore_point);
+	while (cp == -1 && (*cp_flags & ~CP_HAS_ROUTE) != CP_ANY)
 	{
 		//start "OR"ing out certain flags to see if we can find *any* point
-		if (*cpFlags & CP_INVESTIGATE)
+		if (*cp_flags & CP_INVESTIGATE)
 		{
 			//don't need to investigate
-			*cpFlags &= ~CP_INVESTIGATE;
+			*cp_flags &= ~CP_INVESTIGATE;
 		}
-		else if (*cpFlags & CP_SQUAD)
+		else if (*cp_flags & CP_SQUAD)
 		{
 			//don't need to stick to squads
-			*cpFlags &= ~CP_SQUAD;
+			*cp_flags &= ~CP_SQUAD;
 		}
-		else if (*cpFlags & CP_DUCK)
+		else if (*cp_flags & CP_DUCK)
 		{
 			//don't need to duck
-			*cpFlags &= ~CP_DUCK;
+			*cp_flags &= ~CP_DUCK;
 		}
-		else if (*cpFlags & CP_NEAREST)
+		else if (*cp_flags & CP_NEAREST)
 		{
 			//don't need closest one to me
-			*cpFlags &= ~CP_NEAREST;
+			*cp_flags &= ~CP_NEAREST;
 		}
-		else if (*cpFlags & CP_FLANK)
+		else if (*cp_flags & CP_FLANK)
 		{
 			//don't need to flank enemy
-			*cpFlags &= ~CP_FLANK;
+			*cp_flags &= ~CP_FLANK;
 		}
-		else if (*cpFlags & CP_SAFE)
+		else if (*cp_flags & CP_SAFE)
 		{
 			//don't need one that hasn't been shot at recently
-			*cpFlags &= ~CP_SAFE;
+			*cp_flags &= ~CP_SAFE;
 		}
-		else if (*cpFlags & CP_CLOSEST)
+		else if (*cp_flags & CP_CLOSEST)
 		{
 			//don't need to get closest to enemy
-			*cpFlags &= ~CP_CLOSEST;
+			*cp_flags &= ~CP_CLOSEST;
 			//but let's try to approach at least
-			*cpFlags |= CP_APPROACH_ENEMY;
+			*cp_flags |= CP_APPROACH_ENEMY;
 		}
-		else if (*cpFlags & CP_APPROACH_ENEMY)
+		else if (*cp_flags & CP_APPROACH_ENEMY)
 		{
 			//don't need to approach enemy
-			*cpFlags &= ~CP_APPROACH_ENEMY;
+			*cp_flags &= ~CP_APPROACH_ENEMY;
 		}
-		else if (*cpFlags & CP_COVER)
+		else if (*cp_flags & CP_COVER)
 		{
 			//don't need cover
-			*cpFlags &= ~CP_COVER;
+			*cp_flags &= ~CP_COVER;
 			//but let's pick one that makes us duck
 			//*cpFlags |= CP_DUCK;
 		}
@@ -3378,27 +3373,27 @@ int NPC_FindCombatPointRetry(const vec3_t position,
 		//	{//don't need to avoid enemy
 		//		*cpFlags &= ~CP_AVOID_ENEMY;
 		//	}
-		else if (*cpFlags & CP_RETREAT)
+		else if (*cp_flags & CP_RETREAT)
 		{
 			//don't need to retreat
-			*cpFlags &= ~CP_RETREAT;
+			*cp_flags &= ~CP_RETREAT;
 		}
-		else if (*cpFlags & CP_FLEE)
+		else if (*cp_flags & CP_FLEE)
 		{
 			//don't need to flee
-			*cpFlags &= ~CP_FLEE;
+			*cp_flags &= ~CP_FLEE;
 			//but at least avoid enemy and pick one that gives cover
-			*cpFlags |= CP_COVER | CP_AVOID_ENEMY;
+			*cp_flags |= CP_COVER | CP_AVOID_ENEMY;
 		}
-		else if (*cpFlags & CP_AVOID)
+		else if (*cp_flags & CP_AVOID)
 		{
 			//okay, even pick one right by me
-			*cpFlags &= ~CP_AVOID;
+			*cp_flags &= ~CP_AVOID;
 		}
-		else if (*cpFlags & CP_SHORTEST_PATH)
+		else if (*cp_flags & CP_SHORTEST_PATH)
 		{
 			//okay, don't need the one with the shortest path
-			*cpFlags &= ~CP_SHORTEST_PATH;
+			*cp_flags &= ~CP_SHORTEST_PATH;
 		}
 		else
 		{
@@ -3417,11 +3412,11 @@ int NPC_FindCombatPointRetry(const vec3_t position,
 		}
 		//now try again
 		cp = NPC_FindCombatPoint(position,
-		                         avoidPosition,
-		                         destPosition,
-		                         *cpFlags,
-		                         avoidDist,
-		                         ignorePoint);
+		                         avoid_position,
+		                         dest_position,
+		                         *cp_flags,
+		                         avoid_dist,
+		                         ignore_point);
 	}
 	return cp;
 }

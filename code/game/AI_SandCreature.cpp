@@ -76,24 +76,24 @@ void NPC_SandCreature_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* oth
 		            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART);
 		G_AddEvent(self, EV_PAIN, Q_irand(0, 100));
 		TIMER_Set(self, "pain", self->client->ps.legsAnimTimer + Q_irand(500, 2000));
-		const float playerDist = Distance(player->currentOrigin, self->currentOrigin);
-		if (playerDist < 256)
+		const float player_dist = Distance(player->currentOrigin, self->currentOrigin);
+		if (player_dist < 256)
 		{
-			CGCam_Shake(1.0f * playerDist / 128.0f, self->client->ps.legsAnimTimer);
+			CGCam_Shake(1.0f * player_dist / 128.0f, self->client->ps.legsAnimTimer);
 		}
 	}
 	self->enemy = self->NPC->goalEntity = nullptr;
 }
 
-void SandCreature_MoveEffect(void)
+void SandCreature_MoveEffect()
 {
 	constexpr vec3_t up = {0, 0, 1};
 	const vec3_t org = {NPC->currentOrigin[0], NPC->currentOrigin[1], NPC->absmin[2] + 2};
 
-	const float playerDist = Distance(player->currentOrigin, NPC->currentOrigin);
-	if (playerDist < 256)
+	const float player_dist = Distance(player->currentOrigin, NPC->currentOrigin);
+	if (player_dist < 256)
 	{
-		CGCam_Shake(0.75f * playerDist / 256.0f, 250);
+		CGCam_Shake(0.75f * player_dist / 256.0f, 250);
 	}
 
 	if (level.time - NPC->client->ps.lastStationary > 2000)
@@ -179,15 +179,15 @@ qboolean SandCreature_CheckAhead(vec3_t end)
 	//This is a work around
 	const float radius = NPC->maxs[0] > NPC->maxs[1] ? NPC->maxs[0] : NPC->maxs[1];
 	const float dist = Distance(NPC->currentOrigin, end);
-	const float tFrac = 1.0f - radius / dist;
+	const float t_frac = 1.0f - radius / dist;
 
-	if (trace.fraction >= tFrac)
+	if (trace.fraction >= t_frac)
 		return qtrue;
 
 	return qfalse;
 }
 
-qboolean SandCreature_Move(void)
+qboolean SandCreature_Move()
 {
 	qboolean moved;
 	//FIXME should ignore doors..?
@@ -226,11 +226,11 @@ qboolean SandCreature_Move(void)
 	}
 	if (moved && NPC->radius)
 	{
-		vec3_t newPos;
-		const float curTurfRange = DistanceHorizontal(NPC->currentOrigin, NPC->s.origin);
-		VectorMA(NPC->currentOrigin, NPC->client->ps.speed / 100.0f, NPC->client->ps.moveDir, newPos);
-		const float newTurfRange = DistanceHorizontal(newPos, NPC->s.origin);
-		if (newTurfRange > NPC->radius && newTurfRange > curTurfRange)
+		vec3_t new_pos;
+		const float cur_turf_range = DistanceHorizontal(NPC->currentOrigin, NPC->s.origin);
+		VectorMA(NPC->currentOrigin, NPC->client->ps.speed / 100.0f, NPC->client->ps.moveDir, new_pos);
+		const float new_turf_range = DistanceHorizontal(new_pos, NPC->s.origin);
+		if (new_turf_range > NPC->radius && new_turf_range > cur_turf_range)
 		{
 			//would leave our range
 			//stop
@@ -264,11 +264,11 @@ void SandCreature_Attack(const qboolean miss)
 	}
 	//don't do anything else while in this anim
 	TIMER_Set(NPC, "attacking", NPC->client->ps.legsAnimTimer);
-	const float playerDist = Distance(player->currentOrigin, NPC->currentOrigin);
-	if (playerDist < 256)
+	const float player_dist = Distance(player->currentOrigin, NPC->currentOrigin);
+	if (player_dist < 256)
 	{
 		//FIXME: tone this down
-		CGCam_Shake(0.75f * playerDist / 128.0f, NPC->client->ps.legsAnimTimer);
+		CGCam_Shake(0.75f * player_dist / 128.0f, NPC->client->ps.legsAnimTimer);
 	}
 
 	if (miss)
@@ -277,37 +277,37 @@ void SandCreature_Attack(const qboolean miss)
 		//FIXME: if, during the attack anim, I do end up catching him close to my mouth, then snatch him anyway...
 		if (NPC->enemy && NPC->enemy->client)
 		{
-			vec3_t dir2Enemy;
-			VectorSubtract(NPC->enemy->currentOrigin, NPC->currentOrigin, dir2Enemy);
-			if (dir2Enemy[2] < 30)
+			vec3_t dir2_enemy;
+			VectorSubtract(NPC->enemy->currentOrigin, NPC->currentOrigin, dir2_enemy);
+			if (dir2_enemy[2] < 30)
 			{
-				dir2Enemy[2] = 30;
+				dir2_enemy[2] = 30;
 			}
 			if (g_spskill->integer > 0)
 			{
-				const float enemyDist = VectorNormalize(dir2Enemy);
+				const float enemy_dist = VectorNormalize(dir2_enemy);
 				//FIXME: tone this down, smaller radius
-				if (enemyDist < 200 && NPC->enemy->client->ps.groundEntityNum != ENTITYNUM_NONE)
+				if (enemy_dist < 200 && NPC->enemy->client->ps.groundEntityNum != ENTITYNUM_NONE)
 				{
-					float throwStr = (200 - enemyDist) * 0.4f + 20;
-					if (throwStr > 45)
+					float throw_str = (200 - enemy_dist) * 0.4f + 20;
+					if (throw_str > 45)
 					{
-						throwStr = 45;
+						throw_str = 45;
 					}
-					G_Throw(NPC->enemy, dir2Enemy, throwStr);
+					G_Throw(NPC->enemy, dir2_enemy, throw_str);
 					if (g_spskill->integer > 1)
 					{
 						//knock them down, too
 						if (NPC->enemy->health > 0
-							&& Q_flrand(50, 150) > enemyDist)
+							&& Q_flrand(50, 150) > enemy_dist)
 						{
 							//knock them down
-							G_Knockdown(NPC->enemy, NPC, dir2Enemy, 300, qtrue);
+							G_Knockdown(NPC->enemy, NPC, dir2_enemy, 300, qtrue);
 							if (NPC->enemy->s.number < MAX_CLIENTS)
 							{
 								//make the player look up at me
 								vec3_t vAng;
-								vectoangles(dir2Enemy, vAng);
+								vectoangles(dir2_enemy, vAng);
 								VectorSet(vAng, AngleNormalize180(vAng[PITCH]) * -1,
 								          NPC->enemy->client->ps.viewangles[YAW], 0);
 								SetClientViewAngle(NPC->enemy, vAng);
@@ -342,14 +342,6 @@ void SandCreature_Attack(const qboolean miss)
 					NPC->activator->NPC->nextBStateThink = Q3_INFINITE;
 				}
 			}
-			/*
-			if ( !NPC->activator->s.number )
-			{
-				cg.overrides.active |= (CG_OVERRIDE_3RD_PERSON_CDP|CG_OVERRIDE_3RD_PERSON_RNG);
-				cg.overrides.thirdPersonCameraDamp = 0;
-				cg.overrides.thirdPersonRange = 120;
-			}
-			*/
 		}
 		else
 		{
@@ -360,34 +352,34 @@ void SandCreature_Attack(const qboolean miss)
 
 float SandCreature_EntScore(const gentity_t* ent)
 {
-	float moveSpeed;
+	float move_speed;
 
 	if (ent->client)
 	{
-		moveSpeed = VectorLengthSquared(ent->client->ps.velocity);
+		move_speed = VectorLengthSquared(ent->client->ps.velocity);
 	}
 	else
 	{
-		moveSpeed = VectorLengthSquared(ent->s.pos.trDelta);
+		move_speed = VectorLengthSquared(ent->s.pos.trDelta);
 	}
 	const float dist = DistanceSquared(NPC->currentOrigin, ent->currentOrigin);
-	return moveSpeed - dist;
+	return move_speed - dist;
 }
 
-void SandCreature_SeekEnt(gentity_t* bestEnt, const float score)
+void SandCreature_SeekEnt(gentity_t* best_ent, const float score)
 {
 	NPCInfo->enemyLastSeenTime = level.time;
-	VectorCopy(bestEnt->currentOrigin, NPCInfo->enemyLastSeenLocation);
+	VectorCopy(best_ent->currentOrigin, NPCInfo->enemyLastSeenLocation);
 	NPC_SetMoveGoal(NPC, NPCInfo->enemyLastSeenLocation, 0, qfalse);
 	if (score > MIN_SCORE)
 	{
-		NPC->enemy = bestEnt;
+		NPC->enemy = best_ent;
 	}
 }
 
-void SandCreature_CheckMovingEnts(void)
+void SandCreature_CheckMovingEnts()
 {
-	gentity_t* radiusEnts[128];
+	gentity_t* radius_ents[128];
 	const float radius = NPCInfo->stats.earshot;
 	int i;
 	vec3_t mins, maxs;
@@ -398,28 +390,28 @@ void SandCreature_CheckMovingEnts(void)
 		maxs[i] = NPC->currentOrigin[i] + radius;
 	}
 
-	const int numEnts = gi.EntitiesInBox(mins, maxs, radiusEnts, 128);
-	int bestEnt = -1;
-	float bestScore = 0;
+	const int num_ents = gi.EntitiesInBox(mins, maxs, radius_ents, 128);
+	int best_ent = -1;
+	float best_score = 0;
 
-	for (i = 0; i < numEnts; i++)
+	for (i = 0; i < num_ents; i++)
 	{
-		if (!radiusEnts[i]->inuse)
+		if (!radius_ents[i]->inuse)
 		{
 			continue;
 		}
 
-		if (radiusEnts[i] == NPC)
+		if (radius_ents[i] == NPC)
 		{
 			//Skip the rancor ent
 			continue;
 		}
 
-		if (radiusEnts[i]->client == nullptr)
+		if (radius_ents[i]->client == nullptr)
 		{
 			//must be a client
-			if (radiusEnts[i]->s.eType != ET_MISSILE
-				|| radiusEnts[i]->s.weapon != WP_THERMAL)
+			if (radius_ents[i]->s.eType != ET_MISSILE
+				|| radius_ents[i]->s.weapon != WP_THERMAL)
 			{
 				//not a thermal detonator
 				continue;
@@ -427,43 +419,43 @@ void SandCreature_CheckMovingEnts(void)
 		}
 		else
 		{
-			if (radiusEnts[i]->client->ps.eFlags & EF_HELD_BY_RANCOR)
+			if (radius_ents[i]->client->ps.eFlags & EF_HELD_BY_RANCOR)
 			{
 				//can't be one being held
 				continue;
 			}
 
-			if (radiusEnts[i]->client->ps.eFlags & EF_HELD_BY_WAMPA)
+			if (radius_ents[i]->client->ps.eFlags & EF_HELD_BY_WAMPA)
 			{
 				//can't be one being held
 				continue;
 			}
 
-			if (radiusEnts[i]->client->ps.eFlags & EF_HELD_BY_SAND_CREATURE)
+			if (radius_ents[i]->client->ps.eFlags & EF_HELD_BY_SAND_CREATURE)
 			{
 				//can't be one being held
 				continue;
 			}
 
-			if (radiusEnts[i]->s.eFlags & EF_NODRAW)
+			if (radius_ents[i]->s.eFlags & EF_NODRAW)
 			{
 				//not if invisible
 				continue;
 			}
 
-			if (radiusEnts[i]->client->ps.groundEntityNum != ENTITYNUM_WORLD)
+			if (radius_ents[i]->client->ps.groundEntityNum != ENTITYNUM_WORLD)
 			{
 				//not on the ground
 				continue;
 			}
 
-			if (radiusEnts[i]->client->NPC_class == CLASS_SAND_CREATURE)
+			if (radius_ents[i]->client->NPC_class == CLASS_SAND_CREATURE)
 			{
 				continue;
 			}
 		}
 
-		if (radiusEnts[i]->flags & FL_NOTARGET)
+		if (radius_ents[i]->flags & FL_NOTARGET)
 		{
 			continue;
 		}
@@ -473,17 +465,17 @@ void SandCreature_CheckMovingEnts(void)
 			continue;
 		}
 		*/
-		const float checkScore = SandCreature_EntScore(radiusEnts[i]);
+		const float check_score = SandCreature_EntScore(radius_ents[i]);
 		//FIXME: take mass into account too?  What else?
-		if (checkScore > bestScore)
+		if (check_score > best_score)
 		{
-			bestScore = checkScore;
-			bestEnt = i;
+			best_score = check_score;
+			best_ent = i;
 		}
 	}
-	if (bestEnt != -1)
+	if (best_ent != -1)
 	{
-		SandCreature_SeekEnt(radiusEnts[bestEnt], bestScore);
+		SandCreature_SeekEnt(radius_ents[best_ent], best_score);
 	}
 }
 
@@ -497,7 +489,7 @@ void SandCreature_SeekAlert(const int alert_event)
 	NPC_SetMoveGoal(NPC, NPCInfo->enemyLastSeenLocation, 0, qfalse);
 }
 
-void SandCreature_CheckAlerts(void)
+void SandCreature_CheckAlerts()
 {
 	if (!(NPCInfo->scriptFlags & SCF_IGNORE_ALERTS))
 	{
@@ -514,10 +506,10 @@ void SandCreature_CheckAlerts(void)
 	}
 }
 
-float SandCreature_DistSqToGoal(const qboolean goalIsEnemy)
+float SandCreature_DistSqToGoal(const qboolean goal_is_enemy)
 {
 	float goalDistSq;
-	if (!NPCInfo->goalEntity || goalIsEnemy)
+	if (!NPCInfo->goalEntity || goal_is_enemy)
 	{
 		if (!NPC->enemy)
 		{
@@ -541,7 +533,7 @@ float SandCreature_DistSqToGoal(const qboolean goalIsEnemy)
 	return goalDistSq;
 }
 
-void SandCreature_Chase(void)
+void SandCreature_Chase()
 {
 	if (!NPC->enemy->inuse)
 	{
@@ -587,8 +579,8 @@ void SandCreature_Chase(void)
 	}
 	else
 	{
-		const float enemyScore = SandCreature_EntScore(NPC->enemy);
-		if (enemyScore < MIN_SCORE
+		const float enemy_score = SandCreature_EntScore(NPC->enemy);
+		if (enemy_score < MIN_SCORE
 			&& !(NPC->svFlags & SVF_LOCKEDENEMY))
 		{
 			//too slow or too far away
@@ -621,10 +613,10 @@ void SandCreature_Chase(void)
 		SandCreature_CheckMovingEnts();
 	}
 
-	const float enemyDistSq = SandCreature_DistSqToGoal(qtrue);
+	const float enemy_dist_sq = SandCreature_DistSqToGoal(qtrue);
 
 	//FIXME: keeps chasing goalEntity even when it's already reached it...?
-	if (enemyDistSq >= MIN_ATTACK_DIST_SQ //NPCInfo->goalEntity &&
+	if (enemy_dist_sq >= MIN_ATTACK_DIST_SQ //NPCInfo->goalEntity &&
 		&& level.time - NPCInfo->enemyLastSeenTime <= 3000)
 	{
 		//sensed enemy (or something) less than 3 seconds ago
@@ -646,7 +638,7 @@ void SandCreature_Chase(void)
 		}
 	}
 
-	if (enemyDistSq < MIN_ATTACK_DIST_SQ)
+	if (enemy_dist_sq < MIN_ATTACK_DIST_SQ)
 	{
 		if (NPC->enemy->client)
 		{
@@ -658,8 +650,8 @@ void SandCreature_Chase(void)
 			SandCreature_Attack(qfalse);
 		}
 	}
-	else if (enemyDistSq < MAX_MISS_DIST_SQ
-		&& enemyDistSq > MIN_MISS_DIST_SQ
+	else if (enemy_dist_sq < MAX_MISS_DIST_SQ
+		&& enemy_dist_sq > MIN_MISS_DIST_SQ
 		&& NPC->enemy->client
 		&& TIMER_Done(NPC, "breaching")
 		&& TIMER_Done(NPC, "missDebounce")
@@ -676,7 +668,7 @@ void SandCreature_Chase(void)
 	}
 }
 
-void SandCreature_Hunt(void)
+void SandCreature_Hunt()
 {
 	SandCreature_CheckAlerts();
 	SandCreature_CheckMovingEnts();
@@ -697,7 +689,7 @@ void SandCreature_Hunt(void)
 	}
 }
 
-void SandCreature_Sleep(void)
+void SandCreature_Sleep()
 {
 	SandCreature_CheckAlerts();
 	SandCreature_CheckMovingEnts();
@@ -715,22 +707,11 @@ void SandCreature_Sleep(void)
 	{
 		NPC_ReachedGoal();
 	}
-	/*
-	if ( UpdateGoal() )
-	{
-		ucmd.buttons |= BUTTON_WALKING;
-		//FIXME: Sand Creatures look silly using waypoints when they can go straight to the goal
-		if ( SandCreature_Move() )
-		{
-			SandCreature_MoveEffect();
-		}
-	}
-	*/
 }
 
 void SandCreature_PushEnts()
 {
-	gentity_t* radiusEnts[128];
+	gentity_t* radius_ents[128];
 	constexpr float radius = 70;
 	vec3_t mins, maxs;
 
@@ -740,29 +721,29 @@ void SandCreature_PushEnts()
 		maxs[i] = NPC->currentOrigin[i] + radius;
 	}
 
-	const int numEnts = gi.EntitiesInBox(mins, maxs, radiusEnts, 128);
-	for (int entIndex = 0; entIndex < numEnts; entIndex++)
+	const int num_ents = gi.EntitiesInBox(mins, maxs, radius_ents, 128);
+	for (int ent_index = 0; ent_index < num_ents; ent_index++)
 	{
 		vec3_t smack_dir;
 		// Only Clients
 		//--------------
-		if (!radiusEnts[entIndex] || !radiusEnts[entIndex]->client || radiusEnts[entIndex] == NPC)
+		if (!radius_ents[ent_index] || !radius_ents[ent_index]->client || radius_ents[ent_index] == NPC)
 		{
 			continue;
 		}
 
 		// Do The Vector Distance Test
 		//-----------------------------
-		VectorSubtract(radiusEnts[entIndex]->currentOrigin, NPC->currentOrigin, smack_dir);
-		const float smackDist = VectorNormalize(smack_dir);
-		if (smackDist < radius)
+		VectorSubtract(radius_ents[ent_index]->currentOrigin, NPC->currentOrigin, smack_dir);
+		const float smack_dist = VectorNormalize(smack_dir);
+		if (smack_dist < radius)
 		{
-			G_Throw(radiusEnts[entIndex], smack_dir, 90);
+			G_Throw(radius_ents[ent_index], smack_dir, 90);
 		}
 	}
 }
 
-void NPC_BSSandCreature_Default(void)
+void NPC_BSSandCreature_Default()
 {
 	qboolean visible = qfalse;
 

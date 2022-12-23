@@ -30,7 +30,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 
-extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void ChangeWeapon(const gentity_t* ent, int new_weapon);
 extern void CG_ChangeWeapon(int num);
 
 //lock the owner into place relative to the cannon pos
@@ -391,7 +391,6 @@ void eweb_use(gentity_t* self, const gentity_t* other, gentity_t* activator)
 
 	G_RemoveWeaponModels(activator);
 
-	extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
 	if (activator->NPC)
 	{
 		ChangeWeapon(activator, WP_EMPLACED_GUN);
@@ -621,8 +620,6 @@ void emplaced_gun_use(gentity_t* self, const gentity_t* other, gentity_t* activa
 		self->activator = activator;
 
 		G_RemoveWeaponModels(activator);
-
-		extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
 		if (activator->NPC)
 		{
 			ChangeWeapon(activator, WP_EMPLACED_GUN);

@@ -29,7 +29,7 @@ extern qboolean NPC_SomeoneLookingAtMe(gentity_t* ent);
 /*
 void NPC_LostEnemyDecideChase(void)
 
-  We lost our enemy and want to drop him but see if we should chase him if we are in the proper bState
+  We lost our enemy and want to drop him but see if we should chase him if we are in the proper b_state
 */
 
 void NPC_LostEnemyDecideChase(void)
