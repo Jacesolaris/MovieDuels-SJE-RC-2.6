@@ -9865,7 +9865,7 @@ void PM_VehFaceHyperspacePoint(bgEntity_t* veh)
 
 void BG_VehicleAdjustBBoxForOrientation(Vehicle_t* veh, vec3_t origin, vec3_t mins, vec3_t maxs,
 	int client_num, int tracemask,
-	void (*localTrace)(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentMask))
+	void (*localTrace)(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int pass_entity_num, int content_mask))
 {
 	if (!veh
 		|| !veh->m_pVehicleInfo->length
@@ -9951,7 +9951,7 @@ PmoveSingle
 */
 extern int BG_EmplacedView(vec3_t base_angles, vec3_t angles, float* new_yaw, float constraint);
 extern qboolean BG_FighterUpdate(Vehicle_t* pVeh, const usercmd_t* pUcmd, vec3_t trMins, vec3_t trMaxs, float gravity,
-	void (*traceFunc)(trace_t* results, const vec3_t start, const vec3_t lmins, const vec3_t lmaxs, const vec3_t end, int passEntityNum, int contentMask)); //FighterNPC.c
+	void (*traceFunc)(trace_t* results, const vec3_t start, const vec3_t lmins, const vec3_t lmaxs, const vec3_t end, int pass_entity_num, int content_mask)); //FighterNPC.c
 
 #define JETPACK_HOVER_HEIGHT	64
 

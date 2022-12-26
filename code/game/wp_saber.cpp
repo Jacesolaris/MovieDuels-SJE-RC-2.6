@@ -7395,16 +7395,13 @@ void WP_SaberDamageTrace(gentity_t* ent, int saber_num, int blade_num)
 		if (ent->health <= 0 && g_saberRealisticCombat->integer < 2)
 		{
 			//so enemies don't keep trying to block it
-			//FIXME: still do damage, just not to humanoid clients who should try to avoid it
-			//baseDamage = 0.0f;
 			return;
 		}
 		//or unless returning
 		if (ent->client->ps.saberEntityState == SES_RETURNING
-			&& !(ent->client->ps.saber[0].saberFlags & SFL_RETURN_DAMAGE)) //type != SABER_STAR )
+			&& !(ent->client->ps.saber[0].saberFlags & SFL_RETURN_DAMAGE))
 		{
 			//special case, since we're returning, chances are if we hit something
-			//it's going to be butt-first.  So do less damage.
 			base_damage = 0.1f;
 		}
 		else
@@ -12746,7 +12743,7 @@ void WP_RunSaber(gentity_t* self, gentity_t* saber)
 
 		//if it's heading back, point it's base at us
 		if (self->client->ps.saberEntityState == SES_RETURNING
-			&& !(self->client->ps.saber[0].saberFlags & SFL_RETURN_DAMAGE)) //type != SABER_STAR )
+			&& !(self->client->ps.saber[0].saberFlags & SFL_RETURN_DAMAGE))
 		{
 			fwdangles[0] += SABER_PITCH_HACK;
 			VectorCopy(fwdangles, saber->s.apos.trBase);
@@ -13161,6 +13158,10 @@ void WP_SaberCatch(gentity_t* self, gentity_t* saber, const qboolean switch_to_s
 
 		//play catch sound
 		G_Sound(saber, G_SoundIndex("sound/weapons/saber/saber_catch.wav"));
+		if (self->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(self)) //NPC only
+		{
+			NPC_SetAnim(self, SETANIM_TORSO, BOTH_STAND1TO2, SETANIM_AFLAG_PACE);
+		}
 		//FIXME: if an NPC, don't turn it back on if no enemy or enemy is dead...
 		//if it's not our current weapon, make it our current weapon
 		if (self->client->ps.weapon == WP_SABER)
@@ -13211,10 +13212,6 @@ void WP_SaberCatch(gentity_t* self, gentity_t* saber, const qboolean switch_to_s
 					//turn all blades on
 					self->client->ps.saber[0].Activate();
 				}
-			}
-			if (self->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(self)) //NPC only
-			{
-				NPC_SetAnim(self, SETANIM_TORSO, BOTH_STAND1TO2, SETANIM_AFLAG_PACE);
 			}
 		}
 	}

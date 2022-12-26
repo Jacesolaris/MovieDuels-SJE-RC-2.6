@@ -676,8 +676,8 @@ void G_MoverTouchPushTriggers(gentity_t* ent, vec3_t old_org)
 	}
 }
 
-static void SV_PMTrace(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentMask) {
-	trap->Trace(results, start, mins, maxs, end, passEntityNum, contentMask, qfalse, 0, 10);
+static void SV_PMTrace(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int pass_entity_num, int content_mask) {
+	trap->Trace(results, start, mins, maxs, end, pass_entity_num, content_mask, qfalse, 0, 10);
 }
 
 /*

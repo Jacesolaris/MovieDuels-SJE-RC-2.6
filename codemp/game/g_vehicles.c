@@ -45,9 +45,9 @@ void Vehicle_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlag
 	ent->s.legsAnim = ent->client->ps.legsAnim;
 }
 
-void G_VehicleTrace(trace_t* results, const vec3_t start, const vec3_t tMins, const vec3_t tMaxs, const vec3_t end, int passEntityNum, int contentmask)
+void G_VehicleTrace(trace_t* results, const vec3_t start, const vec3_t tMins, const vec3_t tMaxs, const vec3_t end, int pass_entity_num, int contentmask)
 {
-	trap->Trace(results, start, tMins, tMaxs, end, passEntityNum, contentmask, qfalse, 0, 0);
+	trap->Trace(results, start, tMins, tMaxs, end, pass_entity_num, contentmask, qfalse, 0, 0);
 }
 
 Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt)

@@ -439,12 +439,12 @@ typedef struct moveclip_s {
 
 	vec3_t		end;
 
-	int			passEntityNum;
+	int			pass_entity_num;
 	int			contentmask;
 	int			capsule;
 
 	int			traceFlags;
-	int			useLod;
+	int			use_lod;
 	trace_t		trace;			// make sure nothing goes under here for Ghoul2 collision purposes
 	/*
 	Ghoul2 Insert End
@@ -512,8 +512,8 @@ static void SV_ClipMoveToEntities(moveclip_t* clip) {
 
 	const int num = SV_AreaEntities(clip->boxmins, clip->boxmaxs, touchlist, MAX_GENTITIES);
 
-	if (clip->passEntityNum != ENTITYNUM_NONE) {
-		passOwnerNum = (SV_GentityNum(clip->passEntityNum))->r.ownerNum;
+	if (clip->pass_entity_num != ENTITYNUM_NONE) {
+		passOwnerNum = (SV_GentityNum(clip->pass_entity_num))->r.ownerNum;
 		if (passOwnerNum == ENTITYNUM_NONE) {
 			passOwnerNum = -1;
 		}
@@ -522,7 +522,7 @@ static void SV_ClipMoveToEntities(moveclip_t* clip) {
 		passOwnerNum = -1;
 	}
 
-	if (SV_GentityNum(clip->passEntityNum)->r.svFlags & SVF_OWNERNOTSHARED)
+	if (SV_GentityNum(clip->pass_entity_num)->r.svFlags & SVF_OWNERNOTSHARED)
 	{
 		thisOwnerShared = 0;
 	}
@@ -534,11 +534,11 @@ static void SV_ClipMoveToEntities(moveclip_t* clip) {
 		sharedEntity_t* touch = SV_GentityNum(touchlist[i]);
 
 		// see if we should ignore this entity
-		if (clip->passEntityNum != ENTITYNUM_NONE) {
-			if (touchlist[i] == clip->passEntityNum) {
+		if (clip->pass_entity_num != ENTITYNUM_NONE) {
+			if (touchlist[i] == clip->pass_entity_num) {
 				continue;	// don't clip against the pass entity
 			}
-			if (touch->r.ownerNum == clip->passEntityNum) {
+			if (touch->r.ownerNum == clip->pass_entity_num) {
 				if (touch->r.svFlags & SVF_OWNERNOTSHARED)
 				{
 					if (clip->contentmask != (MASK_SHOT | CONTENTS_LIGHTSABER) &&
@@ -644,7 +644,7 @@ static void SV_ClipMoveToEntities(moveclip_t* clip) {
 				}
 
 				G2API_CollisionDetect(&clip->trace.G2CollisionMap[0], *((CGhoul2Info_v*)touch->s.ghoul2),
-					touch->s.angles, touch->s.origin, svs.time, touch->s.number, clip->start, clip->end, touch->s.modelScale, G2VertSpaceServer, clip->traceFlags, clip->useLod);
+					touch->s.angles, touch->s.origin, svs.time, touch->s.number, clip->start, clip->end, touch->s.modelScale, G2VertSpaceServer, clip->traceFlags, clip->use_lod);
 
 				// set our new trace record size
 
@@ -710,7 +710,7 @@ static void SV_ClipMoveToEntities(moveclip_t* clip) {
 #ifndef FINAL_BUILD
 			if (sv_showghoultraces->integer)
 			{
-				Com_Printf("Ghoul2 trace   lod=%1d   length=%6.0f   to %s\n", clip->useLod, VectorDistance(clip->start, clip->end), re->G2API_GetModelName(*(CGhoul2Info_v*)touch->ghoul2, 0));
+				Com_Printf("Ghoul2 trace   lod=%1d   length=%6.0f   to %s\n", clip->use_lod, VectorDistance(clip->start, clip->end), re->G2API_GetModelName(*(CGhoul2Info_v*)touch->ghoul2, 0));
 			}
 #endif
 
@@ -720,11 +720,11 @@ static void SV_ClipMoveToEntities(moveclip_t* clip) {
 				touch->s.NPC_class == CLASS_VEHICLE &&
 				touch->m_pVehicle)
 			{ //for vehicles cache the transform data.
-				re->G2API_CollisionDetectCache(G2Trace, *static_cast<CGhoul2Info_v*>(touch->ghoul2), angles, touch->r.currentOrigin, svs.time, touch->s.number, clip->start, clip->end, touch->modelScale, G2VertSpaceServer, 0, clip->useLod, fRadius);
+				re->G2API_CollisionDetectCache(G2Trace, *static_cast<CGhoul2Info_v*>(touch->ghoul2), angles, touch->r.currentOrigin, svs.time, touch->s.number, clip->start, clip->end, touch->modelScale, G2VertSpaceServer, 0, clip->use_lod, fRadius);
 			}
 			else
 			{
-				re->G2API_CollisionDetect(G2Trace, *static_cast<CGhoul2Info_v*>(touch->ghoul2), angles, touch->r.currentOrigin, svs.time, touch->s.number, clip->start, clip->end, touch->modelScale, G2VertSpaceServer, 0, clip->useLod, fRadius);
+				re->G2API_CollisionDetect(G2Trace, *static_cast<CGhoul2Info_v*>(touch->ghoul2), angles, touch->r.currentOrigin, svs.time, touch->s.number, clip->start, clip->end, touch->modelScale, G2VertSpaceServer, 0, clip->use_lod, fRadius);
 			}
 
 			tN = 0;
@@ -772,13 +772,13 @@ static void SV_ClipMoveToEntities(moveclip_t* clip) {
 SV_Trace
 
 Moves the given mins/maxs volume through the world from start to end.
-passEntityNum and entities owned by passEntityNum are explicitly not checked.
+pass_entity_num and entities owned by pass_entity_num are explicitly not checked.
 ==================
 */
 /*
 Ghoul2 Insert Start
 */
-void SV_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask, int capsule, int traceFlags, int useLod) {
+void SV_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int pass_entity_num, int contentmask, int capsule, int traceFlags, int use_lod) {
 	/*
 	Ghoul2 Insert End
 	*/
@@ -807,7 +807,7 @@ void SV_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec
 	*/
 	VectorCopy(start, clip.start);
 	clip.traceFlags = traceFlags;
-	clip.useLod = useLod;
+	clip.use_lod = use_lod;
 	/*
 	Ghoul2 Insert End
 	*/
@@ -815,7 +815,7 @@ void SV_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec
 	VectorCopy(end, clip.end);
 	clip.mins = mins;
 	clip.maxs = maxs;
-	clip.passEntityNum = passEntityNum;
+	clip.pass_entity_num = pass_entity_num;
 	clip.capsule = capsule;
 
 	// create the bounding box of the entire move
@@ -844,7 +844,7 @@ void SV_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec
 SV_PointContents
 =============
 */
-int SV_PointContents(const vec3_t p, int passEntityNum) {
+int SV_PointContents(const vec3_t p, int pass_entity_num) {
 	int			touch[MAX_GENTITIES];
 
 	// get base contents from world
@@ -854,7 +854,7 @@ int SV_PointContents(const vec3_t p, int passEntityNum) {
 	const int num = SV_AreaEntities(p, p, touch, MAX_GENTITIES);
 
 	for (int i = 0; i < num; i++) {
-		if (touch[i] == passEntityNum) {
+		if (touch[i] == pass_entity_num) {
 			continue;
 		}
 		const sharedEntity_t* hit = SV_GentityNum(touch[i]);

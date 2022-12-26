@@ -453,10 +453,10 @@ static void SV_G2API_CleanGhoul2Models(CGhoul2Info_v& ghoul2)
 static void SV_G2API_CollisionDetect(
 	CCollisionRecord* collRecMap, CGhoul2Info_v& ghoul2, const vec3_t angles, const vec3_t position,
 	int AframeNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, CMiniHeap* miniHeap,
-	EG2_Collision eG2TraceType, int useLod, float fRadius)
+	EG2_Collision e_g2_trace_type, int use_lod, float fRadius)
 {
 	re.G2API_CollisionDetect(collRecMap, ghoul2, angles, position, AframeNumber,
-	                         entNum, rayStart, rayEnd, scale, miniHeap, eG2TraceType, useLod, fRadius);
+	                         entNum, rayStart, rayEnd, scale, miniHeap, e_g2_trace_type, use_lod, fRadius);
 }
 
 static void SV_G2API_CopyGhoul2Instance(CGhoul2Info_v& ghoul2From, CGhoul2Info_v& ghoul2To, int modelIndex)

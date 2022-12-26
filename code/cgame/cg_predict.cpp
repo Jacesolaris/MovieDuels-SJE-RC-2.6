@@ -211,7 +211,7 @@ int CG_PointContents(const vec3_t point, const int pass_entity_num)
 	return gi.pointcontents(point, pass_entity_num);
 }
 #else
-int		CG_PointContents(const vec3_t point, int passEntityNum) {
+int		CG_PointContents(const vec3_t point, int pass_entity_num) {
 	int			i;
 	entityState_t* ent;
 	centity_t* cent;
@@ -225,7 +225,7 @@ int		CG_PointContents(const vec3_t point, int passEntityNum) {
 
 		ent = &cent->currentState;
 
-		if (ent->number == passEntityNum) {
+		if (ent->number == pass_entity_num) {
 			continue;
 		}
 

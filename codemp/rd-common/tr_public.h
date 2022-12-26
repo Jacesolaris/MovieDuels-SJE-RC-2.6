@@ -159,8 +159,8 @@ typedef struct refexport_s {
 	void				(*G2API_CleanEntAttachments)			(void);
 	void				(*G2API_CleanGhoul2Models)				(CGhoul2Info_v** ghoul2Ptr);
 	void				(*G2API_ClearAttachedInstance)			(int entityNum);
-	void				(*G2API_CollisionDetect)				(CollisionRecord_t* collRecMap, CGhoul2Info_v& ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, IHeapAllocator* G2VertSpace, int traceFlags, int useLod, float fRadius);
-	void				(*G2API_CollisionDetectCache)			(CollisionRecord_t* collRecMap, CGhoul2Info_v& ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, IHeapAllocator* G2VertSpace, int traceFlags, int useLod, float fRadius);
+	void				(*G2API_CollisionDetect)				(CollisionRecord_t* collRecMap, CGhoul2Info_v& ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, IHeapAllocator* G2VertSpace, int traceFlags, int use_lod, float fRadius);
+	void				(*G2API_CollisionDetectCache)			(CollisionRecord_t* collRecMap, CGhoul2Info_v& ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, IHeapAllocator* G2VertSpace, int traceFlags, int use_lod, float fRadius);
 	int					(*G2API_CopyGhoul2Instance)				(CGhoul2Info_v& g2From, CGhoul2Info_v& g2To, int modelIndex);
 	void				(*G2API_CopySpecificG2Model)			(CGhoul2Info_v& ghoul2From, int modelFrom, CGhoul2Info_v& ghoul2To, int modelTo);
 	qboolean(*G2API_DetachG2Model)					(CGhoul2Info* ghlInfo);

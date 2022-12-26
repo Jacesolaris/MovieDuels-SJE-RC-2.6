@@ -127,14 +127,14 @@ void trap_SetServerCull(float cullDistance) {
 void trap_SetBrushModel(sharedEntity_t* ent, const char* name) {
 	Q_syscall(G_SET_BRUSH_MODEL, ent, name);
 }
-void trap_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask) {
-	Q_syscall(G_TRACE, results, start, mins, maxs, end, passEntityNum, contentmask, 0, 10);
+void trap_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int pass_entity_num, int contentmask) {
+	Q_syscall(G_TRACE, results, start, mins, maxs, end, pass_entity_num, contentmask, 0, 10);
 }
-void trap_G2Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask, int g2TraceType, int traceLod) {
-	Q_syscall(G_G2TRACE, results, start, mins, maxs, end, passEntityNum, contentmask, g2TraceType, traceLod);
+void trap_G2Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int pass_entity_num, int contentmask, int g2TraceType, int traceLod) {
+	Q_syscall(G_G2TRACE, results, start, mins, maxs, end, pass_entity_num, contentmask, g2TraceType, traceLod);
 }
-int trap_PointContents(const vec3_t point, int passEntityNum) {
-	return Q_syscall(G_POINT_CONTENTS, point, passEntityNum);
+int trap_PointContents(const vec3_t point, int pass_entity_num) {
+	return Q_syscall(G_POINT_CONTENTS, point, pass_entity_num);
 }
 qboolean trap_InPVS(const vec3_t p1, const vec3_t p2) {
 	return Q_syscall(G_IN_PVS, p1, p2);
@@ -193,8 +193,8 @@ int trap_RealTime(qtime_t* qtime) {
 void trap_SnapVector(float* v) {
 	Q_syscall(G_SNAPVECTOR, v);
 }
-void trap_TraceCapsule(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask) {
-	Q_syscall(G_TRACECAPSULE, results, start, mins, maxs, end, passEntityNum, contentmask, 0, 10);
+void trap_TraceCapsule(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int pass_entity_num, int contentmask) {
+	Q_syscall(G_TRACECAPSULE, results, start, mins, maxs, end, pass_entity_num, contentmask, 0, 10);
 }
 qboolean trap_EntityContactCapsule(const vec3_t mins, const vec3_t maxs, const sharedEntity_t* ent) {
 	return Q_syscall(G_ENTITY_CONTACTCAPSULE, mins, maxs, ent);
@@ -906,11 +906,11 @@ qboolean trap_G2API_RemoveGhoul2Models(void* ghlInfo) {
 void trap_G2API_CleanGhoul2Models(void** ghoul2Ptr) {
 	Q_syscall(G_G2_CLEANMODELS, ghoul2Ptr);
 }
-void trap_G2API_CollisionDetect(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, int traceFlags, int useLod, float fRadius) {
-	Q_syscall(G_G2_COLLISIONDETECT, collRecMap, ghoul2, angles, position, frameNumber, entNum, rayStart, rayEnd, scale, traceFlags, useLod, PASSFLOAT(fRadius));
+void trap_G2API_CollisionDetect(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, int traceFlags, int use_lod, float fRadius) {
+	Q_syscall(G_G2_COLLISIONDETECT, collRecMap, ghoul2, angles, position, frameNumber, entNum, rayStart, rayEnd, scale, traceFlags, use_lod, PASSFLOAT(fRadius));
 }
-void trap_G2API_CollisionDetectCache(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, int traceFlags, int useLod, float fRadius) {
-	Q_syscall(G_G2_COLLISIONDETECTCACHE, collRecMap, ghoul2, angles, position, frameNumber, entNum, rayStart, rayEnd, scale, traceFlags, useLod, PASSFLOAT(fRadius));
+void trap_G2API_CollisionDetectCache(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, int traceFlags, int use_lod, float fRadius) {
+	Q_syscall(G_G2_COLLISIONDETECTCACHE, collRecMap, ghoul2, angles, position, frameNumber, entNum, rayStart, rayEnd, scale, traceFlags, use_lod, PASSFLOAT(fRadius));
 }
 void trap_G2API_GetSurfaceName(void* ghoul2, int surfNumber, int modelIndex, char* fillBuf) {
 	Q_syscall(G_G2_GETSURFACENAME, ghoul2, surfNumber, modelIndex, fillBuf);
@@ -1004,13 +1004,13 @@ qboolean SVSyscall_EntityContact(const vec3_t mins, const vec3_t maxs, const sha
 	return trap_EntityContact(mins, maxs, ent);
 }
 
-void SVSyscall_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask, int capsule, int traceFlags, int useLod) {
+void SVSyscall_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int pass_entity_num, int contentmask, int capsule, int traceFlags, int use_lod) {
 	if (capsule)
-		trap_TraceCapsule(results, start, mins, maxs, end, passEntityNum, contentmask);
+		trap_TraceCapsule(results, start, mins, maxs, end, pass_entity_num, contentmask);
 	else if (traceFlags)
-		trap_G2Trace(results, start, mins, maxs, end, passEntityNum, contentmask, traceFlags, useLod);
+		trap_G2Trace(results, start, mins, maxs, end, pass_entity_num, contentmask, traceFlags, use_lod);
 	else
-		trap_Trace(results, start, mins, maxs, end, passEntityNum, contentmask);
+		trap_Trace(results, start, mins, maxs, end, pass_entity_num, contentmask);
 }
 
 NORETURN void QDECL G_Error(int errorLevel, const char* error, ...) {

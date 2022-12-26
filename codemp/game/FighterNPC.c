@@ -36,7 +36,7 @@ extern vec3_t playerMins;
 extern vec3_t playerMaxs;
 extern void ChangeWeapon(gentity_t* ent, int newWeapon);
 extern int PM_AnimLength(int index, animNumber_t anim);
-extern void G_VehicleTrace(trace_t* results, const vec3_t start, const vec3_t tMins, const vec3_t tMaxs, const vec3_t end, int passEntityNum, int contentmask);
+extern void G_VehicleTrace(trace_t* results, const vec3_t start, const vec3_t tMins, const vec3_t tMaxs, const vec3_t end, int pass_entity_num, int contentmask);
 #endif
 
 extern qboolean BG_UnrestrainedPitchRoll(playerState_t* ps, Vehicle_t* pVeh);
@@ -44,7 +44,7 @@ extern void BG_SetAnim(playerState_t* ps, animation_t* animations, int setAnimPa
 extern int BG_GetTime(void);
 
 //this stuff has got to be predicted, so..
-qboolean BG_FighterUpdate(Vehicle_t* pVeh, const usercmd_t* pUcmd, vec3_t trMins, vec3_t trMaxs, float gravity, void (*traceFunc)(trace_t* results, const vec3_t start, const vec3_t lmins, const vec3_t lmaxs, const vec3_t end, int passEntityNum, int contentMask))
+qboolean BG_FighterUpdate(Vehicle_t* pVeh, const usercmd_t* pUcmd, vec3_t trMins, vec3_t trMaxs, float gravity, void (*traceFunc)(trace_t* results, const vec3_t start, const vec3_t lmins, const vec3_t lmaxs, const vec3_t end, int pass_entity_num, int content_mask))
 {
 	vec3_t		bottom;
 	playerState_t* parentPS;

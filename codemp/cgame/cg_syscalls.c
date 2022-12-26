@@ -545,11 +545,11 @@ int trap_G2API_InitGhoul2Model(void** ghoul2Ptr, const char* fileName, int model
 qboolean trap_G2API_SetSkin(void* ghoul2, int modelIndex, qhandle_t customSkin, qhandle_t renderSkin) {
 	return Q_syscall(CG_G2_SETSKIN, ghoul2, modelIndex, customSkin, renderSkin);
 }
-void trap_G2API_CollisionDetect(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, const vec3_t rayStart, const vec3_t rayEnd, const vec3_t scale, int traceFlags, int useLod, float fRadius) {
-	Q_syscall(CG_G2_COLLISIONDETECT, collRecMap, ghoul2, angles, position, frameNumber, entNum, rayStart, rayEnd, scale, traceFlags, useLod, PASSFLOAT(fRadius));
+void trap_G2API_CollisionDetect(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, const vec3_t rayStart, const vec3_t rayEnd, const vec3_t scale, int traceFlags, int use_lod, float fRadius) {
+	Q_syscall(CG_G2_COLLISIONDETECT, collRecMap, ghoul2, angles, position, frameNumber, entNum, rayStart, rayEnd, scale, traceFlags, use_lod, PASSFLOAT(fRadius));
 }
-void trap_G2API_CollisionDetectCache(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, const vec3_t rayStart, const vec3_t rayEnd, const vec3_t scale, int traceFlags, int useLod, float fRadius) {
-	Q_syscall(CG_G2_COLLISIONDETECTCACHE, collRecMap, ghoul2, angles, position, frameNumber, entNum, rayStart, rayEnd, scale, traceFlags, useLod, PASSFLOAT(fRadius));
+void trap_G2API_CollisionDetectCache(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, const vec3_t rayStart, const vec3_t rayEnd, const vec3_t scale, int traceFlags, int use_lod, float fRadius) {
+	Q_syscall(CG_G2_COLLISIONDETECTCACHE, collRecMap, ghoul2, angles, position, frameNumber, entNum, rayStart, rayEnd, scale, traceFlags, use_lod, PASSFLOAT(fRadius));
 }
 void trap_G2API_CleanGhoul2Models(void** ghoul2Ptr) {
 	Q_syscall(CG_G2_CLEANMODELS, ghoul2Ptr);
@@ -708,7 +708,7 @@ void CGSyscall_CM_TransformedTrace(trace_t* results, const vec3_t start, const v
 void CGSyscall_R_AddPolysToScene(qhandle_t hShader, int numVerts, const polyVert_t* verts, int num) { trap_R_AddPolyToScene(hShader, numVerts, verts); }
 float CGSyscall_R_GetDistanceCull(void) { float tmp; trap_R_GetDistanceCull(&tmp); return tmp; }
 void CGSyscall_FX_PlayEffectID(int id, vec3_t org, vec3_t fwd, int vol, int rad, qboolean isPortal) { if (isPortal) trap_FX_PlayPortalEffectID(id, org, fwd, vol, rad); else trap_FX_PlayEffectID(id, org, fwd, vol, rad); }
-void CGSyscall_G2API_CollisionDetect(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, int traceFlags, int useLod, float fRadius) { trap_G2API_CollisionDetect(collRecMap, ghoul2, angles, position, frameNumber, entNum, rayStart, rayEnd, scale, traceFlags, useLod, fRadius); }
+void CGSyscall_G2API_CollisionDetect(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, int traceFlags, int use_lod, float fRadius) { trap_G2API_CollisionDetect(collRecMap, ghoul2, angles, position, frameNumber, entNum, rayStart, rayEnd, scale, traceFlags, use_lod, fRadius); }
 
 NORETURN void QDECL CG_Error(int level, const char* error, ...) {
 	va_list argptr;

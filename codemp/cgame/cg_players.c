@@ -8204,7 +8204,7 @@ qboolean CG_VehicleShouldDrawShields(centity_t* vehCent)
 extern	vmCvar_t		cg_showVehBounds;
 extern void BG_VehicleAdjustBBoxForOrientation( Vehicle_t *veh, vec3_t origin, vec3_t mins, vec3_t maxs,
 										int client_num, int tracemask,
-										void (*localTrace)(trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentMask)); // bg_pmove.c
+										void (*localTrace)(trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int pass_entity_num, int content_mask)); // bg_pmove.c
 */
 qboolean CG_VehicleAttachDroidUnit(centity_t* droidCent, refEntity_t* legs)
 {

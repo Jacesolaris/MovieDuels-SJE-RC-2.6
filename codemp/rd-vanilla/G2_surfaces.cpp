@@ -497,7 +497,7 @@ qboolean G2_SetRootSurface(CGhoul2Info_v& ghoul2, const int modelIndex, const ch
 	return qfalse;
 }
 
-extern int G2_DecideTraceLod(CGhoul2Info& ghoul2, int useLod);
+extern int G2_DecideTraceLod(CGhoul2Info& ghoul2, int use_lod);
 int G2_AddSurface(CGhoul2Info* ghoul2, int surfaceNumber, int polyNumber, float BarycentricI, float BarycentricJ, int lod)
 {
 	surfaceInfo_t temp_slist_entry;

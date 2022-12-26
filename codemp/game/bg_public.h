@@ -524,8 +524,8 @@ typedef struct pmove_s {
 
 	// callbacks to test the world
 	// these will be different functions during game and cgame
-	void		(*trace)(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentMask);
-	int			(*pointcontents)(const vec3_t point, int passEntityNum);
+	void		(*trace)(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int pass_entity_num, int content_mask);
+	int			(*pointcontents)(const vec3_t point, int pass_entity_num);
 
 	int			checkDuelLoss;
 

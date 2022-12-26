@@ -2214,7 +2214,7 @@ static inline bool G2_NeedRetransform(CGhoul2Info* g2, int frameNum)
 }
 
 void G2API_CollisionDetectCache(CollisionRecord_t* collRecMap, CGhoul2Info_v& ghoul2, const vec3_t angles, const vec3_t position,
-	int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, IHeapAllocator* G2VertSpace, int traceFlags, int useLod, float fRadius)
+	int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, IHeapAllocator* G2VertSpace, int traceFlags, int use_lod, float fRadius)
 { //this will store off the transformed verts for the next trace - this is slower, but for models that do not animate
 	//frequently it is much much faster. -rww
 #if 0 // UNUSED
@@ -2258,9 +2258,9 @@ void G2API_CollisionDetectCache(CollisionRecord_t* collRecMap, CGhoul2Info_v& gh
 
 			// now having done that, time to build the model
 #ifdef _G2_GORE
-			G2_TransformModel(ghoul2, frameNumber, scale, G2VertSpace, useLod, false);
+			G2_TransformModel(ghoul2, frameNumber, scale, G2VertSpace, use_lod, false);
 #else
-			G2_TransformModel(ghoul2, frameNumber, scale, G2VertSpace, useLod);
+			G2_TransformModel(ghoul2, frameNumber, scale, G2VertSpace, use_lod);
 #endif
 
 			//don't need to do this anymore now that I am using a flag for zone alloc.
@@ -2290,9 +2290,9 @@ void G2API_CollisionDetectCache(CollisionRecord_t* collRecMap, CGhoul2Info_v& gh
 
 		// now walk each model and check the ray against each poly - sigh, this is SO expensive. I wish there was a better way to do this.
 #ifdef _G2_GORE
-		G2_TraceModels(ghoul2, transRayStart, transRayEnd, collRecMap, entNum, traceFlags, useLod, fRadius, 0, 0, 0, 0, 0, qfalse);
+		G2_TraceModels(ghoul2, transRayStart, transRayEnd, collRecMap, entNum, traceFlags, use_lod, fRadius, 0, 0, 0, 0, 0, qfalse);
 #else
-		G2_TraceModels(ghoul2, transRayStart, transRayEnd, collRecMap, entNum, traceFlags, useLod, fRadius);
+		G2_TraceModels(ghoul2, transRayStart, transRayEnd, collRecMap, entNum, traceFlags, use_lod, fRadius);
 #endif
 		int i;
 		for (i = 0; i < MAX_G2_COLLISIONS && collRecMap[i].mEntityNum != -1; i++);
@@ -2304,13 +2304,13 @@ void G2API_CollisionDetectCache(CollisionRecord_t* collRecMap, CGhoul2Info_v& gh
 }
 
 void G2API_CollisionDetect(CollisionRecord_t* collRecMap, CGhoul2Info_v& ghoul2, const vec3_t angles, const vec3_t position,
-	int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, IHeapAllocator* G2VertSpace, int traceFlags, int useLod, float fRadius)
+	int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, IHeapAllocator* G2VertSpace, int traceFlags, int use_lod, float fRadius)
 {
 	/*
 	if (1)
 	{
 		G2API_CollisionDetectCache(collRecMap, ghoul2, angles, position, frameNumber, entNum,
-			rayStart, rayEnd, scale, G2VertSpace, traceFlags, useLod, fRadius);
+			rayStart, rayEnd, scale, G2VertSpace, traceFlags, use_lod, fRadius);
 		return;
 	}
 	*/
@@ -2329,9 +2329,9 @@ void G2API_CollisionDetect(CollisionRecord_t* collRecMap, CGhoul2Info_v& ghoul2,
 
 		// now having done that, time to build the model
 #ifdef _G2_GORE
-		G2_TransformModel(ghoul2, frameNumber, scale, G2VertSpace, useLod, false);
+		G2_TransformModel(ghoul2, frameNumber, scale, G2VertSpace, use_lod, false);
 #else
-		G2_TransformModel(ghoul2, frameNumber, scale, G2VertSpace, useLod);
+		G2_TransformModel(ghoul2, frameNumber, scale, G2VertSpace, use_lod);
 #endif
 
 		// model is built. Lets check to see if any triangles are actually hit.
@@ -2341,9 +2341,9 @@ void G2API_CollisionDetect(CollisionRecord_t* collRecMap, CGhoul2Info_v& ghoul2,
 
 		// now walk each model and check the ray against each poly - sigh, this is SO expensive. I wish there was a better way to do this.
 #ifdef _G2_GORE
-		G2_TraceModels(ghoul2, transRayStart, transRayEnd, collRecMap, entNum, traceFlags, useLod, fRadius, 0, 0, 0, 0, 0, qfalse);
+		G2_TraceModels(ghoul2, transRayStart, transRayEnd, collRecMap, entNum, traceFlags, use_lod, fRadius, 0, 0, 0, 0, 0, qfalse);
 #else
-		G2_TraceModels(ghoul2, transRayStart, transRayEnd, collRecMap, entNum, traceFlags, useLod, fRadius);
+		G2_TraceModels(ghoul2, transRayStart, transRayEnd, collRecMap, entNum, traceFlags, use_lod, fRadius);
 #endif
 		int i;
 		for (i = 0; i < MAX_G2_COLLISIONS && collRecMap[i].mEntityNum != -1; i++);
@@ -2737,7 +2737,7 @@ int G2API_Ghoul2Size(CGhoul2Info_v& ghoul2)
 	return ghoul2.size();
 }
 
-extern int		G2_DecideTraceLod(CGhoul2Info& ghoul2, int useLod);
+extern int		G2_DecideTraceLod(CGhoul2Info& ghoul2, int use_lod);
 void G2API_AddSkinGore(CGhoul2Info_v& ghoul2, SSkinGoreData& gore)
 {
 	if (VectorLength(gore.rayDirection) < .1f)

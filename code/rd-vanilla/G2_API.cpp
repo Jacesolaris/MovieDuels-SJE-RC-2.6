@@ -1892,7 +1892,7 @@ static int QDECL QsortDistance(const void* a, const void* b) {
 
 void G2API_CollisionDetect(CCollisionRecord* collRecMap, CGhoul2Info_v& ghoul2, const vec3_t angles, const vec3_t position,
 	int AframeNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, CMiniHeap*,
-	EG2_Collision eG2TraceType, int useLod, float fRadius)
+	EG2_Collision e_g2_trace_type, int use_lod, float fRadius)
 {
 	G2ERROR(ghoul2.IsValid(), "Invalid ghlInfo");
 	G2ERROR(collRecMap, "NULL Collision Rec");
@@ -1912,9 +1912,9 @@ void G2API_CollisionDetect(CCollisionRecord* collRecMap, CGhoul2Info_v& ghoul2, 
 
 		// now having done that, time to build the model
 #ifdef _G2_GORE
-		G2_TransformModel(ghoul2, frameNumber, scale, ri.GetG2VertSpaceServer(), useLod, false);
+		G2_TransformModel(ghoul2, frameNumber, scale, ri.GetG2VertSpaceServer(), use_lod, false);
 #else
-		G2_TransformModel(ghoul2, frameNumber, scale, ri.GetG2VertSpaceServer(), useLod);
+		G2_TransformModel(ghoul2, frameNumber, scale, ri.GetG2VertSpaceServer(), use_lod);
 #endif
 
 		// model is built. Lets check to see if any triangles are actually hit.
@@ -1924,9 +1924,9 @@ void G2API_CollisionDetect(CCollisionRecord* collRecMap, CGhoul2Info_v& ghoul2, 
 
 		// now walk each model and check the ray against each poly - sigh, this is SO expensive. I wish there was a better way to do this.
 #ifdef _G2_GORE
-		G2_TraceModels(ghoul2, transRayStart, transRayEnd, collRecMap, entNum, eG2TraceType, useLod, fRadius, 0, 0, 0, 0, nullptr, qfalse);
+		G2_TraceModels(ghoul2, transRayStart, transRayEnd, collRecMap, entNum, e_g2_trace_type, use_lod, fRadius, 0, 0, 0, 0, nullptr, qfalse);
 #else
-		G2_TraceModels(ghoul2, transRayStart, transRayEnd, collRecMap, entNum, eG2TraceType, useLod, fRadius);
+		G2_TraceModels(ghoul2, transRayStart, transRayEnd, collRecMap, entNum, e_g2_trace_type, use_lod, fRadius);
 #endif
 
 		ri.GetG2VertSpaceServer()->ResetHeap();
@@ -2144,7 +2144,7 @@ void G2API_ClearSkinGore(CGhoul2Info_v& ghoul2)
 	}
 }
 
-extern int		G2_DecideTraceLod(CGhoul2Info& ghoul2, int useLod);
+extern int		G2_DecideTraceLod(CGhoul2Info& ghoul2, int use_lod);
 void G2API_AddSkinGore(CGhoul2Info_v& ghoul2, SSkinGoreData& gore)
 {
 	if (VectorLength(gore.rayDirection) < .1f)

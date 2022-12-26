@@ -598,13 +598,13 @@ using moveclip_t = struct
 	Ghoul2 Insert End
 	*/
 	vec3_t end;
-	int passEntityNum;
+	int pass_entity_num;
 	int contentmask;
 	/*
 	Ghoul2 Insert Start
 	*/
-	EG2_Collision eG2TraceType;
-	int useLod;
+	EG2_Collision e_g2_trace_type;
+	int use_lod;
 	trace_t trace; // make sure nothing goes under here for Ghoul2 collision purposes
 	/*
 	Ghoul2 Insert End
@@ -624,9 +624,9 @@ void SV_ClipMoveToEntities(moveclip_t* clip)
 
 	const int num = SV_AreaEntities(clip->boxmins, clip->boxmaxs, touchlist, MAX_GENTITIES);
 
-	if (clip->passEntityNum != ENTITYNUM_NONE)
+	if (clip->pass_entity_num != ENTITYNUM_NONE)
 	{
-		owner = (SV_GentityNum(clip->passEntityNum))->owner;
+		owner = (SV_GentityNum(clip->pass_entity_num))->owner;
 	}
 	else
 	{
@@ -642,13 +642,13 @@ void SV_ClipMoveToEntities(moveclip_t* clip)
 		gentity_t* touch = touchlist[i];
 
 		// see if we should ignore this entity
-		if (clip->passEntityNum != ENTITYNUM_NONE)
+		if (clip->pass_entity_num != ENTITYNUM_NONE)
 		{
-			if (touch->s.number == clip->passEntityNum)
+			if (touch->s.number == clip->pass_entity_num)
 			{
 				continue; // don't clip against the pass entity
 			}
-			if (touch->owner && touch->owner->s.number == clip->passEntityNum)
+			if (touch->owner && touch->owner->s.number == clip->pass_entity_num)
 			{
 				continue; // don't clip against own missiles
 			}
@@ -683,7 +683,7 @@ void SV_ClipMoveToEntities(moveclip_t* clip)
 #if 0 //G2_SUPERSIZEDBBOX is not being used
 		bool shrinkBox = true;
 
-		if (clip->eG2TraceType != G2_SUPERSIZEDBBOX)
+		if (clip->e_g2_trace_type != G2_SUPERSIZEDBBOX)
 		{
 			shrinkBox = false;
 		}
@@ -762,7 +762,7 @@ void SV_ClipMoveToEntities(moveclip_t* clip)
 		*/
 
 		// decide if we should do the ghoul2 collision detection right here
-		if ((trace.entityNum == touch->s.number) && (clip->eG2TraceType != G2_NOCOLLIDE))
+		if ((trace.entityNum == touch->s.number) && (clip->e_g2_trace_type != G2_NOCOLLIDE))
 		{
 			// do we actually have a ghoul2 model here?
 			if (touch->ghoul2.size() && !(touch->contents & CONTENTS_LIGHTSABER))
@@ -787,7 +787,7 @@ void SV_ClipMoveToEntities(moveclip_t* clip)
 				// if we are looking at an entity then use the player state to get it's angles and origin from
 				float radius;
 #if 0 //G2_SUPERSIZEDBBOX is not being used
-				if (clip->eG2TraceType == G2_SUPERSIZEDBBOX)
+				if (clip->e_g2_trace_type == G2_SUPERSIZEDBBOX)
 				{
 					radius = (clip->maxs[0] - clip->mins[0] - 2.0f * superSizedAdd) / 2.0f;
 				}
@@ -808,8 +808,8 @@ void SV_ClipMoveToEntities(moveclip_t* clip)
 
 					re.G2API_CollisionDetect(clip->trace.G2CollisionMap, touch->ghoul2,
 					                         world_angles, touch->client->origin, sv.time, touch->s.number, clip->start,
-					                         clip->end, touch->s.modelScale, G2VertSpaceServer, clip->eG2TraceType,
-					                         clip->useLod, radius);
+					                         clip->end, touch->s.modelScale, G2VertSpaceServer, clip->e_g2_trace_type,
+					                         clip->use_lod, radius);
 				}
 				// no, so use the normal entity state
 				else
@@ -818,7 +818,7 @@ void SV_ClipMoveToEntities(moveclip_t* clip)
 					re.G2API_CollisionDetect(clip->trace.G2CollisionMap, touch->ghoul2,
 					                         touch->currentAngles, touch->currentOrigin, sv.time, touch->s.number,
 					                         clip->start, clip->end, touch->s.modelScale, G2VertSpaceServer,
-					                         clip->eG2TraceType, clip->useLod, radius);
+					                         clip->e_g2_trace_type, clip->use_lod, radius);
 				}
 
 				// set our new trace record size
@@ -864,14 +864,14 @@ void SV_ClipMoveToEntities(moveclip_t* clip)
 SV_Trace
 
 Moves the given mins/maxs volume through the world from start to end.
-passEntityNum and entities owned by passEntityNum are explicitly not checked.
+pass_entity_num and entities owned by pass_entity_num are explicitly not checked.
 ==================
 */
 /*
 Ghoul2 Insert Start
 */
 void SV_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-              const int passEntityNum, const int contentmask, const EG2_Collision eG2TraceType, const int useLod)
+              const int pass_entity_num, const int contentmask, const EG2_Collision e_g2_trace_type, const int use_lod)
 {
 	/*
 	Ghoul2 Insert End
@@ -919,8 +919,8 @@ void SV_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec
 	Ghoul2 Insert Start
 	*/
 	VectorCopy(start, clip.start);
-	clip.eG2TraceType = eG2TraceType;
-	clip.useLod = useLod;
+	clip.e_g2_trace_type = e_g2_trace_type;
+	clip.use_lod = use_lod;
 	/*
 	Ghoul2 Insert End
 	*/
@@ -936,13 +936,13 @@ void SV_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec
 	// we can limit it to the part of the move not
 	// already clipped off by the world, which can be
 	// a significant savings for line of sight and shot traces
-	clip.passEntityNum = passEntityNum;
+	clip.pass_entity_num = pass_entity_num;
 
 #if 0 //G2_SUPERSIZEDBBOX is not being used
 	vec3_t superMin;
 	vec3_t superMax;  // prison, in boscobel
 
-	if (eG2TraceType == G2_SUPERSIZEDBBOX)
+	if (e_g2_trace_type == G2_SUPERSIZEDBBOX)
 	{
 		for (i = 0; i < 3; i++)
 		{
@@ -993,7 +993,7 @@ void SV_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec
 SV_PointContents
 =============
 */
-int SV_PointContents(const vec3_t p, int passEntityNum)
+int SV_PointContents(const vec3_t p, int pass_entity_num)
 {
 	gentity_t* touch[MAX_GENTITIES];
 
@@ -1006,7 +1006,7 @@ int SV_PointContents(const vec3_t p, int passEntityNum)
 	for (int i = 0; i < num; i++)
 	{
 		const gentity_t* hit = touch[i];
-		if (hit->s.number == passEntityNum)
+		if (hit->s.number == pass_entity_num)
 		{
 			continue;
 		}

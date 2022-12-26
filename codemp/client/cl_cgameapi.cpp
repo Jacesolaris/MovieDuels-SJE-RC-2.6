@@ -513,14 +513,14 @@ static qboolean CL_G2API_SetSkin(void* ghoul2, int modelIndex, qhandle_t customS
 	return re->G2API_SetSkin(g2, modelIndex, customSkin, renderSkin);
 }
 
-static void CL_G2API_CollisionDetect(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, int traceFlags, int useLod, float fRadius) {
+static void CL_G2API_CollisionDetect(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, int traceFlags, int use_lod, float fRadius) {
 	if (!ghoul2) return;
-	re->G2API_CollisionDetect(collRecMap, *static_cast<CGhoul2Info_v*>(ghoul2), angles, position, frameNumber, entNum, rayStart, rayEnd, scale, G2VertSpaceClient, traceFlags, useLod, fRadius);
+	re->G2API_CollisionDetect(collRecMap, *static_cast<CGhoul2Info_v*>(ghoul2), angles, position, frameNumber, entNum, rayStart, rayEnd, scale, G2VertSpaceClient, traceFlags, use_lod, fRadius);
 }
 
-static void CL_G2API_CollisionDetectCache(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, int traceFlags, int useLod, float fRadius) {
+static void CL_G2API_CollisionDetectCache(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, int traceFlags, int use_lod, float fRadius) {
 	if (!ghoul2) return;
-	re->G2API_CollisionDetectCache(collRecMap, *static_cast<CGhoul2Info_v*>(ghoul2), angles, position, frameNumber, entNum, rayStart, rayEnd, scale, G2VertSpaceClient, traceFlags, useLod, fRadius);
+	re->G2API_CollisionDetectCache(collRecMap, *static_cast<CGhoul2Info_v*>(ghoul2), angles, position, frameNumber, entNum, rayStart, rayEnd, scale, G2VertSpaceClient, traceFlags, use_lod, fRadius);
 }
 
 static void CL_G2API_CleanGhoul2Models(void** ghoul2Ptr) {
