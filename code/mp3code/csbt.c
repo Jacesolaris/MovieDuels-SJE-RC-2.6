@@ -111,7 +111,7 @@ void sbt_init()
 /*============================================================*/
 /*============================================================*/
 /*============================================================*/
-void sbt_mono(float* sample, short* pcm, int n)
+void sbt_mono(float* sample, short* pcm, const int n)
 {
 	for (int i = 0; i < n; i++)
 	{
@@ -124,7 +124,7 @@ void sbt_mono(float* sample, short* pcm, int n)
 }
 
 /*------------------------------------------------------------*/
-void sbt_dual(float* sample, short* pcm, int n)
+void sbt_dual(float* sample, short* pcm, const int n)
 {
 	for (int i = 0; i < n; i++)
 	{
@@ -140,7 +140,7 @@ void sbt_dual(float* sample, short* pcm, int n)
 
 /*------------------------------------------------------------*/
 /* convert dual to mono */
-void sbt_dual_mono(float* sample, short* pcm, int n)
+void sbt_dual_mono(float* sample, short* pcm, const int n)
 {
 	for (int i = 0; i < n; i++)
 	{
@@ -154,7 +154,7 @@ void sbt_dual_mono(float* sample, short* pcm, int n)
 
 /*------------------------------------------------------------*/
 /* convert dual to left */
-void sbt_dual_left(float* sample, short* pcm, int n)
+void sbt_dual_left(float* sample, short* pcm, const int n)
 {
 	for (int i = 0; i < n; i++)
 	{
@@ -168,7 +168,7 @@ void sbt_dual_left(float* sample, short* pcm, int n)
 
 /*------------------------------------------------------------*/
 /* convert dual to right */
-void sbt_dual_right(float* sample, short* pcm, int n)
+void sbt_dual_right(float* sample, short* pcm, const int n)
 {
 	sample++; /* point to right chan */
 	for (int i = 0; i < n; i++)
@@ -184,7 +184,7 @@ void sbt_dual_right(float* sample, short* pcm, int n)
 /*------------------------------------------------------------*/
 /*---------------- 16 pt sbt's  -------------------------------*/
 /*------------------------------------------------------------*/
-void sbt16_mono(float* sample, short* pcm, int n)
+void sbt16_mono(float* sample, short* pcm, const int n)
 {
 	for (int i = 0; i < n; i++)
 	{
@@ -197,7 +197,7 @@ void sbt16_mono(float* sample, short* pcm, int n)
 }
 
 /*------------------------------------------------------------*/
-void sbt16_dual(float* sample, short* pcm, int n)
+void sbt16_dual(float* sample, short* pcm, const int n)
 {
 	for (int i = 0; i < n; i++)
 	{
@@ -212,7 +212,7 @@ void sbt16_dual(float* sample, short* pcm, int n)
 }
 
 /*------------------------------------------------------------*/
-void sbt16_dual_mono(float* sample, short* pcm, int n)
+void sbt16_dual_mono(float* sample, short* pcm, const int n)
 {
 	for (int i = 0; i < n; i++)
 	{
@@ -225,7 +225,7 @@ void sbt16_dual_mono(float* sample, short* pcm, int n)
 }
 
 /*------------------------------------------------------------*/
-void sbt16_dual_left(float* sample, short* pcm, int n)
+void sbt16_dual_left(float* sample, short* pcm, const int n)
 {
 	for (int i = 0; i < n; i++)
 	{
@@ -238,7 +238,7 @@ void sbt16_dual_left(float* sample, short* pcm, int n)
 }
 
 /*------------------------------------------------------------*/
-void sbt16_dual_right(float* sample, short* pcm, int n)
+void sbt16_dual_right(float* sample, short* pcm, const int n)
 {
 	sample++;
 	for (int i = 0; i < n; i++)
@@ -254,7 +254,7 @@ void sbt16_dual_right(float* sample, short* pcm, int n)
 /*------------------------------------------------------------*/
 /*---------------- 8 pt sbt's  -------------------------------*/
 /*------------------------------------------------------------*/
-void sbt8_mono(float* sample, short* pcm, int n)
+void sbt8_mono(float* sample, short* pcm, const int n)
 {
 	for (int i = 0; i < n; i++)
 	{
@@ -267,7 +267,7 @@ void sbt8_mono(float* sample, short* pcm, int n)
 }
 
 /*------------------------------------------------------------*/
-void sbt8_dual(float* sample, short* pcm, int n)
+void sbt8_dual(float* sample, short* pcm, const int n)
 {
 	for (int i = 0; i < n; i++)
 	{
@@ -282,7 +282,7 @@ void sbt8_dual(float* sample, short* pcm, int n)
 }
 
 /*------------------------------------------------------------*/
-void sbt8_dual_mono(float* sample, short* pcm, int n)
+void sbt8_dual_mono(float* sample, short* pcm, const int n)
 {
 	for (int i = 0; i < n; i++)
 	{
@@ -295,7 +295,7 @@ void sbt8_dual_mono(float* sample, short* pcm, int n)
 }
 
 /*------------------------------------------------------------*/
-void sbt8_dual_left(float* sample, short* pcm, int n)
+void sbt8_dual_left(float* sample, short* pcm, const int n)
 {
 	for (int i = 0; i < n; i++)
 	{
@@ -308,7 +308,7 @@ void sbt8_dual_left(float* sample, short* pcm, int n)
 }
 
 /*------------------------------------------------------------*/
-void sbt8_dual_right(float* sample, short* pcm, int n)
+void sbt8_dual_right(float* sample, short* pcm, const int n)
 {
 	sample++;
 	for (int i = 0; i < n; i++)

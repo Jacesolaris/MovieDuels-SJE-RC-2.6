@@ -33,7 +33,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 // returns success/fail
 //
-qboolean MP3_IsValid(const char* psLocalFilename, void* pvData, int iDataLen, qboolean bStereoDesired /* = qfalse */)
+qboolean MP3_IsValid(const char* psLocalFilename, void* pvData, const int iDataLen, const qboolean bStereoDesired /* = qfalse */)
 {
 	char* psError = C_MP3_IsValid(pvData, iDataLen, bStereoDesired);
 
@@ -49,8 +49,8 @@ qboolean MP3_IsValid(const char* psLocalFilename, void* pvData, int iDataLen, qb
 //
 // returns unpacked length, or 0 for errors (which will be printed internally)
 //
-int MP3_GetUnpackedSize(const char* psLocalFilename, void* pvData, int iDataLen, qboolean qbIgnoreID3Tag /* = qfalse */
-                        , qboolean bStereoDesired /* = qfalse */
+int MP3_GetUnpackedSize(const char* psLocalFilename, void* pvData, const int iDataLen, qboolean qbIgnoreID3Tag /* = qfalse */
+                        , const qboolean bStereoDesired /* = qfalse */
 )
 {
 	int iUnpackedSize = 0;
@@ -75,8 +75,8 @@ int MP3_GetUnpackedSize(const char* psLocalFilename, void* pvData, int iDataLen,
 //
 // returns byte count of unpacked data (effectively a success/fail bool)
 //
-int MP3_UnpackRawPCM(const char* psLocalFilename, void* pvData, int iDataLen, byte* pbUnpackBuffer,
-                     qboolean bStereoDesired /* = qfalse */)
+int MP3_UnpackRawPCM(const char* psLocalFilename, void* pvData, const int iDataLen, byte* pbUnpackBuffer,
+                     const qboolean bStereoDesired /* = qfalse */)
 {
 	int iUnpackedSize;
 	char* psError = C_MP3_UnpackRawPCM(pvData, iDataLen, &iUnpackedSize, pbUnpackBuffer, bStereoDesired);
@@ -92,8 +92,8 @@ int MP3_UnpackRawPCM(const char* psLocalFilename, void* pvData, int iDataLen, by
 
 // psLocalFilename is just for error reporting (if any)...
 //
-qboolean MP3Stream_InitPlayingTimeFields(LP_MP3STREAM lpMP3Stream, const char* psLocalFilename, void* pvData,
-                                         int iDataLen, qboolean bStereoDesired /* = qfalse */)
+qboolean MP3Stream_InitPlayingTimeFields(const LP_MP3STREAM lpMP3Stream, const char* psLocalFilename, void* pvData,
+                                         const int iDataLen, const qboolean bStereoDesired /* = qfalse */)
 {
 	qboolean bRetval = qfalse;
 
@@ -123,7 +123,7 @@ qboolean MP3Stream_InitPlayingTimeFields(LP_MP3STREAM lpMP3Stream, const char* p
 	return bRetval;
 }
 
-float MP3Stream_GetPlayingTimeInSeconds(LP_MP3STREAM lpMP3Stream)
+float MP3Stream_GetPlayingTimeInSeconds(const LP_MP3STREAM lpMP3Stream)
 {
 	if (lpMP3Stream->iTimeQuery_UnpackedLength) // fields initialised?
 		return static_cast<float>(((static_cast<double>(lpMP3Stream->iTimeQuery_UnpackedLength) / static_cast<double>(
@@ -133,7 +133,7 @@ float MP3Stream_GetPlayingTimeInSeconds(LP_MP3STREAM lpMP3Stream)
 	return 0.0f;
 }
 
-float MP3Stream_GetRemainingTimeInSeconds(LP_MP3STREAM lpMP3Stream)
+float MP3Stream_GetRemainingTimeInSeconds(const LP_MP3STREAM lpMP3Stream)
 {
 	if (lpMP3Stream->iTimeQuery_UnpackedLength) // fields initialised?
 		return static_cast<float>(((static_cast<double>(lpMP3Stream->iTimeQuery_UnpackedLength - (lpMP3Stream->
@@ -147,9 +147,9 @@ float MP3Stream_GetRemainingTimeInSeconds(LP_MP3STREAM lpMP3Stream)
 
 // expects data already loaded, filename arg is for error printing only
 //
-qboolean MP3_FakeUpWAVInfo(const char* psLocalFilename, void* pvData, int iDataLen, int iUnpackedDataLength,
+qboolean MP3_FakeUpWAVInfo(const char* psLocalFilename, void* pvData, const int iDataLen, const int iUnpackedDataLength,
                            int& format, int& rate, int& width, int& channels, int& samples, int& dataofs,
-                           qboolean bStereoDesired /* = qfalse */
+                           const qboolean bStereoDesired /* = qfalse */
 )
 {
 	// some things can be done instantly...
@@ -177,7 +177,7 @@ const char sKEY_UNCOMP[] = "#UNCOMP"; //    "        "
 
 // returns qtrue for success...
 //
-qboolean MP3_ReadSpecialTagInfo(byte* pbLoadedFile, int iLoadedFileLen,
+qboolean MP3_ReadSpecialTagInfo(byte* pbLoadedFile, const int iLoadedFileLen,
                                 id3v1_1** ppTAG /* = NULL */,
                                 int* piUncompressedSize /* = NULL */,
                                 float* pfMaxVol /* = NULL */
@@ -250,8 +250,8 @@ void MP3_InitCvars(void)
 //
 // (note: the reason I pass in the unpacked size rather than working it out here is simply because I already have it)
 //
-qboolean MP3Stream_InitFromFile(sfx_t* sfx, byte* pbSrcData, int iSrcDatalen, const char* psSrcDataFilename,
-                                int iMP3UnPackedSize, qboolean bStereoDesired /* = qfalse */
+qboolean MP3Stream_InitFromFile(sfx_t* sfx, byte* pbSrcData, const int iSrcDatalen, const char* psSrcDataFilename,
+                                const int iMP3UnPackedSize, const qboolean bStereoDesired /* = qfalse */
 )
 {
 	// first, make a decision based on size here as to whether or not it's worth it because of MP3 buffer space
@@ -330,7 +330,7 @@ qboolean MP3Stream_InitFromFile(sfx_t* sfx, byte* pbSrcData, int iSrcDatalen, co
 //
 // return is decoded byte count, else 0 for finished
 //
-int MP3Stream_Decode(LP_MP3STREAM lpMP3Stream, qboolean bDoingMusic)
+int MP3Stream_Decode(const LP_MP3STREAM lpMP3Stream, qboolean bDoingMusic)
 {
 	lpMP3Stream->iCopyOffset = 0;
 
@@ -403,7 +403,7 @@ qboolean MP3Stream_Rewind(channel_t* ch)
 
 // returns qtrue while still playing normally, else qfalse for either finished or request-offset-error
 //
-qboolean MP3Stream_GetSamples(channel_t* ch, int startingSampleNum, int count, short* buf, qboolean bStereo)
+qboolean MP3Stream_GetSamples(channel_t* ch, int startingSampleNum, int count, short* buf, const qboolean bStereo)
 {
 	qboolean qbStreamStillGoing = qtrue;
 

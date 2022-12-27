@@ -106,7 +106,7 @@ SV_CreateworldSector
 Builds a uniformly subdivided tree for the given world size
 ===============
 */
-worldSector_t* SV_CreateworldSector(int depth, vec3_t mins, vec3_t maxs)
+worldSector_t* SV_CreateworldSector(const int depth, vec3_t mins, vec3_t maxs)
 {
 	vec3_t size;
 	vec3_t mins1, maxs1, mins2, maxs2;
@@ -993,7 +993,7 @@ void SV_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec
 SV_PointContents
 =============
 */
-int SV_PointContents(const vec3_t p, int pass_entity_num)
+int SV_PointContents(const vec3_t p, const int pass_entity_num)
 {
 	gentity_t* touch[MAX_GENTITIES];
 

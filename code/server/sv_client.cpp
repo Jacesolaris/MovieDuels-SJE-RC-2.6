@@ -245,7 +245,7 @@ void SV_SendClientGameState(client_t* client)
 SV_ClientEnterWorld
 ==================
 */
-void SV_ClientEnterWorld(client_t* client, const usercmd_t* cmd, SavedGameJustLoaded_e eSavedGameJustLoaded)
+void SV_ClientEnterWorld(client_t* client, const usercmd_t* cmd, const SavedGameJustLoaded_e eSavedGameJustLoaded)
 {
 	Com_DPrintf("SV_ClientEnterWorld() from %s\n", client->name);
 	client->state = CS_ACTIVE;

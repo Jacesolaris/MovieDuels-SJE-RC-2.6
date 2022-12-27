@@ -103,7 +103,7 @@ static char* rd_buffer;
 static int rd_buffersize;
 static void (*rd_flush)(char* buffer);
 
-void Com_BeginRedirect(char* buffer, int buffersize, void (*flush)(char*))
+void Com_BeginRedirect(char* buffer, const int buffersize, void (*flush)(char*))
 {
 	if (!buffer || !buffersize || !flush)
 		return;
@@ -540,7 +540,7 @@ void Info_Print(const char* s)
 Com_StringContains
 ============
 */
-const char* Com_StringContains(const char* str1, const char* str2, int casesensitive)
+const char* Com_StringContains(const char* str1, const char* str2, const int casesensitive)
 {
 	int j;
 
@@ -577,7 +577,7 @@ const char* Com_StringContains(const char* str1, const char* str2, int casesensi
 Com_Filter
 ============
 */
-int Com_Filter(const char* filter, const char* name, int casesensitive)
+int Com_Filter(const char* filter, const char* name, const int casesensitive)
 {
 	char buf[MAX_TOKEN_CHARS];
 	int i;
@@ -675,7 +675,7 @@ int Com_Filter(const char* filter, const char* name, int casesensitive)
 Com_FilterPath
 ============
 */
-int Com_FilterPath(const char* filter, const char* name, int casesensitive)
+int Com_FilterPath(const char* filter, const char* name, const int casesensitive)
 {
 	int i;
 	char new_filter[MAX_QPATH];
@@ -1069,7 +1069,7 @@ Com_ErrorString
 Error string for the given error code (from Com_Error).
 =================
 */
-static const char* Com_ErrorString(int code)
+static const char* Com_ErrorString(const int code)
 {
 	switch (code)
 	{
@@ -1091,7 +1091,7 @@ Handles freeing up of resources when Com_Error is called.
 =================
 */
 void SG_WipeSavegame(const char* name); // pretty sucky, but that's how SoF did it...<g>
-static void Com_CatchError(int code)
+static void Com_CatchError(const int code)
 {
 	if (code == ERR_DISCONNECT)
 	{
@@ -1402,7 +1402,7 @@ Com_TimeVal
 =================
 */
 
-int Com_TimeVal(int minMsec)
+int Com_TimeVal(const int minMsec)
 {
 	int timeVal = Sys_Milliseconds() - com_frameTime;
 
@@ -1890,7 +1890,7 @@ void Field_CompleteKeyname(void)
 Field_CompleteFilename
 ===============
 */
-void Field_CompleteFilename(const char* dir, const char* ext, qboolean stripExt, qboolean allowNonPureFilesOnDisk)
+void Field_CompleteFilename(const char* dir, const char* ext, const qboolean stripExt, const qboolean allowNonPureFilesOnDisk)
 {
 	matchCount = 0;
 	shortestMatch[0] = 0;
@@ -1906,7 +1906,7 @@ void Field_CompleteFilename(const char* dir, const char* ext, qboolean stripExt,
 Field_CompleteCommand
 ===============
 */
-void Field_CompleteCommand(char* cmd, qboolean doCommands, qboolean doCvars)
+void Field_CompleteCommand(char* cmd, const qboolean doCommands, const qboolean doCvars)
 {
 	// Skip leading whitespace and quotes
 	cmd = Com_SkipCharset(cmd, " \"");

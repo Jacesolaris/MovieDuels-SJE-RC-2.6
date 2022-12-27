@@ -57,7 +57,7 @@ CON_ColorCharToAttrib
 Convert Quake color character to Windows text attrib
 ==================
 */
-static WORD CON_ColorCharToAttrib(char color)
+static WORD CON_ColorCharToAttrib(const char color)
 {
 	WORD attrib;
 
@@ -95,7 +95,7 @@ Sys_SigHandler() with those numbers should be safe for generating unique
 shutdown messages.
 ==================
 */
-static BOOL WINAPI CON_CtrlHandler(DWORD sig)
+static BOOL WINAPI CON_CtrlHandler(const DWORD sig)
 {
 	Sys_SigHandler(sig);
 	return TRUE;

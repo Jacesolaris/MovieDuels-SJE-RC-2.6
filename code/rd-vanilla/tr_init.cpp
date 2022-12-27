@@ -36,7 +36,7 @@ glconfig_t	glConfig;
 glstate_t	glState;
 window_t	window;
 
-static void GfxInfo_f(void);
+static void GfxInfo_f();
 
 cvar_t* r_verbose;
 cvar_t* r_ignore;
@@ -237,7 +237,7 @@ void RE_SetLightStyle(int style, int color);
 
 void R_Splash()
 {
-	image_t* pImage = R_FindImageFile("menu/splash", qfalse, qfalse, qfalse, GL_CLAMP);
+	image_t* p_image = R_FindImageFile("menu/splash", qfalse, qfalse, qfalse, GL_CLAMP);
 
 	/*image_t* pImage;
 	int splashPick = rand() % 5;
@@ -264,7 +264,7 @@ void R_Splash()
 		break;
 	}*/
 
-	if (!pImage)
+	if (!p_image)
 	{
 		// Can't find the splash image so just clear to black
 		qglClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -275,7 +275,7 @@ void R_Splash()
 		extern void	RB_SetGL2D();
 		RB_SetGL2D();
 
-		GL_Bind(pImage);
+		GL_Bind(p_image);
 		GL_State(GLS_SRCBLEND_ONE | GLS_DSTBLEND_ZERO);
 
 		constexpr int width = 640;
@@ -306,7 +306,7 @@ void R_Splash()
   Cannot use strstr directly to differentiate between (for eg) reg_combiners and reg_combiners2
 */
 
-static void GLW_InitTextureCompression(void)
+static void GLW_InitTextureCompression()
 {
 	// Check for available tc methods.
 	const bool newer_tc = ri.GL_ExtensionSupported("GL_ARB_texture_compression") && ri.GL_ExtensionSupported(
@@ -418,7 +418,7 @@ GLimp_InitExtensions
 ===============
 */
 extern bool g_bDynamicGlowSupported;
-static void GLimp_InitExtensions(void)
+static void GLimp_InitExtensions()
 {
 	if (!r_allowExtensions->integer)
 	{
@@ -547,14 +547,14 @@ static void GLimp_InitExtensions(void)
 		Com_Printf("...GL_EXT_compiled_vertex_array not found\n");
 	}
 
-	bool bNVRegisterCombiners = false;
+	bool b_nv_register_combiners;
 	// Register Combiners.
 	if (ri.GL_ExtensionSupported("GL_NV_register_combiners"))
 	{
 		// NOTE: This extension requires multitexture support (over 2 units).
 		if (glConfig.maxActiveTextures >= 2)
 		{
-			bNVRegisterCombiners = true;
+			b_nv_register_combiners = true;
 			// Register Combiners function pointer address load.	- AReis
 			// NOTE: VV guys will _definetly_ not be able to use regcoms. Pixel Shaders are just as good though :-)
 			// NOTE: Also, this is an nVidia specific extension (of course), so fragment shaders would serve the same purpose
@@ -578,7 +578,7 @@ static void GLimp_InitExtensions(void)
 				!qglCombinerOutputNV || !qglFinalCombinerInputNV || !qglGetCombinerInputParameterfvNV || !qglGetCombinerInputParameterivNV ||
 				!qglGetCombinerOutputParameterfvNV || !qglGetCombinerOutputParameterivNV || !qglGetFinalCombinerInputParameterfvNV || !qglGetFinalCombinerInputParameterivNV)
 			{
-				bNVRegisterCombiners = false;
+				b_nv_register_combiners = false;
 				qglCombinerParameterfvNV = nullptr;
 				qglCombinerParameteriNV = nullptr;
 				Com_Printf("...GL_NV_register_combiners failed\n");
@@ -586,13 +586,13 @@ static void GLimp_InitExtensions(void)
 		}
 		else
 		{
-			bNVRegisterCombiners = false;
+			b_nv_register_combiners = false;
 			Com_Printf("...ignoring GL_NV_register_combiners\n");
 		}
 	}
 	else
 	{
-		bNVRegisterCombiners = false;
+		b_nv_register_combiners = false;
 		Com_Printf("...GL_NV_register_combiners not found\n");
 	}
 
@@ -601,31 +601,31 @@ static void GLimp_InitExtensions(void)
 	// function pointers. ARB rocks!
 
 	// Vertex Programs.
-	bool bARBVertexProgram = false;
+	bool b_arb_vertex_program;
 	if (ri.GL_ExtensionSupported("GL_ARB_vertex_program"))
 	{
-		bARBVertexProgram = true;
+		b_arb_vertex_program = true;
 	}
 	else
 	{
-		bARBVertexProgram = false;
+		b_arb_vertex_program = false;
 		Com_Printf("...GL_ARB_vertex_program not found\n");
 	}
 
 	// Fragment Programs.
-	bool bARBFragmentProgram = false;
+	bool b_arb_fragment_program;
 	if (ri.GL_ExtensionSupported("GL_ARB_fragment_program"))
 	{
-		bARBFragmentProgram = true;
+		b_arb_fragment_program = true;
 	}
 	else
 	{
-		bARBFragmentProgram = false;
+		b_arb_fragment_program = false;
 		Com_Printf("...GL_ARB_fragment_program not found\n");
 	}
 
 	// If we support one or the other, load the shared function pointers.
-	if (bARBVertexProgram || bARBFragmentProgram)
+	if (b_arb_vertex_program || b_arb_fragment_program)
 	{
 		qglProgramStringARB = static_cast<PFNGLPROGRAMSTRINGARBPROC>(ri.GL_GetProcAddress("glProgramStringARB"));
 		qglBindProgramARB = static_cast<PFNGLBINDPROGRAMARBPROC>(ri.GL_GetProcAddress("glBindProgramARB"));
@@ -655,8 +655,8 @@ static void GLimp_InitExtensions(void)
 			!qglGetProgramEnvParameterfvARB || !qglGetProgramLocalParameterdvARB || !qglGetProgramLocalParameterfvARB ||
 			!qglGetProgramivARB || !qglGetProgramStringARB || !qglIsProgramARB)
 		{
-			bARBVertexProgram = false;
-			bARBFragmentProgram = false;
+			b_arb_vertex_program = false;
+			b_arb_fragment_program = false;
 			qglGenProgramsARB = nullptr;	//clear ptrs that get checked
 			qglProgramEnvParameter4fARB = nullptr;
 			Com_Printf("...ignoring GL_ARB_vertex_program\n");
@@ -665,7 +665,7 @@ static void GLimp_InitExtensions(void)
 	}
 
 	// Figure out which texture rectangle extension to use.
-	bool bTexRectSupported = false;
+	bool b_tex_rect_supported = false;
 	if (Q_stricmpn(glConfig.vendor_string, "ATI Technologies", 16) == 0
 		&& Q_stricmpn(glConfig.version_string, "1.3.3", 5) == 0
 		&& glConfig.version_string[5] < '9') //1.3.34 and 1.3.37 and 1.3.38 are broken for sure, 1.3.39 is not
@@ -675,18 +675,18 @@ static void GLimp_InitExtensions(void)
 
 	if (ri.GL_ExtensionSupported("GL_NV_texture_rectangle") || ri.GL_ExtensionSupported("GL_EXT_texture_rectangle"))
 	{
-		bTexRectSupported = true;
+		b_tex_rect_supported = true;
 	}
 
 	// Find out how many general combiners they have.
 #define GL_MAX_GENERAL_COMBINERS_NV       0x854D
-	GLint iNumGeneralCombiners = 0;
-	if (bNVRegisterCombiners)
-		qglGetIntegerv(GL_MAX_GENERAL_COMBINERS_NV, &iNumGeneralCombiners);
+	GLint i_num_general_combiners = 0;
+	if (b_nv_register_combiners)
+		qglGetIntegerv(GL_MAX_GENERAL_COMBINERS_NV, &i_num_general_combiners);
 
 	// Only allow dynamic glows/flares if they have the hardware
-	if (bTexRectSupported && bARBVertexProgram && qglActiveTextureARB && glConfig.maxActiveTextures >= 4 &&
-		(bNVRegisterCombiners && iNumGeneralCombiners >= 2 || bARBFragmentProgram))
+	if (b_tex_rect_supported && b_arb_vertex_program && qglActiveTextureARB && glConfig.maxActiveTextures >= 4 &&
+		(b_nv_register_combiners && i_num_general_combiners >= 2 || b_arb_fragment_program))
 	{
 		g_bDynamicGlowSupported = true;
 		// this would overwrite any achived setting gwg
@@ -707,7 +707,7 @@ static void GLimp_InitExtensions(void)
 ** setting variables, checking GL constants, and reporting the gfx system config
 ** to the user.
 */
-static void InitOpenGL(void)
+static void InitOpenGL()
 {
 	//
 	// initialize OS specific portions of the renderer
@@ -722,16 +722,16 @@ static void InitOpenGL(void)
 
 	if (glConfig.vidWidth == 0)
 	{
-		constexpr windowDesc_t windowDesc = { GRAPHICS_API_OPENGL };
+		constexpr windowDesc_t window_desc = { GRAPHICS_API_OPENGL };
 		memset(&glConfig, 0, sizeof glConfig);
 
-		window = ri.WIN_Init(&windowDesc, &glConfig);
+		window = ri.WIN_Init(&window_desc, &glConfig);
 
 		// get our config strings
-		glConfig.vendor_string = (const char*)qglGetString(GL_VENDOR);
-		glConfig.renderer_string = (const char*)qglGetString(GL_RENDERER);
-		glConfig.version_string = (const char*)qglGetString(GL_VERSION);
-		glConfig.extensions_string = (const char*)qglGetString(GL_EXTENSIONS);
+		glConfig.vendor_string = reinterpret_cast<const char*>(qglGetString(GL_VENDOR));
+		glConfig.renderer_string = reinterpret_cast<const char*>(qglGetString(GL_RENDERER));
+		glConfig.version_string = reinterpret_cast<const char*>(qglGetString(GL_VERSION));
+		glConfig.extensions_string = reinterpret_cast<const char*>(qglGetString(GL_EXTENSIONS));
 
 		// OpenGL driver constants
 		qglGetIntegerv(GL_MAX_TEXTURE_SIZE, &glConfig.maxTextureSize);
@@ -758,7 +758,7 @@ static void InitOpenGL(void)
 GL_CheckErrors
 ==================
 */
-void GL_CheckErrors(void) {
+void GL_CheckErrors() {
 	char	s[64];
 
 	const int err = qglGetError();
@@ -821,19 +821,19 @@ Return value must be freed with Hunk_FreeTempMemory()
 ==================
 */
 
-byte* RB_ReadPixels(int x, int y, int width, int height, size_t* offset, int* padlen)
+byte* RB_ReadPixels(const int x, const int y, const int width, const int height, size_t* offset, int* padlen)
 {
-	GLint packAlign;
+	GLint pack_align;
 
-	qglGetIntegerv(GL_PACK_ALIGNMENT, &packAlign);
+	qglGetIntegerv(GL_PACK_ALIGNMENT, &pack_align);
 
 	const int linelen = width * 3;
-	const int padwidth = PAD(linelen, packAlign);
+	const int padwidth = PAD(linelen, pack_align);
 
 	// Allocate a few more bytes so that we can choose an alignment we like
-	byte* buffer = static_cast<byte*>(R_Malloc(padwidth * height + *offset + packAlign - 1, TAG_TEMP_WORKSPACE, qfalse));
+	auto buffer = static_cast<byte*>(R_Malloc(padwidth * height + *offset + pack_align - 1, TAG_TEMP_WORKSPACE, qfalse));
 
-	byte* bufstart = static_cast<byte*>(PADP((intptr_t)buffer + *offset, packAlign));
+	const auto bufstart = static_cast<byte*>(PADP(reinterpret_cast<intptr_t>(buffer) + *offset, pack_align));
 	qglReadPixels(x, y, width, height, GL_RGB, GL_UNSIGNED_BYTE, bufstart);
 
 	*offset = bufstart - buffer;
@@ -847,7 +847,7 @@ byte* RB_ReadPixels(int x, int y, int width, int height, size_t* offset, int* pa
 R_TakeScreenshot
 ==================
 */
-void R_TakeScreenshot(int x, int y, int width, int height, char* fileName) {
+void R_TakeScreenshot(const int x, const int y, const int width, const int height, const char* file_name) {
 	byte* destptr;
 
 	int padlen;
@@ -894,7 +894,7 @@ void R_TakeScreenshot(int x, int y, int width, int height, char* fileName) {
 	if (glConfig.deviceSupportsGamma)
 		R_GammaCorrect(allbuf + offset, memcount);
 
-	ri.FS_WriteFile(fileName, buffer, memcount + 18);
+	ri.FS_WriteFile(file_name, buffer, memcount + 18);
 
 	R_Free(allbuf);
 }
@@ -904,7 +904,7 @@ void R_TakeScreenshot(int x, int y, int width, int height, char* fileName) {
 R_TakeScreenshotPNG
 ==================
 */
-void R_TakeScreenshotPNG(int x, int y, int width, int height, char* fileName) {
+void R_TakeScreenshotPNG(const int x, const int y, const int width, const int height, const char* fileName) {
 	size_t offset = 0;
 	int padlen = 0;
 
@@ -918,7 +918,7 @@ void R_TakeScreenshotPNG(int x, int y, int width, int height, char* fileName) {
 R_TakeScreenshotJPEG
 ==================
 */
-void R_TakeScreenshotJPEG(int x, int y, int width, int height, char* fileName) {
+void R_TakeScreenshotJPEG(const int x, const int y, const int width, const int height, const char* fileName) {
 	size_t offset = 0;
 	int padlen;
 
@@ -938,14 +938,14 @@ void R_TakeScreenshotJPEG(int x, int y, int width, int height, char* fileName) {
 R_ScreenshotFilename
 ==================
 */
-void R_ScreenshotFilename(char* buf, int bufSize, const char* ext) {
+void R_ScreenshotFilename(char* buf, const int buf_size, const char* ext) {
 	time_t rawtime;
-	char timeStr[32] = { 0 }; // should really only reach ~19 chars
+	char time_str[32] = { 0 }; // should really only reach ~19 chars
 
 	time(&rawtime);
-	strftime(timeStr, sizeof timeStr, "%Y-%m-%d_%H-%M-%S", localtime(&rawtime)); // or gmtime
+	strftime(time_str, sizeof time_str, "%Y-%m-%d_%H-%M-%S", localtime(&rawtime)); // or gmtime
 
-	Com_sprintf(buf, bufSize, "screenshots/shot%s%s", timeStr, ext);
+	Com_sprintf(buf, buf_size, "screenshots/shot%s%s", time_str, ext);
 }
 
 /*
@@ -957,7 +957,7 @@ the menu system, sampled down from full screen distorted images
 ====================
 */
 #define LEVELSHOTSIZE 256
-static void R_LevelShot(void) {
+static void R_LevelShot() {
 	char		checkname[MAX_OSPATH];
 	size_t		offset = 0;
 	int			padlen;
@@ -968,7 +968,7 @@ static void R_LevelShot(void) {
 	byte* allsource = RB_ReadPixels(0, 0, glConfig.vidWidth, glConfig.vidHeight, &offset, &padlen);
 	const byte* source = allsource + offset;
 
-	byte* buffer = static_cast<byte*>(R_Malloc(LEVELSHOTSIZE * LEVELSHOTSIZE * 3 + 18, TAG_TEMP_WORKSPACE, qfalse));
+	const auto buffer = static_cast<byte*>(R_Malloc(LEVELSHOTSIZE * LEVELSHOTSIZE * 3 + 18, TAG_TEMP_WORKSPACE, qfalse));
 	Com_Memset(buffer, 0, 18);
 	buffer[2] = 2;		// uncompressed type
 	buffer[12] = LEVELSHOTSIZE & 255;
@@ -978,14 +978,14 @@ static void R_LevelShot(void) {
 	buffer[16] = 24;	// pixel size
 
 	// resample from source
-	const float xScale = glConfig.vidWidth / (4.0 * LEVELSHOTSIZE);
-	const float yScale = glConfig.vidHeight / (3.0 * LEVELSHOTSIZE);
+	const float x_scale = glConfig.vidWidth / (4.0 * LEVELSHOTSIZE);
+	const float y_scale = glConfig.vidHeight / (3.0 * LEVELSHOTSIZE);
 	for (int y = 0; y < LEVELSHOTSIZE; y++) {
 		for (int x = 0; x < LEVELSHOTSIZE; x++) {
 			int r = g = b = 0;
 			for (int yy = 0; yy < 3; yy++) {
 				for (int xx = 0; xx < 4; xx++) {
-					const byte* src = source + 3 * (glConfig.vidWidth * static_cast<int>((y * 3 + yy) * yScale) + static_cast<int>((x * 4 + xx) * xScale));
+					const byte* src = source + 3 * (glConfig.vidWidth * static_cast<int>((y * 3 + yy) * y_scale) + static_cast<int>((x * 4 + xx) * x_scale));
 					r += src[0];
 					g += src[1];
 					b += src[2];
@@ -1023,7 +1023,7 @@ screenshot [filename]
 Doesn't print the pacifier message if there is a second arg
 ==================
 */
-void R_ScreenShotTGA_f(void) {
+void R_ScreenShotTGA_f() {
 	char checkname[MAX_OSPATH] = { 0 };
 	qboolean silent = qfalse;
 
@@ -1067,7 +1067,7 @@ screenshot [filename]
 Doesn't print the pacifier message if there is a second arg
 ==================
 */
-void R_ScreenShotPNG_f(void) {
+void R_ScreenShotPNG_f() {
 	char checkname[MAX_OSPATH] = { 0 };
 	qboolean silent = qfalse;
 
@@ -1099,7 +1099,7 @@ void R_ScreenShotPNG_f(void) {
 		Com_Printf("Wrote %s\n", checkname);
 }
 
-void R_ScreenShot_f(void) {
+void R_ScreenShot_f() {
 	char checkname[MAX_OSPATH] = { 0 };
 	qboolean silent = qfalse;
 
@@ -1135,7 +1135,7 @@ void R_ScreenShot_f(void) {
 /*
 ** GL_SetDefaultState
 */
-void GL_SetDefaultState(void)
+void GL_SetDefaultState()
 {
 	qglClearDepth(1.0f);
 
@@ -1189,32 +1189,32 @@ Workaround for Com_Printf's 1024 characters buffer limit.
 void R_PrintLongString(const char* string)
 {
 	const char* p = string;
-	int remainingLength = strlen(string);
+	int remaining_length = strlen(string);
 
-	while (remainingLength > 0)
+	while (remaining_length > 0)
 	{
 		char buffer[1024];
 		// Take as much characters as possible from the string without splitting words between buffers
 		// This avoids the client console splitting a word up when one half fits on the current line,
 		// but the second half would have to be written on a new line
-		int charsToTake = sizeof buffer - 1;
-		if (remainingLength > charsToTake) {
-			while (p[charsToTake - 1] > ' ' && p[charsToTake] > ' ') {
-				charsToTake--;
-				if (charsToTake == 0) {
-					charsToTake = sizeof buffer - 1;
+		int chars_to_take = sizeof buffer - 1;
+		if (remaining_length > chars_to_take) {
+			while (p[chars_to_take - 1] > ' ' && p[chars_to_take] > ' ') {
+				chars_to_take--;
+				if (chars_to_take == 0) {
+					chars_to_take = sizeof buffer - 1;
 					break;
 				}
 			}
 		}
-		else if (remainingLength < charsToTake) {
-			charsToTake = remainingLength;
+		else if (remaining_length < chars_to_take) {
+			chars_to_take = remaining_length;
 		}
 
-		Q_strncpyz(buffer, p, charsToTake + 1);
+		Q_strncpyz(buffer, p, chars_to_take + 1);
 		Com_Printf("%s", buffer);
-		remainingLength -= charsToTake;
-		p += charsToTake;
+		remaining_length -= chars_to_take;
+		p += chars_to_take;
 	}
 }
 
@@ -1225,7 +1225,7 @@ GfxInfo_f
 */
 extern bool g_bTextureRectangleHack;
 
-void GfxInfo_f(void)
+void GfxInfo_f()
 {
 	const char* enablestrings[] =
 	{
@@ -1341,9 +1341,9 @@ void GfxInfo_f(void)
 		ri.Printf(PRINT_ALL, "Forcing glFinish\n");
 	}
 
-	const int displayRefresh = ri.Cvar_VariableIntegerValue("r_displayRefresh");
-	if (displayRefresh) {
-		ri.Printf(PRINT_ALL, "Display refresh set to %d\n", displayRefresh);
+	const int display_refresh = ri.Cvar_VariableIntegerValue("r_displayRefresh");
+	if (display_refresh) {
+		ri.Printf(PRINT_ALL, "Display refresh set to %d\n", display_refresh);
 	}
 	if (tr.world)
 	{
@@ -1351,7 +1351,7 @@ void GfxInfo_f(void)
 	}
 }
 
-void R_AtiHackToggle_f(void)
+void R_AtiHackToggle_f()
 {
 	g_bTextureRectangleHack = !g_bTextureRectangleHack;
 }
@@ -1370,7 +1370,7 @@ void R_AtiHackToggle_f(void)
  *    none                                                                                      *
  *                                                                                              *
  ************************************************************************************************/
-void R_FogDistance_f(void)
+void R_FogDistance_f()
 {
 	float	distance;
 
@@ -1430,7 +1430,7 @@ void R_FogDistance_f(void)
  *    none                                                                                      *
  *                                                                                              *
  ************************************************************************************************/
-void R_FogColor_f(void)
+void R_FogColor_f()
 {
 	if (!tr.world)
 	{
@@ -1449,9 +1449,9 @@ void R_FogColor_f(void)
 		unsigned	i = tr.world->fogs[tr.world->globalFog].colorInt;
 
 		ri.Printf(PRINT_ALL, "R_FogColor_f: Current Color: %0f %0f %0f\n",
-			((byte*)&i)[0] / 255.0,
-			((byte*)&i)[1] / 255.0,
-			((byte*)&i)[2] / 255.0);
+			reinterpret_cast<byte*>(&i)[0] / 255.0,
+			reinterpret_cast<byte*>(&i)[1] / 255.0,
+			reinterpret_cast<byte*>(&i)[2] / 255.0);
 		return;
 	}
 
@@ -1474,7 +1474,7 @@ using consoleCommand_t = struct consoleCommand_s {
 	xcommand_t	func;
 };
 
-void R_ReloadFonts_f(void);
+void R_ReloadFonts_f();
 
 static consoleCommand_t	commands[] = {
 	{ "imagelist",			R_ImageList_f },
@@ -1509,7 +1509,7 @@ constexpr auto MAX_PRIMITIVES = 3;
 R_Register
 ===============
 */
-void R_Register(void)
+void R_Register()
 {
 	//
 	// latched and archived variables
@@ -1694,7 +1694,7 @@ void R_Register(void)
 
 // need to do this hackery so ghoul2 doesn't crash the game because of ITS hackery...
 //
-void R_ClearStuffToStopGhoul2CrashingThings(void)
+void R_ClearStuffToStopGhoul2CrashingThings()
 {
 	memset(&tr, 0, sizeof tr);
 }
@@ -1705,7 +1705,9 @@ R_Init
 ===============
 */
 extern void R_InitWorldEffects();
-void R_Init(void) {
+
+void R_Init()
+{
 	int	err;
 	int i;
 
@@ -1789,8 +1791,10 @@ void R_Init(void) {
 RE_Shutdown
 ===============
 */
-extern void R_ShutdownWorldEffects(void);
-void RE_Shutdown(qboolean destroyWindow, qboolean restarting) {
+extern void R_ShutdownWorldEffects();
+
+void RE_Shutdown(const qboolean destroy_window, const qboolean restarting)
+{
 	for (const auto& command : commands)
 		ri.Cmd_RemoveCommand(command.cmd);
 
@@ -1832,7 +1836,7 @@ void RE_Shutdown(qboolean destroyWindow, qboolean restarting) {
 	if (tr.registered)
 	{
 		R_IssuePendingRenderCommands();
-		if (destroyWindow)
+		if (destroy_window)
 		{
 			R_DeleteTextures();	// only do this for vid_restart now, not during things like map load
 
@@ -1847,7 +1851,7 @@ void RE_Shutdown(qboolean destroyWindow, qboolean restarting) {
 	}
 
 	// shut down platform specific OpenGL stuff
-	if (destroyWindow) {
+	if (destroy_window) {
 		ri.WIN_Shutdown();
 	}
 	tr.registered = qfalse;
@@ -1860,30 +1864,30 @@ RE_EndRegistration
 Touch all images to make sure they are resident
 =============
 */
-void	RE_EndRegistration(void) {
+void	RE_EndRegistration() {
 	R_IssuePendingRenderCommands();
 }
 
-void RE_GetLightStyle(int style, color4ub_t color)
+void RE_GetLightStyle(const int style, color4ub_t color)
 {
 	if (style >= MAX_LIGHT_STYLES)
 	{
 		Com_Error(ERR_FATAL, "RE_GetLightStyle: %d is out of range", (int)style);
 	}
 
-	byteAlias_t* baDest = (byteAlias_t*)&color;
-	const byteAlias_t* baSource = (byteAlias_t*)&styleColors[style];
-	baDest->i = baSource->i;
+	const auto ba_dest = reinterpret_cast<byteAlias_t*>(&color);
+	const byteAlias_t* ba_source = reinterpret_cast<byteAlias_t*>(&styleColors[style]);
+	ba_dest->i = ba_source->i;
 }
 
-void RE_SetLightStyle(int style, int color)
+void RE_SetLightStyle(const int style, const int color)
 {
 	if (style >= MAX_LIGHT_STYLES)
 	{
 		Com_Error(ERR_FATAL, "RE_SetLightStyle: %d is out of range", (int)style);
 	}
 
-	byteAlias_t* ba = (byteAlias_t*)&styleColors[style];
+	const auto ba = reinterpret_cast<byteAlias_t*>(&styleColors[style]);
 	if (ba->i != color) {
 		ba->i = color;
 		styleUpdated[style] = true;
@@ -1903,28 +1907,28 @@ extern float tr_distortionStretch;
 extern qboolean tr_distortionPrePost;
 extern qboolean tr_distortionNegate;
 
-float* get_tr_distortionAlpha(void)
+float* get_tr_distortionAlpha()
 {
 	return &tr_distortionAlpha;
 }
 
-float* get_tr_distortionStretch(void)
+float* get_tr_distortionStretch()
 {
 	return &tr_distortionStretch;
 }
 
-qboolean* get_tr_distortionPrePost(void)
+qboolean* get_tr_distortionPrePost()
 {
 	return &tr_distortionPrePost;
 }
 
-qboolean* get_tr_distortionNegate(void)
+qboolean* get_tr_distortionNegate()
 {
 	return &tr_distortionNegate;
 }
 
 float g_oldRangedFog = 0.0f;
-void RE_SetRangedFog(float dist)
+void RE_SetRangedFog(const float dist)
 {
 	if (tr.rangedFog <= 0.0f)
 	{
@@ -1938,7 +1942,7 @@ void RE_SetRangedFog(float dist)
 }
 
 //bool inServer = false;
-void RE_SVModelInit(void)
+void RE_SVModelInit()
 {
 	tr.numModels = 0;
 	tr.numShaders = 0;
@@ -1983,16 +1987,16 @@ unsigned int AnyLanguage_ReadCharFromString_JK2(char** text, qboolean* pbIsTrail
 }
 #endif
 
-extern "C" Q_EXPORT refexport_t * QDECL GetRefAPI(int apiVersion, refimport_t * refimp) {
+extern "C" Q_EXPORT refexport_t * QDECL GetRefAPI(const int api_version, const refimport_t * refimp) {
 	static refexport_t	re;
 
 	ri = *refimp;
 
 	memset(&re, 0, sizeof re);
 
-	if (apiVersion != REF_API_VERSION) {
+	if (api_version != REF_API_VERSION) {
 		ri.Printf(PRINT_ALL, "Mismatched REF_API_VERSION: expected %i, got %i\n",
-			REF_API_VERSION, apiVersion);
+			REF_API_VERSION, api_version);
 		return nullptr;
 	}
 

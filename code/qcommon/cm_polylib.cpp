@@ -43,7 +43,7 @@ void pw(winding_t* w)
 AllocWinding
 =============
 */
-winding_t* AllocWinding(int points)
+winding_t* AllocWinding(const int points)
 {
 	c_winding_allocs++;
 	c_winding_points += points;
@@ -90,7 +90,7 @@ void WindingBounds(winding_t* w, vec3_t mins, vec3_t maxs)
 BaseWindingForPlane
 =================
 */
-winding_t* BaseWindingForPlane(vec3_t normal, vec_t dist)
+winding_t* BaseWindingForPlane(vec3_t normal, const vec_t dist)
 {
 	vec_t v;
 	vec3_t org, vright, vup;
@@ -172,7 +172,7 @@ winding_t* CopyWinding(winding_t* w)
 ChopWindingInPlace
 =============
 */
-void ChopWindingInPlace(winding_t** inout, vec3_t normal, vec_t dist, vec_t epsilon)
+void ChopWindingInPlace(winding_t** inout, vec3_t normal, const vec_t dist, const vec_t epsilon)
 {
 	vec_t dists[MAX_POINTS_ON_WINDING + 4];
 	int sides[MAX_POINTS_ON_WINDING + 4];

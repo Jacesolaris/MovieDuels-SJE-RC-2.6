@@ -168,7 +168,7 @@ bool CM_PlaneCollision(traceWork_t* tw, cbrushside_t* side)
 CM_TraceThroughBrush
 ================
 */
-void CM_TraceThroughBrush(traceWork_t* tw, trace_t& trace, cbrush_t* brush, bool infoOnly)
+void CM_TraceThroughBrush(traceWork_t* tw, trace_t& trace, cbrush_t* brush, const bool infoOnly)
 {
 	tw->enterFrac = -1.0f;
 	tw->leaveFrac = 1.0f;
@@ -628,7 +628,7 @@ trace volumes it is possible to hit something in a later leaf with
 a smaller intercept fraction.
 ==================
 */
-void CM_TraceThroughTree(traceWork_t* tw, clipMap_t* local, int num, float p1f, float p2f, vec3_t p1, vec3_t p2)
+void CM_TraceThroughTree(traceWork_t* tw, clipMap_t* local, const int num, float p1f, float p2f, vec3_t p1, vec3_t p2)
 {
 	float t1, t2, offset;
 	float frac, frac2;
@@ -795,7 +795,7 @@ CM_BoxTrace
 */
 void CM_BoxTrace(trace_t* results, const vec3_t start, const vec3_t end,
                  const vec3_t mins, const vec3_t maxs,
-                 clipHandle_t model, int brushmask)
+                 const clipHandle_t model, const int brushmask)
 {
 	int i;
 	traceWork_t tw;
@@ -966,7 +966,7 @@ rotating entities
 */
 void CM_TransformedBoxTrace(trace_t* results, const vec3_t start, const vec3_t end,
                             const vec3_t mins, const vec3_t maxs,
-                            clipHandle_t model, int brushmask,
+                            const clipHandle_t model, const int brushmask,
                             const vec3_t origin, const vec3_t angles)
 {
 	trace_t trace;

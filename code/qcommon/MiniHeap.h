@@ -46,7 +46,7 @@ public:
 	}
 
 	// initialise the heap
-	CMiniHeap(int size)
+	CMiniHeap(const int size)
 	{
 		mHeap = static_cast<char*>(Z_Malloc(size, TAG_GHOUL2, qtrue));
 		mSize = size;
@@ -69,7 +69,7 @@ public:
 	}
 
 	// give me some space from the heap please
-	char* MiniHeapAlloc(int size)
+	char* MiniHeapAlloc(const int size)
 	{
 		if (size < (mSize - ((intptr_t)mCurrentHeap - (intptr_t)mHeap)))
 		{

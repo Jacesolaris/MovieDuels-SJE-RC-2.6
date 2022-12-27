@@ -238,7 +238,7 @@ extern refexport_t re;
 #ifdef DEBUG_ZONE_ALLOCS
 void* _D_Z_Malloc(int iSize, memtag_t eTag, qboolean bZeroit, const char* psFile, int iLine)
 #else
-void* Z_Malloc(int iSize, memtag_t eTag, qboolean bZeroit, int /*unusedAlign*/)
+void* Z_Malloc(const int iSize, const memtag_t eTag, const qboolean bZeroit, int /*unusedAlign*/)
 #endif
 {
 	gbMemFreeupOccured = qfalse;
@@ -402,7 +402,7 @@ void* Z_Malloc(int iSize, memtag_t eTag, qboolean bZeroit, int /*unusedAlign*/)
 extern "C" Q_EXPORT void* openjk_minizip_malloc(int size);
 extern "C" Q_EXPORT int openjk_minizip_free(void* to_free);
 
-void* openjk_minizip_malloc(int size)
+void* openjk_minizip_malloc(const int size)
 {
 	return Z_Malloc(size, TAG_MINIZIP, qfalse);
 }
@@ -415,7 +415,7 @@ int openjk_minizip_free(void* to_free)
 // used during model cacheing to save an extra malloc, lets us morph the disk-load buffer then
 //	just not fs_freefile() it afterwards.
 //
-void Z_MorphMallocTag(void* pvAddress, memtag_t eDesiredTag)
+void Z_MorphMallocTag(void* pvAddress, const memtag_t eDesiredTag)
 {
 	zoneHeader_t* pMemory = static_cast<zoneHeader_t*>(pvAddress) - 1;
 
@@ -488,7 +488,7 @@ static int Zone_FreeBlock(zoneHeader_t* pMemory)
 
 // stats-query function to to see if it's our malloc
 // returns block size if so
-qboolean Z_IsFromZone(const void* pvAddress, memtag_t eTag)
+qboolean Z_IsFromZone(const void* pvAddress, const memtag_t eTag)
 {
 	const zoneHeader_t* pMemory = static_cast<const zoneHeader_t*>(pvAddress) - 1;
 #if 1	//debugging double free
@@ -600,14 +600,14 @@ int Z_Free(void* pvAddress)
 	return Zone_FreeBlock(pMemory);
 }
 
-int Z_MemSize(memtag_t eTag)
+int Z_MemSize(const memtag_t eTag)
 {
 	return TheZone.Stats.iSizesPerTag[eTag];
 }
 
 // Frees all blocks with the specified tag...
 //
-void Z_TagFree(memtag_t eTag)
+void Z_TagFree(const memtag_t eTag)
 {
 	//#ifdef _DEBUG
 	//	int iZoneBlocks = TheZone.Stats.iCount;
@@ -639,7 +639,7 @@ void* _D_S_Malloc(int iSize, const char* psFile, int iLine)
 	return _D_Z_Malloc(iSize, TAG_SMALL, qfalse, psFile, iLine);
 }
 #else
-void* S_Malloc(int iSize)
+void* S_Malloc(const int iSize)
 {
 	return Z_Malloc(iSize, TAG_SMALL, qfalse);
 }

@@ -71,7 +71,7 @@ static void UI_GetGlconfig(glconfig_t* config)
 GetClipboardData
 ====================
 */
-static void GetClipboardData(char* buf, int buflen)
+static void GetClipboardData(char* buf, const int buflen)
 {
 	char *cbd, *c;
 
@@ -99,7 +99,7 @@ Key_KeynumToStringBuf
 // only ever called by binding-display code, therefore returns non-technical "friendly" names
 //	in any language that don't necessarily match those in the config file...
 //
-void Key_KeynumToStringBuf(int keynum, char* buf, int buflen)
+void Key_KeynumToStringBuf(const int keynum, char* buf, const int buflen)
 {
 	const char* psKeyName = Key_KeynumToString(keynum/*, qtrue */);
 
@@ -115,7 +115,7 @@ void Key_KeynumToStringBuf(int keynum, char* buf, int buflen)
 Key_GetBindingBuf
 ====================
 */
-void Key_GetBindingBuf(int keynum, char* buf, int buflen)
+void Key_GetBindingBuf(const int keynum, char* buf, const int buflen)
 {
 	const char* value = Key_GetBinding(keynum);
 	if (value)
@@ -133,19 +133,19 @@ void Key_GetBindingBuf(int keynum, char* buf, int buflen)
 FloatAsInt
 ====================
 */
-static int FloatAsInt(float f)
+static int FloatAsInt(const float f)
 {
 	byteAlias_t fi;
 	fi.f = f;
 	return fi.i;
 }
 
-static void UI_Cvar_Create(const char* var_name, const char* var_value, int flags)
+static void UI_Cvar_Create(const char* var_name, const char* var_value, const int flags)
 {
 	Cvar_Register(nullptr, var_name, var_value, flags);
 }
 
-static int GetConfigString(int index, char* buf, int size)
+static int GetConfigString(const int index, char* buf, const int size)
 {
 	if (index < 0 || index >= MAX_CONFIGSTRINGS)
 		return qfalse;
@@ -173,7 +173,7 @@ void CL_ShutdownUI(void)
 	cls.uiStarted = qfalse;
 }
 
-void CL_DrawDatapad(int HUDType)
+void CL_DrawDatapad(const int HUDType)
 {
 	switch (HUDType)
 	{

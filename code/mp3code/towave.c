@@ -237,7 +237,7 @@ int bFastEstimateOnly = 0; // MUST DEFAULT TO THIS VALUE!!!!!!!!!
 
 // char *return is NZ for any errors (no trailing CR!)
 //
-char* C_MP3_IsValid(void* pvData, int iDataLen, int bStereoDesired)
+char* C_MP3_IsValid(void* pvData, const int iDataLen, const int bStereoDesired)
 {
 	//	char sTemp[1024];	/////////////////////////////////////////////////
 	unsigned int iRealDataStart;
@@ -319,7 +319,7 @@ char* C_MP3_IsValid(void* pvData, int iDataLen, int bStereoDesired)
 
 // char *return is NZ for any errors (no trailing CR!)
 //
-char* C_MP3_GetHeaderData(void* pvData, int iDataLen, int* piRate, int* piWidth, int* piChannels, int bStereoDesired)
+char* C_MP3_GetHeaderData(void* pvData, const int iDataLen, int* piRate, int* piWidth, int* piChannels, const int bStereoDesired)
 {
 	unsigned int iRealDataStart;
 	MPEG_HEAD head;
@@ -361,7 +361,7 @@ char* C_MP3_GetHeaderData(void* pvData, int iDataLen, int* piRate, int* piWidth,
 //
 // char *return is NZ for any errors (no trailing CR!)
 //
-char* C_MP3_GetUnpackedSize(void* pvData, int iSourceBytesRemaining, int* piUnpackedSize, int bStereoDesired)
+char* C_MP3_GetUnpackedSize(void* pvData, int iSourceBytesRemaining, int* piUnpackedSize, const int bStereoDesired)
 {
 	unsigned int iRealDataStart;
 	MPEG_HEAD head;
@@ -454,7 +454,7 @@ char* C_MP3_GetUnpackedSize(void* pvData, int iSourceBytesRemaining, int* piUnpa
 }
 
 char* C_MP3_UnpackRawPCM(void* pvData, int iSourceBytesRemaining, int* piUnpackedSize, void* pbUnpackBuffer,
-                         int bStereoDesired)
+                         const int bStereoDesired)
 {
 	unsigned int iRealDataStart;
 	MPEG_HEAD head;
@@ -543,8 +543,8 @@ char* C_MP3_UnpackRawPCM(void* pvData, int iSourceBytesRemaining, int* piUnpacke
 //
 // char * return is NULL for ok, else error string
 //
-char* C_MP3Stream_DecodeInit(LP_MP3STREAM pSFX_MP3Stream, void* pvSourceData, int iSourceBytesRemaining,
-                             int iGameAudioSampleRate, int iGameAudioSampleBits, int bStereoDesired)
+char* C_MP3Stream_DecodeInit(const LP_MP3STREAM pSFX_MP3Stream, void* pvSourceData, const int iSourceBytesRemaining,
+                             const int iGameAudioSampleRate, const int iGameAudioSampleBits, const int bStereoDesired)
 {
 	char* psReturn = NULL;
 	MPEG_HEAD head; // only relevant within this function during init
@@ -644,7 +644,7 @@ char* C_MP3Stream_DecodeInit(LP_MP3STREAM pSFX_MP3Stream, void* pvSourceData, in
 
 // return value is decoded bytes for this packet, which is effectively a BOOL, NZ for not finished decoding yet...
 //
-unsigned int C_MP3Stream_Decode(LP_MP3STREAM pSFX_MP3Stream, int bFastForwarding)
+unsigned int C_MP3Stream_Decode(const LP_MP3STREAM pSFX_MP3Stream, const int bFastForwarding)
 {
 	unsigned int uiDecoded = 0; // default to "finished"
 
@@ -699,7 +699,7 @@ unsigned int C_MP3Stream_Decode(LP_MP3STREAM pSFX_MP3Stream, int bFastForwarding
 
 // ret is char* errstring, else NULL for ok
 //
-char* C_MP3Stream_Rewind(LP_MP3STREAM pSFX_MP3Stream)
+char* C_MP3Stream_Rewind(const LP_MP3STREAM pSFX_MP3Stream)
 {
 	char* psReturn = NULL;
 	MPEG_HEAD head; // only relevant within this function during init

@@ -142,7 +142,7 @@ static void copy64(uint32_t* M, byte* in)
 			(in[i * 4 + 1] << 8) | (in[i * 4 + 0] << 0);
 }
 
-static void copy4(byte* out, uint32_t x)
+static void copy4(byte* out, const uint32_t x)
 {
 	out[0] = x & 0xFF;
 	out[1] = (x >> 8) & 0xFF;
@@ -159,7 +159,7 @@ void mdfour_begin(mdfour_ctx* md)
 	md->totalN = 0;
 }
 
-static void mdfour_tail(byte* in, int n)
+static void mdfour_tail(byte* in, const int n)
 {
 	byte buf[128];
 	uint32_t M[16];
@@ -218,7 +218,7 @@ static void mdfour_result(mdfour_ctx* md, byte* out)
 	copy4(out + 12, m->D);
 }
 
-static void mdfour(byte* out, byte* in, int n)
+static void mdfour(byte* out, byte* in, const int n)
 {
 	mdfour_ctx md;
 	mdfour_begin(&md);
@@ -228,7 +228,7 @@ static void mdfour(byte* out, byte* in, int n)
 
 //===================================================================
 
-uint32_t Com_BlockChecksum(const void* buffer, int length)
+uint32_t Com_BlockChecksum(const void* buffer, const int length)
 {
 	int digest[4];
 

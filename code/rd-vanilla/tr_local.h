@@ -1226,10 +1226,10 @@ void R_RotateForEntity(const trRefEntity_t* ent, const viewParms_t* viewParms, o
 ** GL wrapper/helper functions
 */
 void	GL_Bind(image_t* image);
-void	GL_SetDefaultState(void);
+void	GL_SetDefaultState();
 void	GL_SelectTexture(int unit);
 void	GL_TextureMode(const char* string);
-void	GL_CheckErrors(void);
+void	GL_CheckErrors();
 void	GL_State(uint32_t stateVector);
 void	GL_TexEnv(int env);
 void	GL_Cull(int cullType);
@@ -1297,7 +1297,7 @@ void		RE_RegisterImages_Info_f(void);
 
 model_t* R_AllocModel(void);
 
-void    	R_Init(void);
+void    	R_Init();
 image_t* R_FindImageFile(const char* name, qboolean mipmap, qboolean allowPicmip, qboolean allowTC, int glWrapClampMode);
 
 image_t* R_CreateImage(const char* name, const byte* pic, int width, int height, GLenum format, qboolean mipmap, qboolean allowPicmip, qboolean allowTC, int wrapClampMode);
@@ -1310,8 +1310,8 @@ void		R_GammaCorrect(byte* buffer, int bufSize);
 void	R_ImageList_f(void);
 void	R_SkinList_f(void);
 void	R_FontList_f(void);
-void	R_ScreenShot_f(void);
-void	R_ScreenShotTGA_f(void);
+void	R_ScreenShot_f();
+void	R_ScreenShotTGA_f();
 
 void	R_InitFogTable(void);
 float	R_FogFactor(float s, float t);

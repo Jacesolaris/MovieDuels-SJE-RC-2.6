@@ -170,7 +170,7 @@ void Sys_Init(void)
 	com_maxfpsMinimized = Cvar_Get("com_maxfpsMinimized", "50", CVAR_ARCHIVE_ND);
 }
 
-static void NORETURN Sys_Exit(int ex)
+static void NORETURN Sys_Exit(const int ex)
 {
 	IN_Shutdown();
 #ifndef DEDICATED
@@ -300,7 +300,7 @@ First try to load library name from system library path,
 from executable path, then fs_basepath.
 =================
 */
-void* Sys_LoadDll(const char* name, qboolean useSystemLib)
+void* Sys_LoadDll(const char* name, const qboolean useSystemLib)
 {
 	void* dllhandle = nullptr;
 
@@ -383,7 +383,7 @@ enum SearchPathFlag
 };
 
 static void* Sys_LoadDllFromPaths(const char* filename, const char* gamedir, const char** searchPaths,
-                                  size_t numPaths, uint32_t searchFlags, const char* callerName)
+                                  const size_t numPaths, const uint32_t searchFlags, const char* callerName)
 {
 	char* fn;
 	void* libHandle;
@@ -682,7 +682,7 @@ void* Sys_LoadGameDll(const char* name, GetModuleAPIProc** moduleAPI)
 Sys_SigHandler
 =================
 */
-void Sys_SigHandler(int signal)
+void Sys_SigHandler(const int signal)
 {
 	static qboolean signalcaught = qfalse;
 

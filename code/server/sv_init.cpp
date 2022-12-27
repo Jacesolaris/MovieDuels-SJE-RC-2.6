@@ -44,7 +44,7 @@ SV_SetConfigstring
 
 ===============
 */
-void SV_SetConfigstring(int index, const char* val)
+void SV_SetConfigstring(const int index, const char* val)
 {
 	if (index < 0 || index >= MAX_CONFIGSTRINGS)
 	{
@@ -80,7 +80,7 @@ SV_GetConfigstring
 
 ===============
 */
-void SV_GetConfigstring(int index, char* buffer, int bufferSize)
+void SV_GetConfigstring(const int index, char* buffer, const int bufferSize)
 {
 	if (bufferSize < 1)
 	{
@@ -105,7 +105,7 @@ SV_SetUserinfo
 
 ===============
 */
-void SV_SetUserinfo(int index, const char* val)
+void SV_SetUserinfo(const int index, const char* val)
 {
 	if (index < 0 || index >= 1)
 	{
@@ -126,7 +126,7 @@ SV_GetUserinfo
 
 ===============
 */
-void SV_GetUserinfo(int index, char* buffer, int bufferSize)
+void SV_GetUserinfo(const int index, char* buffer, const int bufferSize)
 {
 	if (bufferSize < 1)
 	{

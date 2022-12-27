@@ -517,7 +517,7 @@ void R_Init(void) {
 RE_Shutdown
 ===============
 */
-void RE_Shutdown(qboolean destroyWindow, qboolean restarting) {
+void RE_Shutdown(qboolean destroy_window, qboolean restarting) {
 	//	Com_Printf ("RE_Shutdown( %i )\n", destroyWindow );
 
 	for (size_t i = 0; i < numCommands; i++)

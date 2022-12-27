@@ -517,7 +517,7 @@ void _UI_MouseEvent(int dx, int dy);
 CL_MouseEvent
 =================
 */
-void CL_MouseEvent(int dx, int dy, int time)
+void CL_MouseEvent(const int dx, const int dy, int time)
 {
 	if (Key_GetCatcher() & KEYCATCH_UI)
 	{
@@ -537,7 +537,7 @@ CL_JoystickEvent
 Joystick values stay set until changed
 =================
 */
-void CL_JoystickEvent(int axis, int value, int time)
+void CL_JoystickEvent(const int axis, const int value, int time)
 {
 	if (axis < 0 || axis >= MAX_JOYSTICK_AXIS)
 	{

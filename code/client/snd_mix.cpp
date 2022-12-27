@@ -53,7 +53,7 @@ void S_WriteLinearBlastStereo16(void)
 	}
 }
 
-void S_TransferStereo16(unsigned long* pbuf, int endtime)
+void S_TransferStereo16(unsigned long* pbuf, const int endtime)
 {
 	snd_p = (int*)paintbuffer;
 	int ls_paintedtime = s_paintedtime;
@@ -85,7 +85,7 @@ S_TransferPaintBuffer
 
 ===================
 */
-void S_TransferPaintBuffer(int endtime)
+void S_TransferPaintBuffer(const int endtime)
 {
 	auto pbuf = (unsigned long*)dma.buffer;
 
@@ -152,7 +152,7 @@ CHANNEL MIXING
 
 ===============================================================================
 */
-static void S_PaintChannelFrom16(const channel_t* ch, const sfx_t* sfx, int count, int sampleOffset, int bufferOffset)
+static void S_PaintChannelFrom16(const channel_t* ch, const sfx_t* sfx, const int count, int sampleOffset, const int bufferOffset)
 {
 	const int iLeftVol = ch->leftvol * snd_vol;
 	const int iRightVol = ch->rightvol * snd_vol;
@@ -168,7 +168,7 @@ static void S_PaintChannelFrom16(const channel_t* ch, const sfx_t* sfx, int coun
 	}
 }
 
-void S_PaintChannelFromMP3(channel_t* ch, const sfx_t* sc, int count, int sampleOffset, int bufferOffset)
+void S_PaintChannelFromMP3(channel_t* ch, const sfx_t* sc, int count, const int sampleOffset, const int bufferOffset)
 {
 	int data;
 	static short tempMP3Buffer[PAINTBUFFER_SIZE];
@@ -214,7 +214,7 @@ void S_PaintChannelFromMP3(channel_t* ch, const sfx_t* sc, int count, int sample
 
 // subroutinised to save code dup (called twice)	-ste
 //
-void ChannelPaint(channel_t* ch, const sfx_t* sc, int count, int sampleOffset, int bufferOffset)
+void ChannelPaint(channel_t* ch, const sfx_t* sc, const int count, const int sampleOffset, const int bufferOffset)
 {
 	switch (sc->eSoundCompressionMethod)
 	{
@@ -235,7 +235,7 @@ void ChannelPaint(channel_t* ch, const sfx_t* sc, int count, int sampleOffset, i
 	}
 }
 
-void S_PaintChannels(int endtime)
+void S_PaintChannels(const int endtime)
 {
 	int i;
 	int sampleOffset;

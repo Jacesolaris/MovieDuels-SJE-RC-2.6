@@ -123,7 +123,7 @@ Netchan_Setup
 called to open a channel to a remote system
 ==============
 */
-void Netchan_Setup(netsrc_t sock, netchan_t* chan, netadr_t adr, int qport)
+void Netchan_Setup(const netsrc_t sock, netchan_t* chan, const netadr_t adr, const int qport)
 {
 	memset(chan, 0, sizeof(*chan));
 
@@ -142,7 +142,7 @@ Sends a message to a connection, fragmenting if necessary
 A 0 length will still generate a packet.
 ================
 */
-void Netchan_Transmit(netchan_t* chan, int length, const byte* data)
+void Netchan_Transmit(netchan_t* chan, const int length, const byte* data)
 {
 	msg_t send;
 	byte send_buf[MAX_PACKETLEN];
@@ -423,7 +423,7 @@ NET_CompareBaseAdr
 Compares without the port
 ===================
 */
-qboolean NET_CompareBaseAdr(netadr_t a, netadr_t b)
+qboolean NET_CompareBaseAdr(const netadr_t a, const netadr_t b)
 {
 	if (a.type != b.type)
 		return qfalse;
@@ -435,7 +435,7 @@ qboolean NET_CompareBaseAdr(netadr_t a, netadr_t b)
 	return qfalse;
 }
 
-const char* NET_AdrToString(netadr_t a)
+const char* NET_AdrToString(const netadr_t a)
 {
 	static char s[64];
 
@@ -447,7 +447,7 @@ const char* NET_AdrToString(netadr_t a)
 	return s;
 }
 
-qboolean NET_CompareAdr(netadr_t a, netadr_t b)
+qboolean NET_CompareAdr(const netadr_t a, const netadr_t b)
 {
 	if (a.type != b.type)
 		return qfalse;
@@ -459,7 +459,7 @@ qboolean NET_CompareAdr(netadr_t a, netadr_t b)
 	return qfalse;
 }
 
-qboolean NET_IsLocalAddress(netadr_t adr)
+qboolean NET_IsLocalAddress(const netadr_t adr)
 {
 	return static_cast<qboolean>(adr.type == NA_LOOPBACK);
 }
@@ -472,7 +472,7 @@ LOOPBACK BUFFERS FOR LOCAL PLAYER
 =============================================================================
 */
 
-qboolean NET_GetLoopPacket(netsrc_t sock, netadr_t* net_from, msg_t* net_message)
+qboolean NET_GetLoopPacket(const netsrc_t sock, netadr_t* net_from, msg_t* net_message)
 {
 	try
 	{
@@ -500,7 +500,7 @@ qboolean NET_GetLoopPacket(netsrc_t sock, netadr_t* net_from, msg_t* net_message
 	return {};
 }
 
-void NET_SendLoopPacket(netsrc_t sock, int length, const void* data, netadr_t to)
+void NET_SendLoopPacket(const netsrc_t sock, const int length, const void* data, netadr_t to)
 {
 	loopback_t* loop = &loopbacks[sock ^ 1];
 
@@ -513,7 +513,7 @@ void NET_SendLoopPacket(netsrc_t sock, int length, const void* data, netadr_t to
 
 //=============================================================================
 
-void NET_SendPacket(netsrc_t sock, int length, const void* data, netadr_t to)
+void NET_SendPacket(const netsrc_t sock, const int length, const void* data, const netadr_t to)
 {
 	// sequenced packets are shown in netchan, so just show oob
 	if (showpackets->integer && *(int*)data == -1)
@@ -534,7 +534,7 @@ NET_OutOfBandPrint
 Sends a text message in an out-of-band datagram
 ================
 */
-void QDECL NET_OutOfBandPrint(netsrc_t sock, netadr_t adr, const char* format, ...)
+void QDECL NET_OutOfBandPrint(const netsrc_t sock, const netadr_t adr, const char* format, ...)
 {
 	va_list argptr;
 	char string[MAX_MSGLEN];

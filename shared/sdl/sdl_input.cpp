@@ -49,7 +49,7 @@ static SDL_Window* SDL_window = nullptr;
 IN_PrintKey
 ===============
 */
-static void IN_PrintKey(const SDL_Keysym* keysym, fakeAscii_t key, qboolean down)
+static void IN_PrintKey(const SDL_Keysym* keysym, const fakeAscii_t key, const qboolean down)
 {
 	if (down)
 		Com_Printf("+ ");
@@ -86,7 +86,7 @@ TODO: If the SDL_Scancode situation improves, use it instead of
 	  both of these methods
 ===============
 */
-static qboolean IN_IsConsoleKey(fakeAscii_t key, int character)
+static qboolean IN_IsConsoleKey(fakeAscii_t key, const int character)
 {
 	using consoleKey_t = struct consoleKey_s
 	{
@@ -254,7 +254,7 @@ static void IN_TranslateNumpad(SDL_Keysym* keysym, fakeAscii_t* key)
 IN_TranslateSDLToJKKey
 ===============
 */
-static fakeAscii_t IN_TranslateSDLToJKKey(SDL_Keysym* keysym, qboolean down)
+static fakeAscii_t IN_TranslateSDLToJKKey(SDL_Keysym* keysym, const qboolean down)
 {
 	fakeAscii_t key = A_NULL;
 
@@ -716,7 +716,7 @@ void IN_Init(void* windowData)
 	Com_DPrintf("------------------------------------\n");
 }
 
-uint8_t ConvertUTF32ToExpectedCharset(uint32_t utf32)
+uint8_t ConvertUTF32ToExpectedCharset(const uint32_t utf32)
 {
 	switch (utf32)
 	{

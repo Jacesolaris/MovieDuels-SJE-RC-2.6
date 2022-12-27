@@ -97,7 +97,7 @@ static constexpr int s_numVidModes = ARRAY_LEN(r_vidModes);
 
 #define R_MODE_FALLBACK (4) // 640x480
 
-qboolean R_GetModeInfo(int* width, int* height, int mode)
+qboolean R_GetModeInfo(int* width, int* height, const int mode)
 {
 	if (mode < -1)
 	{
@@ -320,8 +320,8 @@ GLimp_SetMode
 ===============
 */
 
-static rserr_t GLimp_SetMode(glconfig_t* glConfig, const windowDesc_t* windowDesc, const char* windowTitle, int mode,
-                             qboolean fullscreen, qboolean noborder)
+static rserr_t GLimp_SetMode(glconfig_t* glConfig, const windowDesc_t* windowDesc, const char* windowTitle, const int mode,
+                             const qboolean fullscreen, const qboolean noborder)
 {
 	int perChannelColorBits;
 	int depthBits;
@@ -672,8 +672,8 @@ static rserr_t GLimp_SetMode(glconfig_t* glConfig, const windowDesc_t* windowDes
 GLimp_StartDriverAndSetMode
 ===============
 */
-static qboolean GLimp_StartDriverAndSetMode(glconfig_t* glConfig, const windowDesc_t* windowDesc, int mode,
-                                            qboolean fullscreen, qboolean noborder)
+static qboolean GLimp_StartDriverAndSetMode(glconfig_t* glConfig, const windowDesc_t* windowDesc, const int mode,
+                                            qboolean fullscreen, const qboolean noborder)
 {
 	if (!SDL_WasInit(SDL_INIT_VIDEO))
 	{

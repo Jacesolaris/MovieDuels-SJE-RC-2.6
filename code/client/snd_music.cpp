@@ -136,7 +136,7 @@ static std::string build_string(Tail... tail)
 // some sort of error in the music data...
 // only use during parse, not run-time use, and bear in mid that data is zapped after error message, so exit any loops immediately
 //
-static void Music_Parse_Error(gsl::czstring filename, const std::string& error)
+static void Music_Parse_Error(const gsl::czstring filename, const std::string& error)
 {
 	const std::string message = build_string(
 		S_COLOR_RED "Error parsing music data (in \"", filename, "\"):\n",
@@ -161,7 +161,7 @@ static void Music_Parse_Warning(const std::string& error)
 // Unfortunately two of the places that calls this doesn't have much other access to the state other than
 //	a string, not an enum, so for those cases they only pass in BOSS or EXPLORE, so don't rely on it totally.
 //
-static const char* Music_BuildFileName(const char* psFileNameBase, MusicState_e eMusicState)
+static const char* Music_BuildFileName(const char* psFileNameBase, const MusicState_e eMusicState)
 {
 	static sstring_t sFileName;
 
@@ -180,7 +180,7 @@ static const char* Music_BuildFileName(const char* psFileNameBase, MusicState_e 
 }
 
 // this MUST return NULL for non-base states unless doing debug-query
-const char* Music_BaseStateToString(MusicState_e eMusicState, qboolean bDebugPrintQuery /* = qfalse */)
+const char* Music_BaseStateToString(const MusicState_e eMusicState, const qboolean bDebugPrintQuery /* = qfalse */)
 {
 	switch (eMusicState)
 	{
@@ -207,9 +207,9 @@ const char* Music_BaseStateToString(MusicState_e eMusicState, qboolean bDebugPri
 	return nullptr;
 }
 
-static qboolean Music_ParseMusic(gsl::czstring filename, const CGenericParser2& Parser, MusicData_t* MusicData,
+static qboolean Music_ParseMusic(const gsl::czstring filename, const CGenericParser2& Parser, MusicData_t* MusicData,
                                  const CGPGroup& pgMusicFiles, const gsl::cstring_view& psMusicName,
-                                 const gsl::cstring_view& psMusicNameKey, MusicState_e eMusicState)
+                                 const gsl::cstring_view& psMusicNameKey, const MusicState_e eMusicState)
 {
 	bool bReturn = false;
 	MusicFile_t MusicFile;
@@ -677,7 +677,7 @@ static MusicFile_t* Music_GetBaseMusicFile(const char* psMusicState)
 	return nullptr;
 }
 
-static MusicFile_t* Music_GetBaseMusicFile(MusicState_e eMusicState)
+static MusicFile_t* Music_GetBaseMusicFile(const MusicState_e eMusicState)
 {
 	const char* psMusicStateString = Music_BaseStateToString(eMusicState);
 	if (psMusicStateString)
@@ -771,13 +771,13 @@ const char* Music_GetFileNameForState(MusicState_e eMusicState)
 	return nullptr;
 }
 
-qboolean Music_StateIsTransition(MusicState_e eMusicState)
+qboolean Music_StateIsTransition(const MusicState_e eMusicState)
 {
 	return static_cast<qboolean>(eMusicState >= eBGRNDTRACK_FIRSTTRANSITION &&
 		eMusicState <= eBGRNDTRACK_LASTTRANSITION);
 }
 
-qboolean Music_StateCanBeInterrupted(MusicState_e eMusicState, MusicState_e eProposedMusicState)
+qboolean Music_StateCanBeInterrupted(const MusicState_e eMusicState, const MusicState_e eProposedMusicState)
 {
 	// death music can interrupt anything...
 	//
@@ -836,7 +836,7 @@ qboolean Music_StateCanBeInterrupted(MusicState_e eMusicState, MusicState_e ePro
 // enum of transition track to switch to
 // float time of entry point of new track *after* transition
 //
-qboolean Music_AllowedToTransition(float fPlayingTimeElapsed,
+qboolean Music_AllowedToTransition(const float fPlayingTimeElapsed,
                                    MusicState_e eMusicState,
                                    //
                                    MusicState_e* peTransition /* = NULL */,
@@ -989,7 +989,7 @@ qboolean Music_AllowedToTransition(float fPlayingTimeElapsed,
 // typically used to get a (predefined) random entry point for the action music, but will work on any defined type with entry points,
 //	defaults safely to 0.0f if no info available...
 //
-float Music_GetRandomEntryTime(MusicState_e eMusicState)
+float Music_GetRandomEntryTime(const MusicState_e eMusicState)
 {
 	const auto itMusicData = MusicData->find(Music_BaseStateToString(eMusicState));
 	if (itMusicData != MusicData->end())

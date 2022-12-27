@@ -48,7 +48,7 @@ float* dct_coef_addr()
 }
 
 /*------------------------------------------------------------*/
-static void forward_bf(int m, int n, float x[], float f[], float coef[])
+static void forward_bf(const int m, const int n, float x[], float f[], float coef[])
 {
 	int p0 = 0;
 	const int n2 = n >> 1;
@@ -66,7 +66,7 @@ static void forward_bf(int m, int n, float x[], float f[], float coef[])
 }
 
 /*------------------------------------------------------------*/
-static void back_bf(int m, int n, float x[], float f[])
+static void back_bf(const int m, const int n, float x[], float f[])
 {
 	int j;
 

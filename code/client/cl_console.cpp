@@ -266,7 +266,7 @@ void Con_CheckResize(void)
 Cmd_CompleteTxtName
 ==================
 */
-void Cmd_CompleteTxtName(char* args, int argNum)
+void Cmd_CompleteTxtName(char* args, const int argNum)
 {
 	if (argNum == 2)
 		Field_CompleteFilename("", "txt", qfalse, qtrue);
@@ -532,7 +532,7 @@ Con_DrawSolidConsole
 Draws the console with the solid background
 ================
 */
-void Con_DrawSolidConsole(float frac)
+void Con_DrawSolidConsole(const float frac)
 {
 	int x;
 

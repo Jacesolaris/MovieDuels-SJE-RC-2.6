@@ -584,7 +584,7 @@ qboolean gbUsingCachedMapDataRightNow = qfalse;
 //
 // new bool return used to see if anything was freed, used during z_malloc failure re-try
 //
-qboolean CM_DeleteCachedMap(qboolean bGuaranteedOkToDelete)
+qboolean CM_DeleteCachedMap(const qboolean bGuaranteedOkToDelete)
 {
 	qboolean bActuallyFreedSomething = qfalse;
 
@@ -609,7 +609,7 @@ qboolean CM_DeleteCachedMap(qboolean bGuaranteedOkToDelete)
 	return bActuallyFreedSomething;
 }
 
-static void CM_LoadMap_Actual(const char* name, qboolean clientload, int* checksum, clipMap_t& cm)
+static void CM_LoadMap_Actual(const char* name, const qboolean clientload, int* checksum, clipMap_t& cm)
 {
 	dheader_t header;
 	static unsigned last_checksum;
@@ -810,7 +810,7 @@ static void CM_LoadMap_Actual(const char* name, qboolean clientload, int* checks
 
 // need a wrapper function around this because of multiple returns, need to ensure bool is correct...
 //
-void CM_LoadMap(const char* name, qboolean clientload, int* checksum, qboolean subBSP)
+void CM_LoadMap(const char* name, const qboolean clientload, int* checksum, const qboolean subBSP)
 {
 	if (subBSP)
 	{
@@ -880,7 +880,7 @@ int CM_TotalMapContents()
 CM_ClipHandleToModel
 ==================
 */
-cmodel_t* CM_ClipHandleToModel(clipHandle_t handle, clipMap_t** clipMap)
+cmodel_t* CM_ClipHandleToModel(const clipHandle_t handle, clipMap_t** clipMap)
 {
 	if (handle < 0)
 	{
@@ -930,7 +930,7 @@ cmodel_t* CM_ClipHandleToModel(clipHandle_t handle, clipMap_t** clipMap)
 CM_InlineModel
 ==================
 */
-clipHandle_t CM_InlineModel(int index)
+clipHandle_t CM_InlineModel(const int index)
 {
 	if (index < 0 || index >= TotalSubModels)
 	{
@@ -949,12 +949,12 @@ char* CM_EntityString(void)
 	return cmg.entityString;
 }
 
-char* CM_SubBSPEntityString(int index)
+char* CM_SubBSPEntityString(const int index)
 {
 	return SubBSP[index].entityString;
 }
 
-int CM_LeafCluster(int leafnum)
+int CM_LeafCluster(const int leafnum)
 {
 	if (leafnum < 0 || leafnum >= cmg.numLeafs)
 	{
@@ -963,7 +963,7 @@ int CM_LeafCluster(int leafnum)
 	return cmg.leafs[leafnum].cluster;
 }
 
-int CM_LeafArea(int leafnum)
+int CM_LeafArea(const int leafnum)
 {
 	if (leafnum < 0 || leafnum >= cmg.numLeafs)
 	{
@@ -1060,14 +1060,14 @@ clipHandle_t CM_TempBoxModel(const vec3_t mins, const vec3_t maxs)
 CM_ModelBounds
 ===================
 */
-void CM_ModelBounds(clipMap_t& cm, clipHandle_t model, vec3_t mins, vec3_t maxs)
+void CM_ModelBounds(clipMap_t& cm, const clipHandle_t model, vec3_t mins, vec3_t maxs)
 {
 	const cmodel_t* cmod = CM_ClipHandleToModel(model);
 	VectorCopy(cmod->mins, mins);
 	VectorCopy(cmod->maxs, maxs);
 }
 
-int CM_LoadSubBSP(const char* name, qboolean clientload)
+int CM_LoadSubBSP(const char* name, const qboolean clientload)
 {
 	int checksum;
 
@@ -1094,7 +1094,7 @@ int CM_LoadSubBSP(const char* name, qboolean clientload)
 	return count;
 }
 
-int CM_FindSubBSP(int modelIndex)
+int CM_FindSubBSP(const int modelIndex)
 {
 	int count = cmg.numSubModels;
 	if (modelIndex < count)
@@ -1120,7 +1120,7 @@ void CM_GetWorldBounds(vec3_t mins, vec3_t maxs)
 	VectorCopy(cmg.cmodels[0].maxs, maxs);
 }
 
-int CM_ModelContents_Actual(clipHandle_t model, clipMap_t* cm)
+int CM_ModelContents_Actual(const clipHandle_t model, clipMap_t* cm)
 {
 	if (!cm)
 	{
@@ -1148,7 +1148,7 @@ int CM_ModelContents_Actual(clipHandle_t model, clipMap_t* cm)
 	return contents;
 }
 
-int CM_ModelContents(clipHandle_t model, int subBSPIndex)
+int CM_ModelContents(const clipHandle_t model, const int subBSPIndex)
 {
 	if (subBSPIndex < 0)
 	{

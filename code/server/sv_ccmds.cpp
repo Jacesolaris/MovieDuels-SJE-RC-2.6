@@ -45,7 +45,7 @@ extern vmCvar_t r_ratiofix;
 //=========================================================
 // don't call this directly, it should only be called from SV_Map_f() or SV_MapTransition_f()
 //
-static bool SV_Map_(ForceReload_e eForceReload)
+static bool SV_Map_(const ForceReload_e eForceReload)
 {
 	char expanded[MAX_QPATH] = {0};
 
@@ -595,7 +595,7 @@ static void SV_DumpUser_f(void)
 SV_CompleteMapName
 ==================
 */
-static void SV_CompleteMapName(char* args, int argNum)
+static void SV_CompleteMapName(char* args, const int argNum)
 {
 	if (argNum == 2)
 		Field_CompleteFilename("maps", "bsp", qtrue, qfalse);
@@ -606,7 +606,7 @@ static void SV_CompleteMapName(char* args, int argNum)
 SV_CompleteMapName
 ==================
 */
-static void SV_CompleteSaveName(char* args, int argNum)
+static void SV_CompleteSaveName(char* args, const int argNum)
 {
 	if (argNum == 2)
 	{

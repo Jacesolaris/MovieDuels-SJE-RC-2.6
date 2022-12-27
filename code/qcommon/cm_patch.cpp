@@ -117,7 +117,7 @@ static vec3_t		debugBlockPoints[4];
 CM_ClearLevelPatches
 =================
 */
-void CM_ClearLevelPatches(void) {
+void CM_ClearLevelPatches() {
 	debugPatchCollide = nullptr;
 	debugFacet = nullptr;
 }
@@ -565,7 +565,7 @@ static int CM_FindPlane(float* p1, float* p2, float* p3) {
 CM_PointOnPlaneSide
 ==================
 */
-static int CM_PointOnPlaneSide(const float* p, int planeNum) {
+static int CM_PointOnPlaneSide(const float* p, const int planeNum) {
 	if (planeNum == -1) {
 		return SIDE_ON;
 	}
@@ -584,7 +584,7 @@ static int CM_PointOnPlaneSide(const float* p, int planeNum) {
 	return SIDE_ON;
 }
 
-static int	CM_GridPlane(int gridPlanes[CM_MAX_GRID_SIZE][CM_MAX_GRID_SIZE][2], int i, int j, int tri) {
+static int	CM_GridPlane(int gridPlanes[CM_MAX_GRID_SIZE][CM_MAX_GRID_SIZE][2], const int i, const int j, const int tri) {
 	int p = gridPlanes[i][j][tri];
 	if (p != -1) {
 		return p;
@@ -604,7 +604,7 @@ static int	CM_GridPlane(int gridPlanes[CM_MAX_GRID_SIZE][CM_MAX_GRID_SIZE][2], i
 CM_EdgePlaneNum
 ==================
 */
-static int CM_EdgePlaneNum(cGrid_t* grid, int gridPlanes[CM_MAX_GRID_SIZE][CM_MAX_GRID_SIZE][2], int i, int j, int k) {
+static int CM_EdgePlaneNum(cGrid_t* grid, int gridPlanes[CM_MAX_GRID_SIZE][CM_MAX_GRID_SIZE][2], const int i, const int j, const int k) {
 	float* p1, * p2;
 	vec3_t		up;
 	int			p;
@@ -681,7 +681,7 @@ CM_SetBorderInward
 ===================
 */
 static void CM_SetBorderInward(facet_t* facet, cGrid_t* grid, int gridPlanes[CM_MAX_GRID_SIZE][CM_MAX_GRID_SIZE][2],
-	int i, int j, int which) {
+                               const int i, const int j, const int which) {
 	float* points[4];
 	int		numPoints;
 
@@ -1151,7 +1151,7 @@ static void CM_PatchCollideFromGrid(cGrid_t* grid, patchCollide_t* pf) {
 }
 
 static patchCollide_t* pfScratch = nullptr;
-void CM_PreparePatchCollide(int num)
+void CM_PreparePatchCollide(const int num)
 {
 	pfScratch = static_cast<patchCollide_t*>(Z_Malloc(sizeof(*pfScratch) * num, TAG_BSP, qfalse));
 }
@@ -1179,7 +1179,7 @@ collision detection with a patch mesh.
 Points is packed as concatenated rows.
 ===================
 */
-patchCollide_s* CM_GeneratePatchCollide(int width, int height, vec3_t* points) {
+patchCollide_s* CM_GeneratePatchCollide(const int width, const int height, vec3_t* points) {
 	cGrid_t			grid;
 	int				i, j;
 
@@ -1740,5 +1740,5 @@ Called from the renderer
 void BotDrawDebugPolygons(void (*drawPoly)(int color, int numPoints, float* points), int value);
 #endif
 
-void CM_DrawDebugSurface(void (*drawPoly)(int color, int numPoints, float* points)) {
+void CM_DrawDebugSurface(void (*draw_poly)(int color, int num_points, float* points)) {
 }

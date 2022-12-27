@@ -79,7 +79,7 @@ namespace FS
 #if !defined( SP_GAME )
 	//    FileList
 
-	FileList::FileList(char** files, int numFiles) NOEXCEPT
+	FileList::FileList(char** files, const int numFiles) NOEXCEPT
 		: _begin(files)
 		  , _end(files + numFiles)
 	{

@@ -116,7 +116,7 @@ using MusicInfo_t = struct
 		s_backgroundSamples = sfxMP3_Bgrnd.iSoundLengthInSamples;
 	}
 
-	void SeekTo(float fTime)
+	void SeekTo(const float fTime)
 	{
 		chMP3_Bgrnd.iMP3SlidingDecodeWindowPos = 0;
 		chMP3_Bgrnd.iMP3SlidingDecodeWritePos = 0;
@@ -748,7 +748,7 @@ void S_Shutdown(void)
 	Mutes / Unmutes all OpenAL sound
 */
 #ifdef USE_OPENAL
-void S_AL_MuteAllSounds(qboolean bMute)
+void S_AL_MuteAllSounds(const qboolean bMute)
 {
 	if (!s_soundStarted)
 		return;
@@ -1077,7 +1077,7 @@ void S_memoryLoad(sfx_t* sfx)
 }
 
 //=============================================================================
-static qboolean S_CheckChannelStomp(int chan1, int chan2)
+static qboolean S_CheckChannelStomp(const int chan1, const int chan2)
 {
 #ifdef USE_OPENAL
 	if (!s_UseOpenAL)
@@ -1103,7 +1103,7 @@ static qboolean S_CheckChannelStomp(int chan1, int chan2)
 S_PickChannel
 =================
 */
-channel_t* S_PickChannel(int entnum, int entchannel)
+channel_t* S_PickChannel(const int entnum, const int entchannel)
 {
 	int ch_idx;
 	channel_t *ch, *firstToDie;
@@ -1187,7 +1187,7 @@ channel_t* S_PickChannel(int entnum, int entchannel)
 	on hardware this way esp. rapid fire modes of weapons!
 */
 #ifdef USE_OPENAL
-channel_t* S_OpenALPickChannel(int entnum, int entchannel)
+channel_t* S_OpenALPickChannel(const int entnum, const int entchannel)
 {
 	int ch_idx;
 	channel_t* ch;
@@ -1368,8 +1368,8 @@ S_SpatializeOrigin
 Used for spatializing s_channels
 =================
 */
-static void S_SpatializeOrigin(const vec3_t origin, float master_vol, int* left_vol, int* right_vol,
-                               soundChannel_t channel)
+static void S_SpatializeOrigin(const vec3_t origin, const float master_vol, int* left_vol, int* right_vol,
+                               const soundChannel_t channel)
 {
 	vec_t lscale, rscale;
 	vec3_t source_vec;
@@ -1460,7 +1460,7 @@ Starts an ambient, 'one-shot" sound.
 ====================
 */
 
-void S_StartAmbientSound(const vec3_t origin, int entityNum, unsigned char volume, sfxHandle_t sfxHandle)
+void S_StartAmbientSound(const vec3_t origin, const int entityNum, const unsigned char volume, const sfxHandle_t sfxHandle)
 {
 	channel_t* ch;
 
@@ -1541,7 +1541,7 @@ if pos is NULL, the sound will be dynamically sourced from the entity
 Entchannel 0 will never override a playing sound
 ====================
 */
-void S_StartSound(const vec3_t origin, int entityNum, soundChannel_t entchannel, sfxHandle_t sfxHandle)
+void S_StartSound(const vec3_t origin, const int entityNum, soundChannel_t entchannel, const sfxHandle_t sfxHandle)
 {
 	channel_t* ch;
 
@@ -1675,7 +1675,7 @@ void S_StartSound(const vec3_t origin, int entityNum, soundChannel_t entchannel,
 S_StartLocalSound
 ==================
 */
-void S_StartLocalSound(sfxHandle_t sfxHandle, int channelNum)
+void S_StartLocalSound(const sfxHandle_t sfxHandle, int channelNum)
 {
 	if (!s_soundStarted || s_soundMuted)
 	{
@@ -1695,7 +1695,7 @@ void S_StartLocalSound(sfxHandle_t sfxHandle, int channelNum)
 S_StartLocalLoopingSound
 ==================
 */
-void S_StartLocalLoopingSound(sfxHandle_t sfxHandle)
+void S_StartLocalLoopingSound(const sfxHandle_t sfxHandle)
 {
 	constexpr vec3_t null_vec = {0, 0, 0};
 
@@ -1714,7 +1714,7 @@ void S_StartLocalLoopingSound(sfxHandle_t sfxHandle)
 
 // returns length in milliseconds of supplied sound effect...  (else 0 for bad handle now)
 //
-float S_GetSampleLengthInMilliSeconds(sfxHandle_t sfxHandle)
+float S_GetSampleLengthInMilliSeconds(const sfxHandle_t sfxHandle)
 {
 	if (!s_soundStarted)
 	{
@@ -1781,7 +1781,7 @@ void S_ClearSoundBuffer(void)
 
 // kinda kludgy way to stop a special-use sfx_t playing...
 //
-void S_CIN_StopSound(sfxHandle_t sfxHandle)
+void S_CIN_StopSound(const sfxHandle_t sfxHandle)
 {
 	if (sfxHandle < 0 || sfxHandle >= s_numSfx)
 	{
@@ -1915,8 +1915,8 @@ Called during entity generation for a frame
 Include velocity in case I get around to doing doppler...
 ==================
 */
-void S_AddLoopingSound(int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfxHandle,
-                       soundChannel_t chan)
+void S_AddLoopingSound(const int entityNum, const vec3_t origin, const vec3_t velocity, const sfxHandle_t sfxHandle,
+                       const soundChannel_t chan)
 {
 	if (!s_soundStarted || s_soundMuted)
 	{
@@ -1962,7 +1962,7 @@ void S_AddLoopingSound(int entityNum, const vec3_t origin, const vec3_t velocity
 S_AddAmbientLoopingSound
 ==================
 */
-void S_AddAmbientLoopingSound(const vec3_t origin, unsigned char volume, sfxHandle_t sfxHandle)
+void S_AddAmbientLoopingSound(const vec3_t origin, const unsigned char volume, const sfxHandle_t sfxHandle)
 {
 	/*const*/
 	sfx_t* sfx;
@@ -2088,7 +2088,7 @@ If raw data has been loaded in little endien binary form, this must be done.
 If raw data was calculated, as with ADPCM, this should not be called.
 =================
 */
-static void S_ByteSwapRawSamples(int samples, int width, int s_channels, const byte* data)
+static void S_ByteSwapRawSamples(int samples, const int width, int s_channels, const byte* data)
 {
 	if (width != 2)
 	{
@@ -2111,8 +2111,8 @@ S_RawSamples
 Music streaming
 ============
 */
-void S_RawSamples(int samples, int rate, int width, int channels, const byte* data, float volume,
-                  qboolean bFirstOrOnlyUpdateThisFrame)
+void S_RawSamples(const int samples, const int rate, const int width, const int channels, const byte* data, const float volume,
+                  const qboolean bFirstOrOnlyUpdateThisFrame)
 {
 	int i;
 	int src, dst;
@@ -2322,7 +2322,7 @@ S_UpdateEntityPosition
 let the sound system know where an entity currently is
 ======================
 */
-void S_UpdateEntityPosition(int entityNum, const vec3_t origin)
+void S_UpdateEntityPosition(const int entityNum, const vec3_t origin)
 {
 	if (entityNum < 0 || entityNum >= MAX_GENTITIES)
 	{
@@ -2501,7 +2501,7 @@ S_Respatialize
 Change the volumes of all the playing sounds for changes in their positions
 ============
 */
-void S_Respatialize(int entityNum, const vec3_t head, vec3_t axis[3], qboolean inwater)
+void S_Respatialize(const int entityNum, const vec3_t head, vec3_t axis[3], const qboolean inwater)
 {
 #ifdef USE_OPENAL
 	EAXOCCLUSIONPROPERTIES eaxOCProp;
@@ -4080,7 +4080,7 @@ background music functions
 ===============================================================================
 */
 
-int FGetLittleLong(fileHandle_t f)
+int FGetLittleLong(const fileHandle_t f)
 {
 	int v;
 
@@ -4089,7 +4089,7 @@ int FGetLittleLong(fileHandle_t f)
 	return LittleLong(v);
 }
 
-int FGetLittleShort(fileHandle_t f)
+int FGetLittleShort(const fileHandle_t f)
 {
 	short v;
 
@@ -4099,7 +4099,7 @@ int FGetLittleShort(fileHandle_t f)
 }
 
 // returns the length of the data in the chunk, or 0 if not found
-int S_FindWavChunk(fileHandle_t f, const char* chunk)
+int S_FindWavChunk(const fileHandle_t f, const char* chunk)
 {
 	char name[5];
 
@@ -4153,7 +4153,7 @@ static void MP3MusicStream_Reset(MusicInfo_t* pMusicInfo)
 //
 // return is where the decoder should read from...
 //
-static byte* MP3MusicStream_ReadFromDisk(MusicInfo_t* pMusicInfo, int iReadOffset, int iReadBytesNeeded)
+static byte* MP3MusicStream_ReadFromDisk(MusicInfo_t* pMusicInfo, const int iReadOffset, const int iReadBytesNeeded)
 {
 	if (iReadOffset < pMusicInfo->iMP3MusicStream_DiskWindowPos)
 	{
@@ -4227,7 +4227,7 @@ void S_UnCacheDynamicMusic(void)
 	}
 }
 
-static qboolean S_StartBackgroundTrack_Actual(MusicInfo_t* pMusicInfo, qboolean qbDynamic, const char* intro,
+static qboolean S_StartBackgroundTrack_Actual(MusicInfo_t* pMusicInfo, const qboolean qbDynamic, const char* intro,
                                               const char* loop)
 {
 	int len;
@@ -4443,7 +4443,7 @@ static qboolean S_StartBackgroundTrack_Actual(MusicInfo_t* pMusicInfo, qboolean 
 	return qtrue;
 }
 
-static void S_SwitchDynamicTracks(MusicState_e eOldState, MusicState_e eNewState, qboolean bNewTrackStartsFullVolume)
+static void S_SwitchDynamicTracks(const MusicState_e eOldState, const MusicState_e eNewState, const qboolean bNewTrackStartsFullVolume)
 {
 	// copy old track into fader...
 	//
@@ -4480,7 +4480,7 @@ static void S_SwitchDynamicTracks(MusicState_e eOldState, MusicState_e eNewState
 // This either changes the music right now (copying track structures etc), or leaves the new state as pending
 //	so it gets picked up by the general music player if in a transition that can't be overridden...
 //
-static void S_SetDynamicMusicState(MusicState_e eNewState)
+static void S_SetDynamicMusicState(const MusicState_e eNewState)
 {
 	if (eMusic_StateRequest != eNewState)
 	{
@@ -4687,7 +4687,7 @@ void S_RestartMusic(void)
 // to be honest, although the code still plays WAVs some of the file-check logic only works for MP3s, so if you ever want
 //	to use WAV music you'll have to do some tweaking below (but I've got other things to do so it'll have to wait - Ste)
 //
-void S_StartBackgroundTrack(const char* intro, const char* loop, qboolean bCalledByCGameStart)
+void S_StartBackgroundTrack(const char* intro, const char* loop, const qboolean bCalledByCGameStart)
 {
 	bMusic_IsDynamic = qfalse;
 
@@ -4840,8 +4840,8 @@ void S_StopBackgroundTrack(void)
 
 // qboolean return is true only if we're changing from a streamed intro to a dynamic loop...
 //
-static qboolean S_UpdateBackgroundTrack_Actual(MusicInfo_t* pMusicInfo, qboolean bFirstOrOnlyMusicTrack,
-                                               float fDefaultVolume)
+static qboolean S_UpdateBackgroundTrack_Actual(MusicInfo_t* pMusicInfo, const qboolean bFirstOrOnlyMusicTrack,
+                                               const float fDefaultVolume)
 {
 	float fMasterVol = fDefaultVolume; // s_musicVolume->value;
 
@@ -5239,7 +5239,7 @@ cvar_t* s_soundpoolmegs = nullptr;
 
 // currently passing in sfx as a param in case I want to do something with it later.
 //
-byte* SND_malloc(int iSize, sfx_t* sfx)
+byte* SND_malloc(const int iSize, sfx_t* sfx)
 {
 	auto pData = static_cast<byte*>(Z_Malloc(iSize, TAG_SND_RAWDATA, qfalse)); // don't bother asking for zeroed mem
 
@@ -5457,7 +5457,7 @@ int SND_FreeOldestSound(void)
 //
 extern qboolean gbInsideLoadSound;
 
-qboolean SND_RegisterAudio_LevelLoadEnd(qboolean bDeleteEverythingNotUsedThisLevel /* 99% qfalse */)
+qboolean SND_RegisterAudio_LevelLoadEnd(const qboolean bDeleteEverythingNotUsedThisLevel /* 99% qfalse */)
 {
 	qboolean bAtLeastOneSoundDropped = qfalse;
 
@@ -6610,7 +6610,7 @@ static void UpdateEAXBuffer(channel_t* ch)
 	}
 }
 
-float CalcDistance(EMPOINT A, EMPOINT B)
+float CalcDistance(const EMPOINT A, const EMPOINT B)
 {
 	return sqrt(sqr(A.fX - B.fX) + sqr(A.fY - B.fY) + sqr(A.fZ - B.fZ));
 }

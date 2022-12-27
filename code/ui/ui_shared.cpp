@@ -1381,7 +1381,7 @@ void String_Init(void)
 UI_Alloc
 ===============
 */
-void* UI_Alloc(int size)
+void* UI_Alloc(const int size)
 {
 	if (allocPoint + size > MEM_POOL_SIZE)
 	{
@@ -1443,7 +1443,7 @@ int Menu_ItemsMatchingGroup(const menuDef_t* menu, const char* name)
 Menu_GetMatchingItemByNumber
 ===============
 */
-itemDef_t* Menu_GetMatchingItemByNumber(const menuDef_t* menu, int index, const char* name)
+itemDef_t* Menu_GetMatchingItemByNumber(const menuDef_t* menu, const int index, const char* name)
 {
 	int count = 0;
 	for (int i = 0; i < menu->itemCount; i++)
@@ -1466,7 +1466,7 @@ itemDef_t* Menu_GetMatchingItemByNumber(const menuDef_t* menu, int index, const 
 Menu_FadeItemByName
 ===============
 */
-void Menu_FadeItemByName(const menuDef_t* menu, const char* p, qboolean fadeOut)
+void Menu_FadeItemByName(const menuDef_t* menu, const char* p, const qboolean fadeOut)
 {
 	const int count = Menu_ItemsMatchingGroup(menu, p);
 	for (int i = 0; i < count; i++)
@@ -1507,7 +1507,7 @@ void Menu_FadeOutItemOnly(const menuDef_t* menu, const char* p)
 Menu_ShowItemByName
 ===============
 */
-void Menu_ShowItemByName(const menuDef_t* menu, const char* p, qboolean bShow)
+void Menu_ShowItemByName(const menuDef_t* menu, const char* p, const qboolean bShow)
 {
 	const int count = Menu_ItemsMatchingGroup(menu, p);
 
@@ -1825,7 +1825,7 @@ Menu_TransitionItemByName
 =================
 */
 void Menu_TransitionItemByName(const menuDef_t* menu, const char* p, const rectDef_t* rectFrom, const rectDef_t* rectTo,
-                               int time, float amt)
+                               const int time, const float amt)
 {
 	const int count = Menu_ItemsMatchingGroup(menu, p);
 	for (int i = 0; i < count; i++)
@@ -1913,7 +1913,7 @@ void Menu_Transition3ItemByName(const menuDef_t* menu, const char* p, const floa
 Menu_OrbitItemByName
 =================
 */
-void Menu_OrbitItemByName(const menuDef_t* menu, const char* p, float x, float y, float cx, float cy, int time)
+void Menu_OrbitItemByName(const menuDef_t* menu, const char* p, const float x, const float y, const float cx, const float cy, const int time)
 {
 	const int count = Menu_ItemsMatchingGroup(menu, p);
 	for (int i = 0; i < count; i++)
@@ -1932,7 +1932,7 @@ void Menu_OrbitItemByName(const menuDef_t* menu, const char* p, float x, float y
 	}
 }
 
-void Menu_ItemDisable(const menuDef_t* menu, const char* name, qboolean disableFlag)
+void Menu_ItemDisable(const menuDef_t* menu, const char* name, const qboolean disableFlag)
 {
 	const int count = Menu_ItemsMatchingGroup(menu, name);
 	// Loop through all items that have this name
@@ -2352,7 +2352,7 @@ qboolean Script_SetItemFlag(itemDef_t* item, const char** args)
 	return qtrue;
 }
 
-void UI_SetItemVisible(const menuDef_t* menu, const char* itemname, qboolean visible)
+void UI_SetItemVisible(const menuDef_t* menu, const char* itemname, const qboolean visible)
 {
 	const int count = Menu_ItemsMatchingGroup(menu, itemname);
 
@@ -6124,7 +6124,7 @@ void Menu_Paint(menuDef_t* menu, qboolean forcePaint)
 Item_EnableShowViaCvar
 =================
 */
-qboolean Item_EnableShowViaCvar(const itemDef_t* item, int flag)
+qboolean Item_EnableShowViaCvar(const itemDef_t* item, const int flag)
 {
 	if (item && item->enableCvar && *item->enableCvar && item->cvarTest && *item->cvarTest)
 	{
@@ -7578,7 +7578,7 @@ int Item_TextScroll_ThumbDrawPosition(itemDef_t* item)
 	return Item_TextScroll_ThumbPosition(item);
 }
 
-int Item_TextScroll_OverLB(itemDef_t* item, float x, float y)
+int Item_TextScroll_OverLB(itemDef_t* item, const float x, const float y)
 {
 	rectDef_t r;
 
@@ -7628,7 +7628,7 @@ int Item_TextScroll_OverLB(itemDef_t* item, float x, float y)
 	return 0;
 }
 
-void Item_TextScroll_MouseEnter(itemDef_t* item, float x, float y)
+void Item_TextScroll_MouseEnter(itemDef_t* item, const float x, const float y)
 {
 	item->window.flags &= ~(WINDOW_LB_LEFTARROW | WINDOW_LB_RIGHTARROW | WINDOW_LB_THUMB | WINDOW_LB_PGUP |
 		WINDOW_LB_PGDN);
@@ -7763,7 +7763,7 @@ void Item_Slider_Paint(itemDef_t* item)
 Item_Paint
 =================
 */
-static qboolean Item_Paint(itemDef_t* item, qboolean bDraw)
+static qboolean Item_Paint(itemDef_t* item, const qboolean bDraw)
 {
 	vec4_t red;
 	red[0] = red[3] = 1;
@@ -8368,7 +8368,7 @@ static qboolean Item_Paint(itemDef_t* item, qboolean bDraw)
 LerpColor
 =================
 */
-void LerpColor(vec4_t a, vec4_t b, vec4_t c, float t)
+void LerpColor(vec4_t a, vec4_t b, vec4_t c, const float t)
 {
 	// lerp and clamp each component
 	for (int i = 0; i < 4; i++)
@@ -8390,7 +8390,7 @@ void LerpColor(vec4_t a, vec4_t b, vec4_t c, float t)
 Fade
 =================
 */
-void Fade(int* flags, float* f, float clamp, int* nextTime, int offsetTime, qboolean bFlags, float fadeAmount)
+void Fade(int* flags, float* f, const float clamp, int* nextTime, const int offsetTime, const qboolean bFlags, const float fadeAmount)
 {
 	if (*flags & (WINDOW_FADINGOUT | WINDOW_FADINGIN))
 	{
@@ -8439,7 +8439,7 @@ void GradientBar_Paint(const rectDef_t* rect, vec4_t color)
 Window_Paint
 =================
 */
-void Window_Paint(Window* w, float fadeAmount, float fadeClamp, float fadeCycle)
+void Window_Paint(Window* w, const float fadeAmount, const float fadeClamp, const float fadeCycle)
 {
 	//float bordersize = 0;
 	vec4_t color;
@@ -8707,7 +8707,7 @@ void Item_Text_AutoWrapped_Paint(itemDef_t* item)
 Rect_ContainsPoint
 =================
 */
-static qboolean Rect_ContainsPoint(const rectDef_t* rect, float x, float y)
+static qboolean Rect_ContainsPoint(const rectDef_t* rect, const float x, const float y)
 {
 	//JLF  ignore mouse pointer location
 	//	return true;
@@ -8726,7 +8726,7 @@ static qboolean Rect_ContainsPoint(const rectDef_t* rect, float x, float y)
 	return qfalse;
 }
 
-qboolean Item_TextScroll_HandleKey(itemDef_t* item, int key, qboolean down, qboolean force)
+qboolean Item_TextScroll_HandleKey(itemDef_t* item, const int key, qboolean down, const qboolean force)
 {
 	auto scrollPtr = static_cast<textScrollDef_t*>(item->typeData);
 
@@ -8935,7 +8935,7 @@ int Item_ListBox_ThumbPosition(itemDef_t* item)
 Item_ListBox_OverLB
 =================
 */
-int Item_ListBox_OverLB(itemDef_t* item, float x, float y)
+int Item_ListBox_OverLB(itemDef_t* item, const float x, const float y)
 {
 	rectDef_t r;
 	int thumbstart;
@@ -9017,7 +9017,7 @@ int Item_ListBox_OverLB(itemDef_t* item, float x, float y)
 Item_ListBox_MouseEnter
 =================
 */
-void Item_ListBox_MouseEnter(itemDef_t* item, float x, float y)
+void Item_ListBox_MouseEnter(itemDef_t* item, const float x, const float y)
 {
 	rectDef_t r;
 	auto listPtr = static_cast<listBoxDef_t*>(item->typeData);
@@ -9076,7 +9076,7 @@ void Item_ListBox_MouseEnter(itemDef_t* item, float x, float y)
 Item_MouseEnter
 =================
 */
-void Item_MouseEnter(itemDef_t* item, float x, float y)
+void Item_MouseEnter(itemDef_t* item, const float x, const float y)
 {
 	rectDef_t r;
 	//JLFMOUSE
@@ -9152,7 +9152,7 @@ Item_SetFocus
 =================
 */
 // will optionaly set focus to this item
-qboolean Item_SetFocus(itemDef_t* item, float x, float y)
+qboolean Item_SetFocus(itemDef_t* item, const float x, const float y)
 {
 	const sfxHandle_t* sfx = &DC->Assets.itemFocusSound;
 	qboolean playSound = qfalse;
@@ -9247,7 +9247,7 @@ qboolean Item_SetFocus(itemDef_t* item, float x, float y)
 IsVisible
 =================
 */
-qboolean IsVisible(int flags)
+qboolean IsVisible(const int flags)
 {
 	return static_cast<qboolean>((flags & WINDOW_VISIBLE && !(flags & WINDOW_FADINGOUT)) != 0);
 }
@@ -9276,7 +9276,7 @@ void Item_MouseLeave(itemDef_t* item)
 Item_SetMouseOver
 =================
 */
-void Item_SetMouseOver(itemDef_t* item, qboolean focus)
+void Item_SetMouseOver(itemDef_t* item, const qboolean focus)
 {
 	if (item)
 	{
@@ -9296,7 +9296,7 @@ void Item_SetMouseOver(itemDef_t* item, qboolean focus)
 Menu_HandleMouseMove
 =================
 */
-void Menu_HandleMouseMove(const menuDef_t* menu, float x, float y)
+void Menu_HandleMouseMove(const menuDef_t* menu, const float x, const float y)
 {
 	qboolean focusSet = qfalse;
 
@@ -9400,7 +9400,7 @@ void Menu_HandleMouseMove(const menuDef_t* menu, float x, float y)
 Display_MouseMove
 =================
 */
-qboolean Display_MouseMove(void* p, int x, int y)
+qboolean Display_MouseMove(void* p, const int x, const int y)
 {
 	auto menu = static_cast<menuDef_t*>(p);
 
@@ -9495,7 +9495,7 @@ void Item_Bind_Ungrey(const itemDef_t* item)
 Item_Bind_HandleKey
 =================
 */
-qboolean Item_Bind_HandleKey(itemDef_t* item, int key, qboolean down)
+qboolean Item_Bind_HandleKey(itemDef_t* item, const int key, const qboolean down)
 {
 	int id;
 	int i;
@@ -9965,7 +9965,7 @@ static void Scroll_TextScroll_ThumbFunc(void* p)
 Menu_OverActiveItem
 =================
 */
-static qboolean Menu_OverActiveItem(menuDef_t* menu, float x, float y)
+static qboolean Menu_OverActiveItem(menuDef_t* menu, const float x, const float y)
 {
 	if (menu && menu->window.flags & (WINDOW_VISIBLE | WINDOW_FORCED))
 	{
@@ -10076,7 +10076,7 @@ static void Display_CloseCinematics()
 Menus_HandleOOBClick
 =================
 */
-void Menus_HandleOOBClick(menuDef_t* menu, int key, qboolean down)
+void Menus_HandleOOBClick(menuDef_t* menu, const int key, const qboolean down)
 {
 	if (menu)
 	{
@@ -10126,7 +10126,7 @@ void Item_StopCapture(itemDef_t* item)
 Item_ListBox_HandleKey
 =================
 */
-qboolean Item_ListBox_HandleKey(itemDef_t* item, int key, qboolean down, qboolean force)
+qboolean Item_ListBox_HandleKey(itemDef_t* item, const int key, qboolean down, const qboolean force)
 {
 	auto listPtr = static_cast<listBoxDef_t*>(item->typeData);
 	const int count = DC->feederCount(item->special);
@@ -10539,7 +10539,7 @@ static void Scroll_ListBox_ThumbFunc(void* p)
 Item_Slider_OverSlider
 =================
 */
-int Item_Slider_OverSlider(itemDef_t* item, float x, float y)
+int Item_Slider_OverSlider(itemDef_t* item, const float x, const float y)
 {
 	rectDef_t r;
 
@@ -10682,7 +10682,7 @@ static void Scroll_Rotate(void* p)
 Item_StartCapture
 =================
 */
-void Item_StartCapture(itemDef_t* item, int key)
+void Item_StartCapture(itemDef_t* item, const int key)
 {
 	int flags;
 	switch (item->type)
@@ -10798,7 +10798,7 @@ void Item_StartCapture(itemDef_t* item, int key)
 Item_YesNo_HandleKey
 =================
 */
-qboolean Item_YesNo_HandleKey(itemDef_t* item, int key)
+qboolean Item_YesNo_HandleKey(itemDef_t* item, const int key)
 {
 	if (Rect_ContainsPoint(&item->window.rect, DC->cursorx, DC->cursory) && item->window.flags & WINDOW_HASFOCUS && item
 		->cvar)
@@ -10874,7 +10874,7 @@ int Item_Multi_CountSettings(const itemDef_t* item)
 Item_OwnerDraw_HandleKey
 =================
 */
-qboolean Item_OwnerDraw_HandleKey(itemDef_t* item, int key)
+qboolean Item_OwnerDraw_HandleKey(itemDef_t* item, const int key)
 {
 	if (item && DC->ownerDrawHandleKey)
 	{
@@ -10888,7 +10888,7 @@ qboolean Item_OwnerDraw_HandleKey(itemDef_t* item, int key)
 Item_Text_HandleKey
 =================
 */
-qboolean Item_Text_HandleKey(itemDef_t* item, int key)
+qboolean Item_Text_HandleKey(itemDef_t* item, const int key)
 {
 	if (Rect_ContainsPoint(&item->window.rect, DC->cursorx, DC->cursory) && item->window.flags & WINDOW_AUTOWRAPPED)
 
@@ -10923,7 +10923,7 @@ qboolean Item_Text_HandleKey(itemDef_t* item, int key)
 Item_Multi_HandleKey
 =================
 */
-qboolean Item_Multi_HandleKey(itemDef_t* item, int key)
+qboolean Item_Multi_HandleKey(itemDef_t* item, const int key)
 {
 	const multiDef_t* multiPtr = static_cast<multiDef_t*>(item->typeData);
 	if (multiPtr)
@@ -11018,7 +11018,7 @@ qboolean Item_Multi_HandleKey(itemDef_t* item, int key)
 Item_Slider_HandleKey
 =================
 */
-qboolean Item_Slider_HandleKey(itemDef_t* item, int key, qboolean down)
+qboolean Item_Slider_HandleKey(itemDef_t* item, const int key, qboolean down)
 {
 	//DC->Print("slider handle key\n");
 	//JLF MPMOVED
@@ -11074,7 +11074,7 @@ qboolean Item_Slider_HandleKey(itemDef_t* item, int key, qboolean down)
  Item_Slider_HandleKey
  =================
  */
-qboolean Item_Slider_Integer_HandleKey(itemDef_t* item, int key, qboolean down)
+qboolean Item_Slider_Integer_HandleKey(itemDef_t* item, const int key, qboolean down)
 {
 	//DC->Print("slider handle key\n");
 	//JLF MPMOVED
@@ -11131,7 +11131,7 @@ qboolean Item_Slider_Integer_HandleKey(itemDef_t* item, int key, qboolean down)
 Item_HandleKey
 =================
 */
-qboolean Item_HandleKey(itemDef_t* item, int key, qboolean down)
+qboolean Item_HandleKey(itemDef_t* item, const int key, const qboolean down)
 {
 	if (itemCapture)
 	{
@@ -11626,7 +11626,7 @@ void Menus_ShowItems(const char* menuName)
 UI_Cursor_Show
 =================
 */
-void UI_Cursor_Show(qboolean flag)
+void UI_Cursor_Show(const qboolean flag)
 {
 	DC->cursorShow = flag;
 

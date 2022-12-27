@@ -311,7 +311,7 @@ float sv_sightRangeForLevel[6] =
 	4096.0f //FORCE_LEVEL_5
 };
 
-qboolean SV_PlayerCanSeeEnt(const gentity_t* ent, int sightLevel)
+qboolean SV_PlayerCanSeeEnt(const gentity_t* ent, const int sightLevel)
 {
 	//return true if this ent is in view
 	//NOTE: this is similar to the func CG_PlayerCanSeeCent in cg_players
@@ -371,7 +371,7 @@ SV_AddEntitiesVisibleFromPoint
 ===============
 */
 static void SV_AddEntitiesVisibleFromPoint(vec3_t origin, clientSnapshot_t* frame,
-                                           snapshotEntityNumbers_t* eNums, qboolean portal)
+                                           snapshotEntityNumbers_t* eNums, const qboolean portal)
 {
 	int i;
 	gentity_t* ent;

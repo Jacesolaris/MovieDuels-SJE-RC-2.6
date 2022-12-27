@@ -247,7 +247,7 @@ using vmSlots_t = enum vmSlots_e
 
 #define	VMA(x) ((void*)args[x])
 
-inline float _vmf(intptr_t x)
+inline float _vmf(const intptr_t x)
 {
 	byteAlias_t fi;
 	fi.i = x;
@@ -800,7 +800,7 @@ byte* SCR_TempRawImage_ReadFromFile(const char* psLocalFilename, int* piWidth, i
 void	SCR_TempRawImage_CleanUp();
 #endif
 
-inline int Round(float value)
+inline int Round(const float value)
 {
 	return static_cast<int>(floorf(value + 0.5f));
 }

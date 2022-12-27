@@ -394,8 +394,8 @@ Handles horizontal scrolling and cursor blinking
 x, y, amd width are in pixels
 ===================
 */
-void Field_VariableSizeDraw(field_t* edit, int x, int y, int width, int size, qboolean showCursor,
-                            qboolean noColorEscape)
+void Field_VariableSizeDraw(field_t* edit, const int x, const int y, int width, const int size, const qboolean showCursor,
+                            const qboolean noColorEscape)
 {
 	int prestep;
 	char str[MAX_STRING_CHARS];
@@ -481,12 +481,12 @@ void Field_VariableSizeDraw(field_t* edit, int x, int y, int width, int size, qb
 	}
 }
 
-void Field_Draw(field_t* edit, int x, int y, int width, qboolean showCursor, qboolean noColorEscape)
+void Field_Draw(field_t* edit, const int x, const int y, const int width, const qboolean showCursor, const qboolean noColorEscape)
 {
 	Field_VariableSizeDraw(edit, x, y, width, SMALLCHAR_WIDTH, showCursor, noColorEscape);
 }
 
-void Field_BigDraw(field_t* edit, int x, int y, int width, qboolean showCursor, qboolean noColorEscape)
+void Field_BigDraw(field_t* edit, const int x, const int y, const int width, const qboolean showCursor, const qboolean noColorEscape)
 {
 	Field_VariableSizeDraw(edit, x, y, width, BIGCHAR_WIDTH, showCursor, noColorEscape);
 }
@@ -529,7 +529,7 @@ in-game talk, and menu fields
 Key events are used for non-printable characters, others are gotten from char events.
 =================
 */
-void Field_KeyDownEvent(field_t* edit, int key)
+void Field_KeyDownEvent(field_t* edit, const int key)
 {
 	// shift-insert is paste
 	if ((key == A_INSERT) && kg.keys[A_SHIFT].down)
@@ -599,7 +599,7 @@ void Field_KeyDownEvent(field_t* edit, int key)
 Field_CharEvent
 ==================
 */
-void Field_CharEvent(field_t* edit, int ch)
+void Field_CharEvent(field_t* edit, const int ch)
 {
 	if (ch == 'v' - 'a' + 1)
 	{
@@ -697,7 +697,7 @@ Console_Key
 Handles history and console scrollback
 ====================
 */
-void Console_Key(int key)
+void Console_Key(const int key)
 {
 	// ctrl-L clears screen
 	if (keynames[key].lower == 'l' && kg.keys[A_CTRL].down)
@@ -828,7 +828,7 @@ qboolean Key_GetOverstrikeMode(void)
 	return kg.key_overstrikeMode;
 }
 
-void Key_SetOverstrikeMode(qboolean state)
+void Key_SetOverstrikeMode(const qboolean state)
 {
 	kg.key_overstrikeMode = state;
 }
@@ -838,7 +838,7 @@ void Key_SetOverstrikeMode(qboolean state)
 Key_IsDown
 ===================
 */
-qboolean Key_IsDown(int keynum)
+qboolean Key_IsDown(const int keynum)
 {
 	if (keynum < 0 || keynum >= MAX_KEYS)
 		return qfalse;
@@ -888,7 +888,7 @@ int Key_StringToKeynum(const char* str)
 
 static char tinyString[16];
 
-static const char* Key_KeynumValid(int keynum)
+static const char* Key_KeynumValid(const int keynum)
 {
 	if (keynum == -1)
 		return "<KEY NOT FOUND>";
@@ -897,12 +897,12 @@ static const char* Key_KeynumValid(int keynum)
 	return nullptr;
 }
 
-static const char* Key_KeyToName(int keynum)
+static const char* Key_KeyToName(const int keynum)
 {
 	return keynames[keynum].name;
 }
 
-static const char* Key_KeyToAscii(int keynum)
+static const char* Key_KeyToAscii(const int keynum)
 {
 	if (!keynames[keynum].lower)
 		return nullptr;
@@ -916,7 +916,7 @@ static const char* Key_KeyToAscii(int keynum)
 	return tinyString;
 }
 
-static const char* Key_KeyToHex(int keynum)
+static const char* Key_KeyToHex(const int keynum)
 {
 	const int i = keynum >> 4;
 	const int j = keynum & 15;
@@ -931,7 +931,7 @@ static const char* Key_KeyToHex(int keynum)
 }
 
 // Returns the ascii code of the keynum
-const char* Key_KeynumToAscii(int keynum)
+const char* Key_KeynumToAscii(const int keynum)
 {
 	const char* name = Key_KeynumValid(keynum);
 
@@ -959,7 +959,7 @@ given keynum.
 ===================
 */
 // Returns a console/config file friendly name for the key
-const char* Key_KeynumToString(int keynum)
+const char* Key_KeynumToString(const int keynum)
 {
 	const char* name = Key_KeynumValid(keynum);
 
@@ -983,7 +983,7 @@ const char* Key_KeynumToString(int keynum)
 Key_SetBinding
 ===================
 */
-void Key_SetBinding(int keynum, const char* binding)
+void Key_SetBinding(const int keynum, const char* binding)
 {
 	if (keynum < 0 || keynum >= MAX_KEYS)
 		return;
@@ -1009,7 +1009,7 @@ void Key_SetBinding(int keynum, const char* binding)
 Key_GetBinding
 ===================
 */
-const char* Key_GetBinding(int keynum)
+const char* Key_GetBinding(const int keynum)
 {
 	if (keynum < 0 || keynum >= MAX_KEYS)
 		return "";
@@ -1116,7 +1116,7 @@ Key_WriteBindings
 Writes lines containing "bind key value"
 ============
 */
-void Key_WriteBindings(fileHandle_t f)
+void Key_WriteBindings(const fileHandle_t f)
 {
 	FS_Printf(f, "unbindall\n");
 	for (size_t i = 0; i < MAX_KEYS; i++)
@@ -1156,7 +1156,7 @@ void Key_Bindlist_f(void)
 Key_KeynameCompletion
 ============
 */
-void Key_KeynameCompletion(callbackFunc_t callback)
+void Key_KeynameCompletion(const callbackFunc_t callback)
 {
 	for (size_t i = 0; i < numKeynames; i++)
 	{
@@ -1170,7 +1170,7 @@ void Key_KeynameCompletion(callbackFunc_t callback)
 Key_CompleteUnbind
 ====================
 */
-static void Key_CompleteUnbind(char* args, int argNum)
+static void Key_CompleteUnbind(char* args, const int argNum)
 {
 	if (argNum == 2)
 	{
@@ -1186,7 +1186,7 @@ static void Key_CompleteUnbind(char* args, int argNum)
 Key_CompleteBind
 ====================
 */
-static void Key_CompleteBind(char* args, int argNum)
+static void Key_CompleteBind(char* args, const int argNum)
 {
 	char* p;
 
@@ -1251,7 +1251,7 @@ CL_ParseBinding
 Execute the commands in the bind string
 ===================
 */
-void CL_ParseBinding(int key, qboolean down, unsigned time)
+void CL_ParseBinding(const int key, const qboolean down, const unsigned time)
 {
 	char buf[MAX_STRING_CHARS], *p = buf;
 
@@ -1309,7 +1309,7 @@ CL_KeyDownEvent
 Called by CL_KeyEvent to handle a keypress
 ===================
 */
-void CL_KeyDownEvent(int key, unsigned time)
+void CL_KeyDownEvent(const int key, const unsigned time)
 {
 	kg.keys[keynames[key].upper].down = qtrue;
 	kg.keys[keynames[key].upper].repeats++;
@@ -1392,7 +1392,7 @@ CL_KeyUpEvent
 Called by CL_KeyEvent to handle a keyrelease
 ===================
 */
-void CL_KeyUpEvent(int key, unsigned time)
+void CL_KeyUpEvent(const int key, const unsigned time)
 {
 	kg.keys[keynames[key].upper].repeats = 0;
 	kg.keys[keynames[key].upper].down = qfalse;
@@ -1427,7 +1427,7 @@ CL_KeyEvent
 Called by the system for both key up and key down events
 ===================
 */
-void CL_KeyEvent(int key, qboolean down, unsigned time)
+void CL_KeyEvent(const int key, const qboolean down, const unsigned time)
 {
 	if (down)
 		CL_KeyDownEvent(key, time);
@@ -1442,7 +1442,7 @@ CL_CharEvent
 Normal keyboard characters, already shifted / capslocked / etc
 ===================
 */
-void CL_CharEvent(int key)
+void CL_CharEvent(const int key)
 {
 	// delete is not a printable character and is otherwise handled by Field_KeyDownEvent
 	if (key == 127)
@@ -1490,7 +1490,7 @@ int Key_GetCatcher(void)
 Key_SetCatcher
 ====================
 */
-void Key_SetCatcher(int catcher)
+void Key_SetCatcher(const int catcher)
 {
 	// If the catcher state is changing, clear all key states
 	if (catcher != keyCatchers)

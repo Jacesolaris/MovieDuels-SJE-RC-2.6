@@ -282,8 +282,8 @@ int L3audio_decode_init(const MPEG_HEAD* h, int framebytes_arg,
 
 /*---------------------------------------------------------*/
 /* mpeg_head defined in mhead.h  frame bytes is without pad */
-int audio_decode_init(const MPEG_HEAD* h, int framebytes_arg,
-                      int reduction_code, int transform_code, int convert_code,
+int audio_decode_init(const MPEG_HEAD* h, const int framebytes_arg,
+                      int reduction_code, const int transform_code, int convert_code,
                       int freq_limit)
 {
 	int i;

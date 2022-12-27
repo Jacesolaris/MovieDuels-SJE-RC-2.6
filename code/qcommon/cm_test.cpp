@@ -28,7 +28,7 @@ class CPoint
 public:
 	float x, y, z;
 
-	CPoint(float _x, float _y, float _z) :
+	CPoint(const float _x, const float _y, const float _z) :
 		x(_x),
 		y(_y),
 		z(_z)
@@ -157,7 +157,7 @@ void CM_StoreLeafs(leafList_t* ll, const int nodenum)
 	ll->list[ll->count++] = leafNum;
 }
 
-void CM_StoreBrushes(leafList_t* ll, int nodenum)
+void CM_StoreBrushes(leafList_t* ll, const int nodenum)
 {
 	int i;
 
@@ -278,7 +278,7 @@ CM_PointContents
 
 #if 1
 
-int CM_PointContents(const vec3_t p, clipHandle_t model)
+int CM_PointContents(const vec3_t p, const clipHandle_t model)
 {
 	int i;
 	cLeaf_t* leaf;
@@ -479,7 +479,7 @@ PVS
 ===============================================================================
 */
 
-byte* CM_ClusterPVS(int cluster)
+byte* CM_ClusterPVS(const int cluster)
 {
 	if (cluster < 0 || cluster >= cmg.numClusters || !cmg.vised)
 	{
@@ -550,7 +550,7 @@ CM_AdjustAreaPortalState
 
 ====================
 */
-void CM_AdjustAreaPortalState(int area1, int area2, qboolean open)
+void CM_AdjustAreaPortalState(const int area1, const int area2, const qboolean open)
 {
 	if (area1 < 0 || area2 < 0)
 	{
@@ -586,7 +586,7 @@ CM_AreasConnected
 
 ====================
 */
-qboolean CM_AreasConnected(int area1, int area2)
+qboolean CM_AreasConnected(const int area1, const int area2)
 {
 #ifndef BSPC
 	if (cm_noAreas->integer)

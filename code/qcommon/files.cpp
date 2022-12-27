@@ -304,7 +304,7 @@ static void FS_AssertInitialised(void) {
 return a hash value for the filename
 ================
 */
-static long FS_HashFileName(const char* fname, int hashSize) {
+static long FS_HashFileName(const char* fname, const int hashSize) {
 	long hash = 0;
 	int i = 0;
 	while (fname[i] != '\0') {
@@ -336,7 +336,7 @@ static fileHandle_t FS_HandleForFile(void) {
 	Com_Error(ERR_DROP, "FS_HandleForFile: none free");
 }
 
-static FILE* FS_FileForHandle(fileHandle_t f) {
+static FILE* FS_FileForHandle(const fileHandle_t f) {
 	if (f < 1 || f >= MAX_FILE_HANDLES) {
 		Com_Error(ERR_DROP, "FS_FileForHandle: out of range");
 	}
@@ -350,7 +350,7 @@ static FILE* FS_FileForHandle(fileHandle_t f) {
 	return fsh[f].handleFiles.file.o;
 }
 
-void	FS_ForceFlush(fileHandle_t f) {
+void	FS_ForceFlush(const fileHandle_t f) {
 	FILE* file = FS_FileForHandle(f);
 	setvbuf(file, nullptr, _IONBF, 0);
 }
@@ -383,7 +383,7 @@ it will return the size of the pak file, not the expected
 size of the file.
 ================
 */
-int FS_filelength(fileHandle_t f) {
+int FS_filelength(const fileHandle_t f) {
 	FILE* h = FS_FileForHandle(f);
 
 	if (h == nullptr)
@@ -529,7 +529,7 @@ Copy a fully specified file from one place to another
 */
 // added extra param so behind-the-scenes copying in savegames doesn't clutter up the screen -slc
 void FS_CopyFile(char* fromOSPath, char* toOSPath, qboolean qbSilent = qfalse);
-void FS_CopyFile(char* fromOSPath, char* toOSPath, qboolean qbSilent) {
+void FS_CopyFile(char* fromOSPath, char* toOSPath, const qboolean qbSilent) {
 	FS_CheckFilenameIsMutable(fromOSPath, __func__);
 
 	if (!qbSilent)
@@ -650,7 +650,7 @@ FS_Rmdir
 Removes a directory, optionally deleting all files under it
 ===========
 */
-void FS_Rmdir(const char* osPath, qboolean recursive) {
+void FS_Rmdir(const char* osPath, const qboolean recursive) {
 	FS_CheckFilenameIsMutable(osPath, __func__);
 
 	if (recursive) {
@@ -686,7 +686,7 @@ FS_HomeRmdir
 Removes a directory, optionally deleting all files under it
 ===========
 */
-void FS_HomeRmdir(const char* homePath, qboolean recursive) {
+void FS_HomeRmdir(const char* homePath, const qboolean recursive) {
 	FS_CheckFilenameIsMutable(homePath, __func__);
 
 	FS_Rmdir(FS_BuildOSPath(fs_homepath->string,
@@ -866,7 +866,7 @@ FS_SV_Rename
 
 ===========
 */
-void FS_SV_Rename(const char* from, const char* to, qboolean safe) {
+void FS_SV_Rename(const char* from, const char* to, const qboolean safe) {
 	FS_AssertInitialised();
 
 	// don't let sound stutter
@@ -939,7 +939,7 @@ There are three cases handled:
 
 ===========
 */
-void FS_FCloseFile(fileHandle_t f) {
+void FS_FCloseFile(const fileHandle_t f) {
 	FS_AssertInitialised();
 
 	if (fsh[f].zipFile == qtrue) {
@@ -964,7 +964,7 @@ FS_FOpenFileWrite
 
 ===========
 */
-fileHandle_t FS_FOpenFileWrite(const char* filename, qboolean safe) {
+fileHandle_t FS_FOpenFileWrite(const char* filename, const qboolean safe) {
 	FS_AssertInitialised();
 
 	fileHandle_t f = FS_HandleForFile();
@@ -1079,7 +1079,7 @@ Return qtrue if ext matches file extension filename
 ===========
 */
 
-qboolean FS_IsExt(const char* filename, const char* ext, int namelen)
+qboolean FS_IsExt(const char* filename, const char* ext, const int namelen)
 {
 	const int extlen = strlen(ext);
 
@@ -1116,7 +1116,7 @@ qboolean FS_IsDemoExt(const char* filename, int namelen)
 
 #ifdef _WIN32
 
-bool Sys_GetFileTime(LPCSTR psFileName, FILETIME& ft)
+bool Sys_GetFileTime(const LPCSTR psFileName, FILETIME& ft)
 {
 	bool bSuccess = false;
 
@@ -1147,7 +1147,7 @@ bool Sys_GetFileTime(LPCSTR psFileName, FILETIME& ft)
 	return bSuccess;
 }
 
-bool Sys_FileOutOfDate(LPCSTR psFinalFileName /* dest */, LPCSTR psDataFileName /* src */)
+bool Sys_FileOutOfDate(const LPCSTR psFinalFileName /* dest */, const LPCSTR psDataFileName /* src */)
 {
 	FILETIME ftFinalFile, ftDataFile;
 
@@ -1202,7 +1202,7 @@ separate file or a ZIP file.
 */
 extern qboolean		com_fullyInitialized;
 
-long FS_FOpenFileRead(const char* filename, fileHandle_t* file, qboolean uniqueFILE) {
+long FS_FOpenFileRead(const char* filename, fileHandle_t* file, const qboolean uniqueFILE) {
 	long hash = 0;
 
 	FS_AssertInitialised();
@@ -1421,7 +1421,7 @@ FS_Read
 Properly handles partial reads
 =================
 */
-int FS_Read(void* buffer, int len, fileHandle_t f) {
+int FS_Read(void* buffer, const int len, const fileHandle_t f) {
 	FS_AssertInitialised();
 
 	if (!f) {
@@ -1467,7 +1467,7 @@ FS_Write
 Properly handles partial writes
 =================
 */
-int FS_Write(const void* buffer, int len, fileHandle_t h) {
+int FS_Write(const void* buffer, const int len, const fileHandle_t h) {
 	FS_AssertInitialised();
 
 	if (!h) {
@@ -1507,7 +1507,7 @@ int FS_Write(const void* buffer, int len, fileHandle_t h) {
 }
 
 #define	MAXPRINTMSG	4096
-void QDECL FS_Printf(fileHandle_t h, const char* fmt, ...) {
+void QDECL FS_Printf(const fileHandle_t h, const char* fmt, ...) {
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];
 
@@ -1525,7 +1525,7 @@ FS_Seek
 
 =================
 */
-int FS_Seek(fileHandle_t f, long offset, int origin) {
+int FS_Seek(const fileHandle_t f, const long offset, int origin) {
 	int		_origin;
 
 	FS_AssertInitialised();
@@ -1745,7 +1745,7 @@ FS_WriteFile
 Filename are reletive to the quake search path
 ============
 */
-void FS_WriteFile(const char* qpath, const void* buffer, int size) {
+void FS_WriteFile(const char* qpath, const void* buffer, const int size) {
 	FS_AssertInitialised();
 
 	if (!qpath || !buffer) {
@@ -2090,7 +2090,7 @@ void FS_FreeFileList(char** fileList) {
 FS_GetFileList
 ================
 */
-int	FS_GetFileList(const char* path, const char* extension, char* listbuf, int bufsize) {
+int	FS_GetFileList(const char* path, const char* extension, char* listbuf, const int bufsize) {
 	int		nFiles;
 
 	*listbuf = 0;
@@ -2198,7 +2198,7 @@ A mod directory is a peer to base with a pk3 in it
 The directories are searched in base path, cd path and home path
 ================
 */
-int	FS_GetModList(char* listbuf, int bufsize) {
+int	FS_GetModList(char* listbuf, const int bufsize) {
 	int nTotal, nPaks, nPotential;
 	char descPath[MAX_OSPATH];
 	fileHandle_t descHandle;
@@ -2407,7 +2407,7 @@ int FS_PathCmp(const char* s1, const char* s2) {
 FS_SortFileList
 ================
 */
-void FS_SortFileList(char** filelist, int numfiles) {
+void FS_SortFileList(char** filelist, const int numfiles) {
 	int j;
 
 	char** sortedlist = static_cast<char**>(Z_Malloc((numfiles + 1) * sizeof(*sortedlist), TAG_FILESYS, qtrue));
@@ -2941,7 +2941,7 @@ Handle based file calls for virtual machines
 ========================================================================================
 */
 
-int		FS_FOpenFileByMode(const char* qpath, fileHandle_t* f, fsMode_t mode) {
+int		FS_FOpenFileByMode(const char* qpath, fileHandle_t* f, const fsMode_t mode) {
 	int		r;
 
 	qboolean sync = qfalse;
@@ -2982,7 +2982,7 @@ int		FS_FOpenFileByMode(const char* qpath, fileHandle_t* f, fsMode_t mode) {
 	return r;
 }
 
-int		FS_FTell(fileHandle_t f) {
+int		FS_FTell(const fileHandle_t f) {
 	int pos;
 	if (fsh[f].zipFile == qtrue) {
 		pos = unztell(fsh[f].handleFiles.file.z);
@@ -2993,11 +2993,11 @@ int		FS_FTell(fileHandle_t f) {
 	return pos;
 }
 
-void	FS_Flush(fileHandle_t f) {
+void	FS_Flush(const fileHandle_t f) {
 	fflush(fsh[f].handleFiles.file.o);
 }
 
-void FS_FilenameCompletion(const char* dir, const char* ext, qboolean stripExt, callbackFunc_t callback, qboolean allowNonPureFilesOnDisk) {
+void FS_FilenameCompletion(const char* dir, const char* ext, const qboolean stripExt, const callbackFunc_t callback, qboolean allowNonPureFilesOnDisk) {
 	int nfiles;
 
 	char** filenames = FS_ListFilteredFiles(dir, ext, nullptr, &nfiles);
@@ -3018,7 +3018,7 @@ void FS_FilenameCompletion(const char* dir, const char* ext, qboolean stripExt, 
 	FS_FreeFileList(filenames);
 }
 
-const char* FS_GetCurrentGameDir(bool emptybase)
+const char* FS_GetCurrentGameDir(const bool emptybase)
 {
 	if (fs_gamedirvar->string[0])
 		return fs_gamedirvar->string;

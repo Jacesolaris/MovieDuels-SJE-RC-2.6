@@ -394,7 +394,7 @@ void SV_SaveGame_f(void)
 }
 
 //---------------
-static void WriteGame(qboolean autosave)
+static void WriteGame(const qboolean autosave)
 {
 	ojk::SavedGameHelper saved_game(
 		&ojk::SavedGame::get_instance());
@@ -700,7 +700,7 @@ static unsigned int SG_UnixTimestamp(const time_t& t)
 	return static_cast<unsigned int>(t);
 }
 
-static void SG_WriteComment(qboolean qbAutosave, const char* psMapName)
+static void SG_WriteComment(const qboolean qbAutosave, const char* psMapName)
 {
 	ojk::SavedGameHelper saved_game(
 		&ojk::SavedGame::get_instance());
@@ -730,7 +730,7 @@ static void SG_WriteComment(qboolean qbAutosave, const char* psMapName)
 	Com_DPrintf("Saving: current (%s)\n", sComment);
 }
 
-static time_t SG_GetTime(unsigned int timestamp)
+static time_t SG_GetTime(const unsigned int timestamp)
 {
 	return timestamp;
 }
@@ -1079,7 +1079,7 @@ static void SG_WriteScreenshot(qboolean qbAutosave, const char* psMapName)
 }
 #endif
 
-qboolean SG_GameAllowedToSaveHere(qboolean inCamera)
+qboolean SG_GameAllowedToSaveHere(const qboolean inCamera)
 {
 	if (!inCamera)
 	{

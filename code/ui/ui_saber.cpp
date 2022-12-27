@@ -956,7 +956,7 @@ void UI_DoEp1Saber(vec3_t blade_muz, vec3_t blade_dir, const float length_max, c
 	}
 }
 
-void UI_DoEp2Saber(vec3_t blade_muz, vec3_t blade_dir, float lengthMax, const float radius, const saber_colors_t color,
+void UI_DoEp2Saber(vec3_t blade_muz, vec3_t blade_dir, const float lengthMax, const float radius, const saber_colors_t color,
                    const int which_saber)
 {
 	vec3_t mid, rgb = {1, 1, 1};

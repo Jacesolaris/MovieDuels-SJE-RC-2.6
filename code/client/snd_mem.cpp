@@ -126,7 +126,7 @@ void DumpChunks(void)
 GetWavinfo
 ============
 */
-wavinfo_t GetWavinfo(const char* name, byte* wav, int wavlength)
+wavinfo_t GetWavinfo(const char* name, byte* wav, const int wavlength)
 {
 	wavinfo_t	info = {};
 
@@ -198,7 +198,7 @@ ResampleSfx
 resample / decimate to the current source rate
 ================
 */
-void ResampleSfx(sfx_t* sfx, int iInRate, int iInWidth, byte* pData)
+void ResampleSfx(sfx_t* sfx, const int iInRate, const int iInWidth, byte* pData)
 {
 	int		iSample;
 
@@ -553,7 +553,7 @@ void S_MP3_CalcVols_f(void)
 // returns qfalse if failed to load, else fills in *pData
 //
 extern	cvar_t* com_buildScript;
-static qboolean S_LoadSound_FileLoadAndNameAdjuster(char* psFilename, byte** pData, int* piSize, int iNameStrlen)
+static qboolean S_LoadSound_FileLoadAndNameAdjuster(char* psFilename, byte** pData, int* piSize, const int iNameStrlen)
 {
 	char* psVoice = strstr(psFilename, "chars");
 	if (psVoice)

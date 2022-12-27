@@ -46,7 +46,7 @@ SCR_DrawNamedPic
 Coordinates are 640*480 virtual values
 =================
 */
-void SCR_DrawNamedPic(float x, float y, float width, float height, const char* picname)
+void SCR_DrawNamedPic(const float x, const float y, const float width, const float height, const char* picname)
 {
 	assert(width != 0);
 
@@ -61,7 +61,7 @@ SCR_FillRect
 Coordinates are 640*480 virtual values
 =================
 */
-void SCR_FillRect(float x, float y, float width, float height, const float* color)
+void SCR_FillRect(const float x, const float y, const float width, const float height, const float* color)
 {
 	re.SetColor(color);
 
@@ -78,7 +78,7 @@ Coordinates are 640*480 virtual values
 A width of 0 will draw with the original image width
 =================
 */
-void SCR_DrawPic(float x, float y, float width, float height, qhandle_t hShader)
+void SCR_DrawPic(const float x, const float y, const float width, const float height, const qhandle_t hShader)
 {
 	re.DrawStretchPic(x, y, width, height, 0, 0, 1, 1, hShader);
 }
@@ -87,7 +87,7 @@ void SCR_DrawPic(float x, float y, float width, float height, qhandle_t hShader)
 ** SCR_DrawBigChar
 ** big chars are drawn at 640*480 virtual screen size
 */
-void SCR_DrawBigChar(int x, int y, int ch)
+void SCR_DrawBigChar(const int x, const int y, int ch)
 {
 	ch &= 255;
 
@@ -124,7 +124,7 @@ void SCR_DrawBigChar(int x, int y, int ch)
 ** SCR_DrawSmallChar
 ** small chars are drawn at native screen resolution
 */
-void SCR_DrawSmallChar(int x, int y, int ch)
+void SCR_DrawSmallChar(const int x, const int y, int ch)
 {
 	ch &= 255;
 
@@ -173,8 +173,8 @@ to a fixed color.
 Coordinates are at 640 by 480 virtual resolution
 ==================
 */
-void SCR_DrawBigStringExt(int x, int y, const char* string, const float* setColor, qboolean forceColor,
-                          qboolean noColorEscape)
+void SCR_DrawBigStringExt(const int x, const int y, const char* string, const float* setColor, const qboolean forceColor,
+                          const qboolean noColorEscape)
 {
 	vec4_t color;
 
@@ -223,7 +223,7 @@ void SCR_DrawBigStringExt(int x, int y, const char* string, const float* setColo
 	re.SetColor(nullptr);
 }
 
-void SCR_DrawBigString(int x, int y, const char* s, float alpha, qboolean noColorEscape)
+void SCR_DrawBigString(const int x, const int y, const char* s, const float alpha, const qboolean noColorEscape)
 {
 	float color[4];
 
@@ -232,7 +232,7 @@ void SCR_DrawBigString(int x, int y, const char* s, float alpha, qboolean noColo
 	SCR_DrawBigStringExt(x, y, s, color, qfalse, noColorEscape);
 }
 
-void SCR_DrawBigStringColor(int x, int y, const char* s, vec4_t color, qboolean noColorEscape)
+void SCR_DrawBigStringColor(const int x, const int y, const char* s, vec4_t color, const qboolean noColorEscape)
 {
 	SCR_DrawBigStringExt(x, y, s, color, qtrue, noColorEscape);
 }
@@ -245,8 +245,8 @@ Draws a multi-colored string with a drop shadow, optionally forcing
 to a fixed color.
 ==================
 */
-void SCR_DrawSmallStringExt(int x, int y, const char* string, const float* setColor, qboolean forceColor,
-                            qboolean noColorEscape)
+void SCR_DrawSmallStringExt(const int x, const int y, const char* string, const float* setColor, const qboolean forceColor,
+                            const qboolean noColorEscape)
 {
 	vec4_t color;
 
@@ -332,7 +332,7 @@ static graphsamp_t values[1024];
 SCR_DebugGraph
 ==============
 */
-void SCR_DebugGraph(float value, int color)
+void SCR_DebugGraph(const float value, const int color)
 {
 	values[current & 1023].value = value;
 	values[current & 1023].color = color;
@@ -401,7 +401,7 @@ SCR_DrawScreenField
 This will be called twice if rendering in stereo mode
 ==================
 */
-void SCR_DrawScreenField(stereoFrame_t stereoFrame)
+void SCR_DrawScreenField(const stereoFrame_t stereoFrame)
 {
 	re.BeginFrame(stereoFrame);
 
@@ -568,7 +568,7 @@ byte* SCR_GetScreenshot(qboolean* qValid)
 
 // called from save-game code to set the lo-res loading screen to be the one from the save file...
 //
-void SCR_SetScreenshot(const byte* pbData, int w, int h)
+void SCR_SetScreenshot(const byte* pbData, const int w, const int h)
 {
 	if (w == SG_SCR_WIDTH && h == SG_SCR_HEIGHT)
 	{

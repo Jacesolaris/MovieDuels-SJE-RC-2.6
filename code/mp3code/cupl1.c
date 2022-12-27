@@ -219,7 +219,7 @@ IN_OUT L1audio_decode(unsigned char* bs, signed short* pcm)
 }
 
 /*-------------------------------------------------------------------------*/
-int L1audio_decode_init(const MPEG_HEAD* h, int framebytes_arg,
+int L1audio_decode_init(const MPEG_HEAD* h, const int framebytes_arg,
                         int reduction_code, int transform_code, int convert_code,
                         int freq_limit)
 {

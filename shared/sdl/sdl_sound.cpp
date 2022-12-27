@@ -48,7 +48,7 @@ static int dmasize = 0;
 SNDDMA_AudioCallback
 ===============
 */
-static void SNDDMA_AudioCallback(void* userdata, Uint8* stream, int len)
+static void SNDDMA_AudioCallback(void* userdata, Uint8* stream, const int len)
 {
 	int pos = (dmapos * (dma.samplebits / 8));
 	if (pos >= dmasize)
@@ -132,7 +132,7 @@ static void SNDDMA_PrintAudiospec(const char* str, const SDL_AudioSpec* spec)
 	Com_Printf("  Channels: %d\n", static_cast<int>(spec->channels));
 }
 
-static int SNDDMA_ExpandSampleFrequencyKHzToHz(int khz)
+static int SNDDMA_ExpandSampleFrequencyKHzToHz(const int khz)
 {
 	switch (khz)
 	{
@@ -148,7 +148,7 @@ static int SNDDMA_ExpandSampleFrequencyKHzToHz(int khz)
 SNDDMA_Init
 ===============
 */
-qboolean SNDDMA_Init(int sampleFrequencyInKHz)
+qboolean SNDDMA_Init(const int sampleFrequencyInKHz)
 {
 	SDL_AudioSpec desired;
 	SDL_AudioSpec obtained;
@@ -311,7 +311,7 @@ extern int s_UseOpenAL;
 #endif
 
 // (De)activates sound playback
-void SNDDMA_Activate(qboolean activate)
+void SNDDMA_Activate(const qboolean activate)
 {
 #ifdef USE_OPENAL
 	if (s_UseOpenAL)

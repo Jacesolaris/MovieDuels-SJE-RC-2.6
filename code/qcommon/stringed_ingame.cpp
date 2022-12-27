@@ -1034,7 +1034,7 @@ int SE_GetNumFlags(void)
 	return TheStringPackage.m_vstrFlagNames.size();
 }
 
-const char* SE_GetFlagName(int iFlagIndex)
+const char* SE_GetFlagName(const int iFlagIndex)
 {
 	if (iFlagIndex < static_cast<int>(TheStringPackage.m_vstrFlagNames.size()))
 	{
@@ -1112,7 +1112,7 @@ int SE_GetNumLanguages(void)
 
 // SE_GetNumLanguages() must have been called before this...
 //
-const char* SE_GetLanguageName(int iLangIndex)
+const char* SE_GetLanguageName(const int iLangIndex)
 {
 	if (iLangIndex < static_cast<int>(gvLanguagesAvailable.size()))
 	{
@@ -1125,7 +1125,7 @@ const char* SE_GetLanguageName(int iLangIndex)
 
 // SE_GetNumLanguages() must have been called before this...
 //
-const char* SE_GetLanguageDir(int iLangIndex)
+const char* SE_GetLanguageDir(const int iLangIndex)
 {
 	if (iLangIndex < static_cast<int>(gvLanguagesAvailable.size()))
 	{

@@ -173,7 +173,7 @@ ambientSet_t* CSetGroup::GetSet(const char* name) const
 	return (*mi).second;
 }
 
-ambientSet_t* CSetGroup::GetSet(int ID) const
+ambientSet_t* CSetGroup::GetSet(const int ID) const
 {
 	if (m_ambientSets->empty())
 		return nullptr;
@@ -596,7 +596,7 @@ Parses an individual set group out of a set file buffer
 -------------------------
 */
 
-static qboolean AS_ParseSet(int setID, CSetGroup* sg)
+static qboolean AS_ParseSet(const int setID, CSetGroup* sg)
 {
 	//Make sure we're not overstepping the name array
 	if (setID >= NUM_AS_SETS)
@@ -944,7 +944,7 @@ Does internal maintenance to keep track of changing sets.
 -------------------------
 */
 
-static void AS_UpdateCurrentSet(int id)
+static void AS_UpdateCurrentSet(const int id)
 {
 	//Check for a change
 	if (id != currentSet)
@@ -985,7 +985,7 @@ Alters lastTime to reflect the time updates.
 -------------------------
 */
 
-static void AS_PlayLocalSet(vec3_t listener_origin, vec3_t origin, const ambientSet_t* set, int entID, int* lastTime)
+static void AS_PlayLocalSet(vec3_t listener_origin, vec3_t origin, const ambientSet_t* set, const int entID, int* lastTime)
 {
 	vec3_t dir;
 	const int time = cl.serverTime;
@@ -1104,7 +1104,7 @@ S_AddLocalSet
 -------------------------
 */
 
-int S_AddLocalSet(const char* name, vec3_t listener_origin, vec3_t origin, int entID, int time)
+int S_AddLocalSet(const char* name, vec3_t listener_origin, vec3_t origin, const int entID, const int time)
 {
 	int current_time;
 
@@ -1126,7 +1126,7 @@ AS_GetBModelSound
 -------------------------
 */
 
-sfxHandle_t AS_GetBModelSound(const char* name, int stage)
+sfxHandle_t AS_GetBModelSound(const char* name, const int stage)
 {
 	const ambientSet_t* set = aSets->GetSet(name);
 

@@ -143,7 +143,7 @@ void Cbuf_InsertText(const char* text)
 Cbuf_ExecuteText
 ============
 */
-void Cbuf_ExecuteText(int exec_when, const char* text)
+void Cbuf_ExecuteText(const int exec_when, const char* text)
 {
 	switch (exec_when)
 	{
@@ -389,7 +389,7 @@ int Cmd_Argc(void)
 Cmd_Argv
 ============
 */
-char* Cmd_Argv(int arg)
+char* Cmd_Argv(const int arg)
 {
 	if (static_cast<unsigned>(arg) >= static_cast<unsigned>(cmd_argc))
 		return "";
@@ -405,7 +405,7 @@ The interpreted versions use this because
 they can't have pointers returned to them
 ============
 */
-void Cmd_ArgvBuffer(int arg, char* buffer, int bufferLength)
+void Cmd_ArgvBuffer(const int arg, char* buffer, const int bufferLength)
 {
 	Q_strncpyz(buffer, Cmd_Argv(arg), bufferLength);
 }
@@ -456,7 +456,7 @@ The interpreted versions use this because
 they can't have pointers returned to them
 ============
 */
-void Cmd_ArgsBuffer(char* buffer, int bufferLength)
+void Cmd_ArgsBuffer(char* buffer, const int bufferLength)
 {
 	Q_strncpyz(buffer, Cmd_ArgsFrom(1), bufferLength);
 }
@@ -469,7 +469,7 @@ The interpreted versions use this because
 they can't have pointers returned to them
 ============
 */
-void Cmd_ArgsFromBuffer(int arg, char* buffer, int bufferLength)
+void Cmd_ArgsFromBuffer(int arg, char* buffer, const int bufferLength)
 {
 	Q_strncpyz(buffer, Cmd_Args(), bufferLength);
 }
@@ -498,7 +498,7 @@ are inserted in the apropriate place, The argv array
 will point into this temporary buffer.
 ============
 */
-static void Cmd_TokenizeString2(const char* text_in, qboolean ignoreQuotes)
+static void Cmd_TokenizeString2(const char* text_in, const qboolean ignoreQuotes)
 {
 	// clear previous args
 	cmd_argc = 0;
@@ -637,7 +637,7 @@ void Cmd_TokenizeStringIgnoreQuotes(const char* text_in)
 Cmd_AddCommand
 ============
 */
-void Cmd_AddCommand(const char* cmd_name, xcommand_t function)
+void Cmd_AddCommand(const char* cmd_name, const xcommand_t function)
 {
 	// fail if the command already exists
 	if (Cmd_FindCommand(cmd_name))
@@ -664,7 +664,7 @@ void Cmd_AddCommand(const char* cmd_name, xcommand_t function)
 Cmd_SetCommandCompletionFunc
 ============
 */
-void Cmd_SetCommandCompletionFunc(const char* command, completionFunc_t complete)
+void Cmd_SetCommandCompletionFunc(const char* command, const completionFunc_t complete)
 {
 	for (cmd_function_t* cmd = cmd_functions; cmd; cmd = cmd->next)
 	{
@@ -708,7 +708,7 @@ void Cmd_RemoveCommand(const char* cmd_name)
 Cmd_CommandCompletion
 ============
 */
-void Cmd_CommandCompletion(callbackFunc_t callback)
+void Cmd_CommandCompletion(const callbackFunc_t callback)
 {
 	for (const cmd_function_t* cmd = cmd_functions; cmd; cmd = cmd->next)
 	{
@@ -721,7 +721,7 @@ void Cmd_CommandCompletion(callbackFunc_t callback)
 Cmd_CompleteArgument
 ============
 */
-void Cmd_CompleteArgument(const char* command, char* args, int argNum)
+void Cmd_CompleteArgument(const char* command, char* args, const int argNum)
 {
 	for (const cmd_function_t* cmd = cmd_functions; cmd; cmd = cmd->next)
 	{
@@ -837,7 +837,7 @@ void Cmd_List_f(void)
 Cmd_CompleteCfgName
 ==================
 */
-void Cmd_CompleteCfgName(char* args, int argNum)
+void Cmd_CompleteCfgName(char* args, const int argNum)
 {
 	if (argNum == 2)
 	{

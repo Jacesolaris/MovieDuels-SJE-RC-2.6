@@ -376,7 +376,7 @@ static int UI_GetScreenshotFormatForString(const char* str)
 	return -1;
 }
 
-static const char* UI_GetScreenshotFormatString(int format)
+static const char* UI_GetScreenshotFormatString(const int format)
 {
 	switch (format)
 	{
@@ -615,7 +615,7 @@ int Key_GetCatcher(void);
 
 constexpr auto UI_FPS_FRAMES = 4;
 
-void _UI_Refresh(int realtime)
+void _UI_Refresh(const int realtime)
 {
 	static int index;
 	static int previousTimes[UI_FPS_FRAMES];
@@ -797,7 +797,7 @@ Text_Paint
 */
 // iMaxPixelWidth is 0 here for no limit (but gets converted to -1), else max printable pixel width relative to start pos
 //
-void Text_Paint(float x, float y, float scale, vec4_t color, const char* text, int iMaxPixelWidth, int style,
+void Text_Paint(const float x, const float y, const float scale, vec4_t color, const char* text, const int iMaxPixelWidth, const int style,
                 int iFontIndex)
 {
 	if (iFontIndex == 0)
@@ -840,8 +840,8 @@ Text_PaintWithCursor
 ================
 */
 // iMaxPixelWidth is 0 here for no-limit
-void Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const char* text, int cursorPos, char cursor,
-                          int iMaxPixelWidth, int style, int iFontIndex)
+void Text_PaintWithCursor(const float x, const float y, const float scale, vec4_t color, const char* text, const int cursorPos, const char cursor,
+                          const int iMaxPixelWidth, const int style, const int iFontIndex)
 {
 	Text_Paint(x, y, scale, color, text, iMaxPixelWidth, style, iFontIndex);
 
@@ -863,7 +863,7 @@ void Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const cha
 	           iFontIndex);
 }
 
-const char* UI_FeederItemText(float feederID, int index, int column, qhandle_t* handle)
+const char* UI_FeederItemText(const float feederID, const int index, const int column, qhandle_t* handle)
 {
 	*handle = -1;
 
@@ -954,7 +954,7 @@ const char* UI_FeederItemText(float feederID, int index, int column, qhandle_t* 
 	return "";
 }
 
-qhandle_t UI_FeederItemImage(float feederID, int index)
+qhandle_t UI_FeederItemImage(const float feederID, const int index)
 {
 	if (feederID == FEEDER_PLAYER_SKIN_HEAD)
 	{
@@ -2163,7 +2163,7 @@ static void UI_HandleLoadSelection()
 UI_FeederCount
 =================
 */
-static int UI_FeederCount(float feederID)
+static int UI_FeederCount(const float feederID)
 {
 	if (feederID == FEEDER_SAVEGAMES)
 	{
@@ -2233,7 +2233,7 @@ static int UI_FeederCount(float feederID)
 UI_FeederSelection
 =================
 */
-static void UI_FeederSelection(float feederID, int index, itemDef_t* item)
+static void UI_FeederSelection(const float feederID, const int index, itemDef_t* item)
 {
 	if (feederID == FEEDER_SAVEGAMES)
 	{
@@ -2401,7 +2401,7 @@ static void UI_FeederSelection(float feederID, int index, itemDef_t* item)
 void Key_KeynumToStringBuf(int keynum, char* buf, int buflen);
 void Key_GetBindingBuf(int keynum, char* buf, int buflen);
 
-static qboolean UI_Crosshair_HandleKey(int flags, float* special, int key)
+static qboolean UI_Crosshair_HandleKey(int flags, float* special, const int key)
 {
 	if (key == A_MOUSE1 || key == A_MOUSE2 || key == A_ENTER || key == A_KP_ENTER)
 	{
@@ -2428,7 +2428,7 @@ static qboolean UI_Crosshair_HandleKey(int flags, float* special, int key)
 	return qfalse;
 }
 
-static qboolean UI_OwnerDrawHandleKey(int ownerDraw, int flags, float* special, int key)
+static qboolean UI_OwnerDrawHandleKey(const int ownerDraw, const int flags, float* special, const int key)
 {
 	switch (ownerDraw)
 	{
@@ -2618,7 +2618,7 @@ qboolean UI_ParseAnimFileSet(const char* animCFG, int* animFileIndex)
 	return qtrue;
 }
 
-int UI_G2SetAnim(CGhoul2Info* ghlInfo, const char* boneName, int animNum, const qboolean freeze)
+int UI_G2SetAnim(CGhoul2Info* ghlInfo, const char* boneName, const int animNum, const qboolean freeze)
 {
 	int animIndex;
 
@@ -2733,7 +2733,7 @@ bIsImageFile
 builds path and scans for valid image extentions
 =================
 */
-static qboolean IsImageFile(const char* dirptr, const char* skinname, qboolean building)
+static qboolean IsImageFile(const char* dirptr, const char* skinname, const qboolean building)
 {
 	char fpath[MAX_QPATH];
 	int f;
@@ -2788,7 +2788,7 @@ void UI_FreeAllSpecies(void)
 PlayerModel_BuildList
 =================
 */
-static void UI_BuildPlayerModel_List(qboolean inGameLoad)
+static void UI_BuildPlayerModel_List(const qboolean inGameLoad)
 {
 	static constexpr size_t DIR_LIST_SIZE = 16384;
 
@@ -2974,7 +2974,7 @@ void UI_Shutdown(void)
 UI_Init
 =================
 */
-void _UI_Init(qboolean inGameLoad)
+void _UI_Init(const qboolean inGameLoad)
 {
 	// Get the list of possible languages
 #ifndef JK2_MODE
@@ -3255,7 +3255,7 @@ UI_LoadMenus
 	Load all menus based on the files listed in the data file in menuFile (default "ui/menus.txt")
 =================
 */
-void UI_LoadMenus(const char* menuFile, qboolean reset)
+void UI_LoadMenus(const char* menuFile, const qboolean reset)
 {
 	char* buffer;
 	const char* holdBuffer;
@@ -3319,7 +3319,7 @@ void UI_LoadMenus(const char* menuFile, qboolean reset)
 	Com_Printf("---------------- MovieDuels-SJE-RC-2.6---------------------------\n");
 	Com_Printf("-----------------------------------------------------------------\n");
 	Com_Printf("------------------------Update 6---------------------------------\n");
-	Com_Printf("------------------Build Date 26/12/2022--------------------------\n");
+	Com_Printf("------------------Build Date 27/12/2022--------------------------\n");
 	Com_Printf("-----------------------------------------------------------------\n");
 	Com_Printf("------------------------LightSaber-------------------------------\n");
 	Com_Printf("-----------An elegant weapon for a more civilized age------------\n");
@@ -4106,7 +4106,7 @@ void AssetCache(void)
 _UI_DrawSides
 =================
 */
-void _UI_DrawSides(float x, float y, float w, float h, float size)
+void _UI_DrawSides(const float x, const float y, const float w, const float h, float size)
 {
 	size *= uiInfo.uiDC.xscale;
 	trap_R_DrawStretchPic(x, y, size, h, 0, 0, 0, 0, uiInfo.uiDC.whiteShader);
@@ -4118,7 +4118,7 @@ void _UI_DrawSides(float x, float y, float w, float h, float size)
 _UI_DrawTopBottom
 =================
 */
-void _UI_DrawTopBottom(float x, float y, float w, float h, float size)
+void _UI_DrawTopBottom(const float x, const float y, const float w, const float h, float size)
 {
 	size *= uiInfo.uiDC.yscale;
 	trap_R_DrawStretchPic(x, y, w, size, 0, 0, 0, 0, uiInfo.uiDC.whiteShader);
@@ -4132,7 +4132,7 @@ UI_DrawRect
 Coordinates are 640*480 virtual values
 =================
 */
-void _UI_DrawRect(float x, float y, float width, float height, float size, const float* color)
+void _UI_DrawRect(const float x, const float y, const float width, const float height, const float size, const float* color)
 {
 	trap_R_SetColor(color);
 
@@ -4184,7 +4184,7 @@ static void UI_DrawEffects(const rectDef_t* rect, float scale, vec4_t color)
 UI_Version
 =================
 */
-static void UI_Version(const rectDef_t* rect, float scale, vec4_t color, int iFontIndex)
+static void UI_Version(const rectDef_t* rect, const float scale, vec4_t color, const int iFontIndex)
 {
 	const int width = DC->textWidth(Q3_VERSION, scale, 0);
 
@@ -4217,7 +4217,7 @@ static void UI_DrawKeyBindStatus(rectDef_t* rect, float scale, vec4_t color, int
 UI_DrawKeyBindStatus
 =================
 */
-static void UI_DrawGLInfo(const rectDef_t* rect, float scale, vec4_t color, int textStyle, int iFontIndex)
+static void UI_DrawGLInfo(const rectDef_t* rect, const float scale, vec4_t color, const int textStyle, const int iFontIndex)
 {
 	constexpr auto MAX_LINES = 64;
 	char buff[4096];
@@ -4305,9 +4305,9 @@ static void UI_DrawCrosshair(const rectDef_t* rect, float scale, vec4_t color)
 UI_OwnerDraw
 =================
 */
-static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y, int ownerDraw,
-                         int ownerDrawFlags, int align, float special, float scale, vec4_t color, qhandle_t shader,
-                         int textStyle, int iFontIndex)
+static void UI_OwnerDraw(float x, float y, float w, float h, const float text_x, const float text_y, const int ownerDraw,
+                         int ownerDrawFlags, int align, float special, const float scale, vec4_t color, qhandle_t shader,
+                         const int textStyle, const int iFontIndex)
 {
 	rectDef_t rect;
 
@@ -4426,7 +4426,7 @@ static qboolean UI_OwnerDrawVisible(int flags)
 Text_Width
 =================
 */
-int Text_Width(const char* text, float scale, int iFontIndex)
+int Text_Width(const char* text, const float scale, int iFontIndex)
 {
 	// temp code until Bob retro-fits all menus to have font specifiers...
 	//
@@ -4442,7 +4442,7 @@ int Text_Width(const char* text, float scale, int iFontIndex)
 UI_OwnerDrawWidth
 =================
 */
-int UI_OwnerDrawWidth(int ownerDraw, float scale)
+int UI_OwnerDrawWidth(const int ownerDraw, const float scale)
 {
 	//	int i, h, value;
 	//	const char *text;
@@ -4485,7 +4485,7 @@ int UI_OwnerDrawWidth(int ownerDraw, float scale)
 Text_Height
 =================
 */
-int Text_Height(const char* text, float scale, int iFontIndex)
+int Text_Height(const char* text, const float scale, int iFontIndex)
 {
 	// temp until Bob retro-fits all menu files with font specifiers...
 	//
@@ -4502,7 +4502,7 @@ UI_MouseEvent
 =================
 */
 //JLFMOUSE  CALLED EACH FRAME IN UI
-void _UI_MouseEvent(int dx, int dy)
+void _UI_MouseEvent(const int dx, const int dy)
 {
 	// update mouse screen position
 	uiInfo.uiDC.cursorx += dx;
@@ -4536,7 +4536,7 @@ void _UI_MouseEvent(int dx, int dy)
 UI_KeyEvent
 =================
 */
-void _UI_KeyEvent(int key, qboolean down)
+void _UI_KeyEvent(const int key, const qboolean down)
 {
 	/*	extern qboolean SwallowBadNumLockedKPKey( int iKey );
 		if (SwallowBadNumLockedKPKey(key)){
@@ -5181,7 +5181,7 @@ static void UI_InitAllocForcePowers(const char* forceName)
 }
 
 // Flip flop between being able to see the text showing the Force Point has or hasn't been allocated (Used by Force Power Allocation screen)
-static void UI_SetPowerTitleText(qboolean showAllocated)
+static void UI_SetPowerTitleText(const qboolean showAllocated)
 {
 	itemDef_t* item;
 
@@ -6050,7 +6050,7 @@ static void UI_GiveInventory(const int itemIndex, const int amount)
 }
 
 //. Find weapons allocation screen BEGIN button and make active/inactive
-static void UI_WeaponAllocBeginButton(qboolean activeFlag)
+static void UI_WeaponAllocBeginButton(const qboolean activeFlag)
 {
 	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 
@@ -7076,7 +7076,7 @@ static void UI_UpdateCharacterSkin(void)
 	ItemParse_model_g2skin_go(item, skin);
 }
 
-static void UI_UpdateCharacter(qboolean changedModel)
+static void UI_UpdateCharacter(const qboolean changedModel)
 {
 	char modelPath[MAX_QPATH];
 
@@ -7122,7 +7122,7 @@ void UI_UpdateSaberType(void)
 	}
 }
 
-static void UI_UpdateSaberHilt(qboolean secondSaber)
+static void UI_UpdateSaberHilt(const qboolean secondSaber)
 {
 	char model[MAX_QPATH];
 	char modelPath[MAX_QPATH];
@@ -7271,7 +7271,7 @@ UI_AdjustSaveGameListBox
 */
 // Yeah I could get fired for this... in a world of good and bad, this is bad
 // I wish we passed in the menu item to RunScript(), oh well...
-void UI_AdjustSaveGameListBox(int currentLine)
+void UI_AdjustSaveGameListBox(const int currentLine)
 {
 	// could be in either the ingame or shell load menu (I know, I know it's bad)
 	const menuDef_t* menu = Menus_FindByName("loadgameMenu");

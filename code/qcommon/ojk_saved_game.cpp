@@ -549,7 +549,7 @@ namespace ojk
 
 	bool SavedGame::read(
 		void* dst_data,
-		int dst_size)
+		const int dst_size)
 	{
 		if (is_failed_)
 		{
@@ -608,7 +608,7 @@ namespace ojk
 
 	bool SavedGame::write(
 		const void* src_data,
-		int src_size)
+		const int src_size)
 	{
 		if (is_failed_)
 		{
@@ -669,7 +669,7 @@ namespace ojk
 	}
 
 	bool SavedGame::skip(
-		int count)
+		const int count)
 	{
 		if (is_failed_)
 		{
@@ -928,7 +928,7 @@ namespace ojk
 	}
 
 	std::string SavedGame::get_chunk_id_string(
-		uint32_t chunk_id)
+		const uint32_t chunk_id)
 	{
 		std::string result(4, '\0');
 

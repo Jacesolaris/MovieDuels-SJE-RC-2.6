@@ -1996,7 +1996,7 @@ void R_ShutdownFonts(void)
 
 // this is only really for debugging while tinkering with fonts, but harmless to leave in...
 //
-void R_ReloadFonts_f(void)
+void R_ReloadFonts_f()
 {
 	// first, grab all the currently-registered fonts IN THE ORDER THEY WERE REGISTERED...
 	//

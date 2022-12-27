@@ -119,7 +119,7 @@ void UI_UpdateConnectionMessageString(const char* string)
 UI_KeyConnect
 ===================
 */
-void UI_KeyConnect(int key)
+void UI_KeyConnect(const int key)
 {
 	if (key == A_ESCAPE)
 	{

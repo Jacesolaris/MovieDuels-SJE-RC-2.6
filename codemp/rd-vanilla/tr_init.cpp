@@ -896,7 +896,7 @@ byte* RB_ReadPixels(int x, int y, int width, int height, size_t* offset, int* pa
 R_TakeScreenshot
 ==================
 */
-void R_TakeScreenshot(int x, int y, int width, int height, char* fileName) {
+void R_TakeScreenshot(int x, int y, int width, int height, const char* file_name) {
 	byte* destptr;
 
 	int padlen;
@@ -943,7 +943,7 @@ void R_TakeScreenshot(int x, int y, int width, int height, char* fileName) {
 	if (glConfig.deviceSupportsGamma && !glConfigExt.doGammaCorrectionWithShaders)
 		R_GammaCorrect(allbuf + offset, memcount);
 
-	ri->FS_WriteFile(fileName, buffer, memcount + 18);
+	ri->FS_WriteFile(file_name, buffer, memcount + 18);
 
 	ri->Hunk_FreeTempMemory(allbuf);
 }
@@ -953,7 +953,7 @@ void R_TakeScreenshot(int x, int y, int width, int height, char* fileName) {
 R_TakeScreenshotPNG
 ==================
 */
-void R_TakeScreenshotPNG(int x, int y, int width, int height, char* fileName) {
+void R_TakeScreenshotPNG(int x, int y, int width, int height, const char* fileName) {
 	size_t offset = 0;
 	int padlen = 0;
 
@@ -967,7 +967,7 @@ void R_TakeScreenshotPNG(int x, int y, int width, int height, char* fileName) {
 R_TakeScreenshotJPEG
 ==================
 */
-void R_TakeScreenshotJPEG(int x, int y, int width, int height, char* fileName) {
+void R_TakeScreenshotJPEG(int x, int y, int width, int height, const char* fileName) {
 	size_t offset = 0;
 	int padlen;
 
@@ -987,14 +987,14 @@ void R_TakeScreenshotJPEG(int x, int y, int width, int height, char* fileName) {
 R_ScreenshotFilename
 ==================
 */
-void R_ScreenshotFilename(char* buf, int bufSize, const char* ext) {
+void R_ScreenshotFilename(char* buf, int buf_size, const char* ext) {
 	time_t rawtime;
 	char timeStr[32] = { 0 }; // should really only reach ~19 chars
 
 	time(&rawtime);
 	strftime(timeStr, sizeof(timeStr), "%Y-%m-%d_%H-%M-%S", localtime(&rawtime)); // or gmtime
 
-	Com_sprintf(buf, bufSize, "screenshots/shot%s%s", timeStr, ext);
+	Com_sprintf(buf, buf_size, "screenshots/shot%s%s", timeStr, ext);
 }
 
 /*
@@ -1764,7 +1764,7 @@ void R_Init(void) {
 RE_Shutdown
 ===============
 */
-void RE_Shutdown(qboolean destroyWindow, qboolean restarting) {
+void RE_Shutdown(qboolean destroy_window, qboolean restarting) {
 	//	ri->Printf( PRINT_ALL, "RE_Shutdown( %i )\n", destroyWindow );
 
 	for (size_t i = 0; i < numCommands; i++)
@@ -1819,7 +1819,7 @@ void RE_Shutdown(qboolean destroyWindow, qboolean restarting) {
 	R_ShutdownFonts();
 	if (tr.registered) {
 		R_IssuePendingRenderCommands();
-		if (destroyWindow)
+		if (destroy_window)
 		{
 			R_DeleteTextures();		// only do this for vid_restart now, not during things like map load
 
@@ -1831,7 +1831,7 @@ void RE_Shutdown(qboolean destroyWindow, qboolean restarting) {
 	}
 
 	// shut down platform specific OpenGL stuff
-	if (destroyWindow) {
+	if (destroy_window) {
 		ri->WIN_Shutdown();
 	}
 

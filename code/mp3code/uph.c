@@ -140,7 +140,7 @@ static unsigned int bitget(int n)
 }
 */
 /*----- get n bits  - checks for n+2 avail bits (linbits+sign) -----*/
-static unsigned int bitget_lb(int n)
+static unsigned int bitget_lb(const int n)
 {
 	if (bitdat.bits < (n + 2))
 	{
@@ -158,7 +158,7 @@ static unsigned int bitget_lb(int n)
 }
 
 /*------------- get n bits but DO NOT remove from bitstream --*/
-static unsigned int bitget2(int n)
+static unsigned int bitget2(const int n)
 {
 	if (bitdat.bits < (MAXBITS + 2))
 	{
@@ -218,7 +218,7 @@ static unsigned int bitget_1bit()
          code )
 /*========================================================*/
 /*========================================================*/
-void unpack_huff(int xy[][2], int n, int ntable)
+void unpack_huff(int xy[][2], int n, const int ntable)
 {
 	int i;
 	const HUFF_ELEMENT* t;
@@ -334,7 +334,7 @@ void unpack_huff(int xy[][2], int n, int ntable)
 }
 
 /*==========================================================*/
-int unpack_huff_quad(int vwxy[][4], int n, int nbits, int ntable)
+int unpack_huff_quad(int vwxy[][4], int n, int nbits, const int ntable)
 {
 	int i;
 	int code;

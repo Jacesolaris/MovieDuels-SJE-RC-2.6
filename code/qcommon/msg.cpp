@@ -34,7 +34,7 @@ Handles byte ordering and avoids alignment errors
 ==============================================================================
 */
 
-void MSG_Init(msg_t* buf, byte* data, int length)
+void MSG_Init(msg_t* buf, byte* data, const int length)
 {
 	memset(buf, 0, sizeof(*buf));
 	buf->data = data;
@@ -64,7 +64,7 @@ void MSG_ReadByteAlign(msg_t* buf)
 	}
 }
 
-void* MSG_GetSpace(msg_t* buf, int length)
+void* MSG_GetSpace(msg_t* buf, const int length)
 {
 	// round up to the next byte
 	if (buf->bit)
@@ -94,7 +94,7 @@ void* MSG_GetSpace(msg_t* buf, int length)
 	return data;
 }
 
-void MSG_WriteData(msg_t* buf, const void* data, int length)
+void MSG_WriteData(msg_t* buf, const void* data, const int length)
 {
 	memcpy(MSG_GetSpace(buf, length), data, length);
 }
@@ -257,12 +257,12 @@ void MSG_WriteShort(msg_t* sb, int c)
 	MSG_WriteBits(sb, c, 16);
 }
 
-static void MSG_WriteSShort(msg_t* sb, int c)
+static void MSG_WriteSShort(msg_t* sb, const int c)
 {
 	MSG_WriteBits(sb, c, -16);
 }
 
-void MSG_WriteLong(msg_t* sb, int c)
+void MSG_WriteLong(msg_t* sb, const int c)
 {
 	MSG_WriteBits(sb, c, 32);
 }
@@ -429,7 +429,7 @@ char* MSG_ReadStringLine(msg_t* msg)
 	return string;
 }
 
-void MSG_ReadData(msg_t* msg, void* data, int len)
+void MSG_ReadData(msg_t* msg, void* data, const int len)
 {
 	MSG_ReadByteAlign(msg);
 	for (int i = 0; i < len; i++)
@@ -450,7 +450,7 @@ extern cvar_t* cl_shownet;
 
 #define	LOG(x) if( cl_shownet->integer == 4 ) { Com_Printf("%s ", x ); };
 
-void MSG_WriteDelta(msg_t* msg, int oldV, int newV, int bits)
+void MSG_WriteDelta(msg_t* msg, const int oldV, const int newV, const int bits)
 {
 	if (oldV == newV)
 	{
@@ -461,7 +461,7 @@ void MSG_WriteDelta(msg_t* msg, int oldV, int newV, int bits)
 	MSG_WriteBits(msg, newV, bits);
 }
 
-int MSG_ReadDelta(msg_t* msg, int oldV, int bits)
+int MSG_ReadDelta(msg_t* msg, const int oldV, const int bits)
 {
 	if (MSG_ReadBits(msg, 1))
 	{
@@ -470,7 +470,7 @@ int MSG_ReadDelta(msg_t* msg, int oldV, int bits)
 	return oldV;
 }
 
-void MSG_WriteDeltaFloat(msg_t* msg, float oldV, float newV)
+void MSG_WriteDeltaFloat(msg_t* msg, const float oldV, const float newV)
 {
 	byteAlias_t fi;
 	if (oldV == newV)
@@ -483,7 +483,7 @@ void MSG_WriteDeltaFloat(msg_t* msg, float oldV, float newV)
 	MSG_WriteBits(msg, fi.i, 32);
 }
 
-float MSG_ReadDeltaFloat(msg_t* msg, float oldV)
+float MSG_ReadDeltaFloat(msg_t* msg, const float oldV)
 {
 	if (MSG_ReadBits(msg, 1))
 	{
@@ -807,7 +807,7 @@ void MSG_WriteField(msg_t* msg, const int* toF, const netField_t* field)
 	}
 }
 
-void MSG_ReadField(msg_t* msg, int* toF, const netField_t* field, int print)
+void MSG_ReadField(msg_t* msg, int* toF, const netField_t* field, const int print)
 {
 	if (field->bits == -1)
 	{
@@ -967,7 +967,7 @@ void MSG_WriteDeltaEntity(msg_t* msg, struct entityState_s* from, struct entityS
 
 extern serverStatic_t svs;
 
-void MSG_WriteEntity(msg_t* msg, entityState_s* to, int removeNum)
+void MSG_WriteEntity(msg_t* msg, entityState_s* to, const int removeNum)
 {
 	if (to == nullptr)
 	{

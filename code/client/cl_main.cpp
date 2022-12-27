@@ -558,7 +558,7 @@ to the server, the server will send out of band disconnect packets
 to the client so it doesn't have to wait for the full timeout period.
 ===================
 */
-void CL_DisconnectPacket(netadr_t from)
+void CL_DisconnectPacket(const netadr_t from)
 {
 	if (cls.state != CA_ACTIVE)
 	{
@@ -590,7 +590,7 @@ CL_ConnectionlessPacket
 Responses to broadcasts, etc
 =================
 */
-void CL_ConnectionlessPacket(netadr_t from, msg_t* msg)
+void CL_ConnectionlessPacket(const netadr_t from, msg_t* msg)
 {
 	MSG_BeginReading(msg);
 	MSG_ReadLong(msg); // skip the -1
@@ -685,7 +685,7 @@ CL_PacketEvent
 A packet has arrived from the main event loop
 =================
 */
-void CL_PacketEvent(netadr_t from, msg_t* msg)
+void CL_PacketEvent(const netadr_t from, msg_t* msg)
 {
 	clc.lastPacketTime = cls.realtime;
 
@@ -809,7 +809,7 @@ extern cvar_t* cl_newClock;
 static unsigned int frameCount;
 float avgFrametime = 0.0;
 
-void CL_Frame(int msec, float fractionMsec)
+void CL_Frame(int msec, const float fractionMsec)
 {
 	if (!com_cl_running->integer)
 	{
@@ -956,7 +956,7 @@ void CL_Frame(int msec, float fractionMsec)
 CL_ShutdownRef
 ============
 */
-static void CL_ShutdownRef(qboolean restarting)
+static void CL_ShutdownRef(const qboolean restarting)
 {
 	if (re.Shutdown)
 	{
@@ -1068,7 +1068,7 @@ CL_RefPrintf
 DLL glue
 ================
 */
-void QDECL CL_RefPrintf(int print_level, const char* fmt, ...)
+void QDECL CL_RefPrintf(const int print_level, const char* fmt, ...)
 {
 	va_list argptr;
 	char msg[MAXPRINTMSG];
@@ -1138,7 +1138,7 @@ int get_com_frameTime(void)
 	return com_frameTime;
 }
 
-void* CL_Malloc(int iSize, memtag_t eTag, qboolean bZeroit, int iAlign)
+void* CL_Malloc(const int iSize, const memtag_t eTag, const qboolean bZeroit, int iAlign)
 {
 	return Z_Malloc(iSize, eTag, bZeroit);
 }

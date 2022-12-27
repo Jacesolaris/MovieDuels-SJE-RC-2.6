@@ -96,8 +96,8 @@ static const int nr_table[6][3][4] =
 /*=============================================================*/
 void unpack_sf_sub_MPEG1(SCALEFACT sf[],
                          const GR* grdat,
-                         int scfsi, /* bit flag */
-                         int gr)
+                         const int scfsi, /* bit flag */
+                         const int gr)
 {
 	int sfb;
 

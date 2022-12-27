@@ -86,7 +86,7 @@ const char* Sys_Dirname(const char* path)
 Sys_Milliseconds
 ================
 */
-int Sys_Milliseconds(bool baseTime)
+int Sys_Milliseconds(const bool baseTime)
 {
 	static int sys_timeBase = timeGetTime();
 
@@ -109,7 +109,7 @@ int Sys_Milliseconds2(void)
 Sys_RandomBytes
 ================
 */
-bool Sys_RandomBytes(byte* string, int len)
+bool Sys_RandomBytes(byte* string, const int len)
 {
 	HCRYPTPROV prov;
 
@@ -186,7 +186,7 @@ char* Sys_DefaultHomePath(void)
 #endif
 }
 
-static const char* GetErrorString(DWORD error)
+static const char* GetErrorString(const DWORD error)
 {
 	static char buf[MAX_STRING_CHARS];
 	buf[0] = '\0';
@@ -398,7 +398,7 @@ static qboolean strgtr(const char* s0, const char* s1)
 	return qfalse;
 }
 
-char** Sys_ListFiles(const char* directory, const char* extension, char* filter, int* numfiles, qboolean wantsubs)
+char** Sys_ListFiles(const char* directory, const char* extension, char* filter, int* numfiles, const qboolean wantsubs)
 {
 	char search[MAX_OSPATH];
 	int nfiles;

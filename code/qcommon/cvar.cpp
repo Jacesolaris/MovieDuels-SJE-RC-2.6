@@ -163,7 +163,7 @@ char* Cvar_VariableString(const char* var_name)
 Cvar_VariableStringBuffer
 ============
 */
-void Cvar_VariableStringBuffer(const char* var_name, char* buffer, int bufsize)
+void Cvar_VariableStringBuffer(const char* var_name, char* buffer, const int bufsize)
 {
 	const cvar_t* var = Cvar_FindVar(var_name);
 	if (!var)
@@ -197,7 +197,7 @@ int Cvar_Flags(const char* var_name)
 Cvar_CommandCompletion
 ============
 */
-void Cvar_CommandCompletion(callbackFunc_t callback)
+void Cvar_CommandCompletion(const callbackFunc_t callback)
 {
 	for (const cvar_t* cvar = cvar_vars; cvar; cvar = cvar->next)
 	{
@@ -214,7 +214,7 @@ void Cvar_CommandCompletion(callbackFunc_t callback)
 Cvar_Validate
 ============
 */
-static const char* Cvar_Validate(const cvar_t* var, const char* value, qboolean warn)
+static const char* Cvar_Validate(const cvar_t* var, const char* value, const qboolean warn)
 {
 	float valuef;
 	qboolean changed = qfalse;
@@ -482,7 +482,7 @@ cvar_t* Cvar_Get(const char* var_name, const char* var_value, int flags)
 	return var;
 }
 
-static void Cvar_QSortByName(cvar_t** a, int n)
+static void Cvar_QSortByName(cvar_t** a, const int n)
 {
 	int i = 0;
 	int j = n;
@@ -582,7 +582,7 @@ void Cvar_Print(const cvar_t* v)
 Cvar_Set2
 ============
 */
-cvar_t* Cvar_Set2(const char* var_name, const char* value, qboolean force)
+cvar_t* Cvar_Set2(const char* var_name, const char* value, const qboolean force)
 {
 	cvar_t* var;
 
@@ -721,7 +721,7 @@ void Cvar_Set(const char* var_name, const char* value)
 Cvar_SetValue
 ============
 */
-void Cvar_SetValue(const char* var_name, float value)
+void Cvar_SetValue(const char* var_name, const float value)
 {
 	char val[32];
 
@@ -741,7 +741,7 @@ void Cvar_SetValue(const char* var_name, float value)
 Cvar_SetValue2
 ============
 */
-void Cvar_SetValue2(const char* var_name, float value, qboolean force)
+void Cvar_SetValue2(const char* var_name, const float value, const qboolean force)
 {
 	char val[32];
 
@@ -991,7 +991,7 @@ Appends lines containing "set variable value" for all variables
 with the archive flag set to qtrue.
 ============
 */
-void Cvar_WriteVariables(fileHandle_t f)
+void Cvar_WriteVariables(const fileHandle_t f)
 {
 	if (cvar_sort)
 	{
@@ -1265,7 +1265,7 @@ and variables added via the VMs if requested.
 ============
 */
 
-void Cvar_Restart(qboolean unsetVM)
+void Cvar_Restart(const qboolean unsetVM)
 {
 	cvar_t* curvar = cvar_vars;
 
@@ -1306,7 +1306,7 @@ void Cvar_Restart_f(void)
 Cvar_InfoString
 =====================
 */
-char* Cvar_InfoString(int bit)
+char* Cvar_InfoString(const int bit)
 {
 	static char info[MAX_INFO_STRING];
 
@@ -1327,7 +1327,7 @@ char* Cvar_InfoString(int bit)
 Cvar_InfoStringBuffer
 =====================
 */
-void Cvar_InfoStringBuffer(int bit, char* buff, int buffsize)
+void Cvar_InfoStringBuffer(const int bit, char* buff, const int buffsize)
 {
 	Q_strncpyz(buff, Cvar_InfoString(bit), buffsize);
 }
@@ -1337,7 +1337,7 @@ void Cvar_InfoStringBuffer(int bit, char* buff, int buffsize)
 Cvar_CheckRange
 =====================
 */
-void Cvar_CheckRange(cvar_t* var, float min, float max, qboolean integral)
+void Cvar_CheckRange(cvar_t* var, const float min, const float max, const qboolean integral)
 {
 	var->validate = qtrue;
 	var->min = min;
@@ -1419,7 +1419,7 @@ void Cvar_Update(vmCvar_t* vmCvar)
 Cvar_CompleteCvarName
 ==================
 */
-void Cvar_CompleteCvarName(char* args, int argNum)
+void Cvar_CompleteCvarName(char* args, const int argNum)
 {
 	if (argNum == 2)
 	{

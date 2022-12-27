@@ -169,7 +169,7 @@ int head_info(const unsigned char* buf, unsigned int n, MPEG_HEAD* h)
 	return framebytes;
 }
 
-int head_info3(unsigned char* buf, unsigned int n, MPEG_HEAD* h, int* br, unsigned int* searchForward)
+int head_info3(unsigned char* buf, const unsigned int n, MPEG_HEAD* h, int* br, unsigned int* searchForward)
 {
 	unsigned int pBuf = 0;
 
@@ -187,7 +187,7 @@ int head_info3(unsigned char* buf, unsigned int n, MPEG_HEAD* h, int* br, unsign
 }
 
 /*--------------------------------------------------------------*/
-int head_info2(const unsigned char* buf, unsigned int n, MPEG_HEAD* h, int* br)
+int head_info2(const unsigned char* buf, const unsigned int n, MPEG_HEAD* h, int* br)
 {
 	/*---  return br (in bits/sec) in addition to frame bytes ---*/
 
@@ -294,7 +294,7 @@ static int find_sync(const unsigned char* buf, int n)
 /*------------------------------------------------------*/
 /*---- scan for next sync, assume start is valid -------*/
 /*---- return number bytes to next sync ----------------*/
-static int sync_scan(const unsigned char* buf, int n, int i0)
+static int sync_scan(const unsigned char* buf, const int n, const int i0)
 {
 	for (int i = i0; i < n; i++)
 		if (compare(buf, buf + i))
@@ -305,7 +305,7 @@ static int sync_scan(const unsigned char* buf, int n, int i0)
 
 /*------------------------------------------------------*/
 /*- test consecutative syncs, input isync without pad --*/
-static int sync_test(const unsigned char* buf, int n, int isync, int padbytes)
+static int sync_test(const unsigned char* buf, const int n, const int isync, const int padbytes)
 {
 	int nmatch = 0;
 	for (int i = 0;;)

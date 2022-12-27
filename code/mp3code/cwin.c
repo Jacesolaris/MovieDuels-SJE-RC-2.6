@@ -37,7 +37,7 @@ portable C
 #include "config.h"
 
 /*-------------------------------------------------------------------------*/
-void window(const float* vbuf, int vb_ptr, short* pcm)
+void window(const float* vbuf, const int vb_ptr, short* pcm)
 {
 	int i, j;
 	float sum;
@@ -104,7 +104,7 @@ void window(const float* vbuf, int vb_ptr, short* pcm)
 }
 
 /*------------------------------------------------------------*/
-void window_dual(const float* vbuf, int vb_ptr, short* pcm)
+void window_dual(const float* vbuf, const int vb_ptr, short* pcm)
 {
 	int i, j; /* dual window interleaves output */
 	float sum;
@@ -175,7 +175,7 @@ void window_dual(const float* vbuf, int vb_ptr, short* pcm)
 
 /*------------------------------------------------------------*/
 /*------------------- 16 pt window ------------------------------*/
-void window16(const float* vbuf, int vb_ptr, short* pcm)
+void window16(const float* vbuf, const int vb_ptr, short* pcm)
 {
 	int i, j;
 	float sum;
@@ -244,7 +244,7 @@ void window16(const float* vbuf, int vb_ptr, short* pcm)
 }
 
 /*--------------- 16 pt dual window (interleaved output) -----------------*/
-void window16_dual(const float* vbuf, int vb_ptr, short* pcm)
+void window16_dual(const float* vbuf, const int vb_ptr, short* pcm)
 {
 	int i, j;
 	float sum;
@@ -316,7 +316,7 @@ void window16_dual(const float* vbuf, int vb_ptr, short* pcm)
 }
 
 /*------------------- 8 pt window ------------------------------*/
-void window8(const float* vbuf, int vb_ptr, short* pcm)
+void window8(const float* vbuf, const int vb_ptr, short* pcm)
 {
 	int i, j;
 	float sum;
@@ -385,7 +385,7 @@ void window8(const float* vbuf, int vb_ptr, short* pcm)
 }
 
 /*--------------- 8 pt dual window (interleaved output) -----------------*/
-void window8_dual(const float* vbuf, int vb_ptr, short* pcm)
+void window8_dual(const float* vbuf, const int vb_ptr, short* pcm)
 {
 	int i, j;
 	float sum;

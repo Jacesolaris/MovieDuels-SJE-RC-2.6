@@ -182,7 +182,7 @@ static void load_init(unsigned char* buf)
 	bitbuf = 0;
 }
 /*------------- get n bits from bitstream -------------*/
-static long load(int n)
+static long load(const int n)
 {
 	if (bits < n)
 	{				/* refill bit buf if necessary */

@@ -180,7 +180,7 @@ and all connected players.  Used for getting detailed information after
 the simple info query.
 ================
 */
-void SVC_Status(netadr_t from)
+void SVC_Status(const netadr_t from)
 {
 	char status[MAX_MSGLEN];
 	int score;
@@ -231,7 +231,7 @@ Responds with a short info message that should be enough to determine
 if a user is interested in a server to do a full status
 ================
 */
-static void SVC_Info(netadr_t from)
+static void SVC_Info(const netadr_t from)
 {
 	char infostring[MAX_INFO_STRING];
 
@@ -269,7 +269,7 @@ Clients that are in the game can still send
 connectionless packets.
 =================
 */
-static void SV_ConnectionlessPacket(netadr_t from, msg_t* msg)
+static void SV_ConnectionlessPacket(const netadr_t from, msg_t* msg)
 {
 	MSG_BeginReading(msg);
 	MSG_ReadLong(msg); // skip the -1 marker
@@ -313,7 +313,7 @@ static void SV_ConnectionlessPacket(netadr_t from, msg_t* msg)
 SV_ReadPackets
 =================
 */
-void SV_PacketEvent(netadr_t from, msg_t* msg)
+void SV_PacketEvent(const netadr_t from, msg_t* msg)
 {
 	int i;
 	client_t* cl;
@@ -459,7 +459,7 @@ happen before SV_Frame is called
 */
 extern cvar_t* cl_newClock;
 
-void SV_Frame(int msec, float fractionMsec)
+void SV_Frame(int msec, const float fractionMsec)
 {
 	int startTime = 0;
 

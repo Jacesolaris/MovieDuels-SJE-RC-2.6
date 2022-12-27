@@ -110,7 +110,7 @@ ARRAY2_64_2* msis_init_addr_MPEG2()
 }
 
 /*===============================================================*/
-void antialias(float x[], int n)
+void antialias(float x[], const int n)
 {
 	for (int k = 0; k < n; k++)
 	{
@@ -126,7 +126,7 @@ void antialias(float x[], int n)
 }
 
 /*===============================================================*/
-void ms_process(float x[][1152], int n) /* sum-difference stereo */
+void ms_process(float x[][1152], const int n) /* sum-difference stereo */
 {
 	/*-- note: sqrt(2) done scaling by dequant ---*/
 	for (int i = 0; i < n; i++)
@@ -142,7 +142,7 @@ void ms_process(float x[][1152], int n) /* sum-difference stereo */
 void is_process_MPEG1(float x[][1152], /* intensity stereo */
                       const SCALEFACT* sf,
                       CB_INFO cb_info[2], /* [ch] */
-                      int nsamp, int ms_mode)
+                      const int nsamp, const int ms_mode)
 {
 	int j, n, cb;
 	int isf;
@@ -207,7 +207,7 @@ void is_process_MPEG2(float x[][1152], /* intensity stereo */
                       const SCALEFACT* sf,
                       CB_INFO cb_info[2], /* [ch] */
                       const IS_SF_INFO* is_sf_info,
-                      int nsamp, int ms_mode)
+                      const int nsamp, const int ms_mode)
 {
 	int i, j, k, n, cb;
 	float fl, fr;

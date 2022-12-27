@@ -215,7 +215,7 @@ int bitget_bits_used()
 }
 
 /*------------- check for n bits in bitbuf -------------*/
-void bitget_check(int n)
+void bitget_check(const int n)
 {
 	if (bitdat.bits < n)
 	{
@@ -228,7 +228,7 @@ void bitget_check(int n)
 }
 
 /*------------- get n bits from bitstream -------------*/
-unsigned int bitget(int n)
+unsigned int bitget(const int n)
 {
 	if (bitdat.bits < n)
 	{
@@ -264,7 +264,7 @@ unsigned int bitget_1bit()
 }
 
 /*====================================================================*/
-static void Xform_mono(void* pcm, int igr)
+static void Xform_mono(void* pcm, const int igr)
 {
 	int n2;
 
@@ -290,7 +290,7 @@ static void Xform_mono(void* pcm, int igr)
 }
 
 /*--------------------------------------------------------------------*/
-static void Xform_dual_right(void* pcm, int igr)
+static void Xform_dual_right(void* pcm, const int igr)
 {
 	int n2;
 
@@ -315,7 +315,7 @@ static void Xform_dual_right(void* pcm, int igr)
 }
 
 /*--------------------------------------------------------------------*/
-static void Xform_dual(void* pcm, int igr)
+static void Xform_dual(void* pcm, const int igr)
 {
 	int n2;
 
@@ -343,7 +343,7 @@ static void Xform_dual(void* pcm, int igr)
 }
 
 /*--------------------------------------------------------------------*/
-static void Xform_dual_mono(void* pcm, int igr)
+static void Xform_dual_mono(void* pcm, const int igr)
 {
 	int n1, n2, n3;
 
@@ -507,7 +507,7 @@ static int unpack_side_MPEG1()
 }
 
 /*====================================================================*/
-static int unpack_side_MPEG2(int igr)
+static int unpack_side_MPEG2(const int igr)
 {
 	int side_bytes;
 
@@ -632,7 +632,7 @@ static int unpack_side_MPEG2(int igr)
 }
 
 /*-----------------------------------------------------------------*/
-static void unpack_main(unsigned char* pcm, int igr)
+static void unpack_main(unsigned char* pcm, const int igr)
 {
 	int ch;
 	int n1;
@@ -1090,7 +1090,7 @@ iARRAY22* msis_init_band_addr();
 /*---------------------------------------------------------*/
 /* mpeg_head defined in mhead.h  frame bytes is without pMP3Stream->pad */
 ////@@@@INIT
-int L3audio_decode_init(const MPEG_HEAD* h, int framebytes_arg,
+int L3audio_decode_init(const MPEG_HEAD* h, const int framebytes_arg,
                         int reduction_code, int transform_code, int convert_code,
                         int freq_limit)
 {

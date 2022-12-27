@@ -56,7 +56,7 @@ ARRAY36* hwin_init_addr()
 
 /*====================================================================*/
 int hybrid(float xin[], float xprev[], float y[18][32],
-           int btype, int nlong, int ntot, int nprev)
+           int btype, const int nlong, const int ntot, const int nprev)
 {
 	int i, j;
 	float xa;
@@ -155,7 +155,7 @@ int hybrid(float xin[], float xprev[], float y[18][32],
 /*-- convert to mono, add curr result to y,
 	window and add next time to current left */
 int hybrid_sum(float xin[], float xin_left[], float y[18][32],
-               int btype, int nlong, int ntot)
+               int btype, const int nlong, const int ntot)
 {
 	int i, j;
 	float xa;
@@ -227,7 +227,7 @@ int hybrid_sum(float xin[], float xin_left[], float y[18][32],
 }
 
 /*--------------------------------------------------------------------*/
-void sum_f_bands(float a[], float b[], int n)
+void sum_f_bands(float a[], float b[], const int n)
 {
 	for (int i = 0; i < n; i++)
 		a[i] += b[i];

@@ -35,7 +35,7 @@ portable C
 ******************************************************************/
 /*-------------------------------------------------------------------------*/
 
-void windowB(const float* vbuf, int vb_ptr, unsigned char* pcm)
+void windowB(const float* vbuf, const int vb_ptr, unsigned char* pcm)
 {
 	int i, j;
 	float sum;
@@ -102,7 +102,7 @@ void windowB(const float* vbuf, int vb_ptr, unsigned char* pcm)
 }
 
 /*------------------------------------------------------------*/
-void windowB_dual(const float* vbuf, int vb_ptr, unsigned char* pcm)
+void windowB_dual(const float* vbuf, const int vb_ptr, unsigned char* pcm)
 {
 	int i, j; /* dual window interleaves output */
 	float sum;
@@ -173,7 +173,7 @@ void windowB_dual(const float* vbuf, int vb_ptr, unsigned char* pcm)
 
 /*------------------------------------------------------------*/
 /*------------------- 16 pt window ------------------------------*/
-void windowB16(const float* vbuf, int vb_ptr, unsigned char* pcm)
+void windowB16(const float* vbuf, const int vb_ptr, unsigned char* pcm)
 {
 	int i, j;
 	float sum;
@@ -242,7 +242,7 @@ void windowB16(const float* vbuf, int vb_ptr, unsigned char* pcm)
 }
 
 /*--------------- 16 pt dual window (interleaved output) -----------------*/
-void windowB16_dual(const float* vbuf, int vb_ptr, unsigned char* pcm)
+void windowB16_dual(const float* vbuf, const int vb_ptr, unsigned char* pcm)
 {
 	int i, j;
 	float sum;
@@ -314,7 +314,7 @@ void windowB16_dual(const float* vbuf, int vb_ptr, unsigned char* pcm)
 }
 
 /*------------------- 8 pt window ------------------------------*/
-void windowB8(const float* vbuf, int vb_ptr, unsigned char* pcm)
+void windowB8(const float* vbuf, const int vb_ptr, unsigned char* pcm)
 {
 	int i, j;
 	float sum;
@@ -383,7 +383,7 @@ void windowB8(const float* vbuf, int vb_ptr, unsigned char* pcm)
 }
 
 /*--------------- 8 pt dual window (interleaved output) -----------------*/
-void windowB8_dual(const float* vbuf, int vb_ptr, unsigned char* pcm)
+void windowB8_dual(const float* vbuf, const int vb_ptr, unsigned char* pcm)
 {
 	int i, j;
 	float sum;

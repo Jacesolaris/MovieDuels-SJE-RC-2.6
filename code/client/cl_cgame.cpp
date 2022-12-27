@@ -109,7 +109,7 @@ void CL_GetGlconfig(glconfig_t* glconfig)
 CL_GetUserCmd
 ====================
 */
-qboolean CL_GetUserCmd(int cmdNumber, usercmd_t* ucmd)
+qboolean CL_GetUserCmd(const int cmdNumber, usercmd_t* ucmd)
 {
 	// cmds[cmdNumber] is the last properly generated command
 
@@ -175,7 +175,7 @@ void CL_GetCurrentSnapshotNumber(int* snapshotNumber, int* serverTime)
 CL_GetSnapshot
 ====================
 */
-qboolean CL_GetSnapshot(int snapshotNumber, snapshot_t* snapshot)
+qboolean CL_GetSnapshot(const int snapshotNumber, snapshot_t* snapshot)
 {
 	if (snapshotNumber > cl.frame.messageNum)
 	{
@@ -236,7 +236,7 @@ qboolean CL_GetSnapshot(int snapshotNumber, snapshot_t* snapshot)
 //bg_public.h won't cooperate in here
 #define EF_PERMANENT   0x00080000
 
-qboolean CL_GetDefaultState(int index, entityState_t* state)
+qboolean CL_GetDefaultState(const int index, entityState_t* state)
 {
 	if (index < 0 || index >= MAX_GENTITIES)
 	{
@@ -259,7 +259,7 @@ qboolean CL_GetDefaultState(int index, entityState_t* state)
 extern float cl_mPitchOverride;
 extern float cl_mYawOverride;
 
-void CL_SetUserCmdValue(int userCmdValue, float sensitivityScale, float mPitchOverride, float mYawOverride)
+void CL_SetUserCmdValue(const int userCmdValue, const float sensitivityScale, const float mPitchOverride, const float mYawOverride)
 {
 	cl.cgameUserCmdValue = userCmdValue;
 	cl.cgameSensitivity = sensitivityScale;
@@ -270,7 +270,7 @@ void CL_SetUserCmdValue(int userCmdValue, float sensitivityScale, float mPitchOv
 extern vec3_t cl_overriddenAngles;
 extern qboolean cl_overrideAngles;
 
-void CL_SetUserCmdAngles(float pitchOverride, float yawOverride, float rollOverride)
+void CL_SetUserCmdAngles(const float pitchOverride, const float yawOverride, const float rollOverride)
 {
 	cl_overriddenAngles[PITCH] = pitchOverride;
 	cl_overriddenAngles[YAW] = yawOverride;
@@ -355,7 +355,7 @@ CL_GetServerCommand
 Set up argc/argv for the given command
 ===================
 */
-qboolean CL_GetServerCommand(int serverCommandNumber)
+qboolean CL_GetServerCommand(const int serverCommandNumber)
 {
 	// if we have irretrievably lost a reliable command, drop the connection
 	if (serverCommandNumber <= clc.serverCommandSequence - MAX_RELIABLE_COMMANDS)
@@ -422,7 +422,7 @@ CL_CM_LoadMap
 Just adds default parameters that cgame doesn't need to know about
 ====================
 */
-void CL_CM_LoadMap(const char* mapname, qboolean subBSP)
+void CL_CM_LoadMap(const char* mapname, const qboolean subBSP)
 {
 	int checksum;
 
@@ -1491,7 +1491,7 @@ default:
 	CL_CGameRendering
 	=====================
 	*/
-	void CL_CGameRendering(stereoFrame_t stereo)
+	void CL_CGameRendering(const stereoFrame_t stereo)
 	{
 #if 0
 	if (cls.state == CA_ACTIVE) {
